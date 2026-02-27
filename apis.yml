@@ -1,0 +1,182 @@
+name: Qlik Sense APIs
+description: Collection of APIs for Qlik Sense, a business intelligence and visual analytics platform
+image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+created: 2024-01-15 00:00:00+00:00
+modified: 2024-01-15 00:00:00+00:00
+specificationVersion: '0.18'
+url: https://qlik.dev/apis.json
+apis:
+- name: Qlik Engine API
+  description: JSON-RPC WebSocket API for interacting with the Qlik Associative Engine, creating and manipulating apps, and building visualizations
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  baseURL: wss://your-tenant.qlikcloud.com/app/
+  tags:
+  - Analytics
+  - Business Intelligence
+  - WebSocket
+  - JSON-RPC
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/json-rpc/qix
+  - type: OpenAPI
+    url: https://qlik.dev/apis/json-rpc/qix/schema
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+    url: https://community.qlik.com/
+- name: Qlik Repository API
+  description: REST API for managing Qlik Sense repository entities including apps, streams, users, and security rules
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://help.qlik.com/en-US/sense-developer/APIs/RepositoryServiceAPI/
+  baseURL: https://your-server:4242/qrs/
+  tags:
+  - Repository
+  - Management
+  - REST
+  - Administration
+  properties:
+  - type: Documentation
+    url: https://help.qlik.com/en-US/sense-developer/APIs/RepositoryServiceAPI/
+  - type: API Reference
+    url: https://help.qlik.com/en-US/sense-developer/APIs/RepositoryServiceAPI/index.html
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+    url: https://community.qlik.com/
+- name: Qlik Cloud Platform API
+  description: REST APIs for Qlik Cloud services including tenants, users, spaces, apps, and data connections
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/rest
+  baseURL: https://your-tenant.qlikcloud.com/api/v1/
+  tags:
+  - Cloud
+  - Platform
+  - REST
+  - SaaS
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: OpenAPI
+    url: https://qlik.dev/apis/rest/apps/openapi.json
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+    url: https://community.qlik.com/
+- name: Qlik Apps API
+  description: Manage Qlik Sense applications including creating, updating, publishing, and deleting apps
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/rest/apps
+  baseURL: https://your-tenant.qlikcloud.com/api/v1/apps
+  tags:
+  - Apps
+  - Applications
+  - REST
+  - Cloud
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/apps
+  - type: OpenAPI
+    url: https://qlik.dev/apis/rest/apps/openapi.json
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+- name: Qlik Users API
+  description: Manage users, groups, and authentication in Qlik Sense
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/rest/users
+  baseURL: https://your-tenant.qlikcloud.com/api/v1/users
+  tags:
+  - Users
+  - Authentication
+  - Identity
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/users
+  - type: OpenAPI
+    url: https://qlik.dev/apis/rest/users/openapi.json
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+- name: Qlik Data Connections API
+  description: Create and manage data connections to various data sources
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/rest/data-connections
+  baseURL: https://your-tenant.qlikcloud.com/api/v1/data-connections
+  tags:
+  - Data
+  - Connections
+  - Integration
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-connections
+  - type: OpenAPI
+    url: https://qlik.dev/apis/rest/data-connections/openapi.json
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+- name: Qlik Spaces API
+  description: Manage shared and managed spaces for collaboration and content organization
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/rest/spaces
+  baseURL: https://your-tenant.qlikcloud.com/api/v1/spaces
+  tags:
+  - Spaces
+  - Collaboration
+  - Organization
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/spaces
+  - type: OpenAPI
+    url: https://qlik.dev/apis/rest/spaces/openapi.json
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+- name: Qlik Reload API
+  description: Trigger and manage data reload operations for Qlik Sense apps
+  image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
+  humanURL: https://qlik.dev/apis/rest/reloads
+  baseURL: https://your-tenant.qlikcloud.com/api/v1/reloads
+  tags:
+  - Reload
+  - Data
+  - ETL
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reloads
+  - type: OpenAPI
+    url: https://qlik.dev/apis/rest/reloads/openapi.json
+  contact:
+  - FN: Qlik Developer Support
+    email: developer@qlik.com
+common:
+- type: Getting Started
+  url: https://qlik.dev/get-started
+- type: Authentication
+  url: https://qlik.dev/authenticate
+- type: Developer Portal
+  url: https://qlik.dev/
+- type: Community
+  url: https://community.qlik.com/
+- type: Support
+  url: https://support.qlik.com/
+- type: Terms of Service
+  url: https://www.qlik.com/us/legal/terms-of-service
+- type: Privacy Policy
+  url: https://www.qlik.com/us/legal/privacy
+maintainers:
+- FN: Qlik Developer Relations
+  email: developer@qlik.com
+  url: https://qlik.dev/
+tags:
+- Analytics
+- Business Intelligence
+- Data Visualization
+- Cloud
+- Enterprise
