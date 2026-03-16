@@ -1,10 +1,12 @@
+aid: qliksense
 name: Qlik Sense APIs
 description: Collection of APIs for Qlik Sense, a business intelligence and visual analytics platform
+type: Index
 image: https://www.qlik.com/us/-/media/images/qlik/global/qlik-logo.png
-created: 2024-01-15 00:00:00+00:00
-modified: 2026-03-03 00:00:00+00:00
-specificationVersion: '0.18'
-url: https://qlik.dev/apis.json
+url: https://raw.githubusercontent.com/api-evangelist/qliksense/refs/heads/main/apis.yml
+created: '2024-01-15'
+modified: '2026-03-16'
+specificationVersion: '0.19'
 apis:
 - name: Qlik Engine API
   description: JSON-RPC WebSocket API for interacting with the Qlik Associative Engine, creating and manipulating apps, and building visualizations
