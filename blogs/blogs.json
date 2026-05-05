@@ -1,0 +1,13 @@
+{
+  "repo": "qliksense",
+  "feeds": [
+    {
+      "source": "https://qlik.dev/changelog/tag/api/",
+      "feed_url": "https://qlik.dev/rss.xml",
+      "saved": 10,
+      "title": "qlik.dev RSS feed"
+    }
+  ],
+  "post_count": 10,
+  "fetched": "2026-05-03T23:34:51Z"
+}
