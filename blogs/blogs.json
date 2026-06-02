@@ -2,12 +2,17 @@
   "repo": "qliksense",
   "feeds": [
     {
-      "source": "https://qlik.dev/changelog/tag/api/",
+      "source": "https://qlik.dev/rss.xml",
       "feed_url": "https://qlik.dev/rss.xml",
-      "title": "qlik.dev RSS feed",
-      "saved": 47
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://status.qlik.com/",
+      "error": "URLError"
     }
   ],
-  "post_count": 57,
-  "fetched": "2026-05-17T20:20:35Z"
+  "post_count": 60,
+  "fetched": "2026-06-01T23:35:02Z"
 }
