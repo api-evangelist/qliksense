@@ -226,7 +226,7 @@ common:
     url: https://qlik.dev/changelog/
   - type: CLI
     url: https://qlik.dev/toolkits/qlik-cli/
-  - type: SDK
+  - type: SDKs
     url: https://qlik.dev/toolkits/qlik-api/
   - type: GitHubOrganization
     url: https://github.com/qlik-oss
