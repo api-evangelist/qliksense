@@ -210,6 +210,8 @@ apis:
       - type: Documentation
         url: https://qlik.dev/apis/rest/audits
 common:
+  - type: DomainSecurity
+    url: security/qliksense-domain-security.yml
   - type: Portal
     url: https://qlik.dev/
   - type: GettingStarted
