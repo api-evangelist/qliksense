@@ -54,6 +54,10 @@ apis:
     humanURL: https://qlik.dev/apis/rest/apps
     baseURL: https://your-tenant.qlikcloud.com/api/v1/apps
     tags:
+      - Application
+      - Cloud
+      - REST
+    tags_raw:
       - Applications
       - Apps
       - Cloud
@@ -68,6 +72,10 @@ apis:
     humanURL: https://qlik.dev/apis/rest/users
     baseURL: https://your-tenant.qlikcloud.com/api/v1/users
     tags:
+      - Identity
+      - REST
+      - User
+    tags_raw:
       - Identity
       - REST
       - Users
@@ -140,6 +148,11 @@ apis:
     humanURL: https://qlik.dev/apis/rest/webhooks
     baseURL: https://your-tenant.qlikcloud.com/api/v1/webhooks
     tags:
+      - Event
+      - Real-Time
+      - REST
+      - Webhook
+    tags_raw:
       - Events
       - Real-Time
       - REST
@@ -169,6 +182,11 @@ apis:
     humanURL: https://qlik.dev/apis/rest/ml
     baseURL: https://your-tenant.qlikcloud.com/api/v1/ml
     tags:
+      - Artificial Intelligence
+      - Machine-Learning
+      - Predictions
+      - REST
+    tags_raw:
       - AI
       - Machine Learning
       - Predictions
@@ -184,6 +202,11 @@ apis:
     humanURL: https://qlik.dev/apis/rest/questions
     baseURL: https://your-tenant.qlikcloud.com/api/v1/questions
     tags:
+      - Artificial Intelligence
+      - Natural-Language
+      - NLP
+      - REST
+    tags_raw:
       - AI
       - Natural Language
       - NLP
