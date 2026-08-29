@@ -1,0 +1,203 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://qlik.dev/apis/rest/pagination-sorting-filtering/,
+  https://qlik.dev/apis/rest/rate-limiting/, https://qlik.dev/apis/namespaces/,
+  https://qlik.dev/apis/api-policy/, https://qlik.dev/authenticate/,
+  https://qlik.dev/manage/analytics-applications/restore-deleted-app/, and the
+  78 OpenAPI documents in openapi/ harvested from https://qlik.dev/specs/rest/.
+description: >-
+  Cross-cutting request/response semantics that apply across the whole Qlik
+  Cloud REST surface rather than to any one endpoint: auth style, pagination,
+  filtering, error envelope, rate-limit signaling, versioning, tracing, and
+  reversibility of write operations.
+
+base_url: https://{tenant}.{region}.qlikcloud.com
+api_style: REST over HTTPS, JSON request and response bodies
+
+authentication:
+  schemes: [api-key, oauth2, jwt]
+  header: "Authorization: Bearer <token>"
+  detail: authentication/qliksense-authentication.yml
+  docs: https://qlik.dev/authenticate
+  note: >-
+    API keys, OAuth 2.0 access tokens (M2M client credentials, authorization
+    code, impersonation, private-key JWT) and signed JWTs all present as
+    Bearer tokens on the same header.
+
+idempotency:
+  supported: false
+  mechanism: null
+  evidence: >-
+    No Idempotency-Key (or equivalent) request header appears in any of the 681
+    operations across the 78 published OpenAPI documents, and no idempotency
+    section exists anywhere in the qlik.dev API reference. Retries of a POST are
+    not deduplicated by the platform.
+  note: >-
+    PATCH bodies use RFC 6902 JSON Patch on many resources, which is
+    conditionally re-appliable, and PUT replaces wholesale — but neither is a
+    substitute for a client-supplied idempotency key on create.
+
+pagination:
+  style: cursor
+  standard: https://jsonapi.org/profiles/ethanresnick/cursor-pagination/
+  request_params:
+    limit: page size
+    page: opaque cursor value — never constructed client-side
+  response_fields:
+    data: array of results
+    links.next.href: URL of the next page, or null
+    links.prev.href: URL of the previous page, or null
+  auto_pagination: >-
+    qlik-cli paginates automatically in the background; direct HTTP callers must
+    follow links.next themselves.
+  docs: https://qlik.dev/apis/rest/pagination-sorting-filtering/
+
+sorting:
+  param: sort
+  syntax: "comma-separated fields with + / - prefix, e.g. ?sort=+title,-description"
+  docs: https://qlik.dev/apis/rest/pagination-sorting-filtering/
+
+filtering:
+  primary:
+    param: filter
+    syntax: SCIM filter expression
+    standard: RFC 7644 section 3.4.2.2
+    example: "?filter=name eq 'abc'"
+    note: >-
+      Qlik's own docs cite RFC 7644 (SCIM) as the normative definition of the
+      filter grammar and state that ?filter= is becoming the preferred method
+      across the platform. See the domain_standards block in
+      conformance/qliksense-conformance.yml.
+  legacy:
+    style: exact-match key/value query parameters
+    example: "?date=2020-11-16"
+  docs: https://qlik.dev/apis/rest/pagination-sorting-filtering/
+
+error_envelope:
+  shape: >-
+    {"errors": [{"code": "...", "title": "...", "detail": "...", "status": ...,
+    "meta": {...}, "source": {"pointer": "...", "parameter": "..."}}]}
+  content_type: application/json
+  rfc9457: false
+  note: >-
+    JSON:API-shaped errors array with a JSON Pointer `source`. NOT RFC 9457
+    problem+json — no operation in any of the 78 specs declares
+    application/problem+json. Detail in errors/qliksense-problem-types.yml.
+
+rate_limit_signaling:
+  status_on_exhaustion: 429
+  response_headers: [Retry-After]
+  no_quota_headers: true
+  evidence: >-
+    Qlik returns HTTP 429 with a Retry-After header carrying whole seconds. It
+    does NOT emit X-RateLimit-*/RateLimit-* remaining-quota headers on
+    successful responses, so a client cannot see how close it is to a limit
+    before hitting one — it can only react after the 429.
+  per_operation_tier: >-
+    Every operation in the published OpenAPI carries an x-qlik-tier extension
+    ({tier: "1"|"2"|"special", limit: n}), so the applicable limit IS
+    machine-readable per operation even though the runtime headers are not.
+  detail: rate-limits/qliksense-rate-limits.yml
+  docs: https://qlik.dev/apis/rest/rate-limiting/
+
+versioning:
+  current: v1 path prefix (/api/v1/...)
+  direction: namespaces
+  mechanism: >-
+    Qlik is migrating from /api/v1/<resource> to /api/<namespace>/<resource>
+    (analytics, core, ai, data-governance, machine-learning, telemetry),
+    removing v1 from the path to unblock real versioning later. Namespaced and
+    legacy APIs run in parallel; the legacy path is deprecated with a minimum
+    12-month notice.
+  docs: https://qlik.dev/apis/namespaces/
+  detail: lifecycle/qliksense-lifecycle.yml
+
+request_tracing:
+  headers: [X-B3-Traceid]
+  note: >-
+    Several operations declare an X-B3-Traceid response header (B3/Zipkin
+    propagation). There is no single platform-wide request-id header documented
+    across the whole surface.
+  mcp_tracing: >-
+    MCP tool executions forward the W3C `baggage` header verbatim into the
+    com.qlik.ai.mcp.tool.executed event.
+
+csrf:
+  header: qlik-csrf-token
+  endpoint: GET /api/v1/csrf-token
+  note: Required for cookie-authenticated browser sessions, not for Bearer-token API calls.
+  docs: https://qlik.dev/apis/rest/csrf-token/
+
+json_patch:
+  supported: true
+  media_type: application/json-patch+json
+  standard: RFC 6902
+  note: Most PATCH operations across the surface take a JSON Patch document.
+
+dry_run_mode:
+  supported: false
+  note: >-
+    No preview/dry-run/validate-only parameter is documented on the write
+    surface generally. The one adjacent capability is load-script validation
+    (POST /api/v1/apps/validatescript, openapi/qliksense-apps.json), which
+    validates a load script without reloading — that is a domain-specific validator, not a
+    platform dry-run convention.
+
+reversibility:
+  grade: verified
+  summary: >-
+    Qlik documents one real, dated reversal window on its highest-consequence
+    delete — analytics apps — and documents it precisely enough that an agent
+    can decide before acting. Most other deletes across the 681 operations are
+    permanent and Qlik says so plainly rather than implying recoverability.
+  surfaces:
+    - operation: DELETE /api/v1/apps/{appId}
+      spec: openapi/qliksense-apps.json
+      action: delete an analytics app
+      reversal: >-
+        Soft delete. The app enters a recovery state and can be restored with
+        the same app ID and its script and data model intact.
+      window: >-
+        14 DAYS from deletion, and only if the app was created MORE THAN 45
+        MINUTES before it was deleted. An app deleted within its first 45
+        minutes of life is hard-deleted immediately and cannot be restored.
+      determinable_before_acting: true
+      how_to_check: >-
+        The com.qlik.app.softdeleted event carries a purgeAt field with the
+        exact recovery deadline; com.qlik.app.deleted carries deleteType
+        (SOFT|HARD); com.qlik.app.harddeleted means the app is gone.
+      caveat: >-
+        Qlik explicitly warns this is a disaster-recovery pattern, not a recycle
+        bin: collections, tags, data alerts, subscriptions and notes attached to
+        the app are permanently lost and are NOT restored.
+      permissions: Tenant Admin, or the app owner if the original space still exists.
+      docs: https://qlik.dev/manage/analytics-applications/restore-deleted-app/
+    - operation: DELETE /api/v1/automations/{id} and the rest of the delete surface
+      action: delete non-app resources (spaces, data connections, webhooks, roles, glossaries, assistants...)
+      reversal: none documented
+      window: null
+      determinable_before_acting: true
+      note: >-
+        Qlik documents no undo, restore or trash endpoint for these. Treat every
+        non-app DELETE as irreversible. NO WINDOW IS ASSERTED HERE because Qlik
+        states none.
+    - operation: POST /api/v1/reloads
+      action: trigger a data reload
+      reversal: >-
+        POST /api/v1/reloads/{reloadId}/actions/cancel cancels an in-flight
+        reload.
+      window: >-
+        Only while the reload is still running — Qlik states no time bound and
+        none is invented here. Once a reload completes, the previous data state
+        is not restorable through the API.
+      determinable_before_acting: true
+      docs: https://qlik.dev/apis/rest/reloads
+
+cross_links:
+  errors: errors/qliksense-problem-types.yml
+  lifecycle: lifecycle/qliksense-lifecycle.yml
+  authentication: authentication/qliksense-authentication.yml
+  scopes: scopes/qliksense-scopes.yml
+  rate_limits: rate-limits/qliksense-rate-limits.yml
+  conformance: conformance/qliksense-conformance.yml

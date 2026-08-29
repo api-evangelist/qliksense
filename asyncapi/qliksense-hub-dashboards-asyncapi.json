@@ -1,0 +1,225 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "hub-dashboards",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsHubDashboards": {
+      "address": "system-events.hub-dashboards",
+      "messages": {
+        "hubDashboardUpdated": {
+          "$ref": "#/components/messages/hub-dashboards.hubDashboardUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "hubDashboardUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsHubDashboards"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsHubDashboards/messages/hubDashboardUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "hub-dashboards.hubDashboardUpdated": {
+        "name": "com.qlik.v1.hub-dashboard.updated",
+        "title": "Dashboard updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "data",
+                "type"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/dashboardUpdateData"
+                    }
+                  ],
+                  "description": "Dashboard specific data related to the event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.hub-dashboard.updated",
+                  "description": "The type of event related to the originating occurrence."
+                },
+                "updates": {
+                  "$ref": "#/components/schemas/resourceUpdates"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a hub dashboard is updated. The event includes the dashboard ID, source (`user` for personal dashboards or `tenant` for tenant-wide dashboards), and a list of changed fields. Use this to keep external catalogs or monitoring systems up to date with dashboard changes.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "updates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/resourceUpdate"
+            },
+            "description": "List of updates, follow fast json patch schema"
+          },
+          "authtype": {
+            "type": "string",
+            "description": "Representing the type of principal that triggered the occurrence."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "description": "A JSON string representing claims of the principal that triggered the event"
+          },
+          "tracestate": {
+            "type": "string",
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          }
+        }
+      },
+      "dashboardUpdateData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the dashboard."
+          },
+          "source": {
+            "enum": [
+              "user",
+              "tenant"
+            ],
+            "type": "string",
+            "default": "user",
+            "description": "The source of the dashboard. `user` is a user's personal dashboard. `tenant` is a tenant-wide dashboard configured by admins and curators."
+          }
+        },
+        "description": "Data representing a dashboard"
+      },
+      "resourceUpdate": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "JSON pointer to the field that has been updated"
+          },
+          "newValue": {
+            "type": "string",
+            "description": "The new value of the field"
+          },
+          "oldValue": {
+            "type": "string",
+            "description": "The value the field had before the update was applied"
+          }
+        },
+        "description": "Additional metadata about a resource update"
+      },
+      "resourceUpdates": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/resourceUpdate"
+        }
+      }
+    }
+  }
+}

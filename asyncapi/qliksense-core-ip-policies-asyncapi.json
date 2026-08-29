@@ -1,0 +1,413 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "core/ip-policies",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsIpPolicy": {
+      "address": "system-events.ip-policy",
+      "messages": {
+        "coreIpPolicyCreated": {
+          "$ref": "#/components/messages/ip-policy.coreIpPolicyCreated"
+        },
+        "coreIpPolicyDeleted": {
+          "$ref": "#/components/messages/ip-policy.coreIpPolicyDeleted"
+        },
+        "coreIpPolicyUpdated": {
+          "$ref": "#/components/messages/ip-policy.coreIpPolicyUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "coreIpPolicyCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsIpPolicy"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsIpPolicy/messages/coreIpPolicyCreated"
+        }
+      ]
+    },
+    "coreIpPolicyDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsIpPolicy"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsIpPolicy/messages/coreIpPolicyDeleted"
+        }
+      ]
+    },
+    "coreIpPolicyUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsIpPolicy"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsIpPolicy/messages/coreIpPolicyUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "ip-policy.coreIpPolicyCreated": {
+        "name": "com.qlik.core.ip-policy.created",
+        "tags": [
+          {
+            "name": "ip-policies"
+          }
+        ],
+        "title": "IP Policy Created Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/ipPolicy"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.core.ip-policy.created",
+                  "description": "Unique identifier for the event type."
+                },
+                "source": {
+                  "type": "string",
+                  "default": "com.qlik/iam-resources",
+                  "description": "Identifies the context in which an event happened."
+                }
+              }
+            }
+          ]
+        },
+        "description": "This event will be published when an IP Policy is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "ip-policy.coreIpPolicyDeleted": {
+        "name": "com.qlik.core.ip-policy.deleted",
+        "tags": [
+          {
+            "name": "ip-policies"
+          }
+        ],
+        "title": "IP Policy Deleted Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/ipPolicy"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.core.ip-policy.deleted",
+                  "description": "Unique identifier for the event type."
+                },
+                "source": {
+                  "type": "string",
+                  "default": "com.qlik/iam-resources",
+                  "description": "Identifies the context in which an event happened."
+                }
+              }
+            }
+          ]
+        },
+        "description": "This event will be published when an IP Policy is deleted.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "ip-policy.coreIpPolicyUpdated": {
+        "name": "com.qlik.core.ip-policy.updated",
+        "tags": [
+          {
+            "name": "ip-policies"
+          }
+        ],
+        "title": "IP Policy Updated Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ipPolicy"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "_updates": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/attributeUpdate"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.core.ip-policy.updated",
+                  "description": "Unique identifier for the event type."
+                },
+                "source": {
+                  "type": "string",
+                  "default": "com.qlik/iam-resources",
+                  "description": "Identifies the context in which an event happened."
+                }
+              }
+            }
+          ]
+        },
+        "description": "This event will be published when an IP Policy is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "attributeUpdate": {
+        "type": "object",
+        "required": [
+          "path",
+          "oldValue",
+          "newValue"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "example": "/name",
+            "description": "The updated attribute path."
+          },
+          "newValue": {
+            "type": "string",
+            "example": "new",
+            "description": "The new value of updated attribute."
+          },
+          "oldValue": {
+            "type": "string",
+            "example": "old",
+            "description": "The old value of updated attribute."
+          }
+        },
+        "description": "An attribute update object that contains the change of an attribute."
+      },
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-04-05T17:31:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.core.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      },
+      "ipPolicy": {
+        "type": "object",
+        "examples": [
+          {
+            "id": "5be59decca62aa00097268a4",
+            "name": "Allow access from office IP addresses",
+            "enabled": true,
+            "editable": true,
+            "tenantId": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "createdAt": "2021-03-21T17:32:28Z",
+            "createdBy": "5be59decca62aa00097268a4",
+            "deletable": true,
+            "updatedAt": "2021-03-22T10:01:02Z",
+            "updatedBy": "5be59decca62aa00097268a4",
+            "allowedIps": [
+              "61.254.213.190/24",
+              "1dbd:f66e:4267:d665:2539:6062:efa0:2afe/128"
+            ],
+            "toggleable": true
+          }
+        ],
+        "required": [
+          "id",
+          "tenantId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "5be59decca62aa00097268a4",
+            "description": "The ID of the IP Policy."
+          },
+          "name": {
+            "type": "string",
+            "example": "Allow access from office IP addresses.",
+            "description": "Descriptive name for the IP Policy."
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates whether the IP policy is enabled."
+          },
+          "editable": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates whether the IP policy can be updated."
+          },
+          "tenantId": {
+            "type": "string",
+            "example": "5be59decca62aa00097268a4",
+            "description": "Unique identifier for the tenant the IP Policy belongs to."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-03-21T17:32:28Z",
+            "description": "The timestamp for when the IP Policy was created."
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "5be59decca62aa00097268a4",
+            "description": "the unique identifier of the user who created the IP Policy."
+          },
+          "deletable": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates whether the IP policy can be deleted."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-03-22T10:01:02Z",
+            "description": "The timestamp for when the IP Policy was last updated."
+          },
+          "updatedBy": {
+            "type": "string",
+            "example": "5be59decca62aa00097268a4",
+            "description": "the unique identifier of the user who updated the IP Policy."
+          },
+          "allowedIps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "61.254.213.190/24",
+              "1dbd:f66e:4267:d665:2539:6062:efa0:2afe/128"
+            ],
+            "description": "An array of allowed IP addresses."
+          },
+          "toggleable": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates whether the IP policy can be enabled/disabled.."
+          }
+        },
+        "description": "IP Policy resource object."
+      }
+    }
+  }
+}

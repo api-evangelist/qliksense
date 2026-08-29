@@ -1,0 +1,397 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "oauth-tokens",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsOauthTokens": {
+      "address": "system-events.oauth-tokens",
+      "messages": {
+        "oauthTokenIssued": {
+          "$ref": "#/components/messages/oauth-tokens.oauthTokenIssued"
+        },
+        "oauthTokenRevoked": {
+          "$ref": "#/components/messages/oauth-tokens.oauthTokenRevoked"
+        }
+      }
+    }
+  },
+  "operations": {
+    "oauthTokenIssued": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthTokens"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthTokens/messages/oauthTokenIssued"
+        }
+      ]
+    },
+    "oauthTokenRevoked": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthTokens"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthTokens/messages/oauthTokenRevoked"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "oauth-tokens.oauthTokenIssued": {
+        "name": "com.qlik.oauth-token.issued",
+        "tags": [
+          {
+            "name": "oauth-token"
+          }
+        ],
+        "title": "OAuth token issued",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "601abc3fe95f07dbb73ce50f",
+                      "scopes": [
+                        "user_default"
+                      ],
+                      "ownerId": "LkedCLXCtzdMdZJayyw8LzASxcL9jLTB",
+                      "issuedAt": "2025-10-30T07:06:22Z",
+                      "tenantId": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "createdBy": "sEkC_KKE4RYwBzoeqQ4-TEp982A0gNnA",
+                      "deviceType": "Dell XPS 15",
+                      "description": "John's PC",
+                      "resourceOwner": "LkedCLXCtzdMdZJayyw8LzASxcL9jLTB",
+                      "issuedToClientId": "3e7651d5-98d9-467c-be0b-09623e6aa551"
+                    }
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "601abc3fe95f07dbb73ce50f",
+                      "description": "Identifier of the newly issued token."
+                    },
+                    "scopes": {
+                      "type": "array",
+                      "example": [
+                        "user_default"
+                      ],
+                      "description": "The list of scopes granted to the token"
+                    },
+                    "appType": {
+                      "type": "string",
+                      "example": "web",
+                      "description": "The app type of the client that the token was issued to"
+                    },
+                    "ownerId": {
+                      "type": "string",
+                      "example": "LkedCLXCtzdMdZJayyw8LzASxcL9jLTB",
+                      "description": "Identifier of the OAuth client."
+                    },
+                    "issuedAt": {
+                      "type": "string",
+                      "example": "2025-10-30T07:06:22Z",
+                      "description": "Timestamp when the token was issued."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant the token belongs to."
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "example": "sEkC_KKE4RYwBzoeqQ4-TEp982A0gNnA",
+                      "description": "Identifier of the OAuth client who created the token."
+                    },
+                    "grantType": {
+                      "enum": [
+                        "authorization_code",
+                        "refresh_token",
+                        "client_credentials",
+                        "urn:ietf:params:oauth:grant-type:token-exchange",
+                        "urn:qlik:oauth:user-impersonation",
+                        "urn:qlik:oauth:anonymous-embed"
+                      ],
+                      "type": "string",
+                      "example": "authorization_code",
+                      "description": "The grant type that was used to generate the token"
+                    },
+                    "deviceType": {
+                      "type": "string",
+                      "example": "Dell XPS 15",
+                      "description": "The device manufacturer and model"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "John's PC",
+                      "description": "A description of the token"
+                    },
+                    "resourceOwner": {
+                      "type": "string",
+                      "example": "LkedCLXCtzdMdZJayyw8LzASxcL9jLTB",
+                      "description": "Identifier of the user the token was issued for."
+                    },
+                    "issuedToClientId": {
+                      "type": "string",
+                      "example": "3e7651d5-98d9-467c-be0b-09623e6aa551",
+                      "description": "Identifier of the client the token was issued to."
+                    }
+                  },
+                  "description": "Data specific to the oauth token issued event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.oauth-token.issued",
+                  "description": "The type of event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth token is issued.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-tokens.oauthTokenRevoked": {
+        "name": "com.qlik.oauth-token.revoked",
+        "tags": [
+          {
+            "name": "oauth-token"
+          }
+        ],
+        "title": "OAuth token revoked",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "revokedAt": "2025-10-30T07:06:22Z",
+                      "revokedBy": "sEkC_KKE4RYwBzoeqQ4-TEp982A0gNnA",
+                      "revokedContext": {
+                        "userId": "605a18af2ab08cdbfad09259",
+                        "grantId": "601abc3fe95f07dbb73ce50f",
+                        "clientId": "630201422597f43c47128aa651af2172",
+                        "tenantId": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69"
+                      },
+                      "revokedByBearer": true
+                    }
+                  ],
+                  "required": [
+                    "revokedContext",
+                    "revokedAt",
+                    "revokedByBearer"
+                  ],
+                  "properties": {
+                    "revokedAt": {
+                      "type": "string",
+                      "example": "2025-10-30T07:06:22Z",
+                      "description": "Timestamp when the token(s) were revoked."
+                    },
+                    "revokedBy": {
+                      "type": "string",
+                      "example": "sEkC_KKE4RYwBzoeqQ4-TEp982A0gNnA",
+                      "description": "Identifier of the user who revoked the token(s)."
+                    },
+                    "revokedContext": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "example": "605a18af2ab08cdbfad09259",
+                          "description": "If provided, revoked tokens are limited to this user."
+                        },
+                        "grantId": {
+                          "type": "string",
+                          "example": "601abc3fe95f07dbb73ce50f",
+                          "description": "Unique identifier of the token. If provided, only this specific token has been revoked."
+                        },
+                        "clientId": {
+                          "type": "string",
+                          "example": "630201422597f43c47128aa651af2172",
+                          "description": "If provided, revoked tokens are limited to this OAuth client."
+                        },
+                        "tenantId": {
+                          "type": "string",
+                          "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                          "description": "If provided, revoked tokens are limited to this tenant."
+                        }
+                      },
+                      "description": "Context indicating the scope of the tokens that have been revoked (individual token or many tokens). The revoked tokens are the intersection of the context properties. For example, if both `userId` and `clientId` are provided, only tokens belonging to that user issued from that client are revoked (and not tokens from other users or from other clients).",
+                      "minProperties": 1
+                    },
+                    "revokedByBearer": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "Whether the token was revoked using either the token or refresh token, false when the token is revoked via the REST API."
+                    }
+                  },
+                  "description": "Data specific to the oauth token revoked event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.oauth-token.revoked",
+                  "description": "The type of event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when OAuth tokens are revoked.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-01-01T12:00:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "605a18af2ab08cdbfad09259"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "service_account"
+            ],
+            "description": "The type of principal that triggered the occurrence."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "0.0.0.0"
+            ],
+            "description": "Origin IP address."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "WZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the session related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\\\"iss\\\":\\\"qlik.api.internal/service\\\",\\\"sub\\\":\\\"service\\\",\\\"subType\\\":\\\"service\\\"}"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event"
+          }
+        }
+      }
+    }
+  }
+}

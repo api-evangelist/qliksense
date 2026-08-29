@@ -1,0 +1,481 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "quotas",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsQuota": {
+      "address": "system-events.quota",
+      "messages": {
+        "quotaAllocationFailed": {
+          "$ref": "#/components/messages/quota.quotaAllocationFailed"
+        },
+        "quotaConsumed": {
+          "$ref": "#/components/messages/quota.quotaConsumed"
+        },
+        "quotaReleased": {
+          "$ref": "#/components/messages/quota.quotaReleased"
+        }
+      }
+    }
+  },
+  "operations": {
+    "quotaAllocationFailed": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsQuota"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsQuota/messages/quotaAllocationFailed"
+        }
+      ]
+    },
+    "quotaConsumed": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsQuota"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsQuota/messages/quotaConsumed"
+        }
+      ]
+    },
+    "quotaReleased": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsQuota"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsQuota/messages/quotaReleased"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "quota.quotaAllocationFailed": {
+        "name": "com.qlik.v1.quota.allocation-failed",
+        "tags": [
+          {
+            "name": "quota"
+          }
+        ],
+        "title": "Quota Allocation Failed Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/quotaAllocationFailed"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.quota.allocation-failed",
+                  "examples": [
+                    "com.qlik.v1.quota.allocation-failed"
+                  ],
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "The quota allocation-failed event contains information of a quota allocation-failed record.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "quota.quotaConsumed": {
+        "name": "com.qlik.v1.quota.consumed",
+        "tags": [
+          {
+            "name": "quota"
+          }
+        ],
+        "title": "Quota Consumption Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/quotaConsumed"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.quota.consumed",
+                  "examples": [
+                    "com.qlik.v1.quota.consumed"
+                  ],
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "The quota consumption event contains information of a quota consumption.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "quota.quotaReleased": {
+        "name": "com.qlik.v1.quota.released",
+        "tags": [
+          {
+            "name": "quota"
+          }
+        ],
+        "title": "Quota Released Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/quotaReleased"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.quota.released",
+                  "examples": [
+                    "com.qlik.v1.quota.released"
+                  ],
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "The quota released event contains information of a quota released record.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the event."
+          },
+          "host": {
+            "type": "string",
+            "examples": [
+              "qlik.example.com"
+            ],
+            "description": "The host of the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2018-10-30T07:06:22Z"
+            ],
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "default": "com.qlik/qix-sessions",
+            "description": "The source of the event."
+          },
+          "ownerid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "The owner ID of the event."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "192.168.1.1"
+            ],
+            "description": "The origin IP of the event."
+          },
+          "specversion": {
+            "enum": [
+              "1.0"
+            ],
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "description": "The event is compatible with the CloudEvents specification v1.0."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "description": "The content type of the event payload."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "examples": [
+              "some reason"
+            ],
+            "description": "reason for why the event is triggered."
+          },
+          "userid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the user related to the event."
+          },
+          "spaceid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the space related to the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "qix-sessions"
+            ],
+            "description": "Representing the type of principal that triggered the occurrence."
+          },
+          "clientid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the client related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "The session ID of the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{ \"iss\": \"qlik.api.internal/qix-sessions\", \"sub\": \"qix-sessions\", \"subType\": \"service\" }"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event"
+          },
+          "tracestate": {
+            "type": "string",
+            "examples": [
+              "b3=f0cc846cd24db3f68e384e9ccdfbf225-226ac0c507065555-1"
+            ],
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "examples": [
+              "00-f0cc846cd24db3f68e384e9ccdfbf225-226ac0c507065555-01"
+            ],
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          },
+          "toplevelresourceid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for top level resource related to the event."
+          }
+        },
+        "description": "Additional metadata and custom fields"
+      },
+      "quotaAllocationFailed": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/quotaInfo"
+          },
+          {
+            "required": [
+              "limit",
+              "requested"
+            ],
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "examples": [
+                  30
+                ],
+                "description": "The limit of the quota"
+              },
+              "consumed": {
+                "type": "integer",
+                "examples": [
+                  30
+                ],
+                "description": "The amount of quota consumed"
+              },
+              "requested": {
+                "type": "integer",
+                "examples": [
+                  30
+                ],
+                "description": "The amount of quota requested"
+              }
+            }
+          }
+        ],
+        "examples": [],
+        "description": "data of a quota allocation failed event"
+      },
+      "quotaConsumed": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/quotaInfo"
+          },
+          {
+            "required": [
+              "consumed"
+            ],
+            "properties": {
+              "consumed": {
+                "type": "integer",
+                "description": "The amount of quota consumed"
+              }
+            }
+          }
+        ],
+        "examples": [],
+        "description": "data of a quota consumption event"
+      },
+      "quotaInfo": {
+        "type": "object",
+        "examples": [
+          {
+            "unit": "byte",
+            "appId": "id123",
+            "quota": "appSizeTotalDefault",
+            "spaceId": "id123",
+            "appSizeQuotaGroup": "reloads"
+          }
+        ],
+        "required": [
+          "quota",
+          "appId",
+          "unit",
+          "spaceId",
+          "appSizeQuotaGroup"
+        ],
+        "properties": {
+          "unit": {
+            "type": "string",
+            "examples": [
+              "byte"
+            ],
+            "description": "The unit of the usage"
+          },
+          "appId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "The ID of the app that consumes the quota."
+          },
+          "quota": {
+            "type": "string",
+            "examples": [
+              "appSizeTotalDefault"
+            ],
+            "description": "The name of a quota"
+          },
+          "spaceId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "The ID of the space in which app is."
+          },
+          "appSizeQuotaGroup": {
+            "type": "string",
+            "examples": [
+              "reloads"
+            ],
+            "description": "The appSizeQuotaGroup name of request."
+          }
+        },
+        "description": "data of a quota information"
+      },
+      "quotaReleased": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/quotaInfo"
+          },
+          {
+            "required": [
+              "released"
+            ],
+            "properties": {
+              "released": {
+                "type": "integer",
+                "examples": [
+                  30
+                ],
+                "description": "The amount of quota released"
+              }
+            }
+          }
+        ],
+        "examples": [],
+        "description": "data of a quota released event"
+      }
+    }
+  }
+}

@@ -1,0 +1,180 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/changelog/ and its feed https://qlik.dev/rss.xml
+docs: https://qlik.dev/changelog/
+feed: https://qlik.dev/rss.xml
+tag_feed: https://qlik.dev/changelog/tag/api/
+description: 'Qlik publishes a dated, per-entry, numbered developer changelog on qlik.dev with a full RSS feed.
+  It is the platform''s formal deprecation notice channel: Qlik''s namespace migration policy says a legacy API
+  is deprecated ON THE CHANGELOG with a minimum 12-month migration window, so this feed is contractual, not just
+  marketing. 243 entries were in the feed on 2026-08-29.'
+scheme:
+  numbering: sequential entry number in the URL slug (e.g. /changelog/243-...)
+  current_entry: 243
+  cadence: multiple entries per week
+  machine_readable: true
+  format: RSS 2.0
+entry_count_in_feed: 243
+recent_window: 2026-06-02 to 2026-08-04 (most recent 40 feed entries scanned)
+entries:
+- date: '2026-08-04'
+  title: Block updates - Microsoft SQL Server & Qlik Cloud Services connectors
+  url: https://qlik.dev/changelog/243-qlik-automate-connector-updates/
+  kind: change
+- date: '2026-07-30'
+  title: Block updates - Qlik Cloud Services & Qlik Platform Operations connectors
+  url: https://qlik.dev/changelog/242-qlik-automate-connector-updates/
+  kind: change
+- date: '2026-07-24'
+  title: Programmatically manage automations owned by other users using OAuth M2M
+  url: https://qlik.dev/changelog/241-admin-automations-scope-update/
+  kind: change
+- date: '2026-07-22'
+  title: New Automation Connectors API endpoint for webhook configuration
+  url: https://qlik.dev/changelog/239-automation-connectors-webhook-configuration/
+  kind: addition
+- date: '2026-07-22'
+  title: New Automation Connectors API endpoint for connector details
+  url: https://qlik.dev/changelog/240-automation-connectors-blocks-api/
+  kind: addition
+- date: '2026-07-17'
+  title: New REST API - Trust Scores API for retrieving Qlik Trust Score™ in bulk
+  url: https://qlik.dev/changelog/237-trust-scores-api/
+  kind: addition
+- date: '2026-07-17'
+  title: New API endpoints for computing and retrieving data quality for datasets in a data product
+  url: https://qlik.dev/changelog/238-new-data-qualities-endpoints/
+  kind: addition
+- date: '2026-07-16'
+  title: Block updates - Qlik Automate connectors
+  url: https://qlik.dev/changelog/235-qlik-automate-connector-updates/
+  kind: change
+- date: '2026-07-16'
+  title: Stricter validation for PATCH data connections
+  url: https://qlik.dev/changelog/236-data-connections-patch-validation/
+  kind: change
+- date: '2026-07-02'
+  title: Block updates - Qlik Automate connectors
+  url: https://qlik.dev/changelog/234-qlik-automate-connector-updates/
+  kind: change
+- date: '2026-06-30'
+  title: OAuth Dynamic Client Registration (DCR) is now available
+  url: https://qlik.dev/changelog/232-oauth-dynamic-client-registration/
+  kind: change
+- date: '2026-06-30'
+  title: Declarative Pipelines for Qlik Talend Cloud Pipelines
+  url: https://qlik.dev/changelog/233-declarative-pipelines/
+  kind: change
+- date: '2026-06-26'
+  title: New REST API - Retrieve Discovery Agent insight cards
+  url: https://qlik.dev/changelog/229-adaptive-cards-api/
+  kind: addition
+- date: '2026-06-26'
+  title: Apps API evaluation endpoints replaced by Analytics Apps namespaced API
+  url: https://qlik.dev/changelog/230-apps-evaluations-endpoints-deprecation/
+  kind: change
+- date: '2026-06-26'
+  title: New Scheduling Tasks API and Reload Tasks API deprecation
+  url: https://qlik.dev/changelog/231-scheduling-tasks-api-and-reload-tasks-deprecation/
+  kind: deprecation
+- date: '2026-06-18'
+  title: New Data Integration Projects API endpoints for querying task run history
+  url: https://qlik.dev/changelog/226-di-projects-api-task-run-endpoints/
+  kind: addition
+- date: '2026-06-18'
+  title: New Scheduling Tasks event API for monitoring task lifecycle
+  url: https://qlik.dev/changelog/227-scheduling-tasks-events-api/
+  kind: addition
+- date: '2026-06-18'
+  title: New insights/feed-cards UI for qlik-embed
+  url: https://qlik.dev/changelog/228-qlik-embed-insights-feed-cards/
+  kind: addition
+- date: '2026-06-17'
+  title: App deletion lifecycle events and soft-delete recovery
+  url: https://qlik.dev/changelog/225-restore-deleted-apps/
+  kind: change
+- date: '2026-06-02'
+  title: New system events for environments and spaces
+  url: https://qlik.dev/changelog/223-new-event-apis-environments-spaces/
+  kind: addition
+- date: '2026-06-02'
+  title: New REST APIs - ODAG (on-demand analytics generation) management APIs
+  url: https://qlik.dev/changelog/224-odag-rest-apis/
+  kind: addition
+- date: '2026-05-29'
+  title: New REST API - Data Governance data-qualities API replaces deprecated v1 endpoints
+  url: https://qlik.dev/changelog/222-data-qualities-api-data-governance/
+  kind: deprecation
+- date: '2026-05-28'
+  title: Updated API - Change stores API adds editable-columns endpoint
+  url: https://qlik.dev/changelog/221-change-stores-api-editable-columns/
+  kind: change
+- date: '2026-05-20'
+  title: Share qlik.dev documentation directly with Claude, ChatGPT, Perplexity, and VS Code Copilot
+  url: https://qlik.dev/changelog/220-share-docs-with-ai-tools/
+  kind: change
+- date: '2026-05-12'
+  title: Deprecation notice - enableAnalyticCreation field in the Tenants API
+  url: https://qlik.dev/changelog/217-tenants-api-enableanalyticcreation-deprecation/
+  kind: deprecation
+- date: '2026-05-12'
+  title: Breaking change - Data Products API PATCH endpoint limits operations per request
+  url: https://qlik.dev/changelog/218-data-products-api-breaking-change/
+  kind: breaking
+- date: '2026-05-12'
+  title: New system events for app usage tracking, notification digests, reloads, and hub dashboards
+  url: https://qlik.dev/changelog/219-new-event-apis/
+  kind: addition
+- date: '2026-05-11'
+  title: Deprecation notice - Webhooks legacy event fields will be removed on October 6, 2026
+  url: https://qlik.dev/changelog/216-webhooks-legacy-fields-removal/
+  kind: deprecation
+- date: '2026-04-23'
+  title: New REST API - Authentication Settings API for managing session policies
+  url: https://qlik.dev/changelog/213-auth-settings-api/
+  kind: addition
+- date: '2026-04-23'
+  title: New system events for AI MCPs, alerting tasks, and reporting tasks
+  url: https://qlik.dev/changelog/214-new-event-apis-ai-alerting-reporting/
+  kind: addition
+- date: '2026-04-23'
+  title: Deprecation notice - Tenant Settings API endpoint path updated to toggle-cross-region-data-inference
+  url: https://qlik.dev/changelog/215-tenant-settings-api-toggle-cross-region-endpoint-deprecation/
+  kind: deprecation
+- date: '2026-04-22'
+  title: Updated API - Apps events now use CloudEvents 1.0.2 format
+  url: https://qlik.dev/changelog/210-apps-events-cloudevents/
+  kind: change
+- date: '2026-04-22'
+  title: Deprecation - Data Qualities API endpoints
+  url: https://qlik.dev/changelog/209-data-qualities-deprecation/
+  kind: deprecation
+- date: '2026-04-22'
+  title: New system events for automations, licenses, roles, web integrations, and IP policies
+  url: https://qlik.dev/changelog/211-new-system-events/
+  kind: addition
+- date: '2026-04-22'
+  title: qlik-embed property overrides for `analytics/chart`
+  url: https://qlik.dev/changelog/212-override-properties-json/
+  kind: change
+- date: '2026-04-10'
+  title: New Workflows namespace APIs for automation management
+  url: https://qlik.dev/changelog/208-workflows-namespace-apis/
+  kind: addition
+- date: '2026-04-10'
+  title: Organization APIs for cross-tenant access
+  url: https://qlik.dev/changelog/207-organization-rest-apis/
+  kind: change
+- date: '2026-04-08'
+  title: qlik-cli 3.0.0 adds namespace command support
+  url: https://qlik.dev/changelog/206-qlik-cli-namespaced-api-support/
+  kind: change
+- date: '2026-03-12'
+  title: Deprecation - Reporting template subscription toggle in the Sharing tasks API
+  url: https://qlik.dev/changelog/205-in-app-reporting-toggle-deprecation/
+  kind: deprecation
+- date: '2026-03-09'
+  title: New Qlik Cloud system events for identity, security, and tenant management
+  url: https://qlik.dev/changelog/204-new-events/
+  kind: addition
+archive: blogs/ in this repo carries 84 harvested changelog entries as markdown.

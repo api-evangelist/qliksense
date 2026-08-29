@@ -1,0 +1,518 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "groups",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsGroups": {
+      "address": "system-events.groups",
+      "messages": {
+        "groupCreated": {
+          "$ref": "#/components/messages/groups.groupCreated"
+        },
+        "groupDeleted": {
+          "$ref": "#/components/messages/groups.groupDeleted"
+        },
+        "groupUpdated": {
+          "$ref": "#/components/messages/groups.groupUpdated"
+        },
+        "groupUsersModified": {
+          "$ref": "#/components/messages/groups.groupUsersModified"
+        }
+      }
+    }
+  },
+  "operations": {
+    "groupCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsGroups"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsGroups/messages/groupCreated"
+        }
+      ]
+    },
+    "groupDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsGroups"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsGroups/messages/groupDeleted"
+        }
+      ]
+    },
+    "groupUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsGroups"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsGroups/messages/groupUpdated"
+        }
+      ]
+    },
+    "groupUsersModified": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsGroups"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsGroups/messages/groupUsersModified"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "groups.groupCreated": {
+        "name": "com.qlik.v1.group.created",
+        "tags": [
+          {
+            "name": "groups"
+          }
+        ],
+        "title": "Group created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.group.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/groupData"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a group is created in the tenant.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "groups.groupDeleted": {
+        "name": "com.qlik.v1.group.deleted",
+        "tags": [
+          {
+            "name": "groups"
+          }
+        ],
+        "title": "Group deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.group.deleted",
+                  "description": "Unique identifier for the event type."
+                },
+                "source": {
+                  "type": "string",
+                  "default": "com.qlik/groups",
+                  "description": "Identifies the context in which an event happened."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/groupData"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a group is removed from the tenant.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "groups.groupUpdated": {
+        "name": "com.qlik.v1.group.updated",
+        "tags": [
+          {
+            "name": "groups"
+          }
+        ],
+        "title": "Group updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/groupData"
+                    },
+                    {
+                      "$ref": "#/components/schemas/updateObject"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.group.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a group is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "groups.groupUsersModified": {
+        "name": "com.qlik.v1.group.users.modified",
+        "tags": [
+          {
+            "name": "groups"
+          }
+        ],
+        "title": "Multiple users' assigned groups have been modified",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/groupData"
+                    },
+                    {
+                      "$ref": "#/components/schemas/updateObject"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean",
+                          "description": "Describes whether the group was deleted (true) or only updated (false)."
+                        },
+                        "affectedUsers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+                          },
+                          "description": "A list of user original IDs affected by this group update or delete."
+                        },
+                        "fullyProcessed": {
+                          "type": "boolean",
+                          "description": "Describes whether all affected users are included in this event or if additional events will be sent for the same group change."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.group.users.modified",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a group has been updated or deleted, with a list of affected users.\nFor large groups, multiple events are sent, each with different `affectedUsers`, for\nthe same group update/delete event. Check `fullyProcessed` to determine if additional events are coming.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "assignedRoles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "type",
+            "level"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uid",
+              "example": "507f191e810c19729de860ea",
+              "description": "Unique identifier for this role."
+            },
+            "name": {
+              "type": "string",
+              "example": "My Custom Role",
+              "readOnly": true,
+              "description": "Name of the role."
+            },
+            "type": {
+              "enum": [
+                "default",
+                "custom"
+              ],
+              "type": "string",
+              "example": "custom",
+              "readOnly": true,
+              "description": "Whether the role is a default Qlik role or a custom role."
+            },
+            "level": {
+              "enum": [
+                "admin",
+                "user"
+              ],
+              "type": "string",
+              "example": "user",
+              "readOnly": true,
+              "description": "Role level (admin or user)."
+            }
+          },
+          "description": "Represents a role entity stored in the database."
+        }
+      },
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "default": "com.qlik/identities",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      },
+      "groupData": {
+        "type": "object",
+        "required": [
+          "id",
+          "tenantId",
+          "name",
+          "status",
+          "createdAt",
+          "lastUpdatedAt",
+          "links"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uid",
+            "example": "507f191e810c19729de860ea",
+            "readOnly": true,
+            "description": "Unique identifier for the group."
+          },
+          "name": {
+            "type": "string",
+            "example": "Development",
+            "description": "Name of the group as it appears in the identity provider."
+          },
+          "idpId": {
+            "type": "string",
+            "format": "uid",
+            "example": "4ecbe7f9e8c1c9092c000027",
+            "description": "Unique identifier for the source identity provider."
+          },
+          "status": {
+            "enum": [
+              "active",
+              "disabled"
+            ],
+            "type": "string",
+            "example": "active",
+            "description": "Current status for the group within the platform."
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uid",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the tenant associated with the given group."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-03-21T17:32:28Z",
+            "description": "Timestamp when the group was created in the platform."
+          },
+          "createdBy": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Unique identifier for the user who created this group."
+          },
+          "updatedBy": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Unique identifier for the user who last updated this group."
+          },
+          "description": {
+            "type": "string",
+            "description": "User-defined description for custom groups."
+          },
+          "providerType": {
+            "enum": [
+              "idp",
+              "custom"
+            ],
+            "type": "string",
+            "example": "idp",
+            "description": "The type of provider for the group.",
+            "x-qlik-filterable": true
+          },
+          "assignedRoles": {
+            "$ref": "#/components/schemas/assignedRoles"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-03-22T10:01:02Z",
+            "description": "Timestamp when the group was last updated in the platform."
+          }
+        },
+        "description": "Represents a group."
+      },
+      "updateObject": {
+        "type": "object",
+        "properties": {
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "example": {
+                "path": "/attributePath",
+                "newValue": "Dan",
+                "oldValue": "Dylan"
+              },
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Field that was updated."
+                },
+                "newValue": {
+                  "type": "string",
+                  "description": "Value of the field after the update."
+                },
+                "oldValue": {
+                  "type": "string",
+                  "description": "Value of the field before the update."
+                }
+              }
+            },
+            "description": "Collection of updates performed on the resource."
+          }
+        }
+      }
+    }
+  }
+}

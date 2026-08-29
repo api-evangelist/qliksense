@@ -1,0 +1,222 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "group-settings",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsGroups": {
+      "address": "system-events.groups",
+      "messages": {
+        "groupSettingUpdated": {
+          "$ref": "#/components/messages/groups.groupSettingUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "groupSettingUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsGroups"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsGroups/messages/groupSettingUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "groups.groupSettingUpdated": {
+        "name": "com.qlik.v1.group-setting.updated",
+        "tags": [
+          {
+            "name": "groups-settings"
+          }
+        ],
+        "title": "Group settings updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/groupSettings"
+                    },
+                    {
+                      "$ref": "#/components/schemas/updateObject"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.group-setting.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the group settings are updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "default": "com.qlik/identities",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      },
+      "groupSettings": {
+        "type": "object",
+        "required": [
+          "tenantId",
+          "autoCreateGroups"
+        ],
+        "properties": {
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the group settings record was created."
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uid",
+            "description": "Unique identifier for the tenant."
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the group settings record was last updated."
+          },
+          "syncIdpGroups": {
+            "type": "boolean",
+            "example": false,
+            "x-qlik-deprecated": true
+          },
+          "autoCreateGroups": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether to automatically create groups in Qlik Cloud when they appear in the identity provider."
+          }
+        },
+        "description": "Group settings for a tenant."
+      },
+      "updateObject": {
+        "type": "object",
+        "properties": {
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "example": {
+                "path": "/attributePath",
+                "newValue": "Dan",
+                "oldValue": "Dylan"
+              },
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Field that was updated."
+                },
+                "newValue": {
+                  "type": "string",
+                  "description": "Value of the field after the update."
+                },
+                "oldValue": {
+                  "type": "string",
+                  "description": "Value of the field before the update."
+                }
+              }
+            },
+            "description": "Collection of updates performed on the resource."
+          }
+        }
+      }
+    }
+  }
+}

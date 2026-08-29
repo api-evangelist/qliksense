@@ -1,0 +1,489 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "roles",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsRoles": {
+      "address": "system-events.roles",
+      "messages": {
+        "roleCreated": {
+          "$ref": "#/components/messages/roles.roleCreated"
+        },
+        "roleDeleted": {
+          "$ref": "#/components/messages/roles.roleDeleted"
+        },
+        "roleSynced": {
+          "$ref": "#/components/messages/roles.roleSynced"
+        },
+        "roleUpdated": {
+          "$ref": "#/components/messages/roles.roleUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "roleCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsRoles"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsRoles/messages/roleCreated"
+        }
+      ]
+    },
+    "roleDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsRoles"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsRoles/messages/roleDeleted"
+        }
+      ]
+    },
+    "roleSynced": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsRoles"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsRoles/messages/roleSynced"
+        }
+      ]
+    },
+    "roleUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsRoles"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsRoles/messages/roleUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "roles.roleCreated": {
+        "name": "com.qlik.v1.role.created",
+        "tags": [
+          {
+            "name": "roles"
+          }
+        ],
+        "title": "Role created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.role.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/role"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a role is created.\nPermission lists are not included in the payload due to payload size limits, but assigned scopes for custom roles will be included.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "roles.roleDeleted": {
+        "name": "com.qlik.v1.role.deleted",
+        "tags": [
+          {
+            "name": "roles"
+          }
+        ],
+        "title": "Role deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.role.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/role"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a role is deleted.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "roles.roleSynced": {
+        "name": "com.qlik.v1.role.synced",
+        "tags": [
+          {
+            "name": "roles"
+          }
+        ],
+        "title": "Role synced",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "properties": {
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/role"
+                      }
+                    }
+                  },
+                  "description": "Payload containing the roles that were synced."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.role.synced",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when role definitions are synchronized across the platform.\nPermission lists are not included in the payload due to payload size limits.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "roles.roleUpdated": {
+        "name": "com.qlik.v1.role.updated",
+        "tags": [
+          {
+            "name": "roles"
+          }
+        ],
+        "title": "Role updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/updateObject"
+                    },
+                    {
+                      "$ref": "#/components/schemas/role"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.role.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a role is updated by an admin.\nPermission lists are not included in the payload due to payload size limits.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-03-22T10:01:02Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "default": "com.qlik/identities",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      },
+      "role": {
+        "type": "object",
+        "examples": [
+          {
+            "id": "507f191e810c19729de860ea",
+            "name": "TenantAdmin",
+            "type": "default",
+            "level": "admin",
+            "canEdit": false,
+            "fullUser": true,
+            "tenantId": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "canDelete": false,
+            "createdAt": "2021-03-22T10:01:02Z",
+            "createdBy": "6228c560543c200449c13255",
+            "updatedBy": "6228c560543c200449c13255",
+            "description": "Administrator role for the tenant",
+            "lastUpdatedAt": "2026-03-22T10:01:02Z",
+            "assignedScopes": [
+              "scope.read",
+              "scope.update"
+            ],
+            "userEntitlementType": "full"
+          }
+        ],
+        "required": [
+          "id",
+          "name",
+          "level",
+          "tenantId",
+          "lastUpdatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uid",
+            "example": "507f191e810c19729de860ea",
+            "readOnly": true,
+            "description": "Unique identifier for the role."
+          },
+          "name": {
+            "type": "string",
+            "example": "tenantAdmin",
+            "description": "Name of the role."
+          },
+          "type": {
+            "enum": [
+              "default",
+              "custom"
+            ],
+            "type": "string",
+            "description": "Indicates whether role is system/default or custom."
+          },
+          "level": {
+            "type": "string",
+            "example": "admin",
+            "description": "Indicates whether it is a user or admin-level role."
+          },
+          "canEdit": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Indicates whether role can be edited by users or not."
+          },
+          "fullUser": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "DEPRECATED. Use userEntitlementType instead for impact of roles on user entitlements with a capacity-based subscription.",
+            "x-qlik-deprecated": true
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uid",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the tenant associated with the given role."
+          },
+          "canDelete": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Indicates whether role can be deleted by users or not."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-03-22T10:01:02Z",
+            "description": "Timestamp when the role was created."
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the user who created the role. Could be Mongo OID or an old ID format in the case of legacy users."
+          },
+          "updatedBy": {
+            "type": "string",
+            "example": "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT",
+            "description": "Unique identifier for the user who last updated the role. Could be Mongo OID or an old ID format in the case of legacy users."
+          },
+          "description": {
+            "type": "string",
+            "description": "A helpful description of the role."
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-03-22T10:01:02Z",
+            "description": "Timestamp when the role was last updated."
+          },
+          "assignedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Selection of scopes added to this role."
+          },
+          "userEntitlementType": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Indicates whether this role will trigger promotion of a user from a basic to a full user on tenants with a capacity-based subscription. Does not apply to tenants with a user-based subscription."
+          }
+        },
+        "description": "Represents a role entity."
+      },
+      "updateObject": {
+        "type": "object",
+        "properties": {
+          "_updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "example": {
+                "path": "/attributePath",
+                "newValue": "Dan",
+                "oldValue": "Dylan"
+              },
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Field that was updated."
+                },
+                "newValue": {
+                  "type": "string",
+                  "description": "Value of the field after the update."
+                },
+                "oldValue": {
+                  "type": "string",
+                  "description": "Value of the field before the update."
+                }
+              }
+            },
+            "description": "Collection of updates performed on the resource."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "rate-limits",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsRateLimit": {
+      "address": "system-events.rate-limit",
+      "messages": {
+        "rateLimitExceeded": {
+          "$ref": "#/components/messages/rate-limit.rateLimitExceeded"
+        }
+      }
+    }
+  },
+  "operations": {
+    "rateLimitExceeded": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsRateLimit"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsRateLimit/messages/rateLimitExceeded"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "rate-limit.rateLimitExceeded": {
+        "name": "com.qlik.v1.rate-limit.exceeded",
+        "title": "Rate limit exceeded",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "id123",
+                      "type": "rest",
+                      "tierId": "1",
+                      "enforce": true,
+                      "appliesTo": "TENANT",
+                      "validUntil": "2021-11-10T08:50:00+01:00"
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "appliesTo",
+                    "type",
+                    "validUntil",
+                    "enforce"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "examples": [
+                        "id123"
+                      ],
+                      "description": "Unique identifier for the decision."
+                    },
+                    "type": {
+                      "enum": [
+                        "rest"
+                      ],
+                      "type": "string",
+                      "description": "Type of traffic the decision applies to."
+                    },
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userRequestData"
+                      },
+                      "description": "Users contributing most to the rate limit decision."
+                    },
+                    "tierId": {
+                      "type": "string",
+                      "examples": [
+                        "1"
+                      ],
+                      "description": "Identifier of the tier where the limit has been reached."
+                    },
+                    "enforce": {
+                      "type": "boolean",
+                      "examples": [
+                        true
+                      ],
+                      "description": "Whether the rate limit decision should be enforced."
+                    },
+                    "excludes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/requestMatcher"
+                      },
+                      "description": "Request matching configurations that are excluded from the exceeded tier."
+                    },
+                    "includes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/requestMatcher"
+                      },
+                      "description": "Request matching configurations that are included in the exceeded tier."
+                    },
+                    "appliesTo": {
+                      "enum": [
+                        "TENANT",
+                        "USER"
+                      ],
+                      "type": "string",
+                      "description": "Entity type the decision applies to."
+                    },
+                    "validUntil": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2021-11-10T08:50:00Z",
+                      "description": "Timestamp until which the decision remains valid."
+                    }
+                  },
+                  "description": "Rate limit decision containing the affected entity (tenant or user), top contributing users, and matched endpoint configurations."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.rate-limit.exceeded",
+                  "description": "Unique identifier for the event type."
+                },
+                "source": {
+                  "enum": [
+                    "com.qlik/rate-limiter"
+                  ],
+                  "type": "string",
+                  "default": "com.qlik/rate-limiter",
+                  "description": "The source of the event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a rate limit has been reached or exceeded. The rate limit decision is in the `data` property and includes whether the limit is enforced (`enforce`), what entity is affected (`appliesTo` - TENANT or USER), validity period (`validUntil`), top contributing users (`users`), and affected endpoints (`includes`/`excludes`).",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2021-11-10T08:50:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "host": {
+            "type": "string",
+            "examples": [
+              "rate-limiter-pod-12345"
+            ],
+            "description": "Unique identifier for the event producer."
+          },
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user related to the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "service_account"
+            ],
+            "description": "Type of principal that triggered the occurrence."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\\\"iss\\\":\\\"qlik.api.internal/service\\\",\\\"sub\\\":\\\"service\\\",\\\"subType\\\":\\\"service\\\"}"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event."
+          },
+          "tracestate": {
+            "type": "string",
+            "examples": [
+              "b3=05ec17ed8adb7726ecceac3ef58f466f-c05c51826dbc3307-1"
+            ],
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "examples": [
+              "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01"
+            ],
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          }
+        }
+      },
+      "queryParameter": {
+        "type": "object",
+        "properties": {
+          "param": {
+            "type": "string",
+            "examples": [
+              "filter"
+            ],
+            "description": "Name of the query parameter."
+          }
+        }
+      },
+      "requestMatcher": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "examples": [
+              "/v1/themes"
+            ],
+            "description": "Path to be matched."
+          },
+          "query": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/queryParameter"
+            },
+            "description": "Query parameters to be matched."
+          },
+          "method": {
+            "enum": [
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "OPTIONS",
+              "TRACE",
+              "PATCH"
+            ],
+            "type": "string",
+            "description": "Method to be matched."
+          },
+          "pathType": {
+            "enum": [
+              "PREFIX",
+              "EXACT"
+            ],
+            "type": "string",
+            "description": "How to match the path against incoming API requests. EXACT matches only the exact path, such as `/v1/themes` matching only `/v1/themes`. PREFIX matches any path starting with this value, such as `/v1/themes` matching `/v1/themes`, `/v1/themes/123`, or `/v1/themes/123/file`."
+          }
+        }
+      },
+      "userRequestData": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Identifier of the user contributing to the rate limiting decision."
+          },
+          "requests": {
+            "type": "integer",
+            "examples": [
+              25
+            ],
+            "description": "Number of requests in the last sliding window."
+          }
+        }
+      }
+    }
+  }
+}

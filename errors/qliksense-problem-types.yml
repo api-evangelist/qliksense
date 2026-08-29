@@ -1,0 +1,342 @@
+generated: '2026-08-29'
+method: derived
+source: Derived from the 4xx/5xx responses of all 681 operations in the 78 OpenAPI 3.0.0 documents harvested from
+  https://qlik.dev/specs/rest/, plus the coded error enumerations Qlik embeds in its response-schema descriptions.
+  Envelope semantics cross-checked against https://qlik.dev/apis/rest/rate-limiting/.
+description: 'Error catalog for the Qlik Cloud REST API. Qlik uses a JSON:API-shaped errors[] envelope, NOT RFC
+  9457 problem+json — no operation in any published document declares application/problem+json. It also does not
+  use ONE envelope: at least a dozen differently-named error schemas describe the same shape across the surface,
+  which is the main machine-readability defect here.'
+format: json-api-style errors array
+rfc9457: false
+rfc9457_evidence: 0 of 681 operations declare an application/problem+json response content type.
+content_type: application/json
+envelope:
+  shape:
+    errors:
+    - code: string — the error code
+      title: string — summary of the problem
+      detail: string — human-readable explanation specific to this occurrence
+      status: integer — HTTP status (present on some variants only)
+      meta: object — additional properties relating to the error
+      source:
+        pointer: JSON Pointer to the property that caused the error
+        parameter: the query parameter that caused the error
+  required:
+  - code
+  - title
+envelope_fragmentation:
+  finding: The same errors[] envelope is declared under at least 12 different component schema names across the
+    surface, several differing only in casing. A generated client cannot treat errors uniformly without hand-mapping
+    them.
+  schemas:
+  - name: Errors
+    operation_responses: 514
+  - name: ErrorResponse
+    operation_responses: 445
+  - name: errorResponseCopy
+    operation_responses: 131
+  - name: errorResponse
+    operation_responses: 122
+  - name: ErrorResponseBody
+    operation_responses: 79
+  - name: ResponseErrors
+    operation_responses: 58
+  - name: appErrorResponse
+    operation_responses: 42
+  - name: StandardError
+    operation_responses: 40
+  - name: error
+    operation_responses: 40
+  - name: ErrorV2
+    operation_responses: 39
+  - name: FilterErrors
+    operation_responses: 38
+  - name: EvaluatorError
+    operation_responses: 32
+  - name: Error
+    operation_responses: 30
+  - name: ErrorResult
+    operation_responses: 24
+http_statuses:
+- status: 400
+  occurrences: 508
+  description: Bad request
+- status: 404
+  occurrences: 502
+  description: Not Found
+- status: 403
+  occurrences: 468
+  description: Forbidden
+- status: 500
+  occurrences: 394
+  description: Internal server error.
+- status: 401
+  occurrences: 350
+  description: Unauthorized
+- status: 503
+  occurrences: 216
+  description: Resource unavailable
+- status: 409
+  occurrences: 88
+  description: Invalid Business Logic
+- status: 429
+  occurrences: 65
+  description: The rate limit has been exceeded.
+- status: 502
+  occurrences: 38
+  description: Bad gateway, this happens when requests to required (dependent) services time out
+- status: 410
+  occurrences: 12
+  description: Gone — the dataset state for this run has been purged due to retention policy.
+- status: 412
+  occurrences: 12
+  description: Failed to initiate migration
+- status: 422
+  occurrences: 10
+  description: 'Unprocessable entity. The payload contains fields
+
+    that are invalid, such as too long of a query.'
+- status: 413
+  occurrences: 9
+  description: The file exceeds the user's quota for maximum file size to upload.
+- status: 415
+  occurrences: 7
+  description: Unsupported output format requested.
+- status: 417
+  occurrences: 6
+  description: Failed to load list of key providers
+- status: 423
+  occurrences: 5
+  description: The file is already locked for read or write by another client.
+- status: 405
+  occurrences: 4
+  description: Method is not allowed.
+- status: 406
+  occurrences: 4
+  description: Not Acceptable
+- status: 424
+  occurrences: 3
+  description: The requested key is being used and cannot be deleted
+- status: 501
+  occurrences: 2
+  description: Not Implemented
+- status: 408
+  occurrences: 2
+  description: Failed to return a response within the timeout window. The key provider (QlikVault, AWS-KMS) might
+    be unavailable.
+- status: 414
+  occurrences: 1
+  description: Requested fingerprint length is too large
+- status: 428
+  occurrences: 1
+  description: There is already an ongoing migration for the tenant
+- status: 416
+  occurrences: 1
+  description: Range Not Satisfiable.
+coded_errors:
+  count: 91
+  note: Qlik enumerates business error codes inline in schema descriptions rather than as an enum or a published
+    error reference page. The REP-* family (Reporting/filters) is the most fully enumerated. These are transcribed
+    verbatim; nothing is inferred.
+  families:
+  - prefix: REP
+    count: 91
+    codes:
+    - code: REP-400000
+      meaning: Bad request. The server could not understand the request due to invalid syntax.
+    - code: REP-400008
+      meaning: Selections error.
+    - code: REP-400009
+      meaning: Maximum 16384 columns limit exceeded. Download data in a visualization can't generate an .xlsx file
+        due to limitations t
+    - code: REP-400010
+      meaning: Maximum 1048566 rows limit exceeded. Download data in a visualization can't generate an .xlsx file
+        due to limitations to
+    - code: REP-400011
+      meaning: The size of the downloaded Excel file exceed 100 MB limit. Download data in a visualization can't
+        generate an .xlsx file
+    - code: REP-400015
+      meaning: Bad request in enigma request. The patch value has invalid JSON format.
+    - code: REP-400017
+      meaning: Static App size exceeded.
+    - code: REP-400018
+      meaning: Excel string length exceeded.
+    - code: REP-400020
+      meaning: Invalid Issuer.
+    - code: REP-400024
+      meaning: Cannot extract claims from JWT.
+    - code: REP-400028
+      meaning: Invalid Tags.
+    - code: REP-400029
+      meaning: Reload Entitlement Limit Reached.
+    - code: REP-400035
+      meaning: Multiple selections detected in a field having OneAndOnlyone attribute.
+    - code: REP-400036
+      meaning: No selection detected in a field having OneAndOnlyone attribute.
+    - code: REP-400037
+      meaning: Max number of images exceeded in a report.
+    - code: REP-400038
+      meaning: Max number of nested levels exceeded in report.
+    - code: REP-400039
+      meaning: Max number of objects exceeded in a report.
+    - code: REP-400040
+      meaning: Max number of templates exceeded in a report.
+    - code: REP-400041
+      meaning: Unsupported dimension type for level tag.
+    - code: REP-400044
+      meaning: Missing or renamed field.
+    - code: REP-400050
+      meaning: Error retrieving outputs.
+    - code: REP-400052
+      meaning: Report Request Aborted from internal error.
+    - code: REP-400054
+      meaning: The number of generated cycle reports exceeds the maximum allowed.
+    - code: REP-400055
+      meaning: Export options not allowed for this object.
+    - code: REP-400057
+      meaning: The sense object has an empty GenericType.
+    - code: REP-400064
+      meaning: Missing Bookmark
+    - code: REP-400102
+      meaning: Image rendering invalid strategy error on Sense client.
+    - code: REP-400240
+      meaning: Engine Client Global generic closure error
+    - code: REP-400260
+      meaning: Engine Client generic closure error.
+    - code: REP-400280
+      meaning: Engine Client proxy generic closure error.
+    - code: REP-401000
+      meaning: Unauthorized. The client must authenticate itself to get the requested response.
+    - code: REP-401001
+      meaning: Unauthorized, bad JWT.
+    - code: REP-403000
+      meaning: Forbidden. The client does not have access rights to the content.
+    - code: REP-403001
+      meaning: App forbidden, the user does not have read permission on the app.
+    - code: REP-403002
+      meaning: Chart type not supported.
+    - code: REP-403019
+      meaning: Export is not available for app with enabled directQuery feature.
+    - code: REP-403025
+      meaning: No entitlement to perform the operation.
+    - code: REP-403026
+      meaning: No entitlement to perform the operation. Export capability is off.
+    - code: REP-403027
+      meaning: Object without Hypercube or unsupported object type.
+    - code: REP-403048
+      meaning: Forbidden. User does not have permission to export the report (access control usePermission)
+    - code: REP-403049
+      meaning: Report filter access not allowed.
+    - code: REP-404000
+      meaning: Not found. The server can not find the requested resource.
+    - code: REP-404001
+      meaning: App not found, the app does not exist or it has been deleted.
+    - code: REP-404002
+      meaning: Chart not found, the chart does not exist or it has been deleted.
+    - code: REP-404003
+      meaning: Sheet not found, the sheet does not exist or it has been deleted or it is unavailable.
+    - code: REP-404004
+      meaning: Story not found, the story does not exist or it has been deleted or it is unavailable.
+    - code: REP-404032
+      meaning: Bookmark not found after creating the bookmark.
+    - code: REP-404033
+      meaning: Bookmark not found destroying the bookmark.
+    - code: REP-409001
+      meaning: App conflict.
+    - code: REP-409021
+      meaning: Reload timestamp constraint not met.
+    - code: REP-409043
+      meaning: Filter name conflict. The filter name must be unique.
+    - code: REP-409046
+      meaning: Report aborted due to app reload.
+    - code: REP-422030
+      meaning: Apply variables error.
+    - code: REP-422051
+      meaning: There is no report to produce due to empty dataset or missing fields (the measure/dimension was removed
+        or omitted in Se
+    - code: REP-429000
+      meaning: Too many request. The user has sent too many requests in a given amount of time (
+    - code: REP-429012
+      meaning: Exceeded max session tenant quota. A tenant has opened too many different sessions at the same time.
+    - code: REP-429014
+      meaning: The export could not be completed within the requested deadline.
+    - code: REP-429016
+      meaning: Exceeded max session tenant quota per day.
+    - code: REP-429022
+      meaning: Enigma generic abort.
+    - code: REP-429034
+      meaning: Filters quota exceeded.
+    - code: REP-500000
+      meaning: Fail to resolve resource.
+    - code: REP-500006
+      meaning: Fail to get report session parameters.
+    - code: REP-500014
+      meaning: The app did not open within 10 minutes.
+    - code: REP-500023
+      meaning: Validate Report Request Tags failure.
+    - code: REP-500031
+      meaning: Error creating bookmark.
+    - code: REP-500033
+      meaning: Error destroying bookmark.
+    - code: REP-500045
+      meaning: Failure setting Bookmark timestamp.
+    - code: REP-500047
+      meaning: Error setting GroupState.
+    - code: REP-500053
+      meaning: Unexpected number of generated cycle reports.
+    - code: REP-500059
+      meaning: The App is corrupt.
+    - code: REP-500061
+      meaning: Engine Memory limit reached.
+    - code: REP-500062
+      meaning: Too many resolution attempts for a task.
+    - code: REP-500063
+      meaning: Engine terminated
+    - code: REP-500100
+      meaning: Image rendering generic error on Sense client.
+    - code: REP-500101
+      meaning: Image rendering could not set cookies error on Sense client.
+    - code: REP-500103
+      meaning: Image rendering JS timeout error on Sense client.
+    - code: REP-500104
+      meaning: Image rendering load URL timeout error on Sense client.
+    - code: REP-500105
+      meaning: Image rendering max paint attempts exceeded error on Sense client.
+    - code: REP-500106
+      meaning: Image rendering max JS attempts exceeded error on Sense client.
+    - code: REP-500107
+      meaning: Image rendering render timeout error on Sense client.
+    - code: REP-500108
+      meaning: Image rendering JS failure due to timeout error on Sense client.
+    - code: REP-500109
+      meaning: Image rendering generic JS failure error on Sense client.
+    - code: REP-500200
+      meaning: Report Generator error.
+    - code: REP-500240
+      meaning: Engine Global generic closure error.
+    - code: REP-500260
+      meaning: Engine Websocket generic closure error.
+    - code: REP-500280
+      meaning: Engine proxy generic closure error.
+    - code: REP-503001
+      meaning: Rest Engine Error.
+    - code: REP-503005
+      meaning: Engine unavailable, qix-sessions error no engines available.
+    - code: REP-503013
+      meaning: Session unavailable. The engine session used to create the report is unavailable.
+    - code: REP-503060
+      meaning: Engine Service unavailable.
+    - code: REP-504042
+      meaning: Context deadline exceeded applying selections of the Filter.
+rate_limit_error:
+  status: 429
+  code: HTTP-429
+  title: API rate limit reached.
+  retry_header: Retry-After
+  detail_example: You need to wait 13 seconds until limit is lifted.
+  docs: https://qlik.dev/apis/rest/rate-limiting/
+gaps:
+- No published error-reference page on qlik.dev to enrich titles and remediation from.
+- No remediation guidance is attached to any coded error in the contract.
+- RFC 9457 problem+json is not used anywhere on the surface.

@@ -1,0 +1,139 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/embed/qlik-embed/, https://qlik.dev/embed/nebula/, https://qlik.dev/extend/extensions/picasso-js/get-started/,
+  https://qlik.dev/apis/javascript/ and the qlik.dev sitemap.
+description: 'Client-side and embeddable UI surfaces Qlik publishes. These are distinct from the SDKs in packages/:
+  an SDK calls the API, these RENDER Qlik analytics inside someone else''s application. This is the largest single
+  part of Qlik''s developer surface by page count and the part its embedded-analytics and OEM business runs on.'
+families:
+- name: qlik-embed
+  kind: web components
+  status: stable
+  docs: https://qlik.dev/embed/qlik-embed/
+  loader:
+    registry: npm
+    package: '@qlik/embed-web-components'
+    version: 1.7.4
+    published: '2026-08-18'
+    cdn: true
+    cdn_note: Also distributed as a CDN script tag; when loaded unpinned the consumer cannot tell which build they
+      are getting.
+  wrappers:
+  - framework: react
+    package: '@qlik/embed-react'
+    version: 2.5.4
+    published: '2026-08-18'
+    status: stable
+  - framework: svelte
+    package: '@qlik/embed-svelte'
+    version: 1.1.5
+    published: '2026-08-18'
+    status: experimental
+  auth: OAuth 2.0 (SPA authorization code with PKCE, or M2M impersonation for OEM); a standardized OAuth callback
+    approach shipped January 2026.
+  capabilities:
+  - analytics charts and sheets
+  - Qlik Answers agent embedding (with AI/agentic support added Feb 2026)
+  - Insights feed cards UI
+  - property overrides for analytics/chart
+  - selections and filtering
+  note: Qlik's current, recommended embedding path. Supersedes the Capability API and iframe integrations.
+- name: nebula.js
+  kind: rendering/integration library
+  status: stable
+  docs: https://qlik.dev/embed/nebula/
+  repo: https://github.com/qlik-oss/nebula.js
+  loader:
+    registry: npm
+    package: '@nebula.js/stardust'
+    version: 7.4.0
+    published: '2026-08-21'
+  tooling:
+  - nebula CLI (create, serve, build, sense)
+  note: Product- and framework-agnostic API for rendering Qlik visualizations and building visualization extensions.
+- name: picasso.js
+  kind: charting grammar
+  status: stable
+  docs: https://qlik.dev/extend/extensions/picasso-js/get-started/
+  repo: https://github.com/qlik-oss/picasso.js
+  loader:
+    registry: npm
+    package: picasso.js
+    version: 2.11.7
+    published: '2026-08-20'
+  components:
+  - axis
+  - box
+  - brush-area-dir
+  - brush-lasso
+  - brush-range
+  - grid-line
+  - labels
+  - legend-cat
+  - legend-seq
+  - line
+  - pie
+  - point
+  - text
+  - tooltip
+  plugins:
+  - plugin-q (Qlik hypercube data adapter)
+  - plugin-hammer (touch)
+  note: The grammar-of-graphics layer beneath Qlik's own charts; used to build custom visualizations.
+- name: sn-* visualization components
+  kind: prebuilt chart components
+  status: stable
+  docs: https://qlik.dev/apis/javascript/
+  count: 25
+  components:
+  - sn-action-button
+  - sn-bar-chart
+  - sn-boxplot
+  - sn-bullet-chart
+  - sn-combo-chart
+  - sn-distributionplot
+  - sn-filter-pane
+  - sn-funnel-chart
+  - sn-gauge
+  - sn-grid-chart
+  - sn-histogram
+  - sn-kpi
+  - sn-line-chart
+  - sn-mekko-chart
+  - sn-nav-menu
+  - sn-network-chart
+  - sn-org-chart
+  - sn-pie-chart
+  - sn-pivot-table
+  - sn-sankey-chart
+  - sn-scatter-plot
+  - sn-table
+  - sn-treemap-events
+  - sn-waterfall
+  - sn-word-cloud
+  note: Documented JavaScript APIs for each shipped Qlik chart type (bar, line, pie, table, pivot-table, sankey,
+    treemap, KPI, gauge, filter pane, nav menu and more).
+- name: Capability API
+  kind: legacy mashup API
+  status: legacy
+  docs: https://qlik.dev/apis/javascript/capability/
+  note: The older mashup/embedding API. Still documented; qlik-embed is the recommended replacement.
+- name: iframe / single integration
+  kind: iframe embedding
+  status: legacy
+  docs: https://qlik.dev/embed/iframe/
+  note: Single-integration and app-integration iframe URLs, with third-party-cookie and CSP caveats documented.
+- name: Visualization extensions
+  kind: in-product extension framework
+  status: stable
+  docs: https://qlik.dev/extend/extensions/
+  note: Extension API plus the .qext manifest for extensions installed into the Qlik hub; deployed through openapi/qliksense-extensions.json.
+- name: Custom themes
+  kind: theming
+  status: stable
+  docs: https://qlik.dev/extend/create-custom-themes/custom-themes-getting-started/
+  note: JSON theme documents deployed through openapi/qliksense-themes.json.
+related:
+  packages: packages/qliksense-packages.yml
+  csp: https://qlik.dev/authenticate/content-security-policy/
+  origin_allowlist: openapi/qliksense-web-integrations.json

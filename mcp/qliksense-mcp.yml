@@ -1,0 +1,111 @@
+generated: '2026-08-29'
+method: searched
+status: published
+source: >-
+  https://www.qlik.com/us/products/model-context-protocol,
+  https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/QlikMCP/Qlik-MCP-server.htm,
+  https://help.qlik.com/en-US/evaluation-guides/Content/ai/mcp.htm,
+  https://community.qlik.com/t5/Official-Support-Articles/Qlik-Model-Context-Protocol-MCP-FAQ/ta-p/2542621,
+  and https://qlik.dev/apis/event/ai/mcps/ (the AsyncAPI event contract Qlik
+  publishes for its own MCP server's tool executions).
+description: >-
+  Qlik ships a first-party REMOTE MCP server as part of Qlik Cloud. It reached
+  general availability on 2026-02-10 and is listed as an included capability
+  from the Starter plan upward on https://www.qlik.com/us/pricing. It exposes
+  Qlik Cloud analytics — apps, datasets, data products, lineage, glossary,
+  master items, selections, sheets and Qlik Answers — as MCP tools to any
+  MCP-capable assistant (Claude, ChatGPT, Cursor, Copilot).
+
+deployment:
+  mode: remote
+  endpoint: https://{tenant}.{region}.qlikcloud.com/api/ai/mcp
+  auth: oauth
+  verified: searched
+
+server:
+  name: Qlik MCP Server
+  transport: streamable-http
+  url_template: "<your-tenant-url>/api/ai/mcp"
+  ga_date: '2026-02-10'
+  auth:
+    scheme: oauth2
+    detail: >-
+      The MCP server never accepts an unauthenticated connection. Every request
+      is bound to a verified Qlik Cloud user identity via an OAuth client
+      registered in the tenant, and data access is then governed by the same
+      role, space and Section Access controls that apply in the product. The
+      two most commonly reported misconfigurations in Qlik's own FAQ are a wrong
+      Client ID and a wrong remote MCP server URL.
+    docs: https://qlik.dev/authenticate/oauth/
+  entitlement: >-
+    Included in Standard, Premium and Enterprise editions and in Qlik Sense
+    Enterprise SaaS; capacity scales with the edition. Listed on the Starter
+    plan feature list on qlik.com/us/pricing.
+
+probe:
+  attempted: false
+  reason: >-
+    NOT PROBED, deliberately. The endpoint host is templated on a
+    customer-specific tenant name ({tenant}.{region}.qlikcloud.com); there is no
+    anonymous instance to POST tools/list to, and guessing a tenant name to get
+    a 200 would produce a false "verified" agent surface. `verified: searched`
+    is therefore the honest grade.
+
+tools:
+  count_published: '70+'
+  count_captured: 2
+  enumeration: >-
+    Qlik's evaluation guide states the MCP server "currently exposes more than
+    70 tools across 9 categories" but does not enumerate them, and the tool
+    reference in help.qlik.com is not reachable at a stable public URL. The two
+    tool names below are the only ones Qlik states verbatim in public material.
+    A full inputSchema-level tool list requires an authenticated tools/list
+    against a live tenant. NO TOOL NAMES ARE INVENTED HERE.
+  categories:
+    - Datasets and Data Quality
+    - Data Products
+    - Data Lineage
+    - Business Glossary
+    - App Discovery and Metadata
+    - Data Exploration and Analysis
+    - Master Items
+    - Selections and Filtering
+    - Visualization and Sheets
+  captured:
+    - name: search_datasets
+      source: >-
+        https://qlik.dev/apis/event/ai/mcps/ — used as the tool name in Qlik's
+        own published com.qlik.ai.mcp.tool.executed event example.
+      category: Datasets and Data Quality
+    - name: qlik_answers_ask_question
+      source: >-
+        https://community.qlik.com/t5/Official-Support-Articles/Qlik-Model-Context-Protocol-MCP-FAQ/ta-p/2542621
+      category: Data Exploration and Analysis
+
+observability:
+  description: >-
+    Unusually, Qlik publishes a machine-readable AsyncAPI 3.0.0 contract for its
+    own MCP server's telemetry. Every tool call emits a CloudEvents 1.0 event on
+    the system-events.ai.mcp channel, so an operator can audit and bill agent
+    activity from the same event stream as the rest of the platform.
+  asyncapi: asyncapi/qliksense-ai-mcps-asyncapi.json
+  events:
+    - type: com.qlik.ai.mcp.tool.executed
+      description: >-
+        Emitted per tool call with tool name, OAuth clientid, latency in ms,
+        userAgent, W3C Baggage passthrough, a billable flag, and optional
+        resourceId/resourceType/spaceId/subResourceId/subResourceType context.
+    - type: com.qlik.ai.mcp.tool.calls.aggregated
+      description: >-
+        Emitted after a threshold (default 5 tool calls) or timeout with
+        toolCount, totalLatencyMs and the constituent event IDs.
+
+related:
+  agent_skills: skills/_index.yml
+  registry_note: >-
+    github.com/qlik-oss/qlik-mcp-registry is NOT Qlik's product MCP server. It
+    is an internal MCP registry of third-party servers (LaunchDarkly, Grafana,
+    Port) that Qlik publishes for its own engineers' GitHub Copilot config; the
+    only Qlik entry in it is "io.qlik.internal/qlik-test-internal" pointing at
+    http://localhost:7500/mcp/. Recorded here so a later pass does not mistake
+    it for an agent surface.

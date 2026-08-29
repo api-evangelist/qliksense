@@ -1,0 +1,1243 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "licenses",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsLicenses": {
+      "address": "system-events.licenses",
+      "messages": {
+        "licenseAssignmentDeleted": {
+          "$ref": "#/components/messages/licenses.licenseAssignmentDeleted"
+        },
+        "licenseAssignmentRejected": {
+          "$ref": "#/components/messages/licenses.licenseAssignmentRejected"
+        },
+        "licenseAssignmentUpdated": {
+          "$ref": "#/components/messages/licenses.licenseAssignmentUpdated"
+        },
+        "licenseDataVolumeConsumptionAggregated": {
+          "$ref": "#/components/messages/licenses.licenseDataVolumeConsumptionAggregated"
+        },
+        "licenseDefinitionUpdated": {
+          "$ref": "#/components/messages/licenses.licenseDefinitionUpdated"
+        },
+        "licenseLeaseCreated": {
+          "$ref": "#/components/messages/licenses.licenseLeaseCreated"
+        },
+        "licenseLeaseDeleted": {
+          "$ref": "#/components/messages/licenses.licenseLeaseDeleted"
+        },
+        "licenseLeaseUpdated": {
+          "$ref": "#/components/messages/licenses.licenseLeaseUpdated"
+        },
+        "licenseTenantAssociated": {
+          "$ref": "#/components/messages/licenses.licenseTenantAssociated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "licenseAssignmentDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseAssignmentDeleted"
+        }
+      ]
+    },
+    "licenseAssignmentRejected": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseAssignmentRejected"
+        }
+      ]
+    },
+    "licenseAssignmentUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseAssignmentUpdated"
+        }
+      ]
+    },
+    "licenseDataVolumeConsumptionAggregated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseDataVolumeConsumptionAggregated"
+        }
+      ]
+    },
+    "licenseDefinitionUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseDefinitionUpdated"
+        }
+      ]
+    },
+    "licenseLeaseCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseLeaseCreated"
+        }
+      ]
+    },
+    "licenseLeaseDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseLeaseDeleted"
+        }
+      ]
+    },
+    "licenseLeaseUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseLeaseUpdated"
+        }
+      ]
+    },
+    "licenseTenantAssociated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsLicenses"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsLicenses/messages/licenseTenantAssociated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "licenses.licenseAssignmentDeleted": {
+        "name": "com.qlik.license.assignment.deleted",
+        "title": "Assignment deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.license.assignment.deleted",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/assignmentDeleted"
+            }
+          ]
+        },
+        "description": "Event triggered when a license assignment is deleted.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseAssignmentRejected": {
+        "name": "com.qlik.license.assignment.rejected",
+        "title": "Assignment rejected",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.license.assignment.rejected",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/assignmentRejected"
+            }
+          ]
+        },
+        "description": "Event triggered when a license assignment is rejected.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseAssignmentUpdated": {
+        "name": "com.qlik.license.assignment.updated",
+        "title": "Assignment updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.license.assignment.updated",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/assignmentUpdated"
+            }
+          ]
+        },
+        "description": "Event triggered when a license assignment is updated.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseDataVolumeConsumptionAggregated": {
+        "name": "com.qlik.license.data.volume.consumption.aggregated",
+        "title": "Data volume consumption aggregated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.license.data.volume.consumption.aggregated",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/dataVolumeConsumptionAggregated"
+            }
+          ]
+        },
+        "description": "Event triggered when data volume consumption is reported.",
+        "x-qlik-stability": "stable",
+        "x-qlik-deprecated": true,
+        "x-qlik-visibility": "public"
+      },
+      "licenses.licenseDefinitionUpdated": {
+        "name": "com.qlik.license.definition.updated",
+        "title": "Definition updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.license.definition.updated",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/definitionUpdated"
+            }
+          ]
+        },
+        "description": "Event triggered when a license definition is updated.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseLeaseCreated": {
+        "name": "com.qlik.v1.license.lease.created",
+        "title": "Lease created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.license.lease.created",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/leaseCreated"
+            }
+          ]
+        },
+        "description": "Event triggered when a lease is created.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseLeaseDeleted": {
+        "name": "com.qlik.v1.license.lease.deleted",
+        "title": "Lease deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.license.lease.deleted",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/leaseDeleted"
+            }
+          ]
+        },
+        "description": "Event triggered when a lease is deleted.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseLeaseUpdated": {
+        "name": "com.qlik.v1.license.lease.updated",
+        "title": "Lease updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.license.lease.updated",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/leaseUpdated"
+            }
+          ]
+        },
+        "description": "Event triggered when a lease is updated.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "licenses.licenseTenantAssociated": {
+        "name": "com.qlik.v1.license.tenant.associated",
+        "title": "Tenant associated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikCommonAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.license.tenant.associated",
+                  "description": "The event type identifier."
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/tenantAssociated"
+            }
+          ]
+        },
+        "description": "Event triggered when a tenant gets associated to a license.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "assignmentDeleted": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "subject",
+              "license",
+              "origin"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "examples": [
+                  "professional"
+                ],
+                "description": "Assignment type. May be an empty string when the assignment has no allotment name."
+              },
+              "origin": {
+                "enum": [
+                  "internal",
+                  "external"
+                ],
+                "type": "string",
+                "description": "event origin:\n  * `internal` - API triggered\n  * `external` - triggered by a sync operation\n"
+              },
+              "license": {
+                "type": "string",
+                "examples": [
+                  "1234123412341234"
+                ],
+                "description": "License number."
+              },
+              "subject": {
+                "type": "string",
+                "examples": [
+                  "qtsel\\lhr"
+                ],
+                "description": "Subject of the user assigned access."
+              }
+            }
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "description": "Unique identifier of the session related to the event."
+          }
+        }
+      },
+      "assignmentRejected": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "subject",
+              "license",
+              "origin"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "examples": [
+                  "professional"
+                ],
+                "description": "Assignment type. May be an empty string when the assignment has no allotment name."
+              },
+              "origin": {
+                "enum": [
+                  "internal",
+                  "external"
+                ],
+                "type": "string",
+                "description": "event origin:\n  * `internal` - API triggered\n  * `external` - triggered by a sync operation\n"
+              },
+              "license": {
+                "type": "string",
+                "examples": [
+                  "1234123412341234"
+                ],
+                "description": "License number."
+              },
+              "message": {
+                "type": "string",
+                "description": "Message about why the assignment was rejected."
+              },
+              "subject": {
+                "type": "string",
+                "examples": [
+                  "qtsel\\lhr"
+                ],
+                "description": "Subject of the user assigned access."
+              }
+            }
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "description": "Unique identifier of the session related to the event."
+          }
+        }
+      },
+      "assignmentUpdated": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "subject",
+              "license",
+              "origin"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "examples": [
+                  "professional"
+                ],
+                "description": "Assignment type (e.g. 'analyzer_time', 'professional', etc.). May be an empty string when the assignment has no allotment name."
+              },
+              "origin": {
+                "enum": [
+                  "internal",
+                  "external"
+                ],
+                "type": "string",
+                "description": "event origin:\n  * `internal` - API triggered\n  * `external` - triggered by a sync operation\n"
+              },
+              "license": {
+                "type": "string",
+                "examples": [
+                  "1234123412341234"
+                ],
+                "description": "License number."
+              },
+              "subject": {
+                "type": "string",
+                "examples": [
+                  "qtsel\\lhr"
+                ],
+                "description": "Subject of the user assigned access."
+              }
+            }
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "description": "Unique identifier of the session related to the event."
+          }
+        }
+      },
+      "cloudEventsAttributes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of when the event happened."
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the event."
+          },
+          "source": {
+            "type": "string",
+            "description": "The source of the event."
+          },
+          "specversion": {
+            "enum": [
+              "1.0"
+            ],
+            "type": "string",
+            "description": "CloudEvents spec version."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "description": "The content type of the event payload."
+          }
+        }
+      },
+      "cloudEventsQlikCommonAttributes": {
+        "type": "object",
+        "properties": {
+          "authtype": {
+            "type": "string",
+            "description": "The type of principal that triggered the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "description": "JSON string representing claims of the principal."
+          },
+          "tracestate": {
+            "type": "string",
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          }
+        }
+      },
+      "dataVolume": {
+        "type": "object",
+        "required": [
+          "consumptionType",
+          "localVolume",
+          "externalVolume",
+          "unit"
+        ],
+        "properties": {
+          "unit": {
+            "type": "string",
+            "description": "Unit the reported volumes are expressed in (e.g. 'byte')."
+          },
+          "volume": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Consumed data volume for the tenant, mirroring localVolume for backward compatibility. Always emitted even though it is not part of required."
+          },
+          "localVolume": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Data volume consumed locally by the tenant."
+          },
+          "externalVolume": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Data volume consumed externally by the tenant."
+          },
+          "consumptionType": {
+            "type": "string",
+            "description": "Type of data consumption the volume is reported for."
+          }
+        }
+      },
+      "dataVolumeConsumptionAggregated": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "dataVolume",
+              "totalLocalConsumption"
+            ],
+            "properties": {
+              "total": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Total data volume consumption across all consumption types."
+              },
+              "dataVolume": {
+                "$ref": "#/components/schemas/dataVolume"
+              },
+              "globalConsumption": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Total data volume consumed globally by the tenant."
+              },
+              "globalConsumptionUnit": {
+                "type": "string",
+                "examples": [
+                  "byte"
+                ],
+                "description": "Unit the global consumption value is expressed in."
+              },
+              "totalLocalConsumption": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Total data volume consumed locally by the tenant."
+              },
+              "licenseHighWatermarkWithinMonth": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Highest recorded data volume consumption for the tenant within the current month."
+              },
+              "licenseHighWatermarkWithinMonthUnit": {
+                "type": "string",
+                "examples": [
+                  "byte"
+                ],
+                "description": "Unit the monthly high-watermark value is expressed in."
+              }
+            }
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          }
+        }
+      },
+      "definitionUpdated": {
+        "type": "object",
+        "required": [
+          "tenantid",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "license"
+            ],
+            "properties": {
+              "valid": {
+                "type": "object",
+                "properties": {
+                  "Stop": {
+                    "type": "string",
+                    "description": "End of the valid interval."
+                  },
+                  "Start": {
+                    "type": "string",
+                    "description": "Start of the valid interval."
+                  }
+                },
+                "description": "The interval during which the definition is valid."
+              },
+              "license": {
+                "type": "string",
+                "description": "License number."
+              },
+              "changeTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp of when the definition change was recorded."
+              },
+              "updateTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp of when the definition was updated."
+              },
+              "licenseType": {
+                "type": "string",
+                "description": "The type of the license."
+              },
+              "parentLicense": {
+                "type": "string",
+                "description": "Parent license number."
+              },
+              "latestValidTime": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "The latest time the definition is valid. Emitted as null when not set."
+              },
+              "capabilityBankId": {
+                "type": "string",
+                "description": "Capability bank id."
+              }
+            }
+          },
+          "userid": {
+            "type": "string",
+            "description": "Unique identifier of the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          }
+        }
+      },
+      "leaseCreated": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "license",
+              "name",
+              "resource",
+              "size",
+              "excess",
+              "licenseQuantity",
+              "licenseUnlimited",
+              "leasedQuantity",
+              "excessQuantity",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "examples": [
+                  "amlDepModel1"
+                ],
+                "description": "Name of the leased resource."
+              },
+              "size": {
+                "type": "integer",
+                "examples": [
+                  4
+                ],
+                "description": "Size of the lease."
+              },
+              "excess": {
+                "type": "boolean",
+                "description": "Whether the lease exceeds the licensed quantity."
+              },
+              "license": {
+                "type": "string",
+                "examples": [
+                  "1234123412341234"
+                ],
+                "description": "License number."
+              },
+              "resource": {
+                "type": "string",
+                "examples": [
+                  "amlDepModel"
+                ],
+                "description": "Identifier of the leased resource."
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "examples": [
+                  "2018-10-30T07:06:22Z"
+                ],
+                "nullable": true,
+                "description": "Timestamp when the lease was created. Emitted as null when the lease has no recorded creation time."
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "examples": [
+                  "2018-10-30T07:06:22Z"
+                ],
+                "description": "Timestamp when the lease was last updated."
+              },
+              "excessQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity leased in excess of the licensed quantity."
+              },
+              "leasedQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity currently leased."
+              },
+              "licenseQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Total quantity granted by the license."
+              },
+              "licenseUnlimited": {
+                "type": "boolean",
+                "description": "Whether the license grants an unlimited quantity."
+              }
+            }
+          },
+          "userid": {
+            "type": "string",
+            "description": "Unique identifier of the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "description": "Unique identifier of the session related to the event."
+          }
+        }
+      },
+      "leaseDeleted": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "license",
+              "name",
+              "resource",
+              "size",
+              "excess",
+              "licenseQuantity",
+              "licenseUnlimited",
+              "leasedQuantity",
+              "excessQuantity",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "examples": [
+                  "amlDepModel1"
+                ],
+                "description": "Name of the leased resource."
+              },
+              "size": {
+                "type": "integer",
+                "examples": [
+                  4
+                ],
+                "description": "Size of the lease."
+              },
+              "excess": {
+                "type": "boolean",
+                "description": "Whether the lease exceeds the licensed quantity."
+              },
+              "license": {
+                "type": "string",
+                "examples": [
+                  "1234123412341234"
+                ],
+                "description": "License number."
+              },
+              "resource": {
+                "type": "string",
+                "examples": [
+                  "amlDepModel"
+                ],
+                "description": "Identifier of the leased resource."
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "examples": [
+                  "2018-10-30T07:06:22Z"
+                ],
+                "nullable": true,
+                "description": "Timestamp when the lease was created. Emitted as null when the lease has no recorded creation time."
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "examples": [
+                  "2018-10-30T07:06:22Z"
+                ],
+                "description": "Timestamp when the lease was last updated."
+              },
+              "excessQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity leased in excess of the licensed quantity."
+              },
+              "leasedQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity currently leased."
+              },
+              "licenseQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Total quantity granted by the license."
+              },
+              "licenseUnlimited": {
+                "type": "boolean",
+                "description": "Whether the license grants an unlimited quantity."
+              }
+            }
+          },
+          "userid": {
+            "type": "string",
+            "description": "Unique identifier of the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "description": "Unique identifier of the session related to the event."
+          }
+        }
+      },
+      "leaseUpdated": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "license",
+              "name",
+              "resource",
+              "size",
+              "excess",
+              "licenseQuantity",
+              "licenseUnlimited",
+              "leasedQuantity",
+              "excessQuantity",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "examples": [
+                  "amlDepModel1"
+                ],
+                "description": "Name of the leased resource."
+              },
+              "size": {
+                "type": "integer",
+                "examples": [
+                  4
+                ],
+                "description": "Size of the lease."
+              },
+              "excess": {
+                "type": "boolean",
+                "description": "Whether the lease exceeds the licensed quantity."
+              },
+              "license": {
+                "type": "string",
+                "examples": [
+                  "1234123412341234"
+                ],
+                "description": "License number."
+              },
+              "_updates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path",
+                    "oldValue",
+                    "newValue"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "JSON path of the field that changed."
+                    },
+                    "newValue": {
+                      "description": "Value of the field after the update."
+                    },
+                    "oldValue": {
+                      "description": "Value of the field before the update."
+                    }
+                  }
+                },
+                "description": "List of changes applied to the lease during the update."
+              },
+              "resource": {
+                "type": "string",
+                "examples": [
+                  "amlDepModel"
+                ],
+                "description": "Identifier of the leased resource."
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "examples": [
+                  "2018-10-30T07:06:22Z"
+                ],
+                "nullable": true,
+                "description": "Timestamp when the lease was created. Emitted as null when the lease has no recorded creation time."
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "examples": [
+                  "2018-10-30T07:06:22Z"
+                ],
+                "description": "Timestamp when the lease was last updated."
+              },
+              "excessQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity leased in excess of the licensed quantity."
+              },
+              "leasedQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Quantity currently leased."
+              },
+              "licenseQuantity": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Total quantity granted by the license."
+              },
+              "licenseUnlimited": {
+                "type": "boolean",
+                "description": "Whether the license grants an unlimited quantity."
+              }
+            }
+          },
+          "userid": {
+            "type": "string",
+            "description": "Unique identifier of the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "description": "Unique identifier of the session related to the event."
+          }
+        }
+      },
+      "tenantAssociated": {
+        "type": "object",
+        "required": [
+          "tenantid",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "license",
+              "parentLicense"
+            ],
+            "properties": {
+              "license": {
+                "type": "string",
+                "description": "License number."
+              },
+              "updateTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp of when the tenant association was updated."
+              },
+              "parentLicense": {
+                "type": "string",
+                "description": "Parent license number."
+              },
+              "previousLicense": {
+                "type": "string",
+                "description": "License number prior to the association."
+              },
+              "capabilityBankId": {
+                "type": "string",
+                "description": "Identifier of the capability bank associated with the license."
+              },
+              "previousParentLicense": {
+                "type": "string",
+                "description": "Parent license number prior to the association."
+              }
+            }
+          },
+          "userid": {
+            "type": "string",
+            "description": "Unique identifier of the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "description": "Unique identifier of the tenant related to the event."
+          }
+        }
+      }
+    }
+  }
+}

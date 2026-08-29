@@ -1,0 +1,1621 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/authenticate/oauth/scopes/ and https://qlik.dev/manage/access-control/scopes/
+docs: https://qlik.dev/manage/access-control/scopes/
+description: 'Qlik Cloud platform scopes, captured verbatim from Qlik''s own scope reference. Qlik uses ONE scope
+  vocabulary for two purposes: limiting an OAuth token, and composing custom roles. The oauth flag below records
+  which of the two a given scope is usable for. Scopes can only NARROW a token — they never grant a user access
+  beyond the roles already assigned to them. These scopes are NOT derivable from the OpenAPI: none of the 78 published
+  documents declares a securitySchemes block at all, so oauth2 flows and scopes are absent from the machine-readable
+  contract and exist only in prose. That gap is recorded in conformance/qliksense-conformance.yml.'
+flow:
+  authorization_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/authorize
+  token_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/token
+  revocation_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/revoke
+  metadata: https://{tenant}.{region}.qlikcloud.com/.well-known/oauth-authorization-server
+  request_example: GET /oauth/authorize?scope=automations apps:read spaces:read identity.name:read
+  delimiter: space
+semantics:
+  grouping: Administrator scopes (admin.*) grant tenant-wide access to resources the calling user may not hold named
+    access to. User scopes grant access only to resources the user already has.
+  hierarchy: Child scopes are narrower forms of their parent (apps -> apps:read, apps:export). The parent implies
+    the children.
+  allow_list: The authorization server grants every scope on the client's allow list even when the scope parameter
+    is empty, but only those the user approved. Scopes must be named explicitly on the authorize request to be presented
+    for approval.
+  offline_access: offline_access is never granted implicitly and must be requested explicitly to obtain a refresh
+    token.
+  revocability: Users can remove previously approved scopes between authorizations, so clients must inspect the
+    scopes actually present on a token.
+counts:
+  total: 225
+  oauth_usable: 101
+  custom_role_usable: 185
+  user_default: 60
+  administrator: 37
+  user: 188
+scopes:
+- name: admin_classic
+  description: Full administrator access to your tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.ai-descriptions
+  description: Manage tenant settings for generating AI-based descriptions for any resource and validation rule
+    suggestions for datasets. Access and manage any generation without space restrictions.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.aiplatform
+  description: Create a chat conversation with an LLM
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.apps
+  description: Read and manage all apps in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.apps:export
+  description: Export all apps in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: admin.apps:read
+  description: Read all apps in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: admin.assistants
+  description: Read and manage all assistants
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.auth-settings
+  description: View and update authentication settings for a tenant, including session timeout settings.
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.automations
+  description: Read and manage all automations in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.automations:read
+  description: Read all automations in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: admin.automations:strict
+  description: Manage all automations in the tenant.
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.automl-models:approve
+  description: Approve or reject all ML models in the tenant
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.automl:full
+  description: Manage all ML experiments and deployments within Administration
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.collections.publicgoverned
+  description: Create and update public collections
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.csp
+  description: Create, update, read, list, delete.
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.dataproduct
+  description: Access and manage any data products without space restrictions.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.dataquality
+  description: Access and manage data quality settings without space restrictions.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.dataqualityrules
+  description: Access, manage, and change ownership of any validation rules without space restrictions.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.direct-access-gateways:delete_gateway
+  description: Delete Direct Access gateway from this tenant.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.direct-access-gateways:register_gateway
+  description: Register Direct Access gateway for this tenant.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.direct-access-gateways:remote_configuration
+  description: View and modify Direct Access gateway settings
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.environments
+  description: Create, read, update, and delete environments. Allows linking environments to spaces.
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.extensions
+  description: Create, read, update, delete, and download extensions.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.insightshome:edit
+  description: Curate content for better findability.
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.ip-policies
+  description: View and manage IP policies in the tenant, including creating, updating, and deleting them.
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.knowledgebases
+  description: Read and manage all knowledge bases
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.lakehouse-cluster
+  description: Create, edit, and operate lakehouse clusters
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.report-tasks
+  description: Manage report tasks and subscriptions, and read the associated templates and filters.
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.semantictype
+  description: Access and manage any semantic type.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.spaces
+  description: Read and manage all spaces in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.spaces:read
+  description: Read all spaces in the tenant
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: admin.sprints
+  description: Access and manage all data stewardship sprints, without space restrictions.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.themes
+  description: Create, read, update, delete, and download themes.
+  group: admin
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.ui-config:edit
+  description: Configure tenant-wide user interface settings and available options, such as pinned links.
+  group: admin
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: admin.users
+  description: Read and manage all users
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: admin.users:read
+  description: Full read access to all users
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: admin.webhooks
+  description: Manage webhooks in the Administration activity center.
+  group: admin
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: user_default
+  description: Full access to your account and content
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: ai-descriptions
+  description: Generate AI-based validation rules for datasets and descriptions for any resource.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: analysis-agent
+  description: Lets users use Qlik Answers to analyse data, create charts, get predictions, and gather insights
+    from documents
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: api-keys
+  description: Create, view, update, and delete your own API keys.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: app.share
+  description: Space owners and users with the 'Can manage' role can share applications with any group or user without
+    adding them to the space.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: apps
+  description: Read and manage your apps
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: apps:export
+  description: Export your apps
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: apps:read
+  description: Read your apps
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: apps:manage
+  description: Override automatic engine selection by assigning an engine size to applications.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: apps.data:export
+  description: Download all app content or images and PDFs only, blocking data downloads.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: apps.image:export
+  description: Download app content as images and PDFs only
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: apps.report:all
+  description: Generate all types of reports, including in-app, API, scheduled, on-demand, and automated. Also manage
+    filters, recipients, and tasks. Author report templates in add-ins and embedded designers.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: apps.report:export
+  description: Generate on-demand reports.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: assistants
+  description: Read and manage assistants
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: assistants:read
+  description: Basic query access to assistants
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: automations
+  description: Read and manage your automations
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: automations:read
+  description: Read your automations
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: automations.private
+  description: Read and manage automations in your personal space
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: automations.shared
+  description: Read and manage your automations in shared spaces
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: automl-deployments
+  description: Allow users to view and update ML deployments and run all predictions, run API and connector predictions
+    only, or block access to ML deployments and predictions.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: automl-deployments:predict
+  description: Create predictions only
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: automl-experiments
+  description: Read and manage your ML experiments
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: automl-experiments:no_gen_ai_assist
+  description: Create and update ML experiments without any GenAI-assisted functions.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: automl-models:approve
+  description: Approve or reject ML models in spaces to which you have edit access
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: classic_talend.audit_logs_view
+  description: 'Talend: View audit logs'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.connection_create
+  description: 'Talend: Create connections'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.connection_delete
+  description: 'Talend: Delete connections'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.connection_read
+  description: 'Talend: View connections'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.connection_share
+  description: 'Talend: Share connections'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.connection_update
+  description: 'Talend: Update connections'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.crawling_create
+  description: 'Talend: Create crawlers'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.crawling_delete
+  description: 'Talend: Delete crawlers'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.crawling_read
+  description: 'Talend: View crawlers'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.crawling_update
+  description: 'Talend: Update crawlers'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.custom_attribute_create
+  description: 'Talend: Add custom attributes'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.custom_attribute_delete
+  description: 'Talend: Delete custom attributes'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.custom_attribute_read
+  description: 'Talend: View custom attributes'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.custom_attribute_update
+  description: 'Talend: Edit custom attributes'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_advanced_search
+  description: 'Talend: Perform advanced dataset search'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_api_manage
+  description: 'Talend: Manage APIs'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_api_view
+  description: 'Talend: View APIs'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_attributes_manage
+  description: 'Talend: Manage custom attributes of a dataset'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_certify
+  description: 'Talend: Certify datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_create
+  description: 'Talend: Create datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_delete
+  description: 'Talend: Delete datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_download
+  description: 'Talend: Download datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_read
+  description: 'Talend: View datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_sample_update
+  description: 'Talend: Refresh sample'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_schema_update
+  description: 'Talend: Set semantic type'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_share
+  description: 'Talend: Share datasets with others'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_tags_manage
+  description: 'Talend: Add or remove tags on datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.dataset_update
+  description: 'Talend: Update datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.execution_logs_delete
+  description: 'Talend: Delete execution logs'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.rule_create
+  description: 'Talend: Create data quality rules'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.rule_delete
+  description: 'Talend: Delete data quality rules'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.rule_edit
+  description: 'Talend: Edit data quality rules'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.rule_view
+  description: 'Talend: View data quality rules'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.studio_entitlement_studio_developer
+  description: 'Talend: Develop in Studio and Publish to Cloud Management Console'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tapid_admin
+  description: 'Talend: Administrate API Designer'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tapid_definition_manage
+  description: 'Talend: Create and Edit API contracts'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tapid_definition_share
+  description: 'Talend: Share API contracts'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tapid_portal_manage
+  description: 'Talend: Create and Edit an API Portal'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tapit_project_manage
+  description: 'Talend: Create and Edit API scenarios'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tapit_project_share
+  description: 'Talend: Share API scenarios'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_basic
+  description: 'Talend: Manage preparations and local datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_dataset_certify
+  description: 'Talend: Certify datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_dataset_perform_live
+  description: 'Talend: Manage live datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_full_run_perform
+  description: 'Talend: Export all data from preparations'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_hybrid_management
+  description: 'Talend: Configure and activate Data Preparation Hybrid'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_prep_version_create
+  description: 'Talend: Create preparation versions'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdp_tcomp_use
+  description: 'Talend: Manage remote datasets'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdq_semantic_type_create
+  description: 'Talend: Create semantic types'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdq_semantic_type_delete
+  description: 'Talend: Delete semantic types'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdq_semantic_type_edit
+  description: 'Talend: Edit semantic types'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdq_semantic_type_list
+  description: 'Talend: List semantic types'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdq_semantic_type_publish
+  description: 'Talend: Publish semantic types'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tdq_semantic_type_view
+  description: 'Talend: View semantic types'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_assigned_task_assign
+  description: 'Talend: Delegate tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_assigned_task_data_update
+  description: 'Talend: Edit assigned tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_assigned_task_metadata_update
+  description: 'Talend: Edit assigned tasks metadata'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_assigned_task_read
+  description: 'Talend: View assigned tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_campaign_create
+  description: 'Talend: Add campaigns'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_campaign_delete
+  description: 'Talend: Delete campaigns'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_campaign_list
+  description: 'Talend: List campaigns'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_campaign_read
+  description: 'Talend: View campaigns'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_campaign_update
+  description: 'Talend: Edit campaigns'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_hybrid_management
+  description: 'Talend: Configure and activate Data Stewardship Hybrid'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_schema_create
+  description: 'Talend: Add data models'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_schema_delete
+  description: 'Talend: Delete data models'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_schema_list
+  description: 'Talend: List data models'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_schema_read
+  description: 'Talend: View data models'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_schema_update
+  description: 'Talend: Edit data models'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_assign
+  description: 'Talend: Assign tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_create
+  description: 'Talend: Add tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_delete
+  description: 'Talend: Delete tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_history_delete
+  description: 'Talend: Delete task history'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_history_read
+  description: 'Talend: View task history'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_metadata_update
+  description: 'Talend: Edit tasks metadata'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_read
+  description: 'Talend: View tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_read_by_external_id
+  description: 'Talend: View tasks using external ID'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_task_update
+  description: 'Talend: Edit tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_unassigned_task_assign
+  description: 'Talend: Self-assign unassigned tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_unassigned_task_read
+  description: 'Talend: View unassigned tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tds_users_read
+  description: 'Talend: View users'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_cloud_configuration_management
+  description: 'Talend: Manage cloud configurations'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_cluster_management
+  description: 'Talend: Manage Remote Engines and Remote Engine clusters'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_configuration_nexus_userlibs
+  description: 'Talend: Set up user libraries in the artifact repository'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_connection_resource_edit
+  description: 'Talend: Edit connections and resources'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_engine_use
+  description: 'Talend: View and use Remote Engines to run tasks'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_environment_management
+  description: 'Talend: Manage environments'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_group_management
+  description: 'Talend: Manage groups'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_operator
+  description: 'Talend: Manage operations'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_pipeline_management
+  description: 'Talend: Manage promotions'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_project_management
+  description: 'Talend: Manage projects (including project authorizations)'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_promotion_execution
+  description: 'Talend: Execute promotions'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_role_management
+  description: 'Talend: Manage roles'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_run_profile_management
+  description: 'Talend: Manage run profiles'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_service_account_management
+  description: 'Talend: Manage service accounts'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_sso_management
+  description: 'Talend: Configure single sign-on'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_static_ip_management
+  description: 'Talend: Configure static IP addresses for Cloud Engines'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_subscription_management
+  description: 'Talend: Access subscription information'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: classic_talend.tmc_user_management
+  description: 'Talend: Manage users'
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: data-connections
+  description: Read and manage your data connections
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: data-connections:read
+  description: Read your data connections
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: data-governance-agents
+  description: Lets users use Qlik Answers to interact with and manage data governance functionality.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: dataproduct
+  description: Create and manage data products.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: dataproduct:consume
+  description: Browse and consume data products in the data marketplace.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: dataquality
+  description: Compute and read data qualities.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: dataquality:read
+  description: Read data quality.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: dataqualityrules
+  description: Create, update, or apply validation rules to datasets.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: dataqualityrules:assign
+  description: Read and apply validation rules to datasets.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: dataset
+  description: Create, read, update, list, and delete datasets.
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: direct-access-gateways:consume_data
+  description: Load data via Direct Access gateway connectors
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: discovery-agent
+  description: Create triggers for anomaly detection, serving user feeds with insights.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: discovery-agent:read
+  description: Allow users to consume and act on insights generated by the Discovery Agent in the activity center
+    feed page.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: environments:read
+  description: Read access to environments where the user is a space member.
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: genericlink:all
+  description: Create, update, and use links within spaces.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: geo-operations
+  description: Execute any geographic operation.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: geo-operations.limited
+  description: Allows all operations except geocoding
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: glossary:all
+  description: Full access to glossaries and terms, including approving terms
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: glossary:manage
+  description: Full access to glossaries and terms, except for approving terms
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: glossary:update
+  description: Read access to glossary metadata and access to glossary terms
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: governance-definition:read
+  description: Assign classifications to dataset fields and regulations to datasets
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: help-agent
+  description: Lets users use Qlik Answers to find relevant product documentation.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: identity.email:read
+  description: Read your email address
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: identity.name:read
+  description: Read your full name
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: identity.picture:read
+  description: Read your profile picture
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: identity.subject:read
+  description: Read your user subject identifier
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: insight-advisor:experience
+  description: Lets users use Insight Advisor to analyse data and create charts.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: knowledgebases
+  description: Read and manage knowledge bases
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: knowledgebases:read
+  description: Read access to knowledge bases
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: knowledgebases:index
+  description: Index content in knowledge bases
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: knowledgebases:search
+  description: Search content in knowledge bases
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: lakehouse-cluster-moderator
+  description: Edit settings and operate lakehouse clusters
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: lakehouse-cluster-viewer
+  description: View lakehouse clusters
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: lakehouse-cluster-operator
+  description: Stop, start, scale, and roll lakehouse clusters
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: learning-center:all
+  description: Learn more about Qlik features and capabilities.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: lineage:create
+  description: Create lineage.
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: lineage:read
+  description: View lineage between assets
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: mcp:execute
+  description: Lets users use the Qlik MCP server
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: mobile:all
+  description: Allow use of the native mobile app (does not influence browser-based mobile activity).
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: mobile:mamintune
+  description: Enforce use of Intune for authentication and policy deployment in the Qlik Analytics mobile app.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: network-integration-viewer
+  description: View network integration
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: notes
+  description: Create and manage notes based on roles within the space.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: offline_access
+  description: Access resources while you are offline
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: pipelines-projects
+  description: Create, update, or view pipeline projects based on space access
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: pipelines-projects:read
+  description: Read and list pipeline projects based on space access
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: question:create
+  description: User who can access Insight Advisor from collaboration platforms.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: semantictype
+  description: Create, update, or assign semantic types to datasets.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: semantictype:read
+  description: Read and assign semantic types.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: space-requests:create
+  description: Allows users to request access to content. When set to 'Not allowed,' you can define a custom message
+    in Administration > Settings. The message appears when users try to open content they don't have permission
+    to view and can direct them to the right team or process for requesting access.
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: spaces.data
+  description: Read and manage your data spaces
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: spaces.data:read
+  description: Read your data spaces
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: spaces.managed
+  description: Read and manage your managed spaces
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: spaces.managed:read
+  description: Read your managed spaces
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: spaces.shared
+  description: Read and manage your shared spaces
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: spaces.shared:create
+  description: Create shared spaces for collaboration.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: true
+- name: spaces.shared:read
+  description: Read your shared spaces
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: sprints:all
+  description: Create, manage or contribute to sprints.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: sprints:contribute
+  description: Participate in data stewardship sprints as a sprint owner or data steward. Roles are assigned in
+    the sprint settings.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: true
+- name: thread-audits
+  description: Lets users review agent and chat interactions
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: false
+  narrows: false
+- name: trustscore
+  description: Configure Qlik Trust Score™ axes and weights.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: users
+  description: Basic read access to users and management of your user preferences
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: users:read
+  description: Basic read access to users
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: true
+- name: webhooks
+  description: Create and update webhooks using the webhooks API and automations UI.
+  group: user
+  oauth: true
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: write-table:external_read
+  description: Description not available
+  group: user
+  oauth: true
+  custom_role: false
+  user_default: false
+  narrows: false
+- name: write-table:full
+  description: Full access, creation and configuration of write table charts
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: false
+- name: write-table:access
+  description: Read and write changes in write table charts
+  group: user
+  oauth: false
+  custom_role: true
+  user_default: true
+  narrows: true

@@ -1,0 +1,1461 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "spaces",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsSpaces": {
+      "address": "system-events.spaces",
+      "messages": {
+        "spaceAssignmentCreated": {
+          "$ref": "#/components/messages/spaces.spaceAssignmentCreated"
+        },
+        "spaceAssignmentDeleted": {
+          "$ref": "#/components/messages/spaces.spaceAssignmentDeleted"
+        },
+        "spaceAssignmentUpdated": {
+          "$ref": "#/components/messages/spaces.spaceAssignmentUpdated"
+        },
+        "spaceCreated": {
+          "$ref": "#/components/messages/spaces.spaceCreated"
+        },
+        "spaceDeleted": {
+          "$ref": "#/components/messages/spaces.spaceDeleted"
+        },
+        "spaceGroupsCacheInvalidated": {
+          "$ref": "#/components/messages/spaces.spaceGroupsCacheInvalidated"
+        },
+        "spaceSettingsUpdated": {
+          "$ref": "#/components/messages/spaces.spaceSettingsUpdated"
+        },
+        "spaceShareCreated": {
+          "$ref": "#/components/messages/spaces.spaceShareCreated"
+        },
+        "spaceShareDeleted": {
+          "$ref": "#/components/messages/spaces.spaceShareDeleted"
+        },
+        "spaceShareSessionAttached": {
+          "$ref": "#/components/messages/spaces.spaceShareSessionAttached"
+        },
+        "spaceShareUpdated": {
+          "$ref": "#/components/messages/spaces.spaceShareUpdated"
+        },
+        "spaceUpdated": {
+          "$ref": "#/components/messages/spaces.spaceUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "spaceAssignmentCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceAssignmentCreated"
+        }
+      ]
+    },
+    "spaceAssignmentDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceAssignmentDeleted"
+        }
+      ]
+    },
+    "spaceAssignmentUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceAssignmentUpdated"
+        }
+      ]
+    },
+    "spaceCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceCreated"
+        }
+      ]
+    },
+    "spaceDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceDeleted"
+        }
+      ]
+    },
+    "spaceGroupsCacheInvalidated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceGroupsCacheInvalidated"
+        }
+      ]
+    },
+    "spaceSettingsUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceSettingsUpdated"
+        }
+      ]
+    },
+    "spaceShareCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceShareCreated"
+        }
+      ]
+    },
+    "spaceShareDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceShareDeleted"
+        }
+      ]
+    },
+    "spaceShareSessionAttached": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceShareSessionAttached"
+        }
+      ]
+    },
+    "spaceShareUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceShareUpdated"
+        }
+      ]
+    },
+    "spaceUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSpaces"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSpaces/messages/spaceUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "spaces.spaceAssignmentCreated": {
+        "name": "com.qlik.space.assignment.created",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space assignment created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "type",
+                    "assigneeId",
+                    "roles",
+                    "spaceId",
+                    "tenantId",
+                    "createdAt",
+                    "createdBy"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the assignment."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/assignmentTypes"
+                    },
+                    "roles": {
+                      "$ref": "#/components/schemas/spaceRoles"
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "description": "Identifier of the space the assignment belongs to."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "description": "Identifier of the tenant the space belongs to."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the assignment was created."
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user who created the assignment."
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user or group assigned to the Space."
+                    }
+                  },
+                  "description": "Details of the created assignment."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.assignment.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a user or group is assigned to a space.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.assignment.created` event has been replaced by the `com.qlik.core.space.assignment.created` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceAssignmentDeleted": {
+        "name": "com.qlik.space.assignment.deleted",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space assignment deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "spaceId",
+                    "assigneeId",
+                    "type",
+                    "spaceName",
+                    "spaceDelete"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the assignment."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/assignmentTypes"
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "description": "Identifier of the space the assignment belongs to."
+                    },
+                    "spaceName": {
+                      "type": "string",
+                      "description": "Name of the space."
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "description": "Identifier of the user or group assigned to the space."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of the assignment."
+                    },
+                    "spaceDelete": {
+                      "type": "boolean",
+                      "description": "If true the assignment was deleted because its parent space was deleted."
+                    }
+                  },
+                  "description": "Details of the deleted assignment."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.assignment.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space assignment is deleted.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.assignment.deleted` event has been replaced by the `com.qlik.core.space.assignment.deleted` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceAssignmentUpdated": {
+        "name": "com.qlik.space.assignment.updated",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space assignment updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "roles",
+                    "updatedAt",
+                    "assigneeId",
+                    "type",
+                    "spaceId",
+                    "updatedBy"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the assignment."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/assignmentTypes"
+                    },
+                    "roles": {
+                      "$ref": "#/components/schemas/spaceRoles"
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "description": "Identifier of the space the assignment belongs to."
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the assignment was updated."
+                    },
+                    "updatedBy": {
+                      "type": "string",
+                      "description": "Identifier of the user who updated the assignment."
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "description": "Identifier of the user or group assigned to the space."
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "Details of the updated assignment."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.assignment.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space assignment is updated.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.assignment.updated` event has been replaced by the `com.qlik.core.space.assignment.updated` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceCreated": {
+        "name": "com.qlik.space.created",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "type",
+                    "ownerId",
+                    "tenantId",
+                    "createdAt"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Public space",
+                      "description": "Name of the space."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/spaceTypes"
+                    },
+                    "ownerId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space owner."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the tenant the space belongs to."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the space was created."
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user who created the space."
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Publicly available space",
+                      "description": "Description of the space."
+                    },
+                    "environment": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the environment."
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Production",
+                          "description": "Name of the environment."
+                        },
+                        "tenantId": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the tenant."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-07T23:47:53Z",
+                          "description": "Timestamp when the environment was created."
+                        },
+                        "createdBy": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the user who created the environment."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-07T23:47:53Z",
+                          "description": "Timestamp when the environment was updated."
+                        },
+                        "updatedBy": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the user who last updated the environment."
+                        },
+                        "variables": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/variable"
+                          },
+                          "description": "Key-value pairs."
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Production environment",
+                          "description": "Description of the environment."
+                        }
+                      },
+                      "description": "Environment details if the space belongs to an environment."
+                    },
+                    "environmentId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the environment the space belongs to."
+                    }
+                  },
+                  "description": "Details of the created space."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space is created in the tenant.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.created` event has been replaced by the `com.qlik.core.space.created` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceDeleted": {
+        "name": "com.qlik.space.deleted",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the deleted space."
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ownerId": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "Details of the deleted space."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space is deleted from the tenant.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.deleted` event has been replaced by the `com.qlik.core.space.deleted` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceGroupsCacheInvalidated": {
+        "name": "com.qlik.space.groups.cache.invalidated",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space groups cache invalidated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "tenantId",
+                    "userId"
+                  ],
+                  "properties": {
+                    "userId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user related to the event."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the tenant related to the event."
+                    }
+                  },
+                  "description": "Details of the groups cache invalidation."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.groups.cache.invalidated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the groups cache is invalidated for a user.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.groups.cache.invalidated` event has been replaced by the `com.qlik.core.space.groups.cache.invalidated` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceSettingsUpdated": {
+        "name": "com.qlik.space.settings.updated",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space settings updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "allowOffline",
+                    "allowShares",
+                    "tenantId"
+                  ],
+                  "properties": {
+                    "tenantId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the tenant."
+                    },
+                    "allowShares": {
+                      "type": "boolean",
+                      "description": "Whether app sharing is allowed in the space."
+                    },
+                    "allowOffline": {
+                      "type": "boolean",
+                      "description": "Whether offline usage is allowed from shared or managed spaces."
+                    }
+                  },
+                  "description": "Details of the updated space settings."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.settings.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the space settings are updated.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.settings.updated` event has been replaced by the `com.qlik.core.space.settings.updated` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceShareCreated": {
+        "name": "com.qlik.space.share.created",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space share created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "type",
+                    "assigneeId",
+                    "roles",
+                    "spaceId",
+                    "spaceType",
+                    "tenantId",
+                    "createdAt",
+                    "createdBy",
+                    "resourceId",
+                    "resourceType",
+                    "resourceName"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the share."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/assignmentTypes"
+                    },
+                    "roles": {
+                      "$ref": "#/components/schemas/spaceRoles"
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space the share belongs to."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the tenant."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the share was created."
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user who created the share."
+                    },
+                    "spaceType": {
+                      "$ref": "#/components/schemas/spaceTypes"
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the user or group assigned the share."
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "description": "Identifier for the resource being shared."
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Shared app for science",
+                      "description": "Description of the share."
+                    },
+                    "resourceName": {
+                      "type": "string",
+                      "description": "Name of the resource being shared."
+                    },
+                    "resourceType": {
+                      "$ref": "#/components/schemas/shareResourceTypes"
+                    }
+                  },
+                  "description": "Details of the created share."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.share.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a new space share is created.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.share.created` event has been replaced by the `com.qlik.core.space.share.created` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceShareDeleted": {
+        "name": "com.qlik.space.share.deleted",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space share deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "spaceId",
+                    "assigneeId",
+                    "type",
+                    "spaceName",
+                    "spaceDelete",
+                    "resourceType",
+                    "resourceId",
+                    "resourceName"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the share."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/assignmentTypes"
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space the share belongs to."
+                    },
+                    "spaceName": {
+                      "type": "string",
+                      "example": "Accounting",
+                      "description": "Name of the space."
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the user or group assigned the share."
+                    },
+                    "resourceId": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Shared app for science",
+                      "description": "Description of the share."
+                    },
+                    "spaceDelete": {
+                      "type": "boolean",
+                      "description": "If true the share was deleted because its parent space was deleted."
+                    },
+                    "resourceName": {
+                      "type": "string",
+                      "description": "Name of the resource being shared."
+                    },
+                    "resourceType": {
+                      "$ref": "#/components/schemas/shareResourceTypes"
+                    }
+                  },
+                  "description": "Details of the deleted share."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.share.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space share is deleted.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.share.deleted` event has been replaced by the `com.qlik.core.space.share.deleted` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceShareSessionAttached": {
+        "name": "com.qlik.space.share.session.attached",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space share session attached",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "assigneeId",
+                    "sessionId"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the share."
+                    },
+                    "sessionId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the session."
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the user or group assigned the share."
+                    }
+                  },
+                  "description": "Details of the share session attachment."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.share.session.attached",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a session is attached to a space share.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.share.session.attached` event has been replaced by the `com.qlik.core.space.share.session.attached` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceShareUpdated": {
+        "name": "com.qlik.space.share.updated",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space share updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "resourceId",
+                    "resourceName",
+                    "resourceType",
+                    "type",
+                    "assigneeId",
+                    "roles",
+                    "spaceId",
+                    "linkId",
+                    "spaceType",
+                    "tenantId",
+                    "createdAt",
+                    "createdBy",
+                    "updatedAt"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Unique identifier for the share."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/assignmentTypes"
+                    },
+                    "roles": {
+                      "$ref": "#/components/schemas/spaceRoles"
+                    },
+                    "linkId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the share link."
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space the share belongs to."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the tenant related to the event."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the share was created."
+                    },
+                    "createdBy": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user who created the share."
+                    },
+                    "spaceType": {
+                      "$ref": "#/components/schemas/spaceTypes"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the share was updated."
+                    },
+                    "updatedBy": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user who updated the share."
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the user or group assigned the share."
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier for the resource being shared."
+                    },
+                    "resourceName": {
+                      "type": "string",
+                      "example": "SomeApp",
+                      "description": "Name of the resource being shared."
+                    },
+                    "resourceType": {
+                      "$ref": "#/components/schemas/shareResourceTypes"
+                    }
+                  },
+                  "description": "Details of the updated share."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.share.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space share is updated.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.share.updated` event has been replaced by the `com.qlik.core.space.share.updated` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "spaces.spaceUpdated": {
+        "name": "com.qlik.space.updated",
+        "tags": [
+          {
+            "name": "spaces"
+          }
+        ],
+        "title": "Space updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "id",
+                    "ownerId",
+                    "updatedAt"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Public space",
+                      "description": "Name of the space."
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/spaceTypes"
+                    },
+                    "ownerId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the space owner."
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the space was created."
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-07T23:47:53Z",
+                      "description": "Timestamp when the space was updated."
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Publicly available space",
+                      "description": "Description of the space."
+                    },
+                    "environment": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the environment."
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Production",
+                          "description": "Name of the environment."
+                        },
+                        "tenantId": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the tenant."
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-07T23:47:53Z",
+                          "description": "Timestamp when the environment was created."
+                        },
+                        "createdBy": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the user who created the environment."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-07T23:47:53Z",
+                          "description": "Timestamp when the environment was updated."
+                        },
+                        "updatedBy": {
+                          "type": "string",
+                          "example": "00000000-0000-0000-0000-000000000000",
+                          "description": "Identifier of the user who last updated the environment."
+                        },
+                        "variables": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/variable"
+                          },
+                          "description": "Key-value pairs."
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Production environment",
+                          "description": "Description of the environment."
+                        }
+                      },
+                      "description": "Environment details if the space belongs to an environment."
+                    },
+                    "environmentId": {
+                      "type": "string",
+                      "example": "00000000-0000-0000-0000-000000000000",
+                      "description": "Identifier of the environment the space belongs to."
+                    }
+                  },
+                  "description": "Details of the updated space."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.space.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a space is updated.",
+        "x-qlik-deprecated": true,
+        "x-qlik-deprecated-sunset": "2027-04",
+        "x-qlik-deprecated-version": "2026-04",
+        "x-qlik-deprecated-description": "The `com.qlik.space.updated` event has been replaced by the `com.qlik.core.space.updated` event to follow the latest guidelines.\n",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "assignmentTypes": {
+        "enum": [
+          "user",
+          "group"
+        ],
+        "type": "string",
+        "description": "Type of assignee for a space assignment."
+      },
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-04-05T17:31:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.space.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "605a18af2ab08cdbfad09259"
+            ],
+            "description": "Unique identifier for the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        },
+        "description": "Additional metadata and custom fields"
+      },
+      "shareResourceTypes": {
+        "enum": [
+          "app",
+          "note"
+        ],
+        "type": "string",
+        "description": "All supported resource types for sharing."
+      },
+      "spaceRoles": {
+        "type": "array",
+        "items": {
+          "enum": [
+            "facilitator",
+            "producer",
+            "consumer",
+            "dataconsumer",
+            "contributor",
+            "operator",
+            "publisher",
+            "basicconsumer",
+            "codeveloper"
+          ],
+          "type": "string"
+        }
+      },
+      "spaceTypes": {
+        "enum": [
+          "managed",
+          "shared",
+          "data"
+        ],
+        "type": "string"
+      },
+      "variable": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Variable key."
+          },
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Variable value."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+generated: '2026-08-29'
+method: searched
+source: https://www.qlik.com/us/trust and https://security.qlik.com/
+description: >-
+  Qlik runs a public trust center at security.qlik.com and a compliance summary
+  at qlik.com/us/trust, listing named third-party certifications and
+  attestations for three distinct estates: Qlik generally, Qlik Cloud
+  Government, and Talend Cloud. Certifications are transcribed verbatim from
+  Qlik's own page; none is inferred.
+trust_center:
+  url: https://security.qlik.com/
+  status: 200
+  compliance_page: https://www.qlik.com/us/trust
+  status_page: https://status.qlikcloud.com/
+  security_contact: security@qlik.com
+certifications:
+  qlik:
+    - ISO 27001:2022
+    - ISO 27017:2015
+    - ISO 27018:2019
+    - ISO 42001:2023
+    - SOC 1 Type 2
+    - SOC 2 Type 2 + HITRUST CSF
+    - SOC 3
+    - HIPAA (via SOC 2 Type 2 + HITRUST CSF attestation)
+    - TISAX
+    - IRAP
+    - Cyber Essentials
+    - Cyber Essentials Plus
+    - UK G-Cloud v14
+    - CASA Tier 3 (App Defense Alliance)
+    - C5 (BSI, Germany)
+  qlik_cloud_government:
+    - FedRAMP
+    - GovRAMP
+    - TX-RAMP Level 2
+    - ITAR
+    - DISA Impact Level 2
+    - DISA Impact Level 4
+    - CASA Tier 3
+    - CJIS
+    - HIPAA
+  talend_cloud:
+    - ISO 27001:2022
+    - ISO 27017:2015
+    - ISO 27018:2019
+    - SOC 1 Type 2
+    - SOC 2 Type 2
+    - SOC 3
+    - HIPAA attestation
+    - Cyber Essentials
+    - Cyber Essentials Plus
+    - UK G-Cloud v14
+notable:
+  - >-
+    ISO 42001:2023 (AI management systems) is present. For a vendor now shipping
+    a GA MCP server, an AI assistant surface and AutoML, an AI-specific
+    management-system certification is the directly relevant one.
+  - >-
+    Qlik's own API policy states plainly that Qlik "does not intend use of the
+    APIs to create obligations under HIPAA and makes no representations that the
+    APIs satisfy HIPAA requirements" — the HIPAA attestation covers the platform
+    estate, NOT the public API surface. Recorded because the two are easy to
+    conflate. Source https://qlik.dev/apis/api-policy/.

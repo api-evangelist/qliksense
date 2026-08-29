@@ -1,0 +1,819 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "alerting-tasks",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsAlerting": {
+      "address": "system-events.alerting",
+      "messages": {
+        "alertingTaskCreated": {
+          "$ref": "#/components/messages/alerting.alertingTaskCreated"
+        },
+        "alertingTaskDeleted": {
+          "$ref": "#/components/messages/alerting.alertingTaskDeleted"
+        },
+        "alertingTaskExecutionSummaryCreated": {
+          "$ref": "#/components/messages/alerting.alertingTaskExecutionSummaryCreated"
+        },
+        "alertingTaskRecipientRemoved": {
+          "$ref": "#/components/messages/alerting.alertingTaskRecipientRemoved"
+        },
+        "alertingTaskTaskStatusChanged": {
+          "$ref": "#/components/messages/alerting.alertingTaskTaskStatusChanged"
+        }
+      }
+    }
+  },
+  "operations": {
+    "alertingTaskCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAlerting"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAlerting/messages/alertingTaskCreated"
+        }
+      ]
+    },
+    "alertingTaskDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAlerting"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAlerting/messages/alertingTaskDeleted"
+        }
+      ]
+    },
+    "alertingTaskExecutionSummaryCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAlerting"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAlerting/messages/alertingTaskExecutionSummaryCreated"
+        }
+      ]
+    },
+    "alertingTaskRecipientRemoved": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAlerting"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAlerting/messages/alertingTaskRecipientRemoved"
+        }
+      ]
+    },
+    "alertingTaskTaskStatusChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAlerting"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAlerting/messages/alertingTaskTaskStatusChanged"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "alerting.alertingTaskCreated": {
+        "name": "com.qlik.v1.alerting-task.created",
+        "tags": [
+          {
+            "name": "data-alerts"
+          }
+        ],
+        "title": "A data alert has been created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "alertID": {
+                      "type": "string",
+                      "description": "The identifier of the alert associated with the alerting task."
+                    },
+                    "creatorId": {
+                      "type": "string",
+                      "description": "The identifier of the user who created the alerting task."
+                    },
+                    "accessType": {
+                      "enum": [
+                        "SOURCE_ACCESS",
+                        "TARGET_ACCESS"
+                      ],
+                      "type": "string",
+                      "description": "The type of access associated with the alerting task."
+                    },
+                    "recipients": {
+                      "type": "object",
+                      "properties": {
+                        "userIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "The list of user identifiers associated with the alerting task."
+                        }
+                      }
+                    },
+                    "conditionId": {
+                      "type": "string",
+                      "description": "The identifier of the condition associated with the alerting task."
+                    },
+                    "triggerType": {
+                      "enum": [
+                        "RELOAD",
+                        "SCHEDULED",
+                        "MANUAL"
+                      ],
+                      "type": "string",
+                      "description": "The type of trigger associated with the alerting task."
+                    },
+                    "recipientsCount": {
+                      "type": "integer",
+                      "description": "The number of recipients associated with the alerting task."
+                    },
+                    "alertingTaskStatus": {
+                      "type": "string",
+                      "description": "The status of the alerting task."
+                    },
+                    "alertingTaskEnabled": {
+                      "type": "string",
+                      "description": "Indicates whether the alerting task is enabled or not."
+                    }
+                  },
+                  "description": "Contains the event specific attributes of the payload."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.alerting-task.created",
+                  "description": "Unique identifier for the event type.  This event indicates that data alert has been created."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a new data alert is created. Includes alert configuration, access type, recipients, and trigger settings. Use this to track alert creation and update external monitoring systems.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "alerting.alertingTaskDeleted": {
+        "name": "com.qlik.v1.alerting-task.deleted",
+        "tags": [
+          {
+            "name": "data-alerts"
+          }
+        ],
+        "title": "A data alert has been deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "enum": [
+                        "ADMIN_ACTION",
+                        "OWNER_ACTION",
+                        "APP_DELETED"
+                      ],
+                      "type": "string",
+                      "description": "Action that triggered the deletion."
+                    },
+                    "alertId": {
+                      "type": "string",
+                      "example": "64231b8989790dc11f0c88ee",
+                      "description": "ID of the alert."
+                    },
+                    "ownerId": {
+                      "type": "string",
+                      "example": "DRCy6BXc0O4AXNcFVPW-IPsUpbWCgRct",
+                      "description": "ID of the owner of the alert."
+                    },
+                    "alertName": {
+                      "type": "string",
+                      "example": "test4_new_alert_target_access_2_recipients_manual_trigger",
+                      "description": "Name of the alert."
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "test4_new_alert_target_access_2_recipients_manual_trigger",
+                      "description": "Description of the alert."
+                    },
+                    "recipientIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "DRCy6BXc0O4AXNcFVPW-IPsUpbWCgRct",
+                          "2rQoqsyhuOH11bzP_tf8xD"
+                        ]
+                      },
+                      "description": "IDs of the recipients of the alert."
+                    }
+                  },
+                  "description": "Contains the event specific attributes of the payload."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.alerting-task.deleted",
+                  "description": "The unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a data alert is deleted. Includes the alert identifier, causal action code, and affected recipients. Use this to clean up alert subscriptions and external alert registries.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "alerting.alertingTaskExecutionSummaryCreated": {
+        "name": "com.qlik.v1.alerting-task.execution-summary.created",
+        "tags": [
+          {
+            "name": "data-alerts"
+          }
+        ],
+        "title": "A data alert execution summary has been generated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "alertId": {
+                      "type": "string",
+                      "example": "62c5b42f53c0b193281aa124",
+                      "description": "The identifier of the alert that the execution summary pertains to."
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "alertId": {
+                          "type": "string",
+                          "example": "62c5b42f53c0b193281aa124",
+                          "description": "The identifier of the alert that the execution summary pertains to."
+                        },
+                        "ownerId": {
+                          "type": "string",
+                          "example": "4--qu5MTAghrqvygydtHSWTSqBWIiBtG",
+                          "description": "The identifier of the owner of the alert."
+                        },
+                        "complete": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Whether the execution summary is complete."
+                        },
+                        "tenantId": {
+                          "type": "string",
+                          "example": "ActoyXI9-8Z7H9M8W_JBbVAQvsOmBnle",
+                          "description": "The identifier of the tenant that the alert belongs to."
+                        },
+                        "alertName": {
+                          "type": "string",
+                          "example": "New Terminal Alarm",
+                          "description": "The name of the alert that the execution summary pertains to."
+                        },
+                        "accessMode": {
+                          "enum": [
+                            "SOURCE_ACCESS",
+                            "TARGET_ACCESS"
+                          ],
+                          "type": "string",
+                          "example": "SOURCE_ACCESS",
+                          "description": "The access mode for the alert."
+                        },
+                        "workflowId": {
+                          "type": "string",
+                          "example": "24db23a7-6a2e-4a5f-8ee3-32fa1935f4f3",
+                          "description": "The identifier of the workflow that the alert belongs to."
+                        },
+                        "totalRecipientCount": {
+                          "type": "integer",
+                          "example": 1,
+                          "description": "The total number of recipients for the alert."
+                        },
+                        "failedExecutionsCount": {
+                          "type": "integer",
+                          "example": 0,
+                          "description": "The number of failed executions for the alert."
+                        },
+                        "disabledRecipientsCount": {
+                          "type": "integer",
+                          "example": 0,
+                          "description": "The number of disabled recipients for the alert."
+                        },
+                        "successfulExecutionsCount": {
+                          "type": "integer",
+                          "example": 1,
+                          "description": "The number of successful executions for the alert."
+                        },
+                        "failedExecutionsRecipientsInfo": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {}
+                          },
+                          "description": "Information about recipients for whom executions failed."
+                        }
+                      },
+                      "description": "The execution summary data."
+                    },
+                    "tracking": {
+                      "type": "object",
+                      "properties": {
+                        "alertId": {
+                          "type": "string",
+                          "example": "62c5b42f53c0b193281aa124",
+                          "description": "The identifier of the alert that the execution summary pertains to."
+                        },
+                        "workflowId": {
+                          "type": "string",
+                          "example": "62c5b42f53c0b193281aa124",
+                          "description": "The identifier of the workflow that the execution summary pertains to."
+                        }
+                      },
+                      "description": "The tracking information for the event."
+                    },
+                    "alertName": {
+                      "type": "string",
+                      "example": "New Terminal Alarm",
+                      "description": "The name of the alert that the execution summary pertains to."
+                    }
+                  },
+                  "description": "Contains the event specific attributes of the payload."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.alerting-task.execution-summary.created",
+                  "description": "The unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an execution summary is generated for a data alert. Includes execution statistics (successful, failed, disabled recipients), overall status, and tracking information. Use this to monitor alert execution health.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "alerting.alertingTaskRecipientRemoved": {
+        "name": "com.qlik.v1.alerting-task.recipient.removed",
+        "tags": [
+          {
+            "name": "data-alerts"
+          }
+        ],
+        "title": "A data alert has been modified by removing a recipient",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "alertId": {
+                      "type": "string",
+                      "example": "64233273697940223c2f6993",
+                      "description": "The identifier of the alert the recipient was added to."
+                    },
+                    "ownerId": {
+                      "type": "string",
+                      "example": "640239c20ae3db3eb09ffd55",
+                      "description": "The identifier of the user who owns the alert."
+                    },
+                    "alertName": {
+                      "type": "string",
+                      "example": "test1_new_alert_source_access_2_recipients_manual_trigger",
+                      "description": "The name of the alert the recipient was added to."
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "test1_new_alert_source_access_2_recipients_manual_trigger",
+                      "description": "A description of the alert."
+                    },
+                    "recipientId": {
+                      "type": "string",
+                      "example": "640239de63f7bc79e4f05915",
+                      "description": "The identifier of the new recipient that was removed."
+                    }
+                  },
+                  "description": "Contains the event specific attributes of the payload."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.alerting-task.recipient.removed",
+                  "description": "The unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a recipient is removed from a data alert. Includes the alert identifier, removed recipient, and alert metadata. Use this to revoke alert access.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "alerting.alertingTaskTaskStatusChanged": {
+        "name": "com.qlik.v1.alerting-task.task-status.changed",
+        "tags": [
+          {
+            "name": "data-alerts"
+          }
+        ],
+        "title": "A data alert status has been modified",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "cause": {
+                      "type": "string",
+                      "description": "The cause of the alerting task status change."
+                    },
+                    "alertId": {
+                      "type": "string",
+                      "description": "The identifier of the alert that the event pertains to."
+                    },
+                    "oldTask": {
+                      "type": "object",
+                      "properties": {
+                        "recipients": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "userId": {
+                                "type": "string",
+                                "description": "userId of the recipient."
+                              },
+                              "subscribed": {
+                                "type": "boolean"
+                              },
+                              "enabledByUser": {
+                                "type": "boolean",
+                                "description": "Indicates whether the alerting task recipient was enabled by a user."
+                              },
+                              "enabledBySystem": {
+                                "type": "boolean",
+                                "description": "Indicates whether the alerting task recipient was enabled by the system."
+                              },
+                              "alertingTaskRecipientErrors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "enum": [
+                                        "USER_IS_DELETED",
+                                        "USER_DISABLED_IN_QCS",
+                                        "NO_ACCESS_TO_APP",
+                                        "UNSUBSCRIBED_FROM_ALERT",
+                                        "CONDITION_EVAL_ERROR",
+                                        "USER_DISABLED_IN_ALERT_BY_OWNER",
+                                        "MAX_ALERTS_LIMIT_REACHED"
+                                      ],
+                                      "type": "string",
+                                      "description": "Identifier for type of error occurring on alerting task."
+                                    }
+                                  }
+                                },
+                                "description": "An array of error objects for the alerting task recipient."
+                              }
+                            }
+                          }
+                        },
+                        "enabledByUser": {
+                          "type": "boolean",
+                          "description": "Indicates whether the alerting task was enabled by a user."
+                        },
+                        "enabledBySystem": {
+                          "type": "boolean",
+                          "description": "Indicates whether the alerting task was enabled by the system."
+                        },
+                        "alertingTaskErrors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "enum": [
+                                  "OWNER_DISABLED",
+                                  "OWNER_ACCESS",
+                                  "OWNER_LICENSE",
+                                  "APP_DELETED",
+                                  "NO_RECIPIENTS",
+                                  "PARTIAL_ACCESS",
+                                  "EVAL_ERROR",
+                                  "ORPHAN",
+                                  "CONVERSION_DENIED",
+                                  "EXPIRED",
+                                  "PARTIAL_SENT",
+                                  "QUOTA_REACHED"
+                                ],
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "description": "An array of error objects for the alerting task."
+                        }
+                      },
+                      "description": "The previous state of the alerting task."
+                    },
+                    "ownerId": {
+                      "type": "string",
+                      "description": "The identifier of the owner of the alerting task."
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "description": "The identifier of the tenant of the alerting task."
+                    },
+                    "alertName": {
+                      "type": "string",
+                      "description": "The name of the alert that the event pertains to."
+                    },
+                    "currentTask": {
+                      "type": "object",
+                      "properties": {
+                        "recipients": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "userId": {
+                                "type": "string",
+                                "description": "The identifier of the user associated with the alerting task recipient."
+                              },
+                              "subscribed": {
+                                "type": "boolean",
+                                "description": "Indicates whether the alerting task recipient is subscribed to the alert."
+                              },
+                              "enabledByUser": {
+                                "type": "boolean",
+                                "description": "Indicates whether the alerting task recipient was enabled by a user."
+                              },
+                              "enabledBySystem": {
+                                "type": "boolean",
+                                "description": "Indicates whether the alerting task recipient was enabled by the system."
+                              },
+                              "alertingTaskRecipientErrors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "enum": [
+                                        "USER_IS_DELETED",
+                                        "USER_DISABLED_IN_QCS",
+                                        "NO_ACCESS_TO_APP",
+                                        "UNSUBSCRIBED_FROM_ALERT",
+                                        "CONDITION_EVAL_ERROR",
+                                        "USER_DISABLED_IN_ALERT_BY_OWNER",
+                                        "MAX_ALERTS_LIMIT_REACHED"
+                                      ],
+                                      "type": "string",
+                                      "description": "Identifier for type of error occurring on alerting task."
+                                    }
+                                  }
+                                },
+                                "description": "An array of error objects for the alerting task recipient."
+                              }
+                            }
+                          }
+                        },
+                        "enabledByUser": {
+                          "type": "boolean",
+                          "description": "Indicates whether the alerting task was enabled by a user."
+                        },
+                        "enabledBySystem": {
+                          "type": "boolean",
+                          "description": "Indicates whether the alerting task was enabled by the system."
+                        },
+                        "alertingTaskErrors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "enum": [
+                                  "OWNER_DISABLED",
+                                  "OWNER_ACCESS",
+                                  "OWNER_LICENSE",
+                                  "APP_DELETED",
+                                  "NO_RECIPIENTS",
+                                  "PARTIAL_ACCESS",
+                                  "EVAL_ERROR",
+                                  "ORPHAN",
+                                  "CONVERSION_DENIED",
+                                  "EXPIRED",
+                                  "PARTIAL_SENT",
+                                  "QUOTA_REACHED"
+                                ],
+                                "type": "string",
+                                "description": "Identifier for type of error occurring on alerting task."
+                              }
+                            }
+                          },
+                          "description": "An array of error objects for the alerting task."
+                        }
+                      },
+                      "description": "The current state of the alerting task."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "The description of the alerting task."
+                    }
+                  },
+                  "description": "Contains the event specific attributes of the payload."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.alerting-task.task-status.changed",
+                  "description": "The unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the operational status of a data alert changes (for example, enabled/disabled, error state). Includes the alert, current state, previous state, and cause of the change. Use this to track alert health and implement status-driven workflows.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "cloudEventsAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-01-15T10:43:17Z",
+              "2025-01-15T10:43:17.123Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "The unique identifier for the user triggering the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "User",
+              "ServiceAccount"
+            ],
+            "description": "The type of principal that triggered the occurrence."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "The unique identifier for the tenant related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\n  \"sub\": \"VZhiEfgW2bLd7HgR-jjzAh6VnicipweT\",\n  \"email\": \"user@example.com\",\n  \"roles\": [\"admin\", \"editor\"]\n}\n"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event."
+          },
+          "tracestate": {
+            "type": "string",
+            "examples": [
+              "rojo=00f067aa0ba902b7,congo=t61rcWkgMzE"
+            ],
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "examples": [
+              "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+            ],
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          }
+        }
+      }
+    }
+  }
+}

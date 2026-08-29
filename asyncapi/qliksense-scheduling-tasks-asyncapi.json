@@ -1,0 +1,411 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "scheduling/tasks",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsTask": {
+      "address": "system-events.task",
+      "messages": {
+        "schedulingTaskCreated": {
+          "$ref": "#/components/messages/task.schedulingTaskCreated"
+        },
+        "schedulingTaskDeleted": {
+          "$ref": "#/components/messages/task.schedulingTaskDeleted"
+        },
+        "schedulingTaskUpdated": {
+          "$ref": "#/components/messages/task.schedulingTaskUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "schedulingTaskCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTask"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTask/messages/schedulingTaskCreated"
+        }
+      ]
+    },
+    "schedulingTaskDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTask"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTask/messages/schedulingTaskDeleted"
+        }
+      ]
+    },
+    "schedulingTaskUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTask"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTask/messages/schedulingTaskUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "task.schedulingTaskCreated": {
+        "name": "com.qlik.scheduling.task.created",
+        "tags": [
+          {
+            "name": "task"
+          }
+        ],
+        "title": "Task created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/taskEntryObject"
+                },
+                "eventType": {
+                  "enum": [
+                    "com.qlik.scheduling.task.created"
+                  ],
+                  "type": "string",
+                  "description": "Unique identifier for the event type."
+                },
+                "extensions": {
+                  "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a new task is created. The event includes the task ID, owner, associated resource, and the scheduled action.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "task.schedulingTaskDeleted": {
+        "name": "com.qlik.scheduling.task.deleted",
+        "tags": [
+          {
+            "name": "task"
+          }
+        ],
+        "title": "Task deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/taskEntryObject"
+                },
+                "eventType": {
+                  "type": "string",
+                  "default": "com.qlik.scheduling.task.deleted",
+                  "description": "Unique identifier for the event type."
+                },
+                "extensions": {
+                  "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a task is deleted. The event includes the full task state at the time of deletion, including the task ID and owner.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "task.schedulingTaskUpdated": {
+        "name": "com.qlik.scheduling.task.updated",
+        "tags": [
+          {
+            "name": "task"
+          }
+        ],
+        "title": "Task updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/taskEntryObject"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "_updates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string",
+                                "description": "The JSON path of the field that was updated."
+                              },
+                              "newValue": {
+                                "type": "string",
+                                "description": "The new value of the field after the update."
+                              },
+                              "oldValue": {
+                                "type": "string",
+                                "description": "The previous value of the field before the update."
+                              }
+                            },
+                            "description": "An object describing a single field that was updated."
+                          },
+                          "description": "The list of fields updated in this task, with the old and new values for each changed field."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "eventType": {
+                  "type": "string",
+                  "default": "com.qlik.scheduling.task.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a task's configuration or properties are updated. The event includes the updated task state along with a list of changed fields in `_updates`, identifying what was modified and the old and new values. Use this to detect configuration drift or audit changes to scheduled tasks.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.scheduling.tasks.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "properties": {
+          "userid": {
+            "type": "string",
+            "example": "ad378d54-3e97-47c0-bc57-cd84dbb93fa2",
+            "description": "Unique identifier of the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "example": "103359ca-3579-4125-a0dc-d19531b53186",
+            "description": "Unique identifier of the tenant related to the event."
+          },
+          "toplevelresourceid": {
+            "type": "string",
+            "description": "Identifier of the top-level resource that triggered the event."
+          }
+        },
+        "description": "Additional event metadata."
+      },
+      "taskEntryObject": {
+        "type": "object",
+        "required": [
+          "id",
+          "createdBy",
+          "ownerId",
+          "name",
+          "resourceType",
+          "resourceId",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "The unique identifier of the task."
+          },
+          "name": {
+            "type": "string",
+            "example": "My task",
+            "description": "The name of the task."
+          },
+          "usage": {
+            "enum": [
+              "ANALYTICS",
+              "DATA_PREPARATION",
+              "DATAFLOW_PREP",
+              "SINGLE_TABLE_PREP"
+            ],
+            "type": "string",
+            "description": "The product domain in which the associated resource is used, such as `ANALYTICS` or `DATA_PREPARATION`. Defaults to `ANALYTICS` when not specified."
+          },
+          "action": {
+            "type": "string",
+            "description": "The action performed on the target resource."
+          },
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "aborted"
+            ],
+            "type": "string",
+            "description": "The status in which the task run finished. One of `succeeded`, `failed`, or `aborted`."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the task is enabled. When `true`, the task is active and eligible to run."
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "The unique identifier of the user that owns the task. Only applicable for user-level tasks."
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The unique identifier of the space the task operates in."
+          },
+          "duration": {
+            "type": "string",
+            "description": "The task execution duration in ISO 8601 format."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-10-30T07:06:22Z",
+            "description": "The UTC timestamp when the task was created."
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "The unique identifier of the user that created the task."
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-10-30T07:06:22Z",
+            "description": "The UTC timestamp when the task was deleted."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-10-30T07:06:22Z",
+            "description": "The UTC timestamp when the task was last updated."
+          },
+          "resourceId": {
+            "type": "string",
+            "description": "The unique identifier of the target resource associated with the task's action."
+          },
+          "description": {
+            "type": "string",
+            "example": "This is my task",
+            "description": "A user-provided description of the task."
+          },
+          "actionParams": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The list of parameters for the action."
+          },
+          "disabledCode": {
+            "enum": [
+              "MANUALLY",
+              "CONSECUTIVE-FAILURES",
+              "APP-SCRIPT-UPDATED",
+              "OWNER-DELETED",
+              "OWNER-DISABLED"
+            ],
+            "type": "string",
+            "description": "The reason the task was disabled."
+          },
+          "migratedFrom": {
+            "type": "string",
+            "description": "The identifier of the original reload task from which this task was migrated. Empty if the task was not migrated."
+          },
+          "resourceType": {
+            "enum": [
+              "app"
+            ],
+            "type": "string",
+            "description": "The type of resource the task operates on."
+          },
+          "statusDetails": {
+            "type": "string",
+            "description": "Additional details about the final status, such as the failure reason, automation ID, or reload ID."
+          }
+        },
+        "description": "Represents the full state of a task resource at the time the event was published. All lifecycle events carry this object as their `data` payload, capturing the task's configuration, ownership, and execution status."
+      }
+    }
+  }
+}

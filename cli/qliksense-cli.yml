@@ -1,0 +1,307 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/toolkits/qlik-cli/, https://github.com/qlik-oss/qlik-cli, https://github.com/qlik-oss/homebrew-taps
+docs: https://qlik.dev/toolkits/qlik-cli/
+repo: https://github.com/qlik-oss/qlik-cli
+description: 'qlik-cli is Qlik''s first-party command-line tool for Qlik Cloud. It is generated from the same API
+  specifications as the REST surface, so its command tree tracks the API resource-by-resource: 1,018 documented
+  command pages across 60+ top-level resource groups. It is also one of only two places Qlik implements rate-limit
+  handling and automatic pagination for the caller.'
+name: qlik
+official: true
+language: go
+license: open source (qlik-oss)
+version: v3.3.0
+released: '2026-08-14'
+install:
+- method: homebrew
+  command: brew install qlik-oss/taps/qlik-cli
+  platforms:
+  - macos
+  - linux
+- method: github-release
+  command: download the signed binary from https://github.com/qlik-oss/qlik-cli/releases
+  platforms:
+  - macos
+  - linux
+  - windows
+authentication:
+  methods:
+  - api-key
+  - oauth2-m2m
+  - jwt
+  context_model: named contexts (qlik context create/use) hold tenant URL plus credentials
+  docs: https://qlik.dev/authenticate/oauth/oauth-connect-qlik-cli/
+notable_behaviour:
+- name: automatic pagination
+  detail: qlik-cli follows links.next in the background when listing resources; direct HTTP callers must do this
+    themselves.
+  docs: https://qlik.dev/toolkits/qlik-cli/qlik-cli-pagination
+- name: rate-limit handling
+  detail: Built-in 429/Retry-After handling. Qlik names qlik-cli and the Qlik Automate connectors as the only two
+    toolkits that do this for you.
+  docs: https://qlik.dev/apis/rest/rate-limiting/
+- name: namespace commands
+  detail: qlik-cli 3.0.0 added namespace command support, tracking the /api/<namespace>/ migration.
+  docs: https://qlik.dev/changelog/
+- name: aliases
+  detail: qlik alias add/ls/rm/update for user-defined command shortcuts.
+- name: shell completion
+  detail: qlik completion for bash/zsh/fish/powershell.
+command_groups:
+  count: 81
+  documented_pages: 1018
+  groups:
+  - name: app
+    pages: 127
+    docs: https://qlik.dev/toolkits/qlik-cli/app/
+  - name: ml
+    pages: 58
+    docs: https://qlik.dev/toolkits/qlik-cli/ml/
+  - name: workflows
+    pages: 41
+    docs: https://qlik.dev/toolkits/qlik-cli/workflows/
+  - name: assistant
+    pages: 38
+    docs: https://qlik.dev/toolkits/qlik-cli/assistant/
+  - name: connectivity
+    pages: 32
+    docs: https://qlik.dev/toolkits/qlik-cli/connectivity/
+  - name: glossary
+    pages: 31
+    docs: https://qlik.dev/toolkits/qlik-cli/glossary/
+  - name: direct-access-agent
+    pages: 30
+    docs: https://qlik.dev/toolkits/qlik-cli/direct-access-agent/
+  - name: core
+    pages: 26
+    docs: https://qlik.dev/toolkits/qlik-cli/core/
+  - name: scheduling
+    pages: 25
+    docs: https://qlik.dev/toolkits/qlik-cli/scheduling/
+  - name: automation
+    pages: 24
+    docs: https://qlik.dev/toolkits/qlik-cli/automation/
+  - name: di-project
+    pages: 23
+    docs: https://qlik.dev/toolkits/qlik-cli/di-project/
+  - name: knowledgebase
+    pages: 23
+    docs: https://qlik.dev/toolkits/qlik-cli/knowledgebase/
+  - name: data-alert
+    pages: 20
+    docs: https://qlik.dev/toolkits/qlik-cli/data-alert/
+  - name: data-governance
+    pages: 20
+    docs: https://qlik.dev/toolkits/qlik-cli/data-governance/
+  - name: sharing-task
+    pages: 18
+    docs: https://qlik.dev/toolkits/qlik-cli/sharing-task/
+  - name: condition
+    pages: 16
+    docs: https://qlik.dev/toolkits/qlik-cli/condition/
+  - name: oauth-client
+    pages: 16
+    docs: https://qlik.dev/toolkits/qlik-cli/oauth-client/
+  - name: space
+    pages: 16
+    docs: https://qlik.dev/toolkits/qlik-cli/space/
+  - name: brand
+    pages: 15
+    docs: https://qlik.dev/toolkits/qlik-cli/brand/
+  - name: license
+    pages: 15
+    docs: https://qlik.dev/toolkits/qlik-cli/license/
+  - name: collection
+    pages: 14
+    docs: https://qlik.dev/toolkits/qlik-cli/collection/
+  - name: data-store
+    pages: 14
+    docs: https://qlik.dev/toolkits/qlik-cli/data-store/
+  - name: data-file
+    pages: 13
+    docs: https://qlik.dev/toolkits/qlik-cli/data-file/
+  - name: encryption
+    pages: 13
+    docs: https://qlik.dev/toolkits/qlik-cli/encryption/
+  - name: task
+    pages: 13
+    docs: https://qlik.dev/toolkits/qlik-cli/task/
+  - name: webhook
+    pages: 13
+    docs: https://qlik.dev/toolkits/qlik-cli/webhook/
+  - name: group
+    pages: 12
+    docs: https://qlik.dev/toolkits/qlik-cli/group/
+  - name: identity-provider
+    pages: 12
+    docs: https://qlik.dev/toolkits/qlik-cli/identity-provider/
+  - name: item
+    pages: 12
+    docs: https://qlik.dev/toolkits/qlik-cli/item/
+  - name: api-key
+    pages: 11
+    docs: https://qlik.dev/toolkits/qlik-cli/api-key/
+  - name: context
+    pages: 11
+    docs: https://qlik.dev/toolkits/qlik-cli/context/
+  - name: lineage-graph
+    pages: 11
+    docs: https://qlik.dev/toolkits/qlik-cli/lineage-graph/
+  - name: user
+    pages: 11
+    docs: https://qlik.dev/toolkits/qlik-cli/user/
+  - name: analytics
+    pages: 10
+    docs: https://qlik.dev/toolkits/qlik-cli/analytics/
+  - name: automation-connection
+    pages: 10
+    docs: https://qlik.dev/toolkits/qlik-cli/automation-connection/
+  - name: data-connection
+    pages: 10
+    docs: https://qlik.dev/toolkits/qlik-cli/data-connection/
+  - name: tenant-settings
+    pages: 10
+    docs: https://qlik.dev/toolkits/qlik-cli/tenant-settings/
+  - name: transport
+    pages: 10
+    docs: https://qlik.dev/toolkits/qlik-cli/transport/
+  - name: ui-config
+    pages: 10
+    docs: https://qlik.dev/toolkits/qlik-cli/ui-config/
+  - name: extension
+    pages: 9
+    docs: https://qlik.dev/toolkits/qlik-cli/extension/
+  - name: report-template
+    pages: 9
+    docs: https://qlik.dev/toolkits/qlik-cli/report-template/
+  - name: theme
+    pages: 9
+    docs: https://qlik.dev/toolkits/qlik-cli/theme/
+  - name: audit
+    pages: 8
+    docs: https://qlik.dev/toolkits/qlik-cli/audit/
+  - name: csp-origin
+    pages: 8
+    docs: https://qlik.dev/toolkits/qlik-cli/csp-origin/
+  - name: data-set
+    pages: 8
+    docs: https://qlik.dev/toolkits/qlik-cli/data-set/
+  - name: data-source
+    pages: 8
+    docs: https://qlik.dev/toolkits/qlik-cli/data-source/
+  - name: tenant
+    pages: 8
+    docs: https://qlik.dev/toolkits/qlik-cli/tenant/
+  - name: web-notification
+    pages: 8
+    docs: https://qlik.dev/toolkits/qlik-cli/web-notification/
+  - name: automl-prediction
+    pages: 7
+    docs: https://qlik.dev/toolkits/qlik-cli/automl-prediction/
+  - name: data-asset
+    pages: 7
+    docs: https://qlik.dev/toolkits/qlik-cli/data-asset/
+  - name: data-credential
+    pages: 7
+    docs: https://qlik.dev/toolkits/qlik-cli/data-credential/
+  - name: reload-task
+    pages: 7
+    docs: https://qlik.dev/toolkits/qlik-cli/reload-task/
+  - name: role
+    pages: 7
+    docs: https://qlik.dev/toolkits/qlik-cli/role/
+  - name: web-integration
+    pages: 7
+    docs: https://qlik.dev/toolkits/qlik-cli/web-integration/
+  - name: alias
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/alias/
+  - name: completion
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/completion/
+  - name: data-quality
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/data-quality/
+  - name: note
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/note/
+  - name: reload
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/reload/
+  - name: report
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/report/
+  - name: spec
+    pages: 5
+    docs: https://qlik.dev/toolkits/qlik-cli/spec/
+  - name: banner
+    pages: 3
+    docs: https://qlik.dev/toolkits/qlik-cli/banner/
+  - name: oauth-token
+    pages: 3
+    docs: https://qlik.dev/toolkits/qlik-cli/oauth-token/
+  - name: question
+    pages: 3
+    docs: https://qlik.dev/toolkits/qlik-cli/question/
+  - name: quota
+    pages: 3
+    docs: https://qlik.dev/toolkits/qlik-cli/quota/
+  - name: automation-connector
+    pages: 2
+    docs: https://qlik.dev/toolkits/qlik-cli/automation-connector/
+  - name: automl-deployment
+    pages: 2
+    docs: https://qlik.dev/toolkits/qlik-cli/automl-deployment/
+  - name: consumption
+    pages: 2
+    docs: https://qlik.dev/toolkits/qlik-cli/consumption/
+  - name: notification
+    pages: 2
+    docs: https://qlik.dev/toolkits/qlik-cli/notification/
+  - name: ''
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli//
+  - name: get-started-qlik-cli
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/get-started-qlik-cli/
+  - name: install-qlik-cli
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/install-qlik-cli/
+  - name: qlik-cli-contexts
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/qlik-cli-contexts/
+  - name: qlik-cli-escaping
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/qlik-cli-escaping/
+  - name: qlik-cli-export-charts
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/qlik-cli-export-charts/
+  - name: qlik-cli-pagination
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/qlik-cli-pagination/
+  - name: qlik-cli-qrs-get-started
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/qlik-cli-qrs-get-started/
+  - name: raw
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/raw/
+  - name: status
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/status/
+  - name: update
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/update/
+  - name: version
+    pages: 1
+    docs: https://qlik.dev/toolkits/qlik-cli/version/
+key_flows:
+- name: Bulk create/delete users
+  docs: https://qlik.dev/manage/automate/qlik-cli-snippets-bulk-create-delete/
+- name: Migrate app objects between tenants
+  docs: https://qlik.dev/manage/migrate/qlik-cli-app-objects-migrate/
+- name: Chain reload tasks
+  docs: https://qlik.dev/manage/analytics-applications/task-chaining-qlik-cli/
+- name: Validate an app load script
+  docs: https://qlik.dev/manage/automate/validate-load-script/
+package_entry: packages/qliksense-packages.yml

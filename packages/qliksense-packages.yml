@@ -1,0 +1,193 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://qlik.dev/toolkits/ and https://qlik.dev/toolkits/sdks-tools-versions/ —
+  Qlik's own SDK/tooling index and its versioning-and-lifecycle policy page.
+  Every version/published pair below was read from the package registry's own
+  metadata endpoint (registry.npmjs.org, pypi.org/pypi/<pkg>/json,
+  api.nuget.org, proxy.golang.org, api.github.com/releases) on 2026-08-29, not
+  from the docs page — the docs page renders shields.io badges rather than
+  literal version strings.
+description: >-
+  First-party Qlik client libraries, SDKs and tooling for Qlik Cloud. Qlik
+  publishes all of them from the qlik-oss GitHub organization under an
+  Apache/MIT open-source posture, and states a semver policy plus an explicit
+  discontinued list at https://qlik.dev/toolkits/sdks-tools-versions/.
+notes:
+  - >-
+    CURRENCY FINDING: the two Python/TypeScript "Platform SDK" lines are the
+    decayed ones. PyPI qlik-sdk last published 0.17.0 on 2023-09-08 (nearly
+    three years stale against an API surface that shipped 243 changelog entries
+    since), and Qlik itself labels it Experimental. The TypeScript @qlik/sdk was
+    formally deprecated 2024-05-25 and reached end of life 2025-03-27; npm
+    reports the latest version 0.28.0 as deprecated. @qlik/api is its supported
+    replacement and is current.
+  - >-
+    enigma.js (npm) last published 2.14.0 on 2024-03-13 and its GitHub release
+    stream stops at v2.11.0 (2023-03-10), yet Qlik lists it as Stable — the
+    JSON-RPC/QIX protocol it wraps is itself long-stable, so this is low churn
+    rather than abandonment.
+  - >-
+    The .NET SDK badge on qlik.dev/toolkits/sdks-tools-versions/ reads
+    "release_date november 2024", but NuGet reports QlikSense.NetSDK 16.12.1
+    published 2026-08-03. The docs badge is stale, not the package.
+packages:
+  - language: javascript
+    registry: npm
+    name: "@qlik/api"
+    url: https://www.npmjs.com/package/@qlik/api
+    source: https://github.com/qlik-oss/qlik-api-ts
+    docs: https://qlik.dev/toolkits/qlik-api/
+    install: npm install @qlik/api
+    official: true
+    release_status: stable
+    version: 2.15.2
+    published: '2026-08-17'
+    note: >-
+      Typed JavaScript/TypeScript client covering both the Qlik Cloud REST APIs
+      and the QIX JSON-RPC engine. The supported successor to @qlik/sdk.
+  - language: javascript
+    registry: npm
+    name: "@qlik/embed-web-components"
+    url: https://www.npmjs.com/package/@qlik/embed-web-components
+    source: https://qlik.dev/embed/qlik-embed/
+    docs: https://qlik.dev/embed/qlik-embed/
+    install: npm install @qlik/embed-web-components
+    official: true
+    release_status: stable
+    version: 1.7.4
+    published: '2026-08-18'
+    note: qlik-embed custom-element library; also distributed via CDN script tag.
+  - language: javascript
+    registry: npm
+    name: "@qlik/embed-react"
+    url: https://www.npmjs.com/package/@qlik/embed-react
+    source: https://qlik.dev/embed/qlik-embed/
+    install: npm install @qlik/embed-react
+    official: true
+    release_status: stable
+    version: 2.5.4
+    published: '2026-08-18'
+  - language: javascript
+    registry: npm
+    name: "@qlik/embed-svelte"
+    url: https://www.npmjs.com/package/@qlik/embed-svelte
+    source: https://qlik.dev/embed/qlik-embed/
+    install: npm install @qlik/embed-svelte
+    official: true
+    release_status: experimental
+    version: 1.1.5
+    published: '2026-08-18'
+    note: Qlik labels this Experimental in its own SDK versioning table.
+  - language: javascript
+    registry: npm
+    name: enigma.js
+    url: https://www.npmjs.com/package/enigma.js
+    source: https://github.com/qlik-oss/enigma.js
+    docs: https://qlik.dev/toolkits/enigma-js/
+    install: npm install enigma.js
+    official: true
+    release_status: stable
+    version: 2.14.0
+    published: '2024-03-13'
+    note: JSON-RPC/WebSocket client for the Qlik Associative Engine (QIX).
+  - language: javascript
+    registry: npm
+    name: "@nebula.js/stardust"
+    url: https://www.npmjs.com/package/@nebula.js/stardust
+    source: https://github.com/qlik-oss/nebula.js
+    docs: https://qlik.dev/embed/nebula/
+    install: npm install @nebula.js/stardust
+    official: true
+    release_status: stable
+    version: 7.4.0
+    published: '2026-08-21'
+    note: Product- and framework-agnostic integration API for rendering Qlik visualizations.
+  - language: javascript
+    registry: npm
+    name: picasso.js
+    url: https://www.npmjs.com/package/picasso.js
+    source: https://github.com/qlik-oss/picasso.js
+    docs: https://qlik.dev/extend/extensions/picasso-js/get-started/
+    install: npm install picasso.js
+    official: true
+    release_status: stable
+    version: 2.11.7
+    published: '2026-08-20'
+    note: Charting/visualization grammar used to build custom Qlik visualizations.
+  - language: javascript
+    registry: npm
+    name: "@qlik/sdk"
+    url: https://www.npmjs.com/package/@qlik/sdk
+    source: https://qlik.dev/changelog/129-typescript-platform-sdk-end-of-life/
+    official: true
+    release_status: end-of-life
+    deprecated: true
+    version: 0.28.0
+    published: '2024-08-19'
+    note: >-
+      Deprecated 2024-05-25, end of life 2025-03-27. npm flags 0.28.0 as
+      deprecated. Superseded by @qlik/api.
+  - language: python
+    registry: pypi
+    name: qlik-sdk
+    url: https://pypi.org/project/qlik-sdk/
+    docs: https://qlik.dev/toolkits/platform-sdk/
+    install: pip install qlik-sdk
+    official: true
+    release_status: experimental
+    version: 0.17.0
+    published: '2023-09-08'
+    note: >-
+      Qlik's own versioning table marks the Python Platform SDK Experimental and
+      shows a red September-2023 release badge; PyPI confirms no release since.
+  - language: dotnet
+    registry: nuget
+    name: QlikSense.NetSDK
+    url: https://www.nuget.org/packages/QlikSense.NetSDK
+    docs: https://qlik.dev/toolkits/net-sdk/
+    install: dotnet add package QlikSense.NetSDK
+    official: true
+    release_status: stable
+    version: 16.12.1
+    published: '2026-08-03'
+  - language: go
+    registry: pkg.go.dev
+    name: github.com/qlik-oss/enigma-go/v4
+    url: https://pkg.go.dev/github.com/qlik-oss/enigma-go/v4
+    source: https://github.com/qlik-oss/enigma-go
+    docs: https://qlik.dev/toolkits/enigma-go/
+    install: go get github.com/qlik-oss/enigma-go/v4
+    official: true
+    release_status: stable
+    version: v4.5.0
+    published: '2025-11-27'
+  - language: go
+    registry: github-releases
+    name: qlik-cli
+    url: https://github.com/qlik-oss/qlik-cli/releases
+    source: https://github.com/qlik-oss/qlik-cli
+    docs: https://qlik.dev/toolkits/qlik-cli/
+    install: brew install qlik-oss/taps/qlik-cli
+    official: true
+    release_status: stable
+    version: v3.3.0
+    published: '2026-08-14'
+    note: >-
+      Distributed as signed binaries via GitHub Releases and a Homebrew tap
+      (qlik-oss/homebrew-taps); there is no language-package registry entry to
+      query, so the version comes from the GitHub Releases API. Detail in
+      cli/qliksense-cli.yml.
+  - language: protobuf
+    registry: github
+    name: qlik-oss/server-side-extension
+    url: https://github.com/qlik-oss/server-side-extension
+    source: https://github.com/qlik-oss/server-side-extension
+    official: true
+    release_status: stable
+    version: v1.1.0
+    published: '2018-01-16'
+    note: >-
+      gRPC/protobuf contract for the Qlik engine Server-Side Extension protocol.
+      Saved verbatim to grpc/qliksense-server-side-extension.proto. No registry
+      distribution — consumers generate stubs from the .proto directly.

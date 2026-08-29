@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/qlik-oss/schemas/refs/heads/main/qtcp/newtaskdefaults.schema.json",
+  "title": "New Task Defaults Configuration",
+  "description": "Schema for new task (added from the UI) defaults configurations",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+		"modifiedByAi": { "$ref": "#/$defs/ModifiedByAi" },
+    "datamart": {
+      "$ref": "./newtaskdefaults.settings.datamart.schema.json"
+    },
+		"fileBasedKnowledgeMart": {
+      "$ref": "./newtaskdefaults.settings.filebasedknowledgemart.schema.json"
+    },
+    "knowledgeMart": {
+      "$ref": "./newtaskdefaults.settings.knowledgemart.schema.json"
+    },
+    "lakeLanding": {
+      "$ref": "./newtaskdefaults.settings.lakelanding.schema.json"
+    },
+    "landing": {
+      "$ref": "./newtaskdefaults.settings.landing.schema.json"
+    },
+    "qvdStorage": {
+      "$ref": "./newtaskdefaults.settings.qvdstorage.schema.json"
+    },
+    "registeredData": {
+      "$ref": "./newtaskdefaults.settings.registereddata.schema.json"
+    },
+    "replicateLanding": {
+      "$ref": "./newtaskdefaults.settings.replicatelanding.schema.json"
+    },
+    "storage": {
+      "$ref": "./newtaskdefaults.settings.storage.schema.json"
+    },
+    "transform": {
+      "$ref": "./newtaskdefaults.settings.transform.schema.json"
+    },
+    "lakehouseStorage": {
+      "$ref": "./newtaskdefaults.settings.lakehousestorage.schema.json"
+    },
+    "streamingTransform": {
+      "$ref": "./newtaskdefaults.settings.streamingtransform.schema.json"
+    },
+    "streamingLakeLanding": {
+      "$ref": "./newtaskdefaults.settings.streaminglakelanding.schema.json"
+    }
+  },
+  "$defs": {
+    "ModifiedByAi": {
+      "type": "object",
+      "description": "Metadata describing the latest AI modification",
+      "required": ["lastUpdated", "model"],
+      "properties": {
+        "lastUpdated": { "type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$", "description": "UTC timestamp of the latest AI modification" },
+        "model": { "type": "string", "minLength": 1, "description": "AI model that made the latest modification" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

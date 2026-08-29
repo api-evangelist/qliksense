@@ -1,0 +1,110 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  Derived by binding the Qlik MCP tool names Qlik states publicly (see
+  mcp/qliksense-mcp.yml) to the operations in the 78 OpenAPI 3.0.0 documents
+  harvested from https://qlik.dev/specs/rest/*.json on 2026-08-29.
+description: >-
+  Crosswalk between the Qlik MCP server's tool surface and the Qlik Cloud REST
+  contract. THIS CROSSWALK IS DELIBERATELY THIN AND THE THINNESS IS THE FINDING:
+  Qlik ships a GA remote MCP server it says exposes "more than 70 tools across 9
+  categories", but publishes no tool manifest, so 68 of those ~70 tools cannot
+  be named — let alone bound to an operation — without an authenticated
+  tools/list against a customer tenant. Everything mapped below is mapped by
+  name and documented semantics, never by a schema Qlik published, and the
+  confidence values say so.
+
+surfaces:
+  openapi:
+    path: openapi/
+    documents: 78
+    operations: 681
+    gated: false
+    note: >-
+      Public, unauthenticated, machine-readable. Fetched from
+      https://qlik.dev/specs/rest/<api>.json. Servers are templated:
+      https://{tenant}.{region}.qlikcloud.com.
+  json_rpc:
+    path: json-rpc/qliksense-qix-openrpc.json
+    format: OpenRPC 1.0.0
+    gated: false
+    note: The QIX Associative Engine WebSocket API, published as an OpenRPC document.
+  asyncapi:
+    path: asyncapi/
+    documents: 29
+    format: AsyncAPI 3.0.0
+    gated: false
+  mcp:
+    url: https://{tenant}.{region}.qlikcloud.com/api/ai/mcp
+    gated: true
+    gate: >-
+      OAuth 2.0 required AND the host is templated on a customer tenant, so no
+      anonymous tools/list is possible.
+  graphql:
+    present: false
+    note: No GraphQL surface. POST https://qlik.dev/graphql returned 404 on 2026-08-29.
+
+crosswalk:
+  - tool: search_datasets
+    category: Datasets and Data Quality
+    rest:
+      - getDataSet
+      - getDataSetProfiles
+    rest_paths:
+      - GET /api/v1/data-sets/{data-set-id}
+      - GET /api/v1/data-sets/{data-set-id}/profiles
+    binding: name-and-semantics
+    confidence: low
+    note: >-
+      The Data Sets REST API exposes no list/search operation — only get by id,
+      save, patch, put, batch-delete and profiles. Dataset discovery in the REST
+      contract runs through the generic Items API
+      (openapi/qliksense-items.json), so the MCP tool most likely composes Items
+      search with Data Sets get. Recorded as low confidence because Qlik
+      publishes no inputSchema for the tool.
+  - tool: qlik_answers_ask_question
+    category: Data Exploration and Analysis
+    rest:
+      - searchAssistants
+    rest_paths:
+      - POST /api/v1/assistants/{assistantId}/threads/{threadId}/actions/invoke
+      - POST /api/v1/assistants/{assistantId}/threads/{threadId}/actions/stream
+      - POST /api/v1/assistants/{assistantId}/actions/search
+    binding: name-and-semantics
+    confidence: medium
+    note: >-
+      Qlik Answers is the Assistants API. Asking a question maps onto creating a
+      thread and invoking a prompt (synchronous) or streaming it. Only
+      searchAssistants carries an operationId in the published spec; the invoke
+      and stream operations have none, which is itself a contract-quality gap
+      (see conformance/qliksense-conformance.yml).
+
+mcp_only:
+  - tool: "<68 unnamed tools>"
+    reason: >-
+      Qlik states 70+ tools across 9 categories but publishes no manifest and no
+      public tool reference URL. They cannot be enumerated, named, or bound
+      without an authenticated tools/list against a live tenant. Listing them
+      speculatively would fabricate an agent surface, so they are counted and
+      left unnamed.
+
+rest_only:
+  count: 679
+  note: >-
+    679 of the 681 published REST operations have no MCP tool that can be bound
+    to them from public information. This is an artifact of the missing
+    manifest, not proof the tools do not exist — the 9 published categories
+    (lineage, glossary, data products, master items, selections, sheets) all
+    have REST counterparts in openapi/ that a full tool list would very likely
+    map onto.
+
+coverage:
+  mcp_tools_published: 70
+  mcp_tools_nameable: 2
+  mcp_tools_mapped: 2
+  rest_operations: 681
+  rest_operations_mapped: 5
+  mapped_ratio_of_rest: 0.007
+  confidence_high: 0
+  confidence_medium: 1
+  confidence_low: 1

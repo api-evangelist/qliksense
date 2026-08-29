@@ -1,0 +1,331 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "user-identities",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsUserIdentity": {
+      "address": "system-events.user-identity",
+      "messages": {
+        "userIdentityConflict": {
+          "$ref": "#/components/messages/user-identity.userIdentityConflict"
+        },
+        "userIdentityReassigned": {
+          "$ref": "#/components/messages/user-identity.userIdentityReassigned"
+        }
+      }
+    }
+  },
+  "operations": {
+    "userIdentityConflict": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsUserIdentity"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsUserIdentity/messages/userIdentityConflict"
+        }
+      ]
+    },
+    "userIdentityReassigned": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsUserIdentity"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsUserIdentity/messages/userIdentityReassigned"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "user-identity.userIdentityConflict": {
+        "name": "com.qlik.user-identity.conflict",
+        "tags": [
+          {
+            "name": "user-identity"
+          }
+        ],
+        "title": "Identity conflict",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [],
+                  "required": [
+                    "matchedUsers"
+                  ],
+                  "properties": {
+                    "matchedUsers": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/userObject"
+                      },
+                      "example": [
+                        {
+                          "id": "LCkX6XCql7Owoea9HFfmxsMLxbnwd3pE",
+                          "email": "foo@bar.example",
+                          "status": "active",
+                          "subject": "auth0\\foo"
+                        },
+                        {
+                          "id": "FAkX2XCql4Owoea5HafmxsMLxbnwd3pE",
+                          "email": "foo@bar.example",
+                          "status": "active",
+                          "subject": "auth0\\bar"
+                        }
+                      ],
+                      "description": "Array of matched user objects."
+                    }
+                  },
+                  "description": "Data specific to the user identity conflict event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.user-identity.conflict",
+                  "description": "The type of event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when attempting to create a user with an existing identity.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "user-identity.userIdentityReassigned": {
+        "name": "com.qlik.user-identity.reassigned",
+        "tags": [
+          {
+            "name": "user-identity"
+          }
+        ],
+        "title": "Identity reassigned",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "email": "foo@corp.example",
+                      "newSubject": "okta\\bar",
+                      "oldSubject": "auth0\\foo"
+                    }
+                  ],
+                  "required": [
+                    "oldSubject",
+                    "newSubject",
+                    "email"
+                  ],
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": "foo@corp.example",
+                      "description": "User's email used to reassign."
+                    },
+                    "newSubject": {
+                      "type": "string",
+                      "example": "okta\\bar",
+                      "description": "User's new subject in our DB."
+                    },
+                    "oldSubject": {
+                      "type": "string",
+                      "example": "auth0\\foo",
+                      "description": "User's old subject in our DB."
+                    }
+                  },
+                  "description": "Data specific to the user identity reassigned event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.user-identity.reassigned",
+                  "description": "The type of event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a user is assigned a new identity.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-01-01T12:00:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "605a18af2ab08cdbfad09259"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "service_account"
+            ],
+            "description": "The type of principal that triggered the occurrence."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "0.0.0.0"
+            ],
+            "description": "Origin IP address."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "WZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the session related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\\\"iss\\\":\\\"qlik.api.internal/service\\\",\\\"sub\\\":\\\"service\\\",\\\"subType\\\":\\\"service\\\"}"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event"
+          }
+        }
+      },
+      "userObject": {
+        "type": "object",
+        "required": [
+          "id",
+          "subject",
+          "email",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "id123"
+          },
+          "email": {
+            "type": "string",
+            "example": "foo@bar.example"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "subject": {
+            "type": "string",
+            "example": "auth0\\foo"
+          }
+        },
+        "description": "Object containing user information."
+      }
+    }
+  }
+}

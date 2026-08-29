@@ -1,0 +1,365 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "web-integrations",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsWebIntegrations": {
+      "address": "system-events.web-integrations",
+      "messages": {
+        "webIntegrationCreated": {
+          "$ref": "#/components/messages/web-integrations.webIntegrationCreated"
+        },
+        "webIntegrationDeleted": {
+          "$ref": "#/components/messages/web-integrations.webIntegrationDeleted"
+        },
+        "webIntegrationUpdated": {
+          "$ref": "#/components/messages/web-integrations.webIntegrationUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "webIntegrationCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsWebIntegrations"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsWebIntegrations/messages/webIntegrationCreated"
+        }
+      ]
+    },
+    "webIntegrationDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsWebIntegrations"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsWebIntegrations/messages/webIntegrationDeleted"
+        }
+      ]
+    },
+    "webIntegrationUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsWebIntegrations"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsWebIntegrations/messages/webIntegrationUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "web-integrations.webIntegrationCreated": {
+        "name": "com.qlik.web-integration.created",
+        "tags": [
+          {
+            "name": "web-integrations"
+          }
+        ],
+        "title": "Web integration created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "id123",
+                      "name": "Api client 1",
+                      "validOrigins": [
+                        "http://unicorn.com",
+                        "http://foo.example"
+                      ]
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "name",
+                    "validOrigins"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "id123",
+                      "description": "Web integration identifier."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Api client 1",
+                      "description": "Web integration name."
+                    },
+                    "validOrigins": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "http://unicorn.com",
+                          "http://foo.example"
+                        ]
+                      },
+                      "description": "List of hostname(s) associated with the tenant."
+                    }
+                  },
+                  "description": "Web integration details."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.web-integration.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a web integration is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "web-integrations.webIntegrationDeleted": {
+        "name": "com.qlik.web-integration.deleted",
+        "tags": [
+          {
+            "name": "web-integrations"
+          }
+        ],
+        "title": "Web integration deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "id123"
+                    }
+                  ],
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "id123",
+                      "description": "Web integration identifier."
+                    }
+                  },
+                  "description": "Web integration details."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.web-integration.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a web integration is deleted.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "web-integrations.webIntegrationUpdated": {
+        "name": "com.qlik.web-integration.updated",
+        "tags": [
+          {
+            "name": "web-integrations"
+          }
+        ],
+        "title": "Web integration updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "id123",
+                      "updates": [
+                        {
+                          "newValue": "Web Integration 2",
+                          "oldValue": "Web Integration 1",
+                          "property": "name"
+                        }
+                      ]
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "updates"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "id123",
+                      "description": "Web integration identifier."
+                    },
+                    "updates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "example": {
+                          "newValue": "Web Integration 2",
+                          "oldValue": "Web Integration 1",
+                          "property": "name"
+                        },
+                        "properties": {
+                          "newValue": {
+                            "type": "string",
+                            "description": "Value of the field after the update."
+                          },
+                          "oldValue": {
+                            "type": "string",
+                            "description": "Value of the field before the update."
+                          },
+                          "property": {
+                            "type": "string",
+                            "description": "Property that has changed."
+                          }
+                        }
+                      },
+                      "description": "Collection of updates performed on the resource."
+                    }
+                  },
+                  "description": "Web integration details."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.web-integration.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a web integration is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-01-01T12:00:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "UZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      }
+    }
+  }
+}

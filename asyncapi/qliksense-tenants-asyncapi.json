@@ -1,0 +1,834 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "tenants",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsTenants": {
+      "address": "system-events.tenants",
+      "messages": {
+        "tenantAllowedDeactivate": {
+          "$ref": "#/components/messages/tenants.tenantAllowedDeactivate"
+        },
+        "tenantCreated": {
+          "$ref": "#/components/messages/tenants.tenantCreated"
+        },
+        "tenantDeactivated": {
+          "$ref": "#/components/messages/tenants.tenantDeactivated"
+        },
+        "tenantDeleted": {
+          "$ref": "#/components/messages/tenants.tenantDeleted"
+        },
+        "tenantDisallowedDeactivate": {
+          "$ref": "#/components/messages/tenants.tenantDisallowedDeactivate"
+        },
+        "tenantReactivated": {
+          "$ref": "#/components/messages/tenants.tenantReactivated"
+        },
+        "tenantUpdated": {
+          "$ref": "#/components/messages/tenants.tenantUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "tenantAllowedDeactivate": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantAllowedDeactivate"
+        }
+      ]
+    },
+    "tenantCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantCreated"
+        }
+      ]
+    },
+    "tenantDeactivated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantDeactivated"
+        }
+      ]
+    },
+    "tenantDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantDeleted"
+        }
+      ]
+    },
+    "tenantDisallowedDeactivate": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantDisallowedDeactivate"
+        }
+      ]
+    },
+    "tenantReactivated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantReactivated"
+        }
+      ]
+    },
+    "tenantUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsTenants"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsTenants/messages/tenantUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "tenants.tenantAllowedDeactivate": {
+        "name": "com.qlik.v1.tenant.allowed-deactivate",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant allowed deactivate",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "name": "Example Tenant",
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ],
+                      "allowDeactivateUntil": "2026-06-24T18:28:31.301Z"
+                    }
+                  ],
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Example Tenant",
+                      "description": "Tenant name."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    },
+                    "allowDeactivateUntil": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-24T18:28:31.301Z",
+                      "description": "Timestamp until which the tenant can be deactivated."
+                    }
+                  },
+                  "description": "Details of the tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.tenant.allowed-deactivate",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when deactivation is allowed for a tenant.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "tenants.tenantCreated": {
+        "name": "com.qlik.tenant.created",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "name": "Example Tenant",
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ],
+                      "licenseId": "9999000000003063"
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "name",
+                    "hostnames"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Example Tenant",
+                      "description": "Tenant name."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    },
+                    "licenseId": {
+                      "type": "string",
+                      "example": "9999000000003063",
+                      "description": "License identifier associated with the tenant."
+                    }
+                  },
+                  "description": "Details of the created tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.tenant.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a new tenant is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "tenants.tenantDeactivated": {
+        "name": "com.qlik.v1.tenant.deactivated",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant deactivated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "name": "Example Tenant",
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ],
+                      "purgeDate": "2026-06-24T18:28:31.301Z",
+                      "statusesDisallowed": [
+                        "active"
+                      ]
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "name",
+                    "hostnames"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Example Tenant",
+                      "description": "Tenant name."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    },
+                    "purgeDate": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-24T18:28:31.301Z",
+                      "description": "Scheduled purge date when a user or OEM deactivates the tenant."
+                    },
+                    "statusesDisallowed": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "active"
+                      ],
+                      "description": "List of statuses that are disallowed for the tenant."
+                    }
+                  },
+                  "description": "Details of the deactivated tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.tenant.deactivated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the tenant status changes from active to disabled.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "tenants.tenantDeleted": {
+        "name": "com.qlik.tenant.deleted",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "name": "Example Tenant",
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ]
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "name",
+                    "hostnames"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Example Tenant",
+                      "description": "Tenant name."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    }
+                  },
+                  "description": "Details of the deleted tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.tenant.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a tenant is deleted.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "tenants.tenantDisallowedDeactivate": {
+        "name": "com.qlik.v1.tenant.disallowed-deactivate",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant disallowed deactivate",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "name": "Example Tenant",
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ]
+                    }
+                  ],
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Example Tenant",
+                      "description": "Tenant name."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    }
+                  },
+                  "description": "Details of the tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.tenant.disallowed-deactivate",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when deactivation is disallowed for a tenant.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "tenants.tenantReactivated": {
+        "name": "com.qlik.v1.tenant.reactivated",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant reactivated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "name": "Example Tenant",
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ],
+                      "statusesDisallowed": [
+                        "active"
+                      ]
+                    }
+                  ],
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Example Tenant",
+                      "description": "Tenant name."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    },
+                    "statusesDisallowed": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "active"
+                      ],
+                      "description": "List of statuses that are disallowed for the tenant."
+                    }
+                  },
+                  "description": "Details of the reactivated tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.tenant.reactivated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the tenant status changes from disabled to active.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "tenants.tenantUpdated": {
+        "name": "com.qlik.tenant.updated",
+        "tags": [
+          {
+            "name": "tenants"
+          }
+        ],
+        "title": "Tenant updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "id": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "updates": [
+                        {
+                          "newValue": "Example Tenant Updated",
+                          "oldValue": "Example Tenant",
+                          "property": "name"
+                        }
+                      ],
+                      "hostnames": [
+                        "example-tenant.us.qlikcloud.com",
+                        "example-tenant.eu.qlikcloud.com"
+                      ],
+                      "licenseId": "9999000000003063"
+                    }
+                  ],
+                  "required": [
+                    "id",
+                    "hostnames",
+                    "licenseId",
+                    "updates"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69",
+                      "description": "Identifier of the tenant."
+                    },
+                    "updates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "example": {
+                          "newValue": "Example Tenant Updated",
+                          "oldValue": "Example Tenant",
+                          "property": "name"
+                        },
+                        "properties": {
+                          "newValue": {
+                            "type": "string",
+                            "description": "Value of the field after the update."
+                          },
+                          "oldValue": {
+                            "type": "string",
+                            "description": "Value of the field before the update."
+                          },
+                          "property": {
+                            "type": "string",
+                            "description": "Property that has changed."
+                          }
+                        }
+                      },
+                      "description": "Collection of updates performed on the resource."
+                    },
+                    "hostnames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "examples": [
+                        [
+                          "example-tenant.us.qlikcloud.com",
+                          "example-tenant.eu.qlikcloud.com"
+                        ]
+                      ],
+                      "description": "List of hostname(s) associated with the tenant."
+                    },
+                    "licenseId": {
+                      "type": "string",
+                      "example": "9999000000003063",
+                      "description": "License identifier associated with the tenant."
+                    },
+                    "parentTenantId": {
+                      "type": "string",
+                      "example": "9999000000003063",
+                      "description": "Parent license identifier associated with the tenant."
+                    },
+                    "capabilityBankId": {
+                      "type": "string",
+                      "example": "a5b4a033fd04770c14de80ad",
+                      "description": "Capability bank identifier associated with the license."
+                    }
+                  },
+                  "description": "Details of the updated tenant."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.tenant.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a tenant is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-04-21T13:45:30Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.tenant.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "default": "com.qlik/tenants",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "507f1f77bcf86cd799439011"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      }
+    }
+  }
+}

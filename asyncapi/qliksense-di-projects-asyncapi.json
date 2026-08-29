@@ -1,0 +1,901 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "di-projects",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsDiProjectsDiTasks": {
+      "address": "system-events.di-projects.di-tasks",
+      "messages": {
+        "diProjectsDiTasksCompleted": {
+          "$ref": "#/components/messages/di-projects.diProjectsDiTasksCompleted"
+        },
+        "diProjectsDiTasksFailed": {
+          "$ref": "#/components/messages/di-projects.diProjectsDiTasksFailed"
+        },
+        "diProjectsDiTasksStarted": {
+          "$ref": "#/components/messages/di-projects.diProjectsDiTasksStarted"
+        },
+        "diProjectsDiTasksStopped": {
+          "$ref": "#/components/messages/di-projects.diProjectsDiTasksStopped"
+        }
+      }
+    }
+  },
+  "operations": {
+    "diProjectsDiTasksCompleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsDiProjectsDiTasks"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsDiProjectsDiTasks/messages/diProjectsDiTasksCompleted"
+        }
+      ]
+    },
+    "diProjectsDiTasksFailed": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsDiProjectsDiTasks"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsDiProjectsDiTasks/messages/diProjectsDiTasksFailed"
+        }
+      ]
+    },
+    "diProjectsDiTasksStarted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsDiProjectsDiTasks"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsDiProjectsDiTasks/messages/diProjectsDiTasksStarted"
+        }
+      ]
+    },
+    "diProjectsDiTasksStopped": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsDiProjectsDiTasks"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsDiProjectsDiTasks/messages/diProjectsDiTasksStopped"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "di-projects.diProjectsDiTasksCompleted": {
+        "name": "com.qlik.v1.di-projects.di-tasks.completed",
+        "tags": [
+          {
+            "name": "di-tasks"
+          }
+        ],
+        "title": "Data task completed",
+        "payload": {
+          "type": "object",
+          "required": [
+            "specversion",
+            "type",
+            "source",
+            "id",
+            "time",
+            "datacontenttype",
+            "data",
+            "tenantid",
+            "spaceid",
+            "ownerid",
+            "userid",
+            "extensions"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "examples": [
+                "02eae54e-396f-456c-bb6e-4ef1793504d9"
+              ],
+              "description": "Unique CloudEvent identifier."
+            },
+            "data": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/TaskCompletedDataPayload"
+                }
+              ],
+              "examples": [],
+              "description": "The event-specific data payload for a completed task."
+            },
+            "time": {
+              "type": "string",
+              "format": "date-time",
+              "examples": [
+                "2025-05-26T11:47:18.045Z"
+              ],
+              "description": "CloudEvent timestamp."
+            },
+            "type": {
+              "enum": [
+                "com.qlik.v1.di-projects.di-tasks.completed"
+              ],
+              "type": "string",
+              "default": "com.qlik.v1.di-projects.di-tasks.completed",
+              "examples": [
+                "com.qlik.v1.di-projects.di-tasks.completed"
+              ],
+              "description": "Event type."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/data-app-design",
+              "examples": [
+                "com.qlik/data-app-design"
+              ],
+              "description": "Event source."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "6819cec4fb2b973f77b77383"
+              ],
+              "description": "Identifier for the user associated with the event."
+            },
+            "subject": {
+              "type": "string",
+              "examples": [
+                "some-subject"
+              ],
+              "description": "Subject of the event in the context of the event producer."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "dpmeH_c0vkwEzct90sXfcDSXBXRmRuU5"
+              ],
+              "description": "Identifier for the tenant."
+            },
+            "dataschema": {
+              "type": "string",
+              "examples": [
+                "https://example.com/schema"
+              ],
+              "description": "URI to the schema for the data attribute."
+            },
+            "extensions": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/QlikEventExtensions"
+                }
+              ],
+              "examples": [],
+              "description": "Qlik-specific extension attributes for the event."
+            },
+            "specversion": {
+              "enum": [
+                "1.0"
+              ],
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents spec version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "Content type of the event payload."
+            }
+          }
+        },
+        "summary": "Data task completed",
+        "description": "Publish an event when a data task has completed successfully",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "di-projects.diProjectsDiTasksFailed": {
+        "name": "com.qlik.v1.di-projects.di-tasks.failed",
+        "tags": [
+          {
+            "name": "di-tasks"
+          }
+        ],
+        "title": "Data task failed",
+        "payload": {
+          "type": "object",
+          "required": [
+            "specversion",
+            "type",
+            "source",
+            "id",
+            "time",
+            "datacontenttype",
+            "data",
+            "tenantid",
+            "spaceid",
+            "ownerid",
+            "userid",
+            "extensions"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "examples": [
+                "c946fcdf-8e9c-464f-80dd-a08483d31f36"
+              ],
+              "description": "Unique CloudEvent identifier."
+            },
+            "data": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/TaskFailedDataPayload"
+                }
+              ],
+              "examples": [],
+              "description": "The event-specific data payload for a failed task."
+            },
+            "time": {
+              "type": "string",
+              "format": "date-time",
+              "examples": [
+                "2025-05-26T11:48:27.521Z"
+              ],
+              "description": "CloudEvent timestamp."
+            },
+            "type": {
+              "enum": [
+                "com.qlik.v1.di-projects.di-tasks.failed"
+              ],
+              "type": "string",
+              "default": "com.qlik.v1.di-projects.di-tasks.failed",
+              "examples": [
+                "com.qlik.v1.di-projects.di-tasks.failed"
+              ],
+              "description": "Event type."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/data-app-design",
+              "examples": [
+                "com.qlik/data-app-design"
+              ],
+              "description": "Event source."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "6819cec4fb2b973f77b77383"
+              ],
+              "description": "Identifier for the user associated with the event."
+            },
+            "subject": {
+              "type": "string",
+              "examples": [
+                "some-subject"
+              ],
+              "description": "Subject of the event in the context of the event producer."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "dpmeH_c0vkwEzct90sXfcDSXBXRmRuU5"
+              ],
+              "description": "Identifier for the tenant."
+            },
+            "dataschema": {
+              "type": "string",
+              "examples": [
+                "https://example.com/schema"
+              ],
+              "description": "URI to the schema for the data attribute."
+            },
+            "extensions": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/QlikEventExtensions"
+                }
+              ],
+              "examples": [],
+              "description": "Qlik-specific extension attributes for the event."
+            },
+            "specversion": {
+              "enum": [
+                "1.0"
+              ],
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents spec version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "Content type of the event payload."
+            }
+          }
+        },
+        "summary": "Data task failed",
+        "description": "Publish an event when a data task has failed",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "di-projects.diProjectsDiTasksStarted": {
+        "name": "com.qlik.v1.di-projects.di-tasks.started",
+        "tags": [
+          {
+            "name": "di-tasks"
+          }
+        ],
+        "title": "Data task started",
+        "payload": {
+          "type": "object",
+          "required": [
+            "specversion",
+            "type",
+            "source",
+            "id",
+            "time",
+            "datacontenttype",
+            "data",
+            "tenantid",
+            "spaceid",
+            "ownerid",
+            "userid",
+            "extensions"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "examples": [
+                "8b6adb1b-d6dd-47bd-ab3d-17d231166ba7"
+              ],
+              "description": "Unique CloudEvent identifier."
+            },
+            "data": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/TaskStartedDataPayload"
+                }
+              ],
+              "examples": [],
+              "description": "The event-specific data payload for a started task."
+            },
+            "time": {
+              "type": "string",
+              "format": "date-time",
+              "examples": [
+                "2025-05-26T11:48:15.004Z"
+              ],
+              "description": "CloudEvent timestamp."
+            },
+            "type": {
+              "enum": [
+                "com.qlik.v1.di-projects.di-tasks.started"
+              ],
+              "type": "string",
+              "default": "com.qlik.v1.di-projects.di-tasks.started",
+              "examples": [
+                "com.qlik.v1.di-projects.di-tasks.started"
+              ],
+              "description": "Event type."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/data-app-design",
+              "examples": [
+                "com.qlik/data-app-design"
+              ],
+              "description": "Event source."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [],
+              "description": "Identifier for the user associated with the event."
+            },
+            "subject": {
+              "type": "string",
+              "examples": [
+                "some-subject"
+              ],
+              "description": "Subject of the event in the context of the event producer."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [],
+              "description": "Identifier for the tenant."
+            },
+            "dataschema": {
+              "type": "string",
+              "examples": [
+                "https://example.com/schema"
+              ],
+              "description": "URI to the schema for the data attribute."
+            },
+            "extensions": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/QlikEventExtensions"
+                }
+              ],
+              "examples": [],
+              "description": "Qlik-specific extension attributes for the event."
+            },
+            "specversion": {
+              "enum": [
+                "1.0"
+              ],
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents spec version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "Content type of the event payload."
+            }
+          }
+        },
+        "summary": "Data task started",
+        "description": "Publish an event when a data task is started",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "di-projects.diProjectsDiTasksStopped": {
+        "name": "com.qlik.v1.di-projects.di-tasks.stopped",
+        "tags": [
+          {
+            "name": "di-tasks"
+          }
+        ],
+        "title": "Data task stopped",
+        "payload": {
+          "type": "object",
+          "required": [
+            "specversion",
+            "type",
+            "source",
+            "id",
+            "time",
+            "datacontenttype",
+            "data",
+            "tenantid",
+            "spaceid",
+            "ownerid",
+            "userid",
+            "extensions"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "examples": [
+                "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              ],
+              "description": "Unique CloudEvent identifier."
+            },
+            "data": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/TaskStoppedDataPayload"
+                }
+              ],
+              "examples": [],
+              "description": "The event-specific data payload for a stopped task."
+            },
+            "time": {
+              "type": "string",
+              "format": "date-time",
+              "examples": [
+                "2025-05-26T11:50:00.000Z"
+              ],
+              "description": "CloudEvent timestamp."
+            },
+            "type": {
+              "enum": [
+                "com.qlik.v1.di-projects.di-tasks.stopped"
+              ],
+              "type": "string",
+              "default": "com.qlik.v1.di-projects.di-tasks.stopped",
+              "examples": [
+                "com.qlik.v1.di-projects.di-tasks.stopped"
+              ],
+              "description": "Event type."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/data-app-design",
+              "examples": [
+                "com.qlik/data-app-design"
+              ],
+              "description": "Event source."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "6819cec4fb2b973f77b77383"
+              ],
+              "description": "Identifier for the user associated with the event."
+            },
+            "subject": {
+              "type": "string",
+              "examples": [
+                "some-subject"
+              ],
+              "description": "Subject of the event in the context of the event producer."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "dpmeH_c0vkwEzct90sXfcDSXBXRmRuU5"
+              ],
+              "description": "Identifier for the tenant."
+            },
+            "dataschema": {
+              "type": "string",
+              "examples": [
+                "https://example.com/schema"
+              ],
+              "description": "URI to the schema for the data attribute."
+            },
+            "extensions": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/QlikEventExtensions"
+                }
+              ],
+              "examples": [],
+              "description": "Qlik-specific extension attributes for the event."
+            },
+            "specversion": {
+              "enum": [
+                "1.0"
+              ],
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents spec version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "Content type of the event payload."
+            }
+          }
+        },
+        "summary": "Data task stopped",
+        "description": "Publish an event when a data task has been stopped",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "DataTaskInfo": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "ownerId",
+          "projectId",
+          "spaceId",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "bad_storage-lbx4"
+            ],
+            "description": "Unique identifier for the data task.",
+            "x-qlik-filterable": true
+          },
+          "name": {
+            "type": "string",
+            "examples": [
+              "Bad Storage"
+            ],
+            "description": "Name of the data task.",
+            "x-qlik-filterable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/datatasktype"
+          },
+          "ownerId": {
+            "type": "string",
+            "examples": [
+              "68064bc230525613f366b4f1"
+            ],
+            "description": "Identifier of the owner of the data task.",
+            "x-qlik-filterable": true
+          },
+          "spaceId": {
+            "type": "string",
+            "examples": [
+              "68079b4004d7603de4991dcc"
+            ],
+            "description": "Identifier of the space containing the data task.",
+            "x-qlik-filterable": true
+          },
+          "projectId": {
+            "type": "string",
+            "examples": [
+              "68172bbc045ae3756c1ae309"
+            ],
+            "description": "Identifier of the project containing the data task.",
+            "x-qlik-filterable": true
+          },
+          "description": {
+            "type": "string",
+            "examples": [
+              "this storage has bad connection"
+            ],
+            "description": "Optional description of the data task."
+          }
+        }
+      },
+      "datatasktype": {
+        "enum": [
+          "LANDING",
+          "STORAGE",
+          "QVD_STORAGE",
+          "TRANSFORM",
+          "DATAMART",
+          "REGISTERED_DATA",
+          "REPLICATION",
+          "LAKE_LANDING",
+          "KNOWLEDGE_MART",
+          "FILE_BASED_KNOWLEDGE_MART",
+          "FILE_LANDING",
+          "ICEBERG_STORAGE",
+          "MIRROR"
+        ],
+        "type": "string"
+      },
+      "ErrorDetails": {
+        "type": "object",
+        "required": [
+          "code",
+          "source",
+          "status",
+          "title"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "examples": [
+              "QDI-DW-STORAGE-TABLE-IN-BATCH-ERROR"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "examples": [
+              "The batch run failed due to one or more tables that failed to load"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "examples": [
+              "com.qlik/qdi-app-manager"
+            ]
+          },
+          "status": {
+            "type": "integer",
+            "examples": [
+              500
+            ]
+          }
+        },
+        "description": "Detailed information about an error."
+      },
+      "QlikEventExtensions": {
+        "type": "object",
+        "required": [
+          "actor",
+          "updates"
+        ],
+        "properties": {
+          "actor": {
+            "type": "object",
+            "examples": [],
+            "description": "Information about the actor."
+          },
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "examples": [],
+            "description": "List of updates related to the event."
+          }
+        },
+        "description": "Qlik-specific extension attributes."
+      },
+      "StartMethod": {
+        "enum": [
+          "USER",
+          "SCHEDULER"
+        ],
+        "type": "string",
+        "description": "Method by which the task was started"
+      },
+      "TaskCompletedDataPayload": {
+        "type": "object",
+        "required": [
+          "dataTask",
+          "startTime",
+          "endTime",
+          "startedBy"
+        ],
+        "properties": {
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:47:17.893Z"
+            ],
+            "description": "Timestamp when the task ended."
+          },
+          "dataTask": {
+            "$ref": "#/components/schemas/DataTaskInfo"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:47:17.425Z"
+            ],
+            "description": "Timestamp when the task started."
+          },
+          "startedBy": {
+            "type": "string",
+            "examples": [
+              "6819cec4fb2b973f77b77383"
+            ],
+            "description": "Identifier of the user who started the task."
+          },
+          "startMethod": {
+            "$ref": "#/components/schemas/StartMethod"
+          }
+        },
+        "description": "Payload for data task completed event."
+      },
+      "TaskFailedDataPayload": {
+        "type": "object",
+        "required": [
+          "dataTask",
+          "startTime",
+          "endTime",
+          "startedBy",
+          "errorMessage",
+          "errorDetails"
+        ],
+        "properties": {
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:48:22.025Z"
+            ],
+            "description": "Timestamp when the task ended (failed)."
+          },
+          "dataTask": {
+            "$ref": "#/components/schemas/DataTaskInfo"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:48:14.890Z"
+            ],
+            "description": "Timestamp when the task started."
+          },
+          "startedBy": {
+            "type": "string",
+            "examples": [
+              "6819cec4fb2b973f77b77383"
+            ],
+            "description": "Identifier of the user who started the task."
+          },
+          "startMethod": {
+            "$ref": "#/components/schemas/StartMethod"
+          },
+          "errorDetails": {
+            "$ref": "#/components/schemas/ErrorDetails"
+          },
+          "errorMessage": {
+            "type": "string",
+            "examples": [
+              "The following tables failed to load: 'Order Details, Customers, Orders, Employees, Products, Categories, Region, Territories, Suppliers, Shippers'"
+            ],
+            "description": "Summary of the error."
+          }
+        },
+        "description": "Payload for data task failed event."
+      },
+      "TaskStartedDataPayload": {
+        "type": "object",
+        "required": [
+          "dataTask",
+          "startTime",
+          "startedBy"
+        ],
+        "properties": {
+          "dataTask": {
+            "$ref": "#/components/schemas/DataTaskInfo"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:48:14.890Z"
+            ],
+            "description": "Timestamp when the task started."
+          },
+          "startedBy": {
+            "type": "string",
+            "examples": [
+              "6819cec4fb2b973f77b77383"
+            ],
+            "description": "Identifier of the user who started the task."
+          },
+          "startMethod": {
+            "$ref": "#/components/schemas/StartMethod"
+          }
+        },
+        "description": "Payload for data task started event."
+      },
+      "TaskStoppedDataPayload": {
+        "type": "object",
+        "required": [
+          "dataTask",
+          "startTime",
+          "stoppedTime",
+          "stoppedBy"
+        ],
+        "properties": {
+          "dataTask": {
+            "$ref": "#/components/schemas/DataTaskInfo"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:48:14.890Z"
+            ],
+            "description": "Timestamp when the task was originally started."
+          },
+          "stoppedBy": {
+            "type": "string",
+            "examples": [
+              "6819cec4fb2b973f77b77383"
+            ],
+            "description": "Identifier of the user who stopped the task."
+          },
+          "startMethod": {
+            "$ref": "#/components/schemas/StartMethod"
+          },
+          "stoppedTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-05-26T11:49:59.000Z"
+            ],
+            "description": "Timestamp when the task was stopped."
+          }
+        },
+        "description": "Payload for data task stopped event."
+      }
+    }
+  }
+}

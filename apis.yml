@@ -1,10 +1,13 @@
 aid: qliksense
 name: Qlik Sense APIs
-description: >-
-  Collection of APIs for Qlik Sense, a business intelligence and visual analytics
-  platform. Qlik provides REST APIs, WebSocket APIs, and developer tools for
-  managing cloud tenants, applications, data connections, users, automations,
-  and AI-powered analytics through the Qlik Cloud platform.
+description: 'Qlik Sense and Qlik Cloud from Qlik Parent, Inc. — a business intelligence, data integration
+  and AI analytics platform. Qlik publishes one of the broadest machine-readable API surfaces in the analytics
+  market: 78 OpenAPI 3.0.0 documents covering 681 REST operations, 29 AsyncAPI 3.0.0 event documents carrying
+  CloudEvents 1.0 payloads, an OpenRPC 1.0.0 document for the QIX Associative Engine WebSocket API, 39
+  JSON Schemas for Qlik Talend Cloud declarative pipelines, and a proto3 gRPC contract for the engine''s
+  Server-Side Extension protocol. It also ships a generally-available remote MCP server at <tenant>/api/ai/mcp
+  and maintains a public Agent Skills hub. Every API is tenant-scoped to https://{tenant}.{region}.qlikcloud.com
+  and authenticated with an API key, an OAuth 2.0 token or a signed JWT.'
 type: Index
 deliveryModel:
   model: saas
@@ -30,301 +33,1776 @@ accessModel:
   generated: '2026-07-22'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/qliksense.png
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/qliksense/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/qliksense/refs/heads/main/apis.yml
 created: '2024-01-15'
-modified: '2026-04-18'
+modified: '2026-08-29'
 specificationVersion: '0.23'
 tags:
+- Agents
+- Analytics
+- Artificial Intelligence
+- Business Intelligence
+- Cloud
+- Data Integration
+- Data Visualization
+- Embedded Analytics
+- Enterprise
+- Machine Learning
+apis:
+- aid: qliksense:engine-api
+  name: Qlik Engine API
+  description: JSON-RPC WebSocket API for interacting with the Qlik Associative Engine, creating and manipulating
+    apps, and building visualizations.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  baseURL: wss://your-tenant.qlikcloud.com/app/
+  tags:
   - Analytics
   - Business Intelligence
+  - JSON-RPC
+  - WebSocket
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/json-rpc/qix
+  - type: OpenRPC
+    url: json-rpc/qliksense-qix-openrpc.json
+- aid: qliksense:server-side-extension
+  name: Qlik Server-Side Extension Protocol
+  description: gRPC/protobuf contract for extending the Qlik Associative Engine with external compute.
+    A plugin implements the qlik.sse.Connector service and the engine calls out to it for scalar, aggregation
+    and tensor functions and for script evaluation, which is how R and Python models are called from a
+    Qlik load script or chart expression.
+  humanURL: https://github.com/qlik-oss/server-side-extension
+  baseURL: grpc://{plugin-host}:{port}
+  tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Extensibility
+  - gRPC
+  - Machine Learning
+  - Protobuf
+  properties:
+  - type: Documentation
+    url: https://github.com/qlik-oss/server-side-extension
+  - type: Protobuf
+    url: grpc/qliksense-server-side-extension.proto
+  - type: SourceCode
+    url: https://github.com/qlik-oss/server-side-extension
+- aid: qliksense:system-events
+  name: Qlik Cloud System Events
+  description: 'The Qlik Cloud tenant event surface: 29 AsyncAPI 3.0.0 documents covering 102 message
+    definitions across apps, reloads, spaces, tenants, users, roles, licenses, quotas, OAuth clients,
+    data-integration projects, scheduling tasks and the AI/MCP channel. Payloads are CloudEvents 1.0 with
+    Qlik userid/tenantid extensions, delivered to subscribers by the Webhooks API and signed with HMAC-SHA256.'
+  humanURL: https://qlik.dev/apis/event/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/webhooks
+  tags:
+  - AsyncAPI
+  - Business Intelligence
+  - CloudEvents
+  - Event
+  - Real-Time
+  - Webhook
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/event/
+  - type: AsyncAPI
+    url: asyncapi/qliksense-asyncapi-index.yml
+  - type: Webhooks
+    url: asyncapi/qliksense-webhooks.yml
+- aid: qliksense:mcp-server
+  name: Qlik MCP Server
+  description: Qlik's first-party remote Model Context Protocol server, generally available since 2026-02-10
+    and included from the Starter plan up. It exposes Qlik Cloud analytics — datasets and data quality,
+    data products, lineage, business glossary, app discovery and metadata, data exploration, master items,
+    selections and filtering, visualizations and sheets — as MCP tools to any MCP-capable assistant. OAuth
+    2.0 only; every call is bound to a verified Qlik user and governed by the same space, role and Section
+    Access controls as the product.
+  humanURL: https://www.qlik.com/us/products/model-context-protocol
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/ai/mcp
+  tags:
+  - Agents
+  - Artificial Intelligence
+  - Business Intelligence
+  - MCP
+  - Model Context Protocol
+  properties:
+  - type: Documentation
+    url: https://www.qlik.com/us/products/model-context-protocol
+  - type: MCPServer
+    url: mcp/qliksense-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/qliksense-tool-crosswalk.yml
+  - type: AsyncAPI
+    url: asyncapi/qliksense-ai-mcps-asyncapi.json
+- aid: qliksense:analytics-apps-api
+  name: Qlik Apps API
+  description: Qlik Cloud Apps API. 7 operations published as OpenAPI 3.0.0 at https://qlik.dev/specs/rest/analytics/apps.json
+  humanURL: https://qlik.dev/apis/rest/analytics/apps/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/apps/evaluations
+  tags:
+  - Analytics
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-apps.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-apps-overlay.yaml
+- aid: qliksense:analytics-change-stores-api
+  name: Qlik Change stores API
+  description: Retrieve user-entered changes from write tables for export or further processing.
+  humanURL: https://qlik.dev/apis/rest/analytics/change-stores/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/change-stores
+  tags:
+  - Analytics
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-change-stores.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-change-stores-overlay.yaml
+- aid: qliksense:analytics-discovery-agent-adaptive-cards-api
+  name: Qlik Adaptive cards API
+  description: Qlik Cloud Adaptive cards API. 1 operations published as OpenAPI 3.0.0 at https://qlik.dev/specs/rest/analytics/discovery-agent/adaptive-cards.json
+  humanURL: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/discovery-agent/adaptive-cards
+  tags:
+  - Analytics
+  - Artificial Intelligence
+  - Business Intelligence
+  - Natural-Language
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-discovery-agent-adaptive-cards.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-discovery-agent-adaptive-cards-overlay.yaml
+- aid: qliksense:analytics-odag-apps-api
+  name: Qlik ODAG apps API
+  description: Retrieve and filter on-demand generated analytics applications by type.
+  humanURL: https://qlik.dev/apis/rest/analytics/odag-apps/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/odag-apps
+  tags:
+  - Analytics
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-odag-apps.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-odag-apps-overlay.yaml
+- aid: qliksense:analytics-odag-links-api
+  name: Qlik ODAG links API
+  description: Create, manage, and retrieve on-demand analytics generation links between selection and
+    template applications.
+  humanURL: https://qlik.dev/apis/rest/analytics/odag-links/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/odag-links
+  tags:
+  - Analytics
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-odag-links.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-odag-links-overlay.yaml
+- aid: qliksense:analytics-odag-requests-api
+  name: Qlik ODAG requests API
+  description: Submit, track, and manage on-demand analytics generation requests and their generated applications.
+  humanURL: https://qlik.dev/apis/rest/analytics/odag-requests/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/odag-requests
+  tags:
+  - Analytics
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-odag-requests.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-odag-requests-overlay.yaml
+- aid: qliksense:analytics-odag-settings-api
+  name: Qlik ODAG settings API
+  description: Read and configure tenant-level on-demand analytics generation settings.
+  humanURL: https://qlik.dev/apis/rest/analytics/odag-settings/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/analytics/odag-settings
+  tags:
+  - Analytics
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: OpenAPI
+    url: openapi/qliksense-analytics-odag-settings.json
+  - type: Overlay
+    url: overlays/qliksense-analytics-odag-settings-overlay.yaml
+- aid: qliksense:api-keys-api
+  name: Qlik API keys API
+  description: API keys can be used by developers to gain programmatic access to the Qlik platform, acting
+    as their own user.
+  humanURL: https://qlik.dev/apis/rest/api-keys/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/api-keys
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: OpenAPI
+    url: openapi/qliksense-api-keys.json
+  - type: Overlay
+    url: overlays/qliksense-api-keys-overlay.yaml
+- aid: qliksense:apps-api
+  name: Qlik Apps API
+  description: Manage Qlik Sense applications including creating, updating, publishing, and deleting apps
+    in Qlik Cloud.
+  humanURL: https://qlik.dev/apis/rest/apps/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/apps
+  tags:
+  - Application
   - Cloud
-  - Data Visualization
-  - Enterprise
-apis:
-  - aid: qliksense:engine-api
-    name: Qlik Engine API
-    description: >-
-      JSON-RPC WebSocket API for interacting with the Qlik Associative Engine,
-      creating and manipulating apps, and building visualizations.
-    humanURL: https://qlik.dev/apis/json-rpc/qix
-    baseURL: wss://your-tenant.qlikcloud.com/app/
-    tags:
-      - Analytics
-      - Business Intelligence
-      - JSON-RPC
-      - WebSocket
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/json-rpc/qix
-  - aid: qliksense:apps-api
-    name: Qlik Apps API
-    description: >-
-      Manage Qlik Sense applications including creating, updating, publishing,
-      and deleting apps in Qlik Cloud.
-    humanURL: https://qlik.dev/apis/rest/apps
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/apps
-    tags:
-      - Application
-      - Cloud
-      - REST
-    tags_raw:
-      - Applications
-      - Apps
-      - Cloud
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/apps
-  - aid: qliksense:users-api
-    name: Qlik Users API
-    description: >-
-      Manage users, groups, and authentication in Qlik Cloud tenants.
-    humanURL: https://qlik.dev/apis/rest/users
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/users
-    tags:
-      - Identity
-      - REST
-      - User
-    tags_raw:
-      - Identity
-      - REST
-      - Users
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/users
-  - aid: qliksense:spaces-api
-    name: Qlik Spaces API
-    description: >-
-      Manage shared and managed spaces for collaboration and content organization
-      in Qlik Cloud.
-    humanURL: https://qlik.dev/apis/rest/spaces
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/spaces
-    tags:
-      - Collaboration
-      - Organization
-      - REST
-      - Spaces
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/spaces
-  - aid: qliksense:data-connections-api
-    name: Qlik Data Connections API
-    description: >-
-      Create and manage data connections to various data sources in Qlik Cloud.
-    humanURL: https://qlik.dev/apis/rest/data-connections
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/data-connections
-    tags:
-      - Connections
-      - Data
-      - Integration
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/data-connections
-  - aid: qliksense:automations-api
-    name: Qlik Automations API
-    description: >-
-      Create and manage no-code automation workflows in Qlik Automate that
-      connect applications together.
-    humanURL: https://qlik.dev/apis/rest/automations
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/automations
-    tags:
-      - Automations
-      - No-Code
-      - REST
-      - Workflows
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/automations
-  - aid: qliksense:reloads-api
-    name: Qlik Reload API
-    description: >-
-      Trigger and manage data reload operations for Qlik Sense apps.
-    humanURL: https://qlik.dev/apis/rest/reloads
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/reloads
-    tags:
-      - Data
-      - ETL
-      - Reload
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/reloads
-  - aid: qliksense:webhooks-api
-    name: Qlik Webhooks API
-    description: >-
-      Create and manage webhooks to provide other applications with real-time
-      information from Qlik Cloud events.
-    humanURL: https://qlik.dev/apis/rest/webhooks
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/webhooks
-    tags:
-      - Event
-      - Real-Time
-      - REST
-      - Webhook
-    tags_raw:
-      - Events
-      - Real-Time
-      - REST
-      - Webhooks
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/webhooks
-  - aid: qliksense:reports-api
-    name: Qlik Reports API
-    description: >-
-      Generate downloadable report assets from data with configurable templates
-      and output formats.
-    humanURL: https://qlik.dev/apis/rest/reports
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/reports
-    tags:
-      - Export
-      - Reports
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/reports
-  - aid: qliksense:ml-api
-    name: Qlik Machine Learning API
-    description: >-
-      Generate profile insights, create and manage ML experiments, deploy models,
-      and run predictions in Qlik Cloud.
-    humanURL: https://qlik.dev/apis/rest/ml
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/ml
-    tags:
-      - Artificial Intelligence
-      - Machine-Learning
-      - Predictions
-      - REST
-    tags_raw:
-      - AI
-      - Machine Learning
-      - Predictions
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/ml
-  - aid: qliksense:natural-language-api
-    name: Qlik Natural Language API
-    description: >-
-      Parse natural language queries with support for language configuration,
-      visualization generation, and conversation context.
-    humanURL: https://qlik.dev/apis/rest/questions
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/questions
-    tags:
-      - Artificial Intelligence
-      - Natural-Language
-      - NLP
-      - REST
-    tags_raw:
-      - AI
-      - Natural Language
-      - NLP
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/questions
-  - aid: qliksense:tenants-api
-    name: Qlik Tenants API
-    description: >-
-      Configure and manage Qlik Cloud tenants including settings, licenses,
-      and administrative operations.
-    humanURL: https://qlik.dev/apis/rest/tenants
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/tenants
-    tags:
-      - Administration
-      - Configuration
-      - REST
-      - Tenants
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/tenants
-  - aid: qliksense:audits-api
-    name: Qlik Audits API
-    description: >-
-      Access events emitted upon each action taken in a tenant for detailed
-      audit logging and compliance.
-    humanURL: https://qlik.dev/apis/rest/audits
-    baseURL: https://your-tenant.qlikcloud.com/api/v1/audits
-    tags:
-      - Audits
-      - Compliance
-      - Logging
-      - REST
-    properties:
-      - type: Documentation
-        url: https://qlik.dev/apis/rest/audits
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/apps/
+  - type: OpenAPI
+    url: openapi/qliksense-apps.json
+  - type: Overlay
+    url: overlays/qliksense-apps-overlay.yaml
+  tags_raw:
+  - Applications
+  - Apps
+  - Cloud
+  - REST
+- aid: qliksense:assistants-api
+  name: Qlik Assistants API
+  description: Assistants provide a chat interface for asking questions and getting personalized, relevant
+    answers for Qlik Answers.
+  humanURL: https://qlik.dev/apis/rest/assistants/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/assistants
+  tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Natural-Language
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: OpenAPI
+    url: openapi/qliksense-assistants.json
+  - type: Overlay
+    url: overlays/qliksense-assistants-overlay.yaml
+- aid: qliksense:audits-api
+  name: Qlik Audits API
+  description: Access events emitted upon each action taken in a tenant for detailed audit logging and
+    compliance.
+  humanURL: https://qlik.dev/apis/rest/audits/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/audits
+  tags:
+  - Audits
+  - Compliance
+  - Logging
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/audits/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/audits/
+  - type: OpenAPI
+    url: openapi/qliksense-audits.json
+  - type: Overlay
+    url: overlays/qliksense-audits-overlay.yaml
+- aid: qliksense:automation-connections-api
+  name: Qlik Automation connections API
+  description: Automation Connections are used by Qlik Automate connectors during automation execution.
+  humanURL: https://qlik.dev/apis/rest/automation-connections/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/automation-connections
+  tags:
+  - Automation
+  - Business Intelligence
+  - REST
+  - Workflows
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: OpenAPI
+    url: openapi/qliksense-automation-connections.json
+  - type: Overlay
+    url: overlays/qliksense-automation-connections-overlay.yaml
+- aid: qliksense:automation-connectors-api
+  name: Qlik Automation connectors API
+  description: Automation connectors let you integrate third-party services and applications into your
+    data analytics workflows. Use this API to discover available connectors and understand billing characteristics.
+  humanURL: https://qlik.dev/apis/rest/automation-connectors/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/automation-connectors
+  tags:
+  - Automation
+  - Business Intelligence
+  - REST
+  - Workflows
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: OpenAPI
+    url: openapi/qliksense-automation-connectors.json
+  - type: Overlay
+    url: overlays/qliksense-automation-connectors-overlay.yaml
+- aid: qliksense:automations-api
+  name: Qlik Automations API
+  description: Create and manage no-code automation workflows in Qlik Automate that connect applications
+    together.
+  humanURL: https://qlik.dev/apis/rest/automations/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/automations
+  tags:
+  - Automations
+  - No-Code
+  - REST
+  - Workflows
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automations/
+  - type: OpenAPI
+    url: openapi/qliksense-automations.json
+  - type: Overlay
+    url: overlays/qliksense-automations-overlay.yaml
+- aid: qliksense:automl-deployments-api
+  name: Qlik AutoML real-time predictions API
+  description: Use your ML deployment to generate real-time results returned as JSON in a synchronous
+    manner to predict future outcomes on new data.
+  humanURL: https://qlik.dev/apis/rest/automl-deployments/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/automl-deployments
+  tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Machine Learning
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: OpenAPI
+    url: openapi/qliksense-automl-deployments.json
+  - type: Overlay
+    url: overlays/qliksense-automl-deployments-overlay.yaml
+- aid: qliksense:automl-predictions-api
+  name: Qlik AutoML dataset predictions API
+  description: Use your ML deployment to generate batch data in file format to predict future outcomes
+    on new data.
+  humanURL: https://qlik.dev/apis/rest/automl-predictions/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/automl-predictions
+  tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Machine Learning
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: OpenAPI
+    url: openapi/qliksense-automl-predictions.json
+  - type: Overlay
+    url: overlays/qliksense-automl-predictions-overlay.yaml
+- aid: qliksense:banners-api
+  name: Qlik Banners API
+  description: Banners display short messages at the top of the client interface to share tenant-wide
+    information, warnings, or issues. When embedding content, banners aren't shown inside qlik-embed UIs.
+    The only embedding method that displays banners is an iFrame generated using the App Integration API.
+  humanURL: https://qlik.dev/apis/rest/banners/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/banners
+  tags:
+  - Business Intelligence
+  - Event
+  - REST
+  - Real-Time
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/banners/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/banners/
+  - type: OpenAPI
+    url: openapi/qliksense-banners.json
+  - type: Overlay
+    url: overlays/qliksense-banners-overlay.yaml
+- aid: qliksense:brands-api
+  name: Qlik Brands API
+  description: Brands allow you to apply tenant level branding across most user interfaces.
+  humanURL: https://qlik.dev/apis/rest/brands/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/brands
+  tags:
+  - Business Intelligence
+  - Customization
+  - Embedded
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/brands/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/brands/
+  - type: OpenAPI
+    url: openapi/qliksense-brands.json
+  - type: Overlay
+    url: overlays/qliksense-brands-overlay.yaml
+- aid: qliksense:collections-api
+  name: Qlik Collections API
+  description: Collections provide the framework to catalog various content a user has access to using
+    tags, public and private collections, and favorites.
+  humanURL: https://qlik.dev/apis/rest/collections/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/collections
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/collections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/collections/
+  - type: OpenAPI
+    url: openapi/qliksense-collections.json
+  - type: Overlay
+    url: overlays/qliksense-collections-overlay.yaml
+- aid: qliksense:conditions-api
+  name: Qlik Conditions API
+  description: Conditions are used by features such as data alerting and subscriptions to determine when
+    action should be taken, based on data in a Qlik app.
+  humanURL: https://qlik.dev/apis/rest/conditions/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/conditions
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: OpenAPI
+    url: openapi/qliksense-conditions.json
+  - type: Overlay
+    url: overlays/qliksense-conditions-overlay.yaml
+- aid: qliksense:consumption-api
+  name: Qlik Entitlement consumption API
+  description: Tracks usage of entitled features in a tenant, used for the consumption metrics in the
+    admin console in a tenant.
+  humanURL: https://qlik.dev/apis/rest/consumption/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/consumption/executions
+  tags:
+  - Administration
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: OpenAPI
+    url: openapi/qliksense-consumption.json
+  - type: Overlay
+    url: overlays/qliksense-consumption-overlay.yaml
+- aid: qliksense:core-auth-settings-api
+  name: Qlik Auth settings API
+  description: Configure and retrieve authentication settings for your Qlik Cloud tenant.
+  humanURL: https://qlik.dev/apis/rest/core/auth-settings/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/core/auth-settings
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: OpenAPI
+    url: openapi/qliksense-core-auth-settings.json
+  - type: Overlay
+    url: overlays/qliksense-core-auth-settings-overlay.yaml
+- aid: qliksense:core-ip-policies-api
+  name: Qlik IP Policies API
+  description: IP policies let you control which IP addresses can access your Qlik Cloud tenant. Use this
+    API to manage allowlisting rules by creating, listing, updating, and deleting IP policies. When allowlisting
+    is enabled, only users connecting from allowed IPv4 addresses or ranges can access the tenant.
+  humanURL: https://qlik.dev/apis/rest/core/ip-policies/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/core/ip-policies
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: OpenAPI
+    url: openapi/qliksense-core-ip-policies.json
+  - type: Overlay
+    url: overlays/qliksense-core-ip-policies-overlay.yaml
+- aid: qliksense:csp-origins-api
+  name: Qlik CSP origins API
+  description: CSP origins allow you to configure domains, or origins, that Qlik Sense client visualizations/extensions
+    are allowed to communicate with.
+  humanURL: https://qlik.dev/apis/rest/csp-origins/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/csp-origins
+  tags:
+  - Business Intelligence
+  - Customization
+  - Embedded
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: OpenAPI
+    url: openapi/qliksense-csp-origins.json
+  - type: Overlay
+    url: overlays/qliksense-csp-origins-overlay.yaml
+- aid: qliksense:csrf-token-api
+  name: Qlik CSRF token API
+  description: A CSRF token is a secure random token (e.g., synchronizer token or challenge token) that
+    is used to prevent CSRF attacks. This API retrieves the token for the current user session.
+  humanURL: https://qlik.dev/apis/rest/csrf-token/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/csrf-token
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: OpenAPI
+    url: openapi/qliksense-csrf-token.json
+  - type: Overlay
+    url: overlays/qliksense-csrf-token-overlay.yaml
+- aid: qliksense:data-alerts-api
+  name: Qlik Data alerts API
+  description: Supports chart sharing, chart monitoring and alerting features. The legacy sharing APIs
+    refer to chart sharing and chart monitoring, which is a feature that allows the user to send an e-mail
+    with an embedded chart either manually (chart sharing) or in a recurring manner (chart monitoring).
+    It also stores the history related to these actions. The alerting/ data-alerts APIs support the alerting
+    feat
+  humanURL: https://qlik.dev/apis/rest/data-alerts/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-alerts
+  tags:
+  - Business Intelligence
+  - Data
+  - Event
+  - REST
+  - Real-Time
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: OpenAPI
+    url: openapi/qliksense-data-alerts.json
+  - type: Overlay
+    url: overlays/qliksense-data-alerts-overlay.yaml
+- aid: qliksense:data-assets-api
+  name: Qlik Data assets API
+  description: Data assets are part of the catalog in Qlik Cloud. A data asset is a member of a data store,
+    and may contain multiple data sets.
+  humanURL: https://qlik.dev/apis/rest/data-assets/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-assets
+  tags:
+  - Business Intelligence
+  - Data
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: OpenAPI
+    url: openapi/qliksense-data-assets.json
+  - type: Overlay
+    url: overlays/qliksense-data-assets-overlay.yaml
+- aid: qliksense:data-connections-api
+  name: Qlik Data Connections API
+  description: Create and manage data connections to various data sources in Qlik Cloud.
+  humanURL: https://qlik.dev/apis/rest/data-connections/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-connections
+  tags:
+  - Connections
+  - Data
+  - Integration
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: OpenAPI
+    url: openapi/qliksense-data-connections.json
+  - type: Overlay
+    url: overlays/qliksense-data-connections-overlay.yaml
+- aid: qliksense:data-credentials-api
+  name: Qlik Data credentials API
+  description: Data credentials are the stored credentials leveraged by the data-connections service to
+    connect to external data sources.
+  humanURL: https://qlik.dev/apis/rest/data-credentials/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-credentials/actions/filter-orphan
+  tags:
+  - Business Intelligence
+  - Data
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: OpenAPI
+    url: openapi/qliksense-data-credentials.json
+  - type: Overlay
+    url: overlays/qliksense-data-credentials-overlay.yaml
+- aid: qliksense:data-files-api
+  name: Qlik Data files API
+  description: Data files represent the flat file storage associated with spaces in your Qlik Cloud tenant.
+    Each space will have a corresponding data files connection, which you can list with data-connections.
+  humanURL: https://qlik.dev/apis/rest/data-files/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-files
+  tags:
+  - Business Intelligence
+  - Data
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: OpenAPI
+    url: openapi/qliksense-data-files.json
+  - type: Overlay
+    url: overlays/qliksense-data-files-overlay.yaml
+- aid: qliksense:data-governance-data-products-api
+  name: Qlik Data products API
+  description: Data products are packages that group related datasets within a single, curated offering.
+    Use the Data products API to create, manage, and activate data products for consumption by business
+    users.
+  humanURL: https://qlik.dev/apis/rest/data-governance/data-products/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/data-governance/data-products
+  tags:
+  - Business Intelligence
+  - Data
+  - Data Governance
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: OpenAPI
+    url: openapi/qliksense-data-governance-data-products.json
+  - type: Overlay
+    url: overlays/qliksense-data-governance-data-products-overlay.yaml
+- aid: qliksense:data-governance-data-qualities-api
+  name: Qlik Data qualities API
+  description: The Data qualities API enables you to assess the quality of your datasets through asynchronous
+    computations.
+  humanURL: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/data-governance/data-qualities/batch-computations
+  tags:
+  - Business Intelligence
+  - Data
+  - Data Governance
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: OpenAPI
+    url: openapi/qliksense-data-governance-data-qualities.json
+  - type: Overlay
+    url: overlays/qliksense-data-governance-data-qualities-overlay.yaml
+- aid: qliksense:data-governance-trust-scores-api
+  name: Qlik Trust scores API
+  description: The Trust Scores API retrieves the Qlik Trust Score™ for datasets in bulk, including overall
+    score and per-axis and per-metric breakdowns.
+  humanURL: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/data-governance/trust-scores/results/data-sets/actions/filter
+  tags:
+  - Business Intelligence
+  - Data
+  - Data Governance
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: OpenAPI
+    url: openapi/qliksense-data-governance-trust-scores.json
+  - type: Overlay
+    url: overlays/qliksense-data-governance-trust-scores-overlay.yaml
+- aid: qliksense:data-qualities-api
+  name: Qlik Data qualities API
+  description: API for triggering data quality computations and retrieving global results to assess the
+    quality of your datasets.
+  humanURL: https://qlik.dev/apis/rest/data-qualities/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-qualities/computations
+  tags:
+  - Business Intelligence
+  - Data
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: OpenAPI
+    url: openapi/qliksense-data-qualities.json
+  - type: Overlay
+    url: overlays/qliksense-data-qualities-overlay.yaml
+- aid: qliksense:data-sets-api
+  name: Qlik Data sets API
+  description: Data sets are part of the catalog in Qlik Cloud. A data set is a member of a data asset.
+  humanURL: https://qlik.dev/apis/rest/data-sets/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-sets
+  tags:
+  - Business Intelligence
+  - Data
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: OpenAPI
+    url: openapi/qliksense-data-sets.json
+  - type: Overlay
+    url: overlays/qliksense-data-sets-overlay.yaml
+- aid: qliksense:data-sources-api
+  name: Qlik Data sources API
+  description: Lists data sources available on the tenant for the creation of data connections.
+  humanURL: https://qlik.dev/apis/rest/data-sources/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-sources
+  tags:
+  - Business Intelligence
+  - Data
+  - Data Integration
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: OpenAPI
+    url: openapi/qliksense-data-sources.json
+  - type: Overlay
+    url: overlays/qliksense-data-sources-overlay.yaml
+- aid: qliksense:data-stores-api
+  name: Qlik Data stores API
+  description: Data stores are part of the catalog in Qlik Cloud. A data store may contain one or more
+    data stores, which in turn may contain multiple data sets.
+  humanURL: https://qlik.dev/apis/rest/data-stores/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/data-stores
+  tags:
+  - Business Intelligence
+  - Data
+  - Data Integration
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: OpenAPI
+    url: openapi/qliksense-data-stores.json
+  - type: Overlay
+    url: overlays/qliksense-data-stores-overlay.yaml
+- aid: qliksense:di-projects-api
+  name: Qlik Data integration projects API
+  description: Data integration projects are used to group and organize data tasks that move, transform,
+    or prepare data for consumption.
+  humanURL: https://qlik.dev/apis/rest/di-projects/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/di-projects
+  tags:
+  - Business Intelligence
+  - Data Integration
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: OpenAPI
+    url: openapi/qliksense-di-projects.json
+  - type: Overlay
+    url: overlays/qliksense-di-projects-overlay.yaml
+- aid: qliksense:direct-access-agents-api
+  name: Qlik Direct Access Agents API
+  description: API for remotely managing configuration settings of Direct Access Gateway agents.
+  humanURL: https://qlik.dev/apis/rest/direct-access-agents/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/direct-access-agents
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: OpenAPI
+    url: openapi/qliksense-direct-access-agents.json
+  - type: Overlay
+    url: overlays/qliksense-direct-access-agents-overlay.yaml
+- aid: qliksense:encryption-api
+  name: Qlik Encryption API
+  description: Tenants in Qlik Cloud can be encrypted with a key you provide via a supported KMS. This
+    API allows you to configure and manage encryption keys.
+  humanURL: https://qlik.dev/apis/rest/encryption/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/encryption/keyproviders
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: OpenAPI
+    url: openapi/qliksense-encryption.json
+  - type: Overlay
+    url: overlays/qliksense-encryption-overlay.yaml
+- aid: qliksense:extensions-api
+  name: Qlik Extensions API
+  description: Visualization extensions is a capability in Qlik Sense which allows third-party visualizations
+    and other presentation objects to be used in the Qlik Sense client.
+  humanURL: https://qlik.dev/apis/rest/extensions/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/extensions
+  tags:
+  - Business Intelligence
+  - Customization
+  - Embedded
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: OpenAPI
+    url: openapi/qliksense-extensions.json
+  - type: Overlay
+    url: overlays/qliksense-extensions-overlay.yaml
+- aid: qliksense:glossaries-api
+  name: Qlik Glossaries API
+  description: A glossary is a collection of common and agreed upon (business) terms, typically focused
+    on defining the meaning of data and described in terms that everyone understands.
+  humanURL: https://qlik.dev/apis/rest/glossaries/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/glossaries
+  tags:
+  - Business Intelligence
+  - Data Governance
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: OpenAPI
+    url: openapi/qliksense-glossaries.json
+  - type: Overlay
+    url: overlays/qliksense-glossaries-overlay.yaml
+- aid: qliksense:groups-api
+  name: Qlik Groups API
+  description: Groups is the resource representing a group in the system, to which space and tenant roles
+    can be assigned to simplify access control management.
+  humanURL: https://qlik.dev/apis/rest/groups/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/groups
+  tags:
+  - Administration
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/groups/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/groups/
+  - type: OpenAPI
+    url: openapi/qliksense-groups.json
+  - type: Overlay
+    url: overlays/qliksense-groups-overlay.yaml
+- aid: qliksense:identity-providers-api
+  name: Qlik Identity providers API
+  description: Identity providers define how your users authenticate to your tenant when attempting to
+    access content.
+  humanURL: https://qlik.dev/apis/rest/identity-providers/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/identity-providers
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: OpenAPI
+    url: openapi/qliksense-identity-providers.json
+  - type: Overlay
+    url: overlays/qliksense-identity-providers-overlay.yaml
+- aid: qliksense:items-api
+  name: Qlik Items API
+  description: Items provides a list of core resources in the Qlik platform, including resources such
+    as apps, automations, and data sets that a user has access to.
+  humanURL: https://qlik.dev/apis/rest/items/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/items
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/items/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/items/
+  - type: OpenAPI
+    url: openapi/qliksense-items.json
+  - type: Overlay
+    url: overlays/qliksense-items-overlay.yaml
+- aid: qliksense:knowledgebases-api
+  name: Qlik Knowledgebases API
+  description: Knowledgebases are collections of individual data sources, that are indexed for use in
+    generating responses to user questions via Assistants for Qlik Answers.
+  humanURL: https://qlik.dev/apis/rest/knowledgebases/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/knowledgebases
+  tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Natural-Language
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: OpenAPI
+    url: openapi/qliksense-knowledgebases.json
+  - type: Overlay
+    url: overlays/qliksense-knowledgebases-overlay.yaml
+- aid: qliksense:licenses-api
+  name: Qlik Licenses API
+  description: Licenses define tenant and user entitlements, and can be used in conjunction with the consumption
+    API to get a picture of entitlement usage.
+  humanURL: https://qlik.dev/apis/rest/licenses/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/licenses/assignments
+  tags:
+  - Administration
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: OpenAPI
+    url: openapi/qliksense-licenses.json
+  - type: Overlay
+    url: overlays/qliksense-licenses-overlay.yaml
+- aid: qliksense:lineage-graphs-api
+  name: Qlik Lineage graphs API
+  description: Lineage-graphs represents the lineage information for a specific Qlik item.
+  humanURL: https://qlik.dev/apis/rest/lineage-graphs/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/lineage-graphs/impact
+  tags:
+  - Business Intelligence
+  - Data Governance
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: OpenAPI
+    url: openapi/qliksense-lineage-graphs.json
+  - type: Overlay
+    url: overlays/qliksense-lineage-graphs-overlay.yaml
+- aid: qliksense:login-api
+  name: Qlik Login API
+  description: This API is used to initiate interactive logins, or to process JWT login requests.
+  humanURL: https://qlik.dev/apis/rest/login/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/login
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/login/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/login/
+  - type: OpenAPI
+    url: openapi/qliksense-login.json
+  - type: Overlay
+    url: overlays/qliksense-login-overlay.yaml
+- aid: qliksense:ml-api
+  name: Qlik Machine Learning API
+  description: Generate profile insights, create and manage ML experiments, deploy models, and run predictions
+    in Qlik Cloud.
+  humanURL: https://qlik.dev/apis/rest/ml/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/ml/deployments
+  tags:
+  - Artificial Intelligence
+  - Machine-Learning
+  - Predictions
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ml/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ml/
+  - type: OpenAPI
+    url: openapi/qliksense-ml.json
+  - type: Overlay
+    url: overlays/qliksense-ml-overlay.yaml
+  tags_raw:
+  - AI
+  - Machine Learning
+  - Predictions
+  - REST
+- aid: qliksense:notes-api
+  name: Qlik Notes API
+  description: Notes provide a collaborative experience to support analytics consumption in your tenant.
+    This API enables or disables notes.
+  humanURL: https://qlik.dev/apis/rest/notes/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/notes/settings
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notes/
+  - type: OpenAPI
+    url: openapi/qliksense-notes.json
+  - type: Overlay
+    url: overlays/qliksense-notes-overlay.yaml
+- aid: qliksense:notifications-api
+  name: Qlik Notifications API
+  description: Notifications is the resource representing the various notifications that notification-prep
+    can render
+  humanURL: https://qlik.dev/apis/rest/notifications/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/notifications
+  tags:
+  - Business Intelligence
+  - Event
+  - REST
+  - Real-Time
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: OpenAPI
+    url: openapi/qliksense-notifications.json
+  - type: Overlay
+    url: overlays/qliksense-notifications-overlay.yaml
+- aid: qliksense:oauth-clients-api
+  name: Qlik OAuth clients API
+  description: Create and manage the configuration of OAuth clients in your tenant.
+  humanURL: https://qlik.dev/apis/rest/oauth-clients/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/oauth-clients
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: OpenAPI
+    url: openapi/qliksense-oauth-clients.json
+  - type: Overlay
+    url: overlays/qliksense-oauth-clients-overlay.yaml
+- aid: qliksense:oauth-tokens-api
+  name: Qlik OAuth tokens API
+  description: List and revoke active OAuth tokens issued for your tenant.
+  humanURL: https://qlik.dev/apis/rest/oauth-tokens/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/oauth-tokens
+  tags:
+  - Authentication
+  - Business Intelligence
+  - REST
+  - Security
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: OpenAPI
+    url: openapi/qliksense-oauth-tokens.json
+  - type: Overlay
+    url: overlays/qliksense-oauth-tokens-overlay.yaml
+- aid: qliksense:natural-language-api
+  name: Qlik Natural Language API
+  description: Parse natural language queries with support for language configuration, visualization generation,
+    and conversation context.
+  humanURL: https://qlik.dev/apis/rest/questions/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/questions/actions/ask
+  tags:
+  - Artificial Intelligence
+  - Natural-Language
+  - NLP
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/questions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/questions/
+  - type: OpenAPI
+    url: openapi/qliksense-questions.json
+  - type: Overlay
+    url: overlays/qliksense-questions-overlay.yaml
+  tags_raw:
+  - AI
+  - Natural Language
+  - NLP
+  - REST
+- aid: qliksense:quotas-api
+  name: Qlik Quotas API
+  description: Quotas returns entitled attributes based on your license.
+  humanURL: https://qlik.dev/apis/rest/quotas/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/quotas
+  tags:
+  - Administration
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: OpenAPI
+    url: openapi/qliksense-quotas.json
+  - type: Overlay
+    url: overlays/qliksense-quotas-overlay.yaml
+- aid: qliksense:reload-tasks-api
+  name: Qlik Reload tasks API
+  description: Reloads tasks allow you to schedule reloads of analytics applications in your tenant.
+  humanURL: https://qlik.dev/apis/rest/reload-tasks/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/reload-tasks
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: OpenAPI
+    url: openapi/qliksense-reload-tasks.json
+  - type: Overlay
+    url: overlays/qliksense-reload-tasks-overlay.yaml
+- aid: qliksense:reloads-api
+  name: Qlik Reload API
+  description: Trigger and manage data reload operations for Qlik Sense apps.
+  humanURL: https://qlik.dev/apis/rest/reloads/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/reloads
+  tags:
+  - Data
+  - ETL
+  - Reload
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: OpenAPI
+    url: openapi/qliksense-reloads.json
+  - type: Overlay
+    url: overlays/qliksense-reloads-overlay.yaml
+- aid: qliksense:report-templates-api
+  name: Qlik Report templates API
+  description: Create and manage report templates for consistent report generation and distribution.
+  humanURL: https://qlik.dev/apis/rest/report-templates/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/report-templates
+  tags:
+  - Business Intelligence
+  - Export
+  - REST
+  - Reporting
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: OpenAPI
+    url: openapi/qliksense-report-templates.json
+  - type: Overlay
+    url: overlays/qliksense-report-templates-overlay.yaml
+- aid: qliksense:reports-api
+  name: Qlik Reports API
+  description: Generate downloadable report assets from data with configurable templates and output formats.
+  humanURL: https://qlik.dev/apis/rest/reports/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/reports
+  tags:
+  - Export
+  - Reports
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reports/
+  - type: OpenAPI
+    url: openapi/qliksense-reports.json
+  - type: Overlay
+    url: overlays/qliksense-reports-overlay.yaml
+- aid: qliksense:roles-api
+  name: Qlik Roles API
+  description: Tenant roles are assigned to users or groups in the tenant, and define what permissions
+    they have.
+  humanURL: https://qlik.dev/apis/rest/roles/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/roles
+  tags:
+  - Administration
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/roles/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/roles/
+  - type: OpenAPI
+    url: openapi/qliksense-roles.json
+  - type: Overlay
+    url: overlays/qliksense-roles-overlay.yaml
+- aid: qliksense:scheduling-tasks-api
+  name: Qlik Tasks API
+  description: Qlik Cloud Tasks API. 16 operations published as OpenAPI 3.0.0 at https://qlik.dev/specs/rest/scheduling/tasks.json
+  humanURL: https://qlik.dev/apis/rest/scheduling/tasks/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/scheduling/tasks
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: OpenAPI
+    url: openapi/qliksense-scheduling-tasks.json
+  - type: Overlay
+    url: overlays/qliksense-scheduling-tasks-overlay.yaml
+- aid: qliksense:sharing-tasks-api
+  name: Qlik Sharing tasks API
+  description: For scheduled capabilities such as reports, data alerts, subscriptions, and more, sharing
+    tasks defines when these tasks execute, and tie together the resource definition with any conditions
+    on execution.
+  humanURL: https://qlik.dev/apis/rest/sharing-tasks/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/sharing-tasks
+  tags:
+  - Business Intelligence
+  - Export
+  - REST
+  - Reporting
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: OpenAPI
+    url: openapi/qliksense-sharing-tasks.json
+  - type: Overlay
+    url: overlays/qliksense-sharing-tasks-overlay.yaml
+- aid: qliksense:spaces-api
+  name: Qlik Spaces API
+  description: Manage shared and managed spaces for collaboration and content organization in Qlik Cloud.
+  humanURL: https://qlik.dev/apis/rest/spaces/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/spaces
+  tags:
+  - Collaboration
+  - Organization
+  - REST
+  - Spaces
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: OpenAPI
+    url: openapi/qliksense-spaces.json
+  - type: Overlay
+    url: overlays/qliksense-spaces-overlay.yaml
+- aid: qliksense:tasks-api
+  name: Qlik Tasks API
+  description: API for managing tasks and task chains in Qlik Cloud. The requesting user needs the "reload"
+    permission on the target resource to use this set of endpoints. A tenant admin can use GET /v1/tasks
+    and DELETE /v1/tasks/{id} to perform administrative actions, even without the "reload" permission.
+  humanURL: https://qlik.dev/apis/rest/tasks/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/tasks
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: OpenAPI
+    url: openapi/qliksense-tasks.json
+  - type: Overlay
+    url: overlays/qliksense-tasks-overlay.yaml
+- aid: qliksense:temp-contents-api
+  name: Qlik Temporary contents API
+  description: Services such as app and data-files which may import or export larger files can opt to
+    leverage the temporary contents service to handle these requests. Acts as a temporary file store.
+  humanURL: https://qlik.dev/apis/rest/temp-contents/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/temp-contents
+  tags:
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: OpenAPI
+    url: openapi/qliksense-temp-contents.json
+  - type: Overlay
+    url: overlays/qliksense-temp-contents-overlay.yaml
+- aid: qliksense:tenant-settings-api
+  name: Qlik Tenant settings API
+  description: Configure tenant-wide settings for security, appearance, and operational preferences.
+  humanURL: https://qlik.dev/apis/rest/tenant-settings/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/tenant-settings
+  tags:
+  - Administration
+  - Business Intelligence
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: OpenAPI
+    url: openapi/qliksense-tenant-settings.json
+  - type: Overlay
+    url: overlays/qliksense-tenant-settings-overlay.yaml
+- aid: qliksense:tenants-api
+  name: Qlik Tenants API
+  description: Configure and manage Qlik Cloud tenants including settings, licenses, and administrative
+    operations.
+  humanURL: https://qlik.dev/apis/rest/tenants/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/tenants
+  tags:
+  - Administration
+  - Configuration
+  - REST
+  - Tenants
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: OpenAPI
+    url: openapi/qliksense-tenants.json
+  - type: Overlay
+    url: overlays/qliksense-tenants-overlay.yaml
+- aid: qliksense:themes-api
+  name: Qlik Themes API
+  description: Themes enable you to customize/style the Qlik Sense client experience.
+  humanURL: https://qlik.dev/apis/rest/themes/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/themes
+  tags:
+  - Business Intelligence
+  - Customization
+  - Embedded
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/themes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/themes/
+  - type: OpenAPI
+    url: openapi/qliksense-themes.json
+  - type: Overlay
+    url: overlays/qliksense-themes-overlay.yaml
+- aid: qliksense:transports-api
+  name: Qlik Email configuration API
+  description: Transports supports configuration of the tenant-level SMTP service. For the SMTP service
+    in Qlik Automate, review the automation-connections API.
+  humanURL: https://qlik.dev/apis/rest/transports/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/transports/email-config
+  tags:
+  - Business Intelligence
+  - Data Integration
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/transports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/transports/
+  - type: OpenAPI
+    url: openapi/qliksense-transports.json
+  - type: Overlay
+    url: overlays/qliksense-transports-overlay.yaml
+- aid: qliksense:ui-config-api
+  name: Qlik Pinned links API
+  description: Pinned links are administrator-defined URLs which appear for all users under the More button
+    in the global navigation menu.
+  humanURL: https://qlik.dev/apis/rest/ui-config/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/ui-config/pinned-links
+  tags:
+  - Business Intelligence
+  - Customization
+  - Embedded
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: OpenAPI
+    url: openapi/qliksense-ui-config.json
+  - type: Overlay
+    url: overlays/qliksense-ui-config-overlay.yaml
+- aid: qliksense:users-api
+  name: Qlik Users API
+  description: Manage users, groups, and authentication in Qlik Cloud tenants.
+  humanURL: https://qlik.dev/apis/rest/users/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/users
+  tags:
+  - Identity
+  - REST
+  - User
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/users/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/users/
+  - type: OpenAPI
+    url: openapi/qliksense-users.json
+  - type: Overlay
+    url: overlays/qliksense-users-overlay.yaml
+  tags_raw:
+  - Identity
+  - REST
+  - Users
+- aid: qliksense:web-integrations-api
+  name: Qlik Web integrations API
+  description: A web integration is a resource representing a list of whitelisted origins that can make
+    requests to a specified tenant. It is the implementation of the CORS mechanism within Qlik Cloud.
+  humanURL: https://qlik.dev/apis/rest/web-integrations/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/web-integrations
+  tags:
+  - Business Intelligence
+  - Customization
+  - Embedded
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: OpenAPI
+    url: openapi/qliksense-web-integrations.json
+  - type: Overlay
+    url: overlays/qliksense-web-integrations-overlay.yaml
+- aid: qliksense:web-notifications-api
+  name: Qlik Web notifications API
+  description: Web notifications is the resource representing a user's notification
+  humanURL: https://qlik.dev/apis/rest/web-notifications/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/web-notifications
+  tags:
+  - Business Intelligence
+  - Event
+  - REST
+  - Real-Time
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: OpenAPI
+    url: openapi/qliksense-web-notifications.json
+  - type: Overlay
+    url: overlays/qliksense-web-notifications-overlay.yaml
+- aid: qliksense:webhooks-api
+  name: Qlik Webhooks API
+  description: Create and manage webhooks to provide other applications with real-time information from
+    Qlik Cloud events.
+  humanURL: https://qlik.dev/apis/rest/webhooks/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/webhooks
+  tags:
+  - Event
+  - Real-Time
+  - REST
+  - Webhook
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: OpenAPI
+    url: openapi/qliksense-webhooks.json
+  - type: Overlay
+    url: overlays/qliksense-webhooks-overlay.yaml
+  tags_raw:
+  - Events
+  - Real-Time
+  - REST
+  - Webhooks
+- aid: qliksense:workflows-automation-connections-api
+  name: Qlik Automation connections API
+  description: Automation Connections are used by Qlik Automate connectors during automation execution.
+  humanURL: https://qlik.dev/apis/rest/workflows/automation-connections/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/workflows/automation-connections
+  tags:
+  - Automation
+  - Business Intelligence
+  - REST
+  - Workflows
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: OpenAPI
+    url: openapi/qliksense-workflows-automation-connections.json
+  - type: Overlay
+    url: overlays/qliksense-workflows-automation-connections-overlay.yaml
+- aid: qliksense:workflows-automation-connectors-api
+  name: Qlik Automation connectors API
+  description: Automation connectors let you integrate third-party services and applications into your
+    data analytics workflows. Use this API to discover available connectors and understand billing characteristics.
+  humanURL: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/workflows/automation-connectors
+  tags:
+  - Automation
+  - Business Intelligence
+  - REST
+  - Workflows
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: OpenAPI
+    url: openapi/qliksense-workflows-automation-connectors.json
+  - type: Overlay
+    url: overlays/qliksense-workflows-automation-connectors-overlay.yaml
+- aid: qliksense:workflows-automations-api
+  name: Qlik Automations API
+  description: Automations in Qlik Automate are no-code workflows which connect applications together.
+  humanURL: https://qlik.dev/apis/rest/workflows/automations/
+  baseURL: https://{tenant}.{region}.qlikcloud.com/api/workflows/automations
+  tags:
+  - Automation
+  - Business Intelligence
+  - REST
+  - Workflows
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: OpenAPI
+    url: openapi/qliksense-workflows-automations.json
+  - type: Overlay
+    url: overlays/qliksense-workflows-automations-overlay.yaml
 common:
-  - type: DomainSecurity
-    url: security/qliksense-domain-security.yml
-  - type: Portal
-    url: https://qlik.dev/
-  - type: GettingStarted
-    url: https://qlik.dev/get-started
-  - type: Authentication
-    url: https://qlik.dev/authenticate
-  - type: Support
-    url: https://support.qlik.com/
-  - type: TermsOfService
-    url: https://www.qlik.com/us/legal/terms-of-service
-  - type: PrivacyPolicy
-    url: https://www.qlik.com/us/legal/privacy
-  - type: ChangeLog
-    url: https://qlik.dev/changelog/
-  - type: CLI
-    url: https://qlik.dev/toolkits/qlik-cli/
-  - type: SDKs
-    url: https://qlik.dev/toolkits/qlik-api/
-  - type: GitHubOrganization
-    url: https://github.com/qlik-oss
-  - type: Tutorials
-    url: https://qlik.dev/tutorials/
-  - type: StatusPage
-    url: https://status.qlik.com/
-  - type: Blog
-    url: https://qlik.dev/changelog/tag/api/
-  - type: Features
-    data:
-      - name: Associative Engine
-        description: Qlik's unique Associative Engine enables dynamic data exploration without predefined queries or drill paths.
-      - name: 50+ REST APIs
-        description: Comprehensive REST API coverage for all Qlik Cloud resources including apps, data, users, and automation.
-      - name: AI-Powered Analytics
-        description: AutoML, natural language queries, and AI assistants for data-driven insights.
-      - name: No-Code Automation
-        description: Build automation workflows connecting Qlik with external applications without coding.
-      - name: Real-Time Webhooks
-        description: Event-driven architecture with webhooks for real-time notifications on platform events.
-      - name: Multi-Cloud Deployment
-        description: Deploy Qlik Cloud across AWS, Azure, and GCP regions with global availability.
-  - type: UseCases
-    data:
-      - name: Embedded Analytics
-        description: Embed interactive Qlik visualizations and dashboards in custom web applications.
-      - name: Data Pipeline Automation
-        description: Automate data integration and transformation workflows using APIs and automation connectors.
-      - name: Self-Service BI
-        description: Enable business users to create and share analytics apps through the platform APIs.
-      - name: AI-Powered Insights
-        description: Generate predictive analytics and natural language insights using ML and NLP APIs.
-      - name: Multi-Tenant Management
-        description: Manage multiple Qlik Cloud tenants programmatically for SaaS and enterprise deployments.
-  - type: Integrations
-    data:
-      - name: Snowflake
-        description: Direct connectivity for analytics on Snowflake cloud data warehouse.
-      - name: Databricks
-        description: Integration with Databricks lakehouse for large-scale analytics workloads.
-      - name: SAP
-        description: Enterprise data connectivity for SAP ERP, BW, and HANA data sources.
-      - name: Salesforce
-        description: CRM data integration for sales analytics and pipeline management.
-      - name: Slack
-        description: Collaboration integration for sharing analytics insights and alerts in Slack.
-      - name: Microsoft Teams
-        description: Embed analytics and receive notifications within Microsoft Teams.
+- type: Website
+  url: https://www.qlik.com/us/products/qlik-sense
+- type: DeveloperPortal
+  url: https://qlik.dev/
+- type: Portal
+  url: https://qlik.dev/
+- type: Documentation
+  url: https://qlik.dev/apis/
+- type: APIReference
+  url: https://qlik.dev/apis/rest/
+- type: GettingStarted
+  url: https://qlik.dev/manage/get-started-first-api-call/
+- type: Authentication
+  url: https://qlik.dev/authenticate
+- type: Support
+  url: https://support.qlik.com/
+- type: HelpCenter
+  url: https://help.qlik.com/
+- type: Blog
+  url: https://www.qlik.com/us/blog
+- type: GitHubOrganization
+  url: https://github.com/qlik-oss
+- type: Pricing
+  url: https://www.qlik.com/us/pricing
+- type: SignUp
+  url: https://www.qlik.com/us/trial/qlik-cloud-analytics
+- type: Login
+  url: https://login.qlik.com/
+- type: TermsOfService
+  url: https://www.qlik.com/us/legal/terms-of-use
+- type: PrivacyPolicy
+  url: https://www.qlik.com/us/privacy
+- type: StatusPage
+  url: https://status.qlikcloud.com/
+- type: ChangeLog
+  url: https://qlik.dev/changelog/
+- type: RSS
+  url: https://qlik.dev/rss.xml
+- type: CLI
+  url: https://qlik.dev/toolkits/qlik-cli/
+- type: SDKs
+  url: packages/qliksense-packages.yml
+- type: Packages
+  url: packages/qliksense-packages.yml
+- type: MCPServer
+  url: mcp/qliksense-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/qliksense-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/qliksense-llms.txt
+- type: AsyncAPI
+  url: asyncapi/qliksense-asyncapi-index.yml
+- type: Webhooks
+  url: asyncapi/qliksense-webhooks.yml
+- type: Protobuf
+  url: grpc/qliksense-server-side-extension.proto
+- type: OpenRPC
+  url: json-rpc/qliksense-qix-openrpc.json
+- type: JSONSchema
+  url: json-schema/qliksense-qtcp-project.schema.json
+- type: Conformance
+  url: conformance/qliksense-conformance.yml
+- type: Compliance
+  url: security/qliksense-trust-center.yml
+- type: TrustCenter
+  url: security/qliksense-trust-center.yml
+- type: Security
+  url: security/qliksense-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/qliksense-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/qliksense-domain-security.yml
+- type: ErrorCatalog
+  url: errors/qliksense-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/qliksense-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/qliksense-lifecycle.yml
+- type: OAuthScopes
+  url: scopes/qliksense-scopes.yml
+- type: Authentication
+  url: authentication/qliksense-authentication.yml
+- type: Conventions
+  url: conventions/qliksense-conventions.yml
+- type: ChangeLog
+  url: changelog/qliksense-changelog.yml
+- type: CLI
+  url: cli/qliksense-cli.yml
+- type: Components
+  url: components/qliksense-components.yml
+- type: DataModel
+  url: data-model/qliksense-data-model.yml
+- type: Plans
+  url: plans/qliksense-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/qliksense-rate-limits.yml
+- type: FinOps
+  url: finops/qliksense-finops.yml
+- type: Features
+  data:
+  - name: Associative Engine
+    description: Qlik's unique Associative Engine enables dynamic data exploration without predefined
+      queries or drill paths.
+  - name: 50+ REST APIs
+    description: Comprehensive REST API coverage for all Qlik Cloud resources including apps, data, users,
+      and automation.
+  - name: AI-Powered Analytics
+    description: AutoML, natural language queries, and AI assistants for data-driven insights.
+  - name: No-Code Automation
+    description: Build automation workflows connecting Qlik with external applications without coding.
+  - name: Real-Time Webhooks
+    description: Event-driven architecture with webhooks for real-time notifications on platform events.
+  - name: Multi-Cloud Deployment
+    description: Deploy Qlik Cloud across AWS, Azure, and GCP regions with global availability.
+- type: UseCases
+  data:
+  - name: Embedded Analytics
+    description: Embed interactive Qlik visualizations and dashboards in custom web applications.
+  - name: Data Pipeline Automation
+    description: Automate data integration and transformation workflows using APIs and automation connectors.
+  - name: Self-Service BI
+    description: Enable business users to create and share analytics apps through the platform APIs.
+  - name: AI-Powered Insights
+    description: Generate predictive analytics and natural language insights using ML and NLP APIs.
+  - name: Multi-Tenant Management
+    description: Manage multiple Qlik Cloud tenants programmatically for SaaS and enterprise deployments.
+- type: Integrations
+  data:
+  - name: Snowflake
+    description: Direct connectivity for analytics on Snowflake cloud data warehouse.
+  - name: Databricks
+    description: Integration with Databricks lakehouse for large-scale analytics workloads.
+  - name: SAP
+    description: Enterprise data connectivity for SAP ERP, BW, and HANA data sources.
+  - name: Salesforce
+    description: CRM data integration for sales analytics and pipeline management.
+  - name: Slack
+    description: Collaboration integration for sharing analytics insights and alerts in Slack.
+  - name: Microsoft Teams
+    description: Embed analytics and receive notifications within Microsoft Teams.
+x-enrichment:
+  date: '2026-08-29'
+  status: enriched
+  artifacts_added: 251
+  pass: local-v1
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
-    url: https://apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+  url: https://apievangelist.com
+x-parent: qlik
+x-relationship: product

@@ -1,0 +1,298 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "user-sessions",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsUserSession": {
+      "address": "system-events.user-session",
+      "messages": {
+        "userSessionBegin": {
+          "$ref": "#/components/messages/user-session.userSessionBegin"
+        },
+        "userSessionEnd": {
+          "$ref": "#/components/messages/user-session.userSessionEnd"
+        }
+      }
+    }
+  },
+  "operations": {
+    "userSessionBegin": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsUserSession"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsUserSession/messages/userSessionBegin"
+        }
+      ]
+    },
+    "userSessionEnd": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsUserSession"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsUserSession/messages/userSessionEnd"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "user-session.userSessionBegin": {
+        "name": "com.qlik.user-session.begin",
+        "tags": [
+          {
+            "name": "user-session"
+          }
+        ],
+        "title": "Session begin",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "idpId": "661d627cef218789bbd67cc9",
+                      "source": "com.qlik/edge-auth",
+                      "subject": "auth0\\foo",
+                      "recovery": false
+                    }
+                  ],
+                  "properties": {
+                    "idpId": {
+                      "type": "string",
+                      "example": "661d627cef218789bbd67cc9",
+                      "description": "Identifier of the identity provider through which the session was initiated. `null` if user logged in using Qlik Account."
+                    },
+                    "source": {
+                      "enum": [
+                        "com.qlik/edge-auth"
+                      ],
+                      "type": "string",
+                      "description": "The source of the event."
+                    },
+                    "subject": {
+                      "type": "string",
+                      "example": "auth0\\foo",
+                      "description": "User's subject in our DB."
+                    },
+                    "recovery": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Whether the session is part of a recovery login."
+                    },
+                    "userType": {
+                      "enum": [
+                        "anonymous"
+                      ],
+                      "type": "string",
+                      "description": "The user's type, only specified for anonymous users."
+                    }
+                  },
+                  "description": "Data specific to the user session begin event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.user-session.begin",
+                  "description": "The type of event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a user session is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "user-session.userSessionEnd": {
+        "name": "com.qlik.user-session.end",
+        "tags": [
+          {
+            "name": "user-session"
+          }
+        ],
+        "title": "Session end",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "subject": "auth0\\foo"
+                    }
+                  ],
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "example": "auth0\\foo",
+                      "description": "User's subject in our DB."
+                    }
+                  },
+                  "description": "Data specific to the user session end event."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.user-session.end",
+                  "description": "The type of event."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a user session ends.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-01-01T12:00:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "605a18af2ab08cdbfad09259"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "service_account"
+            ],
+            "description": "The type of principal that triggered the occurrence."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "0.0.0.0"
+            ],
+            "description": "Origin IP address."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "WZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the session related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\\\"iss\\\":\\\"qlik.api.internal/service\\\",\\\"sub\\\":\\\"service\\\",\\\"subType\\\":\\\"service\\\"}"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event"
+          }
+        }
+      }
+    }
+  }
+}

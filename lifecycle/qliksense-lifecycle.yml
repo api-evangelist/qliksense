@@ -1,0 +1,181 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/apis/namespaces/, https://qlik.dev/apis/api-policy/, https://qlik.dev/changelog/,
+  https://qlik.dev/toolkits/sdks-tools-versions/, https://status.qlikcloud.com/ — plus the x-qlik-deprecated
+  / x-qlik-stability extensions and Sunset/Deprecation response headers read out of the 78 OpenAPI documents
+  in openapi/.
+description: 'Versioning, deprecation and availability posture for the Qlik Cloud API surface. Qlik is
+  unusual in publishing deprecation as machine-readable data: every operation carries x-qlik-stability
+  and x-qlik-visibility, 27 carry x-qlik-deprecated, and three declare RFC 8594 Sunset + Deprecation +
+  Link response headers.'
+versioning:
+  scheme: path prefix, migrating to namespaces
+  current: /api/v1/<resource>
+  target: /api/<namespace>/<resource>
+  namespaces:
+  - analytics
+  - core
+  - ai
+  - data-governance
+  - machine-learning
+  - telemetry
+  docs: https://qlik.dev/apis/namespaces/
+  notes: Qlik is removing v1 from the path and grouping resources under a context namespace, explicitly
+    "to unlock versioning support in the future" — i.e. the platform does not have real API versioning
+    today. Namespaced APIs ship in parallel with the legacy ones; each legacy API is then deprecated on
+    the changelog with a stated minimum 12-month migration window. Events follow the same namespace rule.
+deprecation:
+  policy_url: https://qlik.dev/apis/namespaces/
+  terms_url: https://qlik.dev/apis/api-policy/
+  changelog: https://qlik.dev/changelog/
+  notice_period: minimum 12 months from the changelog deprecation notice
+  sunset_header: true
+  sunset_header_standard: RFC 8594
+  sunset_header_evidence: 'Three operations in openapi/qliksense-data-qualities.json declare sunset, deprecation
+    and link response headers: POST /api/v1/data-qualities/computations (202), GET /api/v1/data-qualities/computations/{computationId}
+    (200) and GET /api/v1/data-qualities/global-results (200). Coverage is 3 of 681 operations — the mechanism
+    is in place but not applied across the deprecated surface.'
+  machine_readable_flag: x-qlik-deprecated (boolean) on the operation object
+  notes: Qlik's API policy reserves the right to make backwards-incompatible changes and directs developers
+    to the changelog, but the concrete, dated commitment is the 12-month namespace migration notice.
+stability:
+  field: x-qlik-stability
+  values:
+    stable: 648
+    locked: 33
+  visibility_field: x-qlik-visibility
+  visibility_values:
+    public: 681
+  note: Every published operation is marked public. "locked" marks operations whose shape Qlik has frozen.
+    Qlik's API policy states plainly that use of any UNPUBLISHED API is a violation of the API terms,
+    which makes the published/unpublished boundary contractual, not just advisory.
+sdk_lifecycle:
+  policy: https://qlik.dev/toolkits/sdks-tools-versions/
+  scheme: semver
+  discontinued:
+  - name: '@qlik/sdk (TypeScript Platform SDK)'
+    deprecated: '2024-05-25'
+    end_of_life: '2025-03-27'
+    last_version: 0.28.0
+    superseded_by: '@qlik/api'
+    notice: https://qlik.dev/changelog/88-typescript-platform-sdk-deprecation/
+  detail: packages/qliksense-packages.yml
+status_page: https://status.qlikcloud.com/
+support: https://community.qlik.com/
+sla:
+  url: https://www.qlik.com/us/legal/terms-of-service
+  public_uptime_target: null
+  note: No numeric public uptime SLA is published for the API; availability commitments sit in the customer
+    agreement.
+deprecated_operations:
+  count: 27
+  source: 'x-qlik-deprecated: true in the published OpenAPI documents'
+  operations:
+  - spec: openapi/qliksense-apps.json
+    method: GET
+    path: /api/v1/apps/{guid}/evaluations
+    operationId: evaluation#getEvaluations
+  - spec: openapi/qliksense-apps.json
+    method: POST
+    path: /api/v1/apps/{guid}/evaluations
+    operationId: evaluation#queueEvaluation
+  - spec: openapi/qliksense-apps.json
+    method: GET
+    path: /api/v1/apps/evaluations/{baseid}/actions/compare/{comparisonid}
+    operationId: evaluation#compareTwo
+  - spec: openapi/qliksense-apps.json
+    method: GET
+    path: /api/v1/apps/evaluations/{baseid}/actions/compare/{comparisonid}/actions/download
+    operationId: evaluation#downloadCompareTwo
+  - spec: openapi/qliksense-apps.json
+    method: GET
+    path: /api/v1/apps/evaluations/{id}
+    operationId: evaluation#getOneEvaluation
+  - spec: openapi/qliksense-apps.json
+    method: GET
+    path: /api/v1/apps/evaluations/{id}/actions/download
+    operationId: evaluation#downloadOneEvaluation
+  - spec: openapi/qliksense-automl-deployments.json
+    method: POST
+    path: /api/v1/automl-deployments/{deploymentId}/realtime-predictions
+    operationId: postRealtimePredictions
+  - spec: openapi/qliksense-automl-predictions.json
+    method: GET
+    path: /api/v1/automl-predictions/{predictionId}/coordinate-shap
+    operationId: getCoordinateShapForPrediction
+  - spec: openapi/qliksense-automl-predictions.json
+    method: POST
+    path: /api/v1/automl-predictions/{predictionId}/jobs
+    operationId: getPredictionJobs
+  - spec: openapi/qliksense-automl-predictions.json
+    method: GET
+    path: /api/v1/automl-predictions/{predictionId}/not-predicted-reasons
+    operationId: getErrorsForPrediction
+  - spec: openapi/qliksense-automl-predictions.json
+    method: GET
+    path: /api/v1/automl-predictions/{predictionId}/predictions
+    operationId: getConfigurationsForPrediction
+  - spec: openapi/qliksense-automl-predictions.json
+    method: GET
+    path: /api/v1/automl-predictions/{predictionId}/shap
+    operationId: getShapForPrediction
+  - spec: openapi/qliksense-automl-predictions.json
+    method: GET
+    path: /api/v1/automl-predictions/{predictionId}/source
+    operationId: getSourceForPrediction
+  - spec: openapi/qliksense-data-alerts.json
+    method: GET
+    path: /api/v1/data-alerts/{taskId}/executions/stats
+    operationId: alertingExecutionsEvaluationStats
+  - spec: openapi/qliksense-data-qualities.json
+    method: POST
+    path: /api/v1/data-qualities/computations
+    operationId: requestDataQualityComputation
+  - spec: openapi/qliksense-data-qualities.json
+    method: GET
+    path: /api/v1/data-qualities/computations/{computationId}
+    operationId: getDataQualityComputation
+  - spec: openapi/qliksense-data-qualities.json
+    method: GET
+    path: /api/v1/data-qualities/global-results
+    operationId: getDataQualityGlobalResults
+  - spec: openapi/qliksense-knowledgebases.json
+    method: GET
+    path: /api/v1/knowledgebases/{id}/datasources/{datasourceId}/histories/{syncId}
+    operationId: null
+  - spec: openapi/qliksense-notes.json
+    method: GET
+    path: /api/v1/notes/settings
+    operationId: notesConfigGet
+  - spec: openapi/qliksense-notes.json
+    method: PUT
+    path: /api/v1/notes/settings
+    operationId: updateNoteSettingsConfig
+  - spec: openapi/qliksense-reload-tasks.json
+    method: GET
+    path: /api/v1/reload-tasks
+    operationId: null
+  - spec: openapi/qliksense-reload-tasks.json
+    method: POST
+    path: /api/v1/reload-tasks
+    operationId: null
+  - spec: openapi/qliksense-reload-tasks.json
+    method: GET
+    path: /api/v1/reload-tasks/{taskId}
+    operationId: null
+  - spec: openapi/qliksense-reload-tasks.json
+    method: PUT
+    path: /api/v1/reload-tasks/{taskId}
+    operationId: null
+  - spec: openapi/qliksense-reload-tasks.json
+    method: DELETE
+    path: /api/v1/reload-tasks/{taskId}
+    operationId: null
+  - spec: openapi/qliksense-tenant-settings.json
+    method: POST
+    path: /api/v1/tenant-settings/actions/toggle-cross-region-data-processing
+    operationId: toggleCrossRegionalDataProcessing
+  - spec: openapi/qliksense-transports.json
+    method: PATCH
+    path: /api/v1/transports/email-config
+    operationId: patchEmailConfig

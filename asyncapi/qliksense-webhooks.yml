@@ -1,0 +1,198 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/apis/rest/webhooks/, https://qlik.dev/apis/event/, https://qlik.dev/apis/event/verify-webhook-signatures-hmac/,
+  and the 29 AsyncAPI 3.0.0 documents in asyncapi/ harvested from https://qlik.dev/specs/event/.
+description: Qlik Cloud webhook surface. Subscriptions are managed over REST; the events they deliver are fully
+  described by machine-readable AsyncAPI 3.0.0 documents, one per event domain — which is rarer than the REST spec
+  and is the stronger half of Qlik's contract story. 102 message definitions across 29 domains.
+management_api:
+  spec: openapi/qliksense-webhooks.json
+  base: https://{tenant}.{region}.qlikcloud.com
+  operations:
+  - listWebhookEntries
+  - createWebhook
+  - getWebhook
+  - patchWebhook
+  - updateWebhook
+  - deleteWebhook
+  - getWebhookDeliveryList
+  - getWebhookDelivery
+  - resendDelivery
+  - listEventTypes
+  discovery: GET /api/v1/webhooks/event-types (listEventTypes) enumerates the subscribable event types at runtime.
+  delivery_log: GET /api/v1/webhooks/{id}/deliveries — deliveries are recorded and individually resendable via resendDelivery.
+envelope:
+  standard: CloudEvents 1.0
+  required:
+  - id
+  - source
+  - specversion
+  - type
+  optional:
+  - time
+  - datacontenttype
+  - data
+  qlik_extensions:
+  - userid
+  - tenantid
+  note: Apps events moved to CloudEvents 1.0.2 in April 2026.
+signature_verification:
+  mechanism: HMAC
+  algorithm: SHA-256
+  secret: per-webhook secret key configured at registration
+  docs: https://qlik.dev/apis/event/verify-webhook-signatures-hmac/
+  guidance: Qlik states signatures should always be verified in production.
+deprecation_notice:
+  summary: Legacy event fields on webhooks are being removed.
+  announced: '2026-05-11'
+  local_copy: blogs/2026-05-11-deprecation-notice-webhooks-legacy-event-fields-will-be.md
+domains:
+- domain: ai/mcps
+  asyncapi_file: asyncapi/qliksense-ai-mcps-asyncapi.json
+  channels:
+  - systemEventsAiMcp
+  messages: 2
+- domain: alerting-tasks
+  asyncapi_file: asyncapi/qliksense-alerting-tasks-asyncapi.json
+  channels:
+  - systemEventsAlerting
+  messages: 5
+- domain: api-keys
+  asyncapi_file: asyncapi/qliksense-api-keys-asyncapi.json
+  channels:
+  - systemEventsApiKeys
+  messages: 5
+- domain: api-keys-configs
+  asyncapi_file: asyncapi/qliksense-api-keys-configs-asyncapi.json
+  channels:
+  - systemEventsApiKeys
+  messages: 1
+- domain: app-usages
+  asyncapi_file: asyncapi/qliksense-app-usages-asyncapi.json
+  channels:
+  - systemEventsAppUsage
+  messages: 1
+- domain: apps
+  asyncapi_file: asyncapi/qliksense-apps-asyncapi.json
+  channels:
+  - systemEventsApp
+  - systemEventsEngineApp
+  messages: 9
+- domain: automations
+  asyncapi_file: asyncapi/qliksense-automations-asyncapi.json
+  channels:
+  - systemEventsAutomation
+  messages: 1
+- domain: core/ip-policies
+  asyncapi_file: asyncapi/qliksense-core-ip-policies-asyncapi.json
+  channels:
+  - systemEventsIpPolicy
+  messages: 3
+- domain: di-projects
+  asyncapi_file: asyncapi/qliksense-di-projects-asyncapi.json
+  channels:
+  - systemEventsDiProjectsDiTasks
+  messages: 4
+- domain: environments
+  asyncapi_file: asyncapi/qliksense-environments-asyncapi.json
+  channels:
+  - systemEventsSpaces
+  messages: 3
+- domain: group-settings
+  asyncapi_file: asyncapi/qliksense-group-settings-asyncapi.json
+  channels:
+  - systemEventsGroups
+  messages: 1
+- domain: groups
+  asyncapi_file: asyncapi/qliksense-groups-asyncapi.json
+  channels:
+  - systemEventsGroups
+  messages: 4
+- domain: hub-dashboards
+  asyncapi_file: asyncapi/qliksense-hub-dashboards-asyncapi.json
+  channels:
+  - systemEventsHubDashboards
+  messages: 1
+- domain: licenses
+  asyncapi_file: asyncapi/qliksense-licenses-asyncapi.json
+  channels:
+  - systemEventsLicenses
+  messages: 9
+- domain: notification-digests
+  asyncapi_file: asyncapi/qliksense-notification-digests-asyncapi.json
+  channels:
+  - systemEventsNotificationDigest
+  messages: 1
+- domain: oauth-clients
+  asyncapi_file: asyncapi/qliksense-oauth-clients-asyncapi.json
+  channels:
+  - systemEventsOauthClients
+  messages: 9
+- domain: oauth-tokens
+  asyncapi_file: asyncapi/qliksense-oauth-tokens-asyncapi.json
+  channels:
+  - systemEventsOauthTokens
+  messages: 2
+- domain: quotas
+  asyncapi_file: asyncapi/qliksense-quotas-asyncapi.json
+  channels:
+  - systemEventsQuota
+  messages: 3
+- domain: rate-limits
+  asyncapi_file: asyncapi/qliksense-rate-limits-asyncapi.json
+  channels:
+  - systemEventsRateLimit
+  messages: 1
+- domain: reloads
+  asyncapi_file: asyncapi/qliksense-reloads-asyncapi.json
+  channels:
+  - systemEventsReload
+  messages: 1
+- domain: reporting-tasks
+  asyncapi_file: asyncapi/qliksense-reporting-tasks-asyncapi.json
+  channels:
+  - systemEventsSharing
+  messages: 1
+- domain: roles
+  asyncapi_file: asyncapi/qliksense-roles-asyncapi.json
+  channels:
+  - systemEventsRoles
+  messages: 4
+- domain: scheduling/tasks
+  asyncapi_file: asyncapi/qliksense-scheduling-tasks-asyncapi.json
+  channels:
+  - systemEventsTask
+  messages: 3
+- domain: spaces
+  asyncapi_file: asyncapi/qliksense-spaces-asyncapi.json
+  channels:
+  - systemEventsSpaces
+  messages: 12
+- domain: tenants
+  asyncapi_file: asyncapi/qliksense-tenants-asyncapi.json
+  channels:
+  - systemEventsTenants
+  messages: 7
+- domain: user-identities
+  asyncapi_file: asyncapi/qliksense-user-identities-asyncapi.json
+  channels:
+  - systemEventsUserIdentity
+  messages: 2
+- domain: user-sessions
+  asyncapi_file: asyncapi/qliksense-user-sessions-asyncapi.json
+  channels:
+  - systemEventsUserSession
+  messages: 2
+- domain: users
+  asyncapi_file: asyncapi/qliksense-users-asyncapi.json
+  channels:
+  - systemEventsUsers
+  messages: 2
+- domain: web-integrations
+  asyncapi_file: asyncapi/qliksense-web-integrations-asyncapi.json
+  channels:
+  - systemEventsWebIntegrations
+  messages: 3
+domain_count: 29
+message_count: 102
+asyncapi_index: asyncapi/qliksense-asyncapi-index.yml

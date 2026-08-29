@@ -1,0 +1,216 @@
+generated: '2026-08-29'
+method: searched
+source: https://qlik.dev/specs/event/<name>.json, indexed from https://qlik.dev/apis/event/
+description: 'Qlik publishes its entire Qlik Cloud system-event surface as machine-readable AsyncAPI 3.0.0 — 29
+  documents, one per event domain, covering 102 message definitions. Every payload carries CloudEvents 1.0 context
+  attributes plus Qlik extensions (userid, tenantid). This is the contract behind the Webhooks API: a webhook subscription
+  in openapi/qliksense-webhooks.json delivers exactly these events. Saved verbatim; nothing generated.'
+format: AsyncAPI 3.0.0
+envelope: CloudEvents 1.0 (Qlik migrated the Apps events to CloudEvents 1.0.2 in April 2026)
+document_count: 29
+message_count: 102
+documents:
+- file: asyncapi/qliksense-ai-mcps-asyncapi.json
+  title: ai/mcps
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsAiMcp
+  operations: 2
+  messages: 2
+- file: asyncapi/qliksense-alerting-tasks-asyncapi.json
+  title: alerting-tasks
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsAlerting
+  operations: 5
+  messages: 5
+- file: asyncapi/qliksense-api-keys-asyncapi.json
+  title: api-keys
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsApiKeys
+  operations: 5
+  messages: 5
+- file: asyncapi/qliksense-api-keys-configs-asyncapi.json
+  title: api-keys-configs
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsApiKeys
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-app-usages-asyncapi.json
+  title: app-usages
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsAppUsage
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-apps-asyncapi.json
+  title: apps
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsApp
+  - systemEventsEngineApp
+  operations: 9
+  messages: 9
+- file: asyncapi/qliksense-automations-asyncapi.json
+  title: automations
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsAutomation
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-core-ip-policies-asyncapi.json
+  title: core/ip-policies
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsIpPolicy
+  operations: 3
+  messages: 3
+- file: asyncapi/qliksense-di-projects-asyncapi.json
+  title: di-projects
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsDiProjectsDiTasks
+  operations: 4
+  messages: 4
+- file: asyncapi/qliksense-environments-asyncapi.json
+  title: environments
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsSpaces
+  operations: 3
+  messages: 3
+- file: asyncapi/qliksense-group-settings-asyncapi.json
+  title: group-settings
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsGroups
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-groups-asyncapi.json
+  title: groups
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsGroups
+  operations: 4
+  messages: 4
+- file: asyncapi/qliksense-hub-dashboards-asyncapi.json
+  title: hub-dashboards
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsHubDashboards
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-licenses-asyncapi.json
+  title: licenses
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsLicenses
+  operations: 9
+  messages: 9
+- file: asyncapi/qliksense-notification-digests-asyncapi.json
+  title: notification-digests
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsNotificationDigest
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-oauth-clients-asyncapi.json
+  title: oauth-clients
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsOauthClients
+  operations: 9
+  messages: 9
+- file: asyncapi/qliksense-oauth-tokens-asyncapi.json
+  title: oauth-tokens
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsOauthTokens
+  operations: 2
+  messages: 2
+- file: asyncapi/qliksense-quotas-asyncapi.json
+  title: quotas
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsQuota
+  operations: 3
+  messages: 3
+- file: asyncapi/qliksense-rate-limits-asyncapi.json
+  title: rate-limits
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsRateLimit
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-reloads-asyncapi.json
+  title: reloads
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsReload
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-reporting-tasks-asyncapi.json
+  title: reporting-tasks
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsSharing
+  operations: 1
+  messages: 1
+- file: asyncapi/qliksense-roles-asyncapi.json
+  title: roles
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsRoles
+  operations: 4
+  messages: 4
+- file: asyncapi/qliksense-scheduling-tasks-asyncapi.json
+  title: scheduling/tasks
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsTask
+  operations: 3
+  messages: 3
+- file: asyncapi/qliksense-spaces-asyncapi.json
+  title: spaces
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsSpaces
+  operations: 12
+  messages: 12
+- file: asyncapi/qliksense-tenants-asyncapi.json
+  title: tenants
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsTenants
+  operations: 7
+  messages: 7
+- file: asyncapi/qliksense-user-identities-asyncapi.json
+  title: user-identities
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsUserIdentity
+  operations: 2
+  messages: 2
+- file: asyncapi/qliksense-user-sessions-asyncapi.json
+  title: user-sessions
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsUserSession
+  operations: 2
+  messages: 2
+- file: asyncapi/qliksense-users-asyncapi.json
+  title: users
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsUsers
+  operations: 2
+  messages: 2
+- file: asyncapi/qliksense-web-integrations-asyncapi.json
+  title: web-integrations
+  asyncapi: 3.0.0
+  channels:
+  - systemEventsWebIntegrations
+  operations: 3
+  messages: 3

@@ -1,0 +1,148 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://qlik.dev/authenticate, https://qlik.dev/authenticate/oauth/,
+  https://qlik.dev/authenticate/api-key/generate-your-first-api-key/,
+  https://qlik.dev/authenticate/jwt/implement-jwt-authorization/,
+  https://qlik.dev/authenticate/oauth/oauth-private-key-jwt/,
+  https://qlik.dev/authenticate/oauth/oauth-dynamic-client-registration/,
+  https://qlik.dev/apis/rest/.well-known/
+docs: https://qlik.dev/authenticate
+description: >-
+  Authentication profile for the Qlik Cloud API surface. AUTHORED FROM THE DOCS,
+  NOT DERIVED FROM THE SPEC — and that is the headline finding: not one of the
+  78 published OpenAPI documents declares a components.securitySchemes block or
+  a security requirement, on any of their 681 operations. A machine reading only
+  Qlik's contract cannot tell that the API needs authentication at all, which
+  flow to use, or which scope an operation requires. Everything below exists
+  only in prose on qlik.dev.
+
+spec_declared: false
+spec_evidence:
+  documents_checked: 78
+  with_security_schemes: 0
+  operations_checked: 681
+  with_security_requirement: 0
+
+base_url: https://{tenant}.{region}.qlikcloud.com
+
+schemes:
+  - id: api-key
+    type: apiKey
+    in: header
+    name: Authorization
+    format: "Bearer <api-key>"
+    docs: https://qlik.dev/authenticate/api-key/generate-your-first-api-key/
+    audience: interactive users and simple scripts
+    notes: >-
+      Tenant admins must enable API keys per tenant; the "Developer" role and
+      the "Enable API keys" toggle were removed in January 2026 in favour of the
+      api-keys scope (see scopes/qliksense-scopes.yml and
+      blogs/2026-01-26-developer-role-and-enable-api-keys-toggle-removed.md).
+      Keys are managed through openapi/qliksense-api-keys.json.
+  - id: oauth2-m2m
+    type: oauth2
+    flow: clientCredentials
+    token_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/token
+    docs: https://qlik.dev/authenticate/oauth/getting-started-oauth-m2m/
+    audience: backend services and platform-operations automation
+    notes: Machine-to-machine OAuth client; the recommended path for server-side integrations.
+  - id: oauth2-authorization-code
+    type: oauth2
+    flow: authorizationCode
+    pkce: true
+    authorization_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/authorize
+    token_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/token
+    revocation_endpoint: https://{tenant}.{region}.qlikcloud.com/oauth/revoke
+    docs: https://qlik.dev/authenticate/oauth/create/create-oauth-client-spa/
+    audience: single-page apps and interactive web integrations
+    notes: >-
+      Consent screen presents the requested scopes. offline_access must be
+      requested explicitly for a refresh token.
+  - id: oauth2-impersonation
+    type: oauth2
+    flow: clientCredentials with subject impersonation
+    docs: https://qlik.dev/authenticate/oauth/implement-oauth-impersonation/
+    audience: OEM and embedded-analytics providers acting on behalf of end users
+    notes: >-
+      An M2M client exchanges for a token bound to a named user. Qlik publishes
+      separate guiding principles for it at
+      https://qlik.dev/authenticate/oauth/guiding-principles-oauth-impersonation/.
+  - id: oauth2-private-key-jwt
+    type: oauth2
+    client_authentication: private_key_jwt
+    standard: RFC 7523
+    docs: https://qlik.dev/authenticate/oauth/oauth-private-key-jwt/
+    reference: https://qlik.dev/authenticate/oauth/oauth-private-key-jwt-reference/
+    notes: Asymmetric client authentication as an alternative to a client secret.
+  - id: oauth2-dcr
+    type: oauth2
+    feature: dynamic-client-registration
+    standard: RFC 7591
+    docs: https://qlik.dev/authenticate/oauth/oauth-dynamic-client-registration/
+    announced: '2026-06-30'
+    changelog: https://qlik.dev/changelog/232-oauth-dynamic-client-registration/
+    notes: >-
+      DCR matters for agents specifically: an MCP client can register itself
+      against a tenant rather than waiting on a human to hand-create an OAuth
+      client in the console.
+  - id: jwt
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    docs: https://qlik.dev/authenticate/jwt/implement-jwt-authorization/
+    audience: embedded/iframe sessions where the host app already authenticates the user
+    notes: >-
+      Customer-signed JWTs exchanged for a Qlik session. A JWT proxy pattern is
+      documented at https://qlik.dev/authenticate/jwt/jwt-proxy/.
+  - id: cookie-session
+    type: cookie
+    csrf_header: qlik-csrf-token
+    csrf_endpoint: GET /api/v1/csrf-token
+    audience: browser sessions inside the Qlik hub
+    notes: Not for server-to-server use; requires the CSRF token on state-changing requests.
+
+authorization_server_metadata:
+  path: /.well-known/oauth-authorization-server
+  host: https://{tenant}.{region}.qlikcloud.com
+  documented_at: https://qlik.dev/apis/rest/.well-known/
+  rate_limit_tier: 1
+  fields:
+    - issuer
+    - jwks_uri
+    - token_endpoint
+    - revocation_endpoint
+    - grant_types_supported
+    - authorization_endpoint
+    - response_types_supported
+  probed: false
+  probe_note: >-
+    Not probed: the host is templated on a customer tenant name, so there is no
+    anonymous instance to fetch. Recorded from Qlik's documentation, including
+    its published example response.
+
+scopes:
+  detail: scopes/qliksense-scopes.yml
+  count: 225
+  oauth_usable: 101
+  docs: https://qlik.dev/manage/access-control/scopes/
+
+identity_providers:
+  supported: true
+  api: openapi/qliksense-identity-providers.json
+  standards: [oidc, saml]
+  notes: >-
+    Tenants can bring their own IdP. Auth session behaviour (including session
+    timeout) is managed through openapi/qliksense-core-auth-settings.json.
+
+related_controls:
+  ip_allowlisting:
+    api: openapi/qliksense-core-ip-policies.json
+    changelog: https://qlik.dev/changelog/
+  csp_origins:
+    api: openapi/qliksense-csp-origins.json
+  web_integrations:
+    api: openapi/qliksense-web-integrations.json
+    note: Origin allowlisting for embedded/mashup contexts.
+  content_security_policy:
+    docs: https://qlik.dev/authenticate/content-security-policy/

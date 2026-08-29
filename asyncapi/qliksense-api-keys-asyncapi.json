@@ -1,0 +1,505 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "api-keys",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsApiKeys": {
+      "address": "system-events.api-keys",
+      "messages": {
+        "apiKeyCreated": {
+          "$ref": "#/components/messages/api-keys.apiKeyCreated"
+        },
+        "apiKeyDeleted": {
+          "$ref": "#/components/messages/api-keys.apiKeyDeleted"
+        },
+        "apiKeyUpdated": {
+          "$ref": "#/components/messages/api-keys.apiKeyUpdated"
+        },
+        "apiKeyValidated": {
+          "$ref": "#/components/messages/api-keys.apiKeyValidated"
+        },
+        "apiKeyValidationFailed": {
+          "$ref": "#/components/messages/api-keys.apiKeyValidationFailed"
+        }
+      }
+    }
+  },
+  "operations": {
+    "apiKeyCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApiKeys"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApiKeys/messages/apiKeyCreated"
+        }
+      ]
+    },
+    "apiKeyDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApiKeys"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApiKeys/messages/apiKeyDeleted"
+        }
+      ]
+    },
+    "apiKeyUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApiKeys"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApiKeys/messages/apiKeyUpdated"
+        }
+      ]
+    },
+    "apiKeyValidated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApiKeys"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApiKeys/messages/apiKeyValidated"
+        }
+      ]
+    },
+    "apiKeyValidationFailed": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApiKeys"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApiKeys/messages/apiKeyValidationFailed"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "api-keys.apiKeyCreated": {
+        "name": "com.qlik.api-key.created",
+        "title": "API key created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/dataPayload"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "expiry"
+                      ],
+                      "properties": {
+                        "expiry": {
+                          "type": "string",
+                          "example": "2025-11-08T20:43:24.130Z",
+                          "description": "API key expiry date."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.api-key.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an API key is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "api-keys.apiKeyDeleted": {
+        "name": "com.qlik.api-key.deleted",
+        "title": "API key deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/dataPayload"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "status",
+                        "expiry"
+                      ],
+                      "properties": {
+                        "expiry": {
+                          "type": "string",
+                          "example": "2025-11-08T20:43:24.130Z",
+                          "description": "API key expiry date."
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "deleted",
+                          "description": "Status of the API key. Set to `deleted` when triggered by the owner, or `revoked` when triggered by a tenant admin."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.api-key.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an API key is deleted.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "api-keys.apiKeyUpdated": {
+        "name": "com.qlik.api-key.updated",
+        "title": "API key updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/dataPayload"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "expiry"
+                      ],
+                      "properties": {
+                        "expiry": {
+                          "type": "string",
+                          "example": "2025-11-08T20:43:24.130Z",
+                          "description": "API key expiry date."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.api-key.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an API key is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "api-keys.apiKeyValidated": {
+        "name": "com.qlik.api-key.validated",
+        "title": "API key validated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/dataPayload"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "createdByUser",
+                        "tenantId"
+                      ],
+                      "properties": {
+                        "tenantId": {
+                          "type": "string",
+                          "example": "id123",
+                          "description": "API key tenant identifier."
+                        },
+                        "createdByUser": {
+                          "type": "string",
+                          "example": "id123",
+                          "description": "Identifier of the user who created the key."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.api-key.validated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an API key is validated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "api-keys.apiKeyValidationFailed": {
+        "name": "com.qlik.v1.api-key.validation.failed",
+        "title": "API key validation failed",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/dataPayload"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "jti",
+                        "code",
+                        "description",
+                        "subType"
+                      ],
+                      "properties": {
+                        "jti": {
+                          "type": "string",
+                          "example": "1fc531f9-1964-46d6-9267-256e707fac45",
+                          "description": "API key identifier."
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "APIKEYS-18",
+                          "description": "Error code."
+                        },
+                        "idpId": {
+                          "type": "string",
+                          "example": "62eaddcce5ff30cabc6f67e8",
+                          "description": "Identity provider identifier tied to the externalClient."
+                        },
+                        "subType": {
+                          "type": "string",
+                          "example": "externalClient",
+                          "description": "API key subType."
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "The api key is either expired or revoked",
+                          "description": "Error description."
+                        },
+                        "createdByUser": {
+                          "type": "string",
+                          "example": "62eadf5a01f72ccd31f37041",
+                          "description": "Identifier of the user who created the key."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.api-key.validation.failed",
+                  "description": "Unique identifier for the event type."
+                },
+                "toplevelresourceid": {
+                  "type": "string",
+                  "example": "1fc531f9-1964-46d6-9267-256e707fac45",
+                  "description": "API key identifier."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when API key validation fails. Only published for externalClient API keys.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "0.0.0.0"
+            ],
+            "description": "Origin IP address."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the session related to the event."
+          }
+        }
+      },
+      "dataPayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "sub",
+          "subType"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "id123",
+            "description": "API key identifier."
+          },
+          "sub": {
+            "type": "string",
+            "example": "id123",
+            "description": "Subject identifier."
+          },
+          "subType": {
+            "type": "string",
+            "example": "user",
+            "description": "Subject type."
+          },
+          "description": {
+            "type": "string",
+            "example": "description text for the key",
+            "description": "API key description."
+          }
+        }
+      }
+    }
+  }
+}

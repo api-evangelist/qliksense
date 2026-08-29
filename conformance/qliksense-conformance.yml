@@ -1,0 +1,229 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  Asserted against the artifacts in this repo: the 78 OpenAPI 3.0.0 documents in
+  openapi/, the 29 AsyncAPI 3.0.0 documents in asyncapi/, the OpenRPC 1.0.0
+  document in json-rpc/, the 39 JSON Schemas in json-schema/, the protobuf
+  contract in grpc/, and the Qlik documentation cited per entry.
+description: >-
+  Standards conformance for Qlik Cloud, entry by entry, each with the evidence
+  that decided it. Qlik's headline result is unusual: it publishes a genuinely
+  broad set of machine-readable contracts (OpenAPI, AsyncAPI, OpenRPC, JSON
+  Schema, protobuf) yet leaves the single most consequential thing —
+  authentication — entirely out of them.
+
+standards:
+  - id: openapi
+    name: OpenAPI Specification
+    version: 3.0.0
+    conforms: true
+    evidence: >-
+      78 documents at https://qlik.dev/specs/rest/<api>.json, every one
+      declaring openapi 3.0.0, covering 681 operations and a templated
+      servers[] of https://{tenant}.{region}.qlikcloud.com. Saved in openapi/.
+  - id: openapi-security
+    name: OpenAPI security schemes declared
+    conforms: false
+    evidence: >-
+      0 of 78 documents declare components.securitySchemes and 0 of 681
+      operations declare a security requirement, even though the platform
+      requires OAuth 2.0 / API-key / JWT on every call. A client generated from
+      the contract alone would send unauthenticated requests.
+  - id: openapi-operationid
+    name: OpenAPI operationId on every operation
+    conforms: false
+    evidence: >-
+      504 of 681 operations carry an operationId (74%). The whole Apps API
+      declares only 15 of 48; Glossaries and Knowledgebases declare none. 647 of
+      681 carry tags.
+  - id: asyncapi
+    name: AsyncAPI
+    version: 3.0.0
+    conforms: true
+    evidence: >-
+      29 documents at https://qlik.dev/specs/event/<name>.json describing the
+      Qlik Cloud system-event channels, including the AI/MCP channel. Saved in
+      asyncapi/.
+  - id: cloudevents
+    name: CloudEvents
+    version: '1.0'
+    conforms: true
+    evidence: >-
+      Every event payload in asyncapi/ carries the CloudEvents context
+      attributes (id, source, specversion, type, time, datacontenttype) with
+      specversion pinned to 1.0, plus Qlik extension attributes userid and
+      tenantid. Qlik migrated the Apps events to CloudEvents 1.0.2 in April 2026
+      (blogs/2026-04-22-updated-api-apps-events-now-use-cloudevents-1-0-2-format.md).
+  - id: openrpc
+    name: OpenRPC
+    version: 1.0.0
+    conforms: true
+    evidence: >-
+      https://qlik.dev/specs/json-rpc/qix.json — the QIX Associative Engine
+      JSON-RPC/WebSocket API published as an OpenRPC 1.0.0 document
+      (info.version 12.2886.x). Saved to json-rpc/qliksense-qix-openrpc.json.
+  - id: json-schema
+    name: JSON Schema
+    conforms: true
+    evidence: >-
+      39 published JSON Schemas for Qlik Talend Cloud declarative pipeline
+      projects and tasks at github.com/qlik-oss/schemas. Saved in json-schema/.
+  - id: protobuf
+    name: Protocol Buffers / gRPC
+    version: proto3
+    conforms: true
+    evidence: >-
+      qlik.sse — the Qlik engine Server-Side Extension protocol, published as a
+      proto3 gRPC service definition at
+      github.com/qlik-oss/server-side-extension. Saved to
+      grpc/qliksense-server-side-extension.proto.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: true
+    evidence: >-
+      Authorization code (with PKCE), client credentials (M2M), impersonation
+      and private_key_jwt client authentication, with authorize/token/revoke
+      endpoints and a 225-scope vocabulary.
+      https://qlik.dev/authenticate/oauth/
+  - id: oauth2-authorization-server-metadata
+    name: OAuth 2.0 Authorization Server Metadata
+    standard: RFC 8414
+    conforms: true
+    evidence: >-
+      /.well-known/oauth-authorization-server is served on the tenant host and
+      documented at https://qlik.dev/apis/rest/.well-known/ with issuer,
+      jwks_uri, token_endpoint, revocation_endpoint, authorization_endpoint,
+      grant_types_supported and response_types_supported. Not probed — the host
+      is customer-templated.
+  - id: oauth2-dcr
+    name: OAuth 2.0 Dynamic Client Registration
+    standard: RFC 7591
+    conforms: true
+    evidence: >-
+      Announced generally available 2026-06-30,
+      https://qlik.dev/changelog/232-oauth-dynamic-client-registration/ and
+      https://qlik.dev/authenticate/oauth/oauth-dynamic-client-registration/.
+  - id: oauth2-private-key-jwt
+    name: JWT client authentication
+    standard: RFC 7523
+    conforms: true
+    evidence: https://qlik.dev/authenticate/oauth/oauth-private-key-jwt-reference/
+  - id: oidc
+    name: OpenID Connect
+    conforms: true
+    evidence: >-
+      Tenants federate to an external OIDC identity provider; managed through
+      openapi/qliksense-identity-providers.json. Qlik does not itself publish an
+      /.well-known/openid-configuration on any host probed on 2026-08-29 (all
+      404 — see well-known/qliksense-well-known.yml).
+  - id: rfc9457
+    name: Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      No operation declares application/problem+json. Qlik uses a JSON:API-style
+      errors[] envelope instead. See errors/qliksense-problem-types.yml.
+  - id: rfc8594
+    name: Sunset and Deprecation HTTP headers
+    conforms: partial
+    evidence: >-
+      Sunset, Deprecation and Link response headers are declared on 3 of 681
+      operations, all in openapi/qliksense-data-qualities.json. 27 operations
+      carry the x-qlik-deprecated flag, so the header mechanism is real but is
+      applied to roughly a tenth of the deprecated surface.
+  - id: rfc6902
+    name: JSON Patch
+    conforms: true
+    evidence: >-
+      application/json-patch+json PATCH bodies across most mutable resources
+      (apps scripts, assistants, threads, data sets, tenants...).
+  - id: pagination
+    name: Cursor pagination
+    conforms: true
+    profile: https://jsonapi.org/profiles/ethanresnick/cursor-pagination/
+    evidence: >-
+      https://qlik.dev/apis/rest/pagination-sorting-filtering/ cites the
+      JSON:API cursor-pagination profile by name; responses carry
+      links.next.href / links.prev.href and cursors are opaque.
+  - id: idempotency
+    name: Idempotency keys
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header appears on any of the 681 operations and no
+      idempotency documentation exists on qlik.dev.
+  - id: rate-limit-headers
+    name: RateLimit header fields for HTTP
+    conforms: partial
+    evidence: >-
+      Retry-After is returned on 429 (RFC 9110 semantics), but no
+      RateLimit-Limit/Remaining/Reset quota headers are emitted on successful
+      responses. The applicable tier is instead machine-readable per operation
+      via the x-qlik-tier extension.
+  - id: w3c-trace-context
+    name: W3C Trace Context / Baggage
+    conforms: partial
+    evidence: >-
+      MCP tool executions forward the W3C `baggage` header verbatim into
+      com.qlik.ai.mcp.tool.executed. The REST surface uses B3 (X-B3-Traceid)
+      rather than traceparent.
+  - id: agent-skills
+    name: Agent Skills specification
+    conforms: true
+    evidence: >-
+      Qlik operates github.com/qlik-oss/agentic-skills as a public hub of
+      SKILL.md-format skills, validated in CI against the agentskills.io spec
+      validator and published as a Claude Code plugin marketplace. Saved in
+      skills/.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    evidence: >-
+      GA remote MCP server at <tenant-url>/api/ai/mcp since 2026-02-10, OAuth
+      2.0 only. See mcp/qliksense-mcp.yml.
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json returned 404 on
+      qlik.dev, qlik.com and www.qlik.com on 2026-08-29.
+
+domain_standards:
+  note: >-
+    REWARD-ONLY. Business intelligence / analytics has no single dominant
+    interoperability standard the way payments or healthcare do, so the entries
+    below are the ones Qlik's contract actually declares. Nothing is invented to
+    fill the slot.
+  entries:
+    - id: scim-filter
+      name: SCIM filter grammar
+      standard: RFC 7644 section 3.4.2.2
+      conforms: true
+      declared_in: contract-adjacent documentation
+      evidence: >-
+        https://qlik.dev/apis/rest/pagination-sorting-filtering/ names RFC 7644 as
+        the normative definition of the ?filter= query parameter grammar and
+        states it is becoming the preferred filtering method platform-wide. The
+        filter parameter appears on list operations across openapi/ with
+        SCIM-shaped examples such as "name eq 'abc'". Qlik has adopted the SCIM
+        filter language for a general-purpose analytics API, so a caller who
+        already speaks SCIM needs no bespoke query translator.
+    - id: scim-provisioning
+      name: SCIM 2.0 user provisioning schema URNs
+      conforms: false
+      evidence: >-
+        No urn:ietf:params:scim:schemas:* URN appears anywhere in the 78 published
+        documents. openapi/qliksense-users.json and
+        openapi/qliksense-groups.json expose Qlik-native user/group shapes, not
+        SCIM resource schemas. Qlik borrowed SCIM's filter grammar without
+        adopting its resource model.
+    - id: cloudevents-eventing
+      name: CloudEvents as the platform event contract
+      conforms: true
+      evidence: >-
+        All 29 AsyncAPI documents pin specversion 1.0 with a com.qlik.* type
+        namespace. For a BI platform this is the closest thing to a domain
+        interoperability standard on the event side — any CloudEvents consumer
+        can ingest Qlik system events without a bespoke adapter.
+    - id: odata
+      name: OData
+      conforms: false
+      evidence: No $metadata endpoint and no OData-shaped query surface in any published document.

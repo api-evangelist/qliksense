@@ -4,264 +4,120 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Qlik Sense APIs
 providerId: qliksense
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-08-29'
+generated: '2026-08-29'
+method: searched
+source: https://www.qlik.com/us/pricing
+description: 'Published Qlik Cloud Analytics plans, read from Qlik''s own pricing page on 2026-08-29. REPLACES a
+  fabricated scaffold written by the 2026-05-04 bulk sweep, which invented a free tier at 1,000 requests/month and
+  per-tier API rate limits. Qlik has NO free tier and prices on DATA CAPACITY and USERS, not on API calls: the API
+  is included with the subscription and is not separately metered. API rate limits are identical on every plan (see
+  rate-limits/qliksense-rate-limits.yml).'
 tags:
-  - Analytics
-  - Business Intelligence
-  - Cloud
-  - Data Visualization
-  - Enterprise
-description: Machine-readable plans and pricing scaffold for this API provider. Conforms to the API Commons
-  Plans schema. Tier limits and prices are scaffold defaults; replace with provider-published values.
+- Analytics
+- Business Intelligence
+- Cloud
+- Pricing
+- Plans
+plan_count: 5
+currency: USD
+billing_period: monthly, billed annually
+metering_basis: data capacity (GB for analysis) and users — not API requests
+free_tier: false
+trial:
+  available: true
+  note: Qlik offers a time-limited free trial of Qlik Cloud Analytics; it is not a free plan tier.
 plans:
-  - id: qliksense-free
-    name: Free
-    type: freemium
-    description: Free entry tier for the Qlik Sense APIs API surface. Intended for evaluation, prototyping,
-      and low-volume integrations. Real limits and pricing must be reconciled with the provider's published
-      plan documentation.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota across all included endpoints
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 1000
-        timeFrame: month
-        geo: global
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the free tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 10
-        timeFrame: minute
-        geo: global
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-    elements:
-      - name: Public Documentation
-      - name: Community Support
-      - name: Sandbox Access
-      - name: Qlik Engine API
-      - name: Qlik Apps API
-      - name: Qlik Users API
-      - name: Qlik Spaces API
-      - name: Qlik Data Connections API
-      - name: Qlik Automations API
-      - name: Qlik Reload API
-      - name: Qlik Webhooks API
-  - id: qliksense-pro
-    name: Professional
-    type: paid
-    description: Production tier for Qlik Sense APIs. Provides higher quotas, priority support, and access
-      to the broader API portfolio. Pricing placeholder; align with the provider's pricing page.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 100000
-        timeFrame: month
-        geo: global
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1
-        price: TBD
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the professional tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 100
-        timeFrame: minute
-        geo: global
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Overage
-        description: Per-request price after monthly quota is exceeded
-        name: overage
-        type: metered
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1000
-        price: TBD
-        userMultiplied: false
-    elements:
-      - name: All Production Endpoints
-      - name: Email Support
-      - name: SLA Targets
-      - name: Webhook Subscriptions
-      - name: Qlik Engine API
-      - name: Qlik Apps API
-      - name: Qlik Users API
-      - name: Qlik Spaces API
-      - name: Qlik Data Connections API
-      - name: Qlik Automations API
-      - name: Qlik Reload API
-      - name: Qlik Webhooks API
-      - name: Qlik Reports API
-      - name: Qlik Machine Learning API
-      - name: Qlik Natural Language API
-      - name: Qlik Tenants API
-      - name: Qlik Audits API
-  - id: qliksense-enterprise
-    name: Enterprise
-    type: enterprise
-    description: Custom-negotiated tier for Qlik Sense APIs. Includes dedicated capacity, contractual
-      SLAs, security review, data residency options, and named technical account management.
-    entries:
-      - label: API Requests
-        description: Negotiated request volume; -1 indicates uncapped subject to fair use
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: configurable
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Rate Limit
-        description: Negotiated burst and steady-state rate
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 1000
-        timeFrame: minute
-        geo: configurable
-        domains:
-          - wss://your-tenant.qlikcloud.com/app/
-          - https://your-tenant.qlikcloud.com/api/v1/apps
-          - https://your-tenant.qlikcloud.com/api/v1/users
-          - https://your-tenant.qlikcloud.com/api/v1/spaces
-          - https://your-tenant.qlikcloud.com/api/v1/data-connections
-          - https://your-tenant.qlikcloud.com/api/v1/automations
-          - https://your-tenant.qlikcloud.com/api/v1/reloads
-          - https://your-tenant.qlikcloud.com/api/v1/webhooks
-          - https://your-tenant.qlikcloud.com/api/v1/reports
-          - https://your-tenant.qlikcloud.com/api/v1/ml
-          - https://your-tenant.qlikcloud.com/api/v1/questions
-          - https://your-tenant.qlikcloud.com/api/v1/tenants
-          - https://your-tenant.qlikcloud.com/api/v1/audits
-        unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Unlimited / Negotiated Volume
-      - name: 24/7 Dedicated Support
-      - name: Contractual SLA
-      - name: Security & Compliance Review
-      - name: Dedicated Account Manager
-      - name: Custom Data Residency
-      - name: Qlik Engine API
-      - name: Qlik Apps API
-      - name: Qlik Users API
-      - name: Qlik Spaces API
-      - name: Qlik Data Connections API
-      - name: Qlik Automations API
-      - name: Qlik Reload API
-      - name: Qlik Webhooks API
-      - name: Qlik Reports API
-      - name: Qlik Machine Learning API
-      - name: Qlik Natural Language API
-      - name: Qlik Tenants API
-      - name: Qlik Audits API
+- id: starter
+  name: Starter
+  price: '300.00'
+  currency: USD
+  period: month
+  billing: billed annually
+  included:
+    users: 10
+    data_for_analysis_gb: 10
+    max_app_size_gb: 5
+  support: community
+  features:
+  - AI-powered analytics
+  - Qlik Answers Agents access
+  - Qlik MCP Server
+  - 100s of data source connectors
+  - Visualizations
+  - Qlik Talend Cloud data movement
+  - Collaboration tools
+  - Automation
+  overage: null
+- id: standard
+  name: Standard
+  price: '825.00'
+  currency: USD
+  period: month
+  billing: billed annually
+  included:
+    users: unlimited additional users
+    data_for_analysis_gb: 25
+  support: 24x7
+  features:
+  - Everything in Starter
+  - Unstructured data / GenAI access
+  - More Answers Agents
+  - Managed spaces
+  - Additional Qlik Talend Cloud sources
+  - Augmented analytics
+  overage: Additional capacity purchasable in 25 GB increments
+- id: premium
+  name: Premium
+  price: '2750.00'
+  currency: USD
+  period: month
+  billing: billed annually
+  popular: true
+  included:
+    data_for_analysis_gb: 50
+    max_app_size_gb: 10
+  features:
+  - Everything in Standard
+  - Predictive analytics via machine learning (Qlik Predict)
+  - Additional GenAI capacity
+  - More Answers Agents
+  - Anonymous / public access
+  - SAP data extraction
+  - Data lineage connectors
+  - Guided onboarding
+  overage: Additional capacity in 25 GB or 250 GB packs
+- id: enterprise
+  name: Enterprise
+  price: null
+  price_label: Get a Quote
+  currency: USD
+  period: month
+  included:
+    data_for_analysis_gb: starts at 250
+    max_app_size_gb: 15 standard, up to 50 with purchase
+  features:
+  - Everything in Premium
+  - Large-scale deployment support
+  - Greater included capacity across reporting, automations and AI
+  - Multi-region tenants
+  - Personalized success plan
+  overage: negotiated
+- id: custom
+  name: Custom / self-hosted
+  price: null
+  price_label: Contact Sales
+  currency: USD
+  period: null
+  features:
+  - Custom plan
+  - Host on your own IT infrastructure
+  note: Qlik also sells Qlik Cloud Government and client-managed Qlik Sense Enterprise; those are quoted separately.
+api_access_note: Every plan from Starter up includes the full published REST/JSON-RPC API surface, qlik-cli, the
+  SDKs, webhooks and — per the Starter feature list — the Qlik MCP Server. There is no separate API SKU and no per-call
+  price.
+docs: https://www.qlik.com/us/pricing
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
-    url: https://apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+  url: https://apievangelist.com

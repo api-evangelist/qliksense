@@ -1,0 +1,439 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "reloads",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsReload": {
+      "address": "system-events.reload",
+      "messages": {
+        "reloadFinished": {
+          "$ref": "#/components/messages/reload.reloadFinished"
+        }
+      }
+    }
+  },
+  "operations": {
+    "reloadFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsReload"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsReload/messages/reloadFinished"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "reload.reloadFinished": {
+        "name": "com.qlik.v1.reload.finished",
+        "tags": [
+          {
+            "name": "reloads"
+          }
+        ],
+        "title": "Reload Finished Event",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/reloadFinishedEventData"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.reload.finished",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "The reload finished event will be published when a reload has finished. While a reload might be executed multiple times, there will be only one reload finished event.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the event."
+          },
+          "host": {
+            "type": "string",
+            "examples": [
+              "qlik.example.com"
+            ],
+            "description": "The host of the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2018-10-30T07:06:22Z"
+            ],
+            "description": "Timestamp of when the event happened."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "default": "com.qlik/reloads",
+            "description": "The source of the event."
+          },
+          "ownerid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "The owner ID of the event."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "192.168.1.1"
+            ],
+            "description": "The origin IP of the event."
+          },
+          "specversion": {
+            "enum": [
+              "1.0"
+            ],
+            "type": "string",
+            "default": "1.0",
+            "description": "The event is compatible with the CloudEvents specification v1.0."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "description": "The content type of the event payload."
+          }
+        }
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "examples": [
+              "User initiated reload"
+            ],
+            "description": "reason for why the event is triggered."
+          },
+          "userid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the user related to the event."
+          },
+          "spaceid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the space related to the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "token"
+            ],
+            "description": "Representing the type of principal that triggered the occurrence."
+          },
+          "clientid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the client related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "The session ID of the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\"sub\":\"id123\",\"name\":\"John Doe\",\"email\":\"john.doe@example.com\"}"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event"
+          },
+          "tracestate": {
+            "type": "string",
+            "examples": [
+              "key1=value1,key2=value2"
+            ],
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "examples": [
+              "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+            ],
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          },
+          "toplevelresourceid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for top level resource related to the event."
+          }
+        }
+      },
+      "reloadFinishedEventData": {
+        "type": "object",
+        "examples": [
+          {
+            "id": "id123",
+            "appId": "app1",
+            "userId": "user1",
+            "succeeded": true
+          }
+        ],
+        "required": [
+          "id",
+          "appId",
+          "userId",
+          "succeeded"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Reload ID."
+          },
+          "type": {
+            "enum": [
+              "hub",
+              "chronos",
+              "external",
+              "automations",
+              "data-refresh",
+              "choreographer"
+            ],
+            "type": "string",
+            "examples": [
+              "hub"
+            ],
+            "description": "What initiated the reload: hub = one-time reload manually triggered in hub, chronos = time based scheduled reload triggered by chronos, external = reload triggered via external API request, automations = reload triggered in automation, data-refresh = reload triggered by refresh of data, choreographer = reload triggered by choreographer."
+          },
+          "appId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "ID of the reloaded app."
+          },
+          "status": {
+            "enum": [
+              "SUCCEEDED",
+              "FAILED",
+              "CANCELED",
+              "EXCEEDED_LIMIT"
+            ],
+            "type": "string",
+            "examples": [
+              "SUCCEEDED"
+            ],
+            "description": "The end status of reload."
+          },
+          "taskId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "ID of the app's scheduled reload task."
+          },
+          "userId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "ID of the requesting user."
+          },
+          "weight": {
+            "type": "integer",
+            "default": 1,
+            "maximum": 10,
+            "minimum": 1,
+            "description": "The weight of the reload. The higher the weight, the sooner the reload will be scheduled relative to other reloads for the same tenant. The personal app will be always set as 1.\n"
+          },
+          "partial": {
+            "type": "boolean",
+            "examples": [
+              true
+            ],
+            "description": "The partial status of reload."
+          },
+          "appUsage": {
+            "type": "string",
+            "examples": [
+              "ANALYTICS"
+            ],
+            "description": "The app's usage type"
+          },
+          "tenantId": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "ID of the tenant."
+          },
+          "errorCode": {
+            "type": "string",
+            "examples": [
+              ""
+            ],
+            "description": "Error code, if failed."
+          },
+          "startTime": {
+            "type": "string",
+            "examples": [
+              "2006-01-02T15:04:05.000Z"
+            ],
+            "description": "reload starting time from engine."
+          },
+          "succeeded": {
+            "type": "boolean",
+            "examples": [
+              true
+            ],
+            "description": "Success status of reload."
+          },
+          "resourceId": {
+            "type": "string",
+            "example": "5be59decca62aa00097268a4",
+            "description": "The String field identifying the specific resource ID within that service"
+          },
+          "creationTime": {
+            "type": "string",
+            "examples": [
+              "2006-01-02T15:04:05.000Z"
+            ],
+            "description": "reload creation time."
+          },
+          "errorMessage": {
+            "type": "string",
+            "examples": [
+              ""
+            ],
+            "description": "Error message, if failed."
+          },
+          "resourceType": {
+            "type": "string",
+            "examples": [
+              "api",
+              "reload-tasks",
+              "tasks",
+              "automate"
+            ],
+            "description": "The String field identifying the service type that triggered the reload, e.g. \"api\""
+          },
+          "licenseNumber": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "License number from the requesting user's JWT."
+          },
+          "enginePoolName": {
+            "type": "string",
+            "examples": [
+              "engine-oape-20g-reload"
+            ],
+            "description": "The engine pool that executed the reload."
+          },
+          "lastReloadTime": {
+            "type": "string",
+            "examples": [
+              "2006-01-02T15:04:05.000Z"
+            ],
+            "description": "Last reload time from engine, if succeeded."
+          },
+          "durationSeconds": {
+            "type": "number",
+            "examples": [
+              26.1
+            ],
+            "description": "Duration from engine session acquisition to reload attempt completion (seconds)."
+          },
+          "reloadPacksFactor": {
+            "type": "number",
+            "default": 0,
+            "examples": [
+              1.5
+            ],
+            "description": "Reload packs factor determined by the engine size used for the reload."
+          },
+          "engineSizingReason": {
+            "type": "string",
+            "examples": [
+              "standard_calculation",
+              "app_crash",
+              "no_metadata"
+            ],
+            "description": "Reason used to determine the engine size for the reload."
+          },
+          "reloadPacksConsumed": {
+            "type": "integer",
+            "default": 0,
+            "examples": [
+              0
+            ],
+            "description": "Number of reload packs consumed by the reload. Only populated when the reload packs feature is enabled for the tenant."
+          },
+          "crashedOnMaxSizeEngine": {
+            "type": "boolean",
+            "examples": [
+              true
+            ],
+            "description": "Whether the session request failed due to the app previously crashing on a max size engine"
+          }
+        },
+        "description": "Data specific to the reload finished event."
+      }
+    }
+  }
+}

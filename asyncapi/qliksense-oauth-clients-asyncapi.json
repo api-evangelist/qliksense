@@ -1,0 +1,811 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "oauth-clients",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsOauthClients": {
+      "address": "system-events.oauth-clients",
+      "messages": {
+        "oauthClientConnectionConfigApproved": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientConnectionConfigApproved"
+        },
+        "oauthClientConnectionConfigDeleted": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientConnectionConfigDeleted"
+        },
+        "oauthClientConnectionConfigUpdated": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientConnectionConfigUpdated"
+        },
+        "oauthClientCreated": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientCreated"
+        },
+        "oauthClientDeleted": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientDeleted"
+        },
+        "oauthClientPublished": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientPublished"
+        },
+        "oauthClientSecretCreated": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientSecretCreated"
+        },
+        "oauthClientSecretDeleted": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientSecretDeleted"
+        },
+        "oauthClientUpdated": {
+          "$ref": "#/components/messages/oauth-clients.oauthClientUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "oauthClientConnectionConfigApproved": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientConnectionConfigApproved"
+        }
+      ]
+    },
+    "oauthClientConnectionConfigDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientConnectionConfigDeleted"
+        }
+      ]
+    },
+    "oauthClientConnectionConfigUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientConnectionConfigUpdated"
+        }
+      ]
+    },
+    "oauthClientCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientCreated"
+        }
+      ]
+    },
+    "oauthClientDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientDeleted"
+        }
+      ]
+    },
+    "oauthClientPublished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientPublished"
+        }
+      ]
+    },
+    "oauthClientSecretCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientSecretCreated"
+        }
+      ]
+    },
+    "oauthClientSecretDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientSecretDeleted"
+        }
+      ]
+    },
+    "oauthClientUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsOauthClients"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsOauthClients/messages/oauthClientUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "oauth-clients.oauthClientConnectionConfigApproved": {
+        "name": "com.qlik.v1.oauth-client.connection-config.approved",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client connection config approved",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthConnectionConfigEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.connection-config.approved",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a tenant admin approves an OAuth client.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientConnectionConfigDeleted": {
+        "name": "com.qlik.v1.oauth-client.connection-config.deleted",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client connection config deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthConnectionConfigEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.connection-config.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a tenant admin revokes their access to another tenant's OAuth client by deleting the connection config.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientConnectionConfigUpdated": {
+        "name": "com.qlik.v1.oauth-client.connection-config.updated",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client connection config updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthConnectionConfigEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.connection-config.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a connection config is updated by a tenant admin.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientCreated": {
+        "name": "com.qlik.v1.oauth-client.created",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthClientEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth client is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientDeleted": {
+        "name": "com.qlik.v1.oauth-client.deleted",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthClientEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth client is deleted.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientPublished": {
+        "name": "com.qlik.v1.oauth-client.published",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client published",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthClientEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.published",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth client is published.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientSecretCreated": {
+        "name": "com.qlik.v1.oauth-client.secret.created",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client secret created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthClientSecretData"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.secret.created",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth client secret is created.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientSecretDeleted": {
+        "name": "com.qlik.v1.oauth-client.secret.deleted",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client secret deleted",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthClientSecretData"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.secret.deleted",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth client secret is deleted.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "oauth-clients.oauthClientUpdated": {
+        "name": "com.qlik.v1.oauth-client.updated",
+        "tags": [
+          {
+            "name": "oauth-clients"
+          }
+        ],
+        "title": "OAuth client updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/OAuthClientEntry"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.oauth-client.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when an OAuth client is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-04-05T17:31:00Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      },
+      "OAuthClientEntry": {
+        "type": "object",
+        "examples": [
+          {
+            "appType": "web",
+            "ownerId": "00000000-0000-0000-0000-000000000000",
+            "clientId": "000000000000000000000000",
+            "tenantId": "00000000-0000-0000-0000-000000000000",
+            "createdAt": "2026-10-30T07:06:22Z",
+            "ownerType": "tenant",
+            "clientName": "New oauth client",
+            "createdById": "00000000-0000-0000-0000-000000000000",
+            "createdByType": "user"
+          }
+        ],
+        "required": [
+          "appType",
+          "clientId",
+          "clientName",
+          "createdAt",
+          "createdById",
+          "createdByType",
+          "ownerId",
+          "ownerType",
+          "tenantId"
+        ],
+        "properties": {
+          "appType": {
+            "enum": [
+              "web",
+              "native",
+              "spa",
+              "anonymous-embed"
+            ],
+            "type": "string",
+            "example": "web",
+            "description": "Application type for the client."
+          },
+          "logoUri": {
+            "type": "string",
+            "format": "uri",
+            "example": "http://logo-uri.com",
+            "description": "URI for the logo of the client."
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "Identifier of the owner that created the client."
+          },
+          "clientId": {
+            "type": "string",
+            "example": "000000000000000000000000",
+            "description": "Identifier of the client."
+          },
+          "tenantId": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "Identifier of the tenant where the client was created."
+          },
+          "clientUri": {
+            "type": "string",
+            "format": "uri",
+            "example": "http://homepage.com",
+            "description": "URI for the homepage of the client."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-30T07:06:22Z",
+            "description": "Timestamp when the client was created."
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-30T07:06:22Z",
+            "description": "Timestamp when the client was deleted."
+          },
+          "ownerType": {
+            "type": "string",
+            "example": "tenant",
+            "description": "Type of owner that created the client."
+          },
+          "clientName": {
+            "type": "string",
+            "example": "New oauth client",
+            "description": "Name of the client."
+          },
+          "disableTag": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Indicates whether the client is disabled."
+          },
+          "createdById": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "Identifier of the resource that created the client."
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-30T07:06:22Z",
+            "description": "Timestamp when the client was published."
+          },
+          "redirectUris": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "example": [
+              "http://redirect-uri-1.com",
+              "http://redirect-uri-2.com"
+            ],
+            "description": "List of allowed redirect URIs for logins with the client."
+          },
+          "allowedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "description": "List of allowed scopes for the client."
+          },
+          "createdByType": {
+            "type": "string",
+            "example": "user",
+            "description": "Type of the resource that created the client."
+          },
+          "allowedOrigins": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxItems": 5,
+              "maxLength": 256
+            },
+            "description": "List of allowed origins for the client."
+          },
+          "connectionPolicy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OAuthConnectionPolicy"
+            },
+            "description": "Connection policies for the client."
+          }
+        },
+        "description": "Full oauth-client resource after the event was published."
+      },
+      "OAuthClientSecretData": {
+        "type": "object",
+        "examples": [
+          {
+            "hint": "00000",
+            "clientId": "000000000000000000000000"
+          }
+        ],
+        "required": [
+          "clientId",
+          "hint"
+        ],
+        "properties": {
+          "hint": {
+            "type": "string",
+            "example": "00000",
+            "description": "Hint for the client secret."
+          },
+          "clientId": {
+            "type": "string",
+            "example": "000000000000000000000000",
+            "description": "Identifier of the client."
+          }
+        },
+        "description": "OAuth client identifier and hint for the secret the event is related to."
+      },
+      "OAuthConnectionConfigEntry": {
+        "type": "object",
+        "examples": [
+          {
+            "status": "approved",
+            "tenantId": "00000000-0000-0000-0000-000000000000",
+            "createdAt": "2026-10-30T07:06:22Z",
+            "updatedAt": "2026-10-30T07:06:22Z",
+            "consentMethod": "trusted"
+          }
+        ],
+        "required": [
+          "clientId",
+          "consentMethod",
+          "createdAt",
+          "tenantId",
+          "updatedAt"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "approved"
+            ],
+            "type": "string",
+            "description": "Status of the connection-config for the tenant."
+          },
+          "tenantId": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "Identifier of the tenant the connection-config relates to."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-30T07:06:22Z",
+            "description": "Timestamp when the connection-config was created."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-30T07:06:22Z",
+            "description": "Timestamp when the connection-config was updated."
+          },
+          "consentMethod": {
+            "enum": [
+              "required",
+              "trusted"
+            ],
+            "type": "string",
+            "description": "Consent method for the connection-config."
+          }
+        },
+        "description": "Full client connection config resource after the event was published."
+      },
+      "OAuthConnectionPolicy": {
+        "type": "object",
+        "examples": [
+          {
+            "tenantId": "00000000-0000-0000-0000-000000000000"
+          }
+        ],
+        "required": [
+          "tenantId"
+        ],
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000",
+            "description": "Identifier of the tenant allowed to use this OAuth client."
+          }
+        },
+        "description": "Oauth-client connection policy"
+      }
+    }
+  }
+}

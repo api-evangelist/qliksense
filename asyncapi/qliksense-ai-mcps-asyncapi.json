@@ -1,0 +1,348 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "ai/mcps",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsAiMcp": {
+      "address": "system-events.ai.mcp",
+      "messages": {
+        "aiMcpToolCallsAggregated": {
+          "$ref": "#/components/messages/ai.aiMcpToolCallsAggregated"
+        },
+        "aiMcpToolExecuted": {
+          "$ref": "#/components/messages/ai.aiMcpToolExecuted"
+        }
+      }
+    }
+  },
+  "operations": {
+    "aiMcpToolCallsAggregated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAiMcp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAiMcp/messages/aiMcpToolCallsAggregated"
+        }
+      ]
+    },
+    "aiMcpToolExecuted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAiMcp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAiMcp/messages/aiMcpToolExecuted"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "ai.aiMcpToolCallsAggregated": {
+        "name": "com.qlik.ai.mcp.tool.calls.aggregated",
+        "title": "Tool calls aggregated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "eventIds": [
+                        "550e8400-e29b-41d4-a716-446655440000",
+                        "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+                        "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                        "88f7f2e9-9c8a-4f9b-a8b5-9d8c7e6f5a4b",
+                        "99a8b3d4-1e2f-3c4d-8e6f-7a8b9c0d1e2f"
+                      ],
+                      "toolCount": 5,
+                      "totalLatencyMs": 1245
+                    }
+                  ],
+                  "required": [
+                    "toolCount",
+                    "totalLatencyMs",
+                    "eventIds"
+                  ],
+                  "properties": {
+                    "eventIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "examples": [
+                        [
+                          "550e8400-e29b-41d4-a716-446655440000",
+                          "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+                          "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                          "88f7f2e9-9c8a-4f9b-a8b5-9d8c7e6f5a4b",
+                          "99a8b3d4-1e2f-3c4d-8e6f-7a8b9c0d1e2f"
+                        ]
+                      ],
+                      "description": "The list of CloudEvent IDs from individual tool execution events that were aggregated. Provides traceability to the original `toolExecuted` events for detailed analysis.\n"
+                    },
+                    "toolCount": {
+                      "type": "integer",
+                      "examples": [
+                        5
+                      ],
+                      "description": "The number of tool calls aggregated in this event."
+                    },
+                    "totalLatencyMs": {
+                      "type": "integer",
+                      "examples": [
+                        1245
+                      ],
+                      "description": "The total execution latency across all aggregated tool calls, in milliseconds."
+                    }
+                  },
+                  "description": "The aggregated metrics for a batch of tool calls, including the count of tool calls, cumulative latency across all calls, and references to individual tool execution events for traceability.\n"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.ai.mcp.tool.calls.aggregated",
+                  "description": "Describes the type of event related to the originating occurrence."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when aggregated tool call metrics are generated after a configured threshold (default 5 tool calls) or timeout. Includes the count of tool calls, total execution latency across all calls in milliseconds, and event IDs of the individual tool execution events. Use this to analyze tool usage patterns and detect performance trends.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "ai.aiMcpToolExecuted": {
+        "name": "com.qlik.ai.mcp.tool.executed",
+        "title": "Tool executed",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "examples": [
+                    {
+                      "name": "search_datasets",
+                      "latency": 123,
+                      "billable": true
+                    }
+                  ],
+                  "required": [
+                    "name",
+                    "latency"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "examples": [
+                        "search_datasets"
+                      ],
+                      "description": "The name of the tool that was executed."
+                    },
+                    "error": {
+                      "type": "string",
+                      "examples": [
+                        "Tool not found"
+                      ],
+                      "description": "Error message if the tool execution failed."
+                    },
+                    "baggage": {
+                      "type": "string",
+                      "examples": [
+                        "client.type=mcp,client.version=1.2.0",
+                        "client.type=agent,client.version=2.0.0"
+                      ],
+                      "description": "W3C Baggage header value forwarded verbatim from the incoming request. Omitted when no baggage header was present on the incoming request.\n"
+                    },
+                    "latency": {
+                      "type": "integer",
+                      "examples": [
+                        123
+                      ],
+                      "description": "The time it took to execute the tool, in milliseconds."
+                    },
+                    "spaceId": {
+                      "type": "string",
+                      "examples": [
+                        "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+                      ],
+                      "description": "The ID of the space associated with the tool call. Omitted when not applicable."
+                    },
+                    "billable": {
+                      "type": "boolean",
+                      "examples": [
+                        true
+                      ],
+                      "description": "Whether this tool call counts toward consumption/billing. False for tools tagged as excluded from billing capture (e.g. status-polling tools). Consumers computing consumption from this stream should ignore events where billable is false.\n"
+                    },
+                    "userAgent": {
+                      "type": "string",
+                      "examples": [
+                        "modelcontextprotocol/1.0",
+                        "unknown"
+                      ],
+                      "description": "Optional. The User-Agent header value from the request that triggered the tool execution, or \"unknown\" when the header is absent.\n"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "examples": [
+                        "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      ],
+                      "description": "The ID of the primary resource the tool operated on (e.g. app ID, dataset ID). Omitted when not applicable."
+                    },
+                    "resourceType": {
+                      "type": "string",
+                      "examples": [
+                        "app"
+                      ],
+                      "description": "The type of the primary resource (e.g. \"app\", \"dataset\", \"automation\"). Omitted when not applicable."
+                    },
+                    "subResourceId": {
+                      "type": "string",
+                      "examples": [
+                        "c3d4e5f6-a7b8-9012-cdef-123456789012"
+                      ],
+                      "description": "The ID of the sub-resource the tool operated on (e.g. sheet ID, chart ID). Omitted when not applicable."
+                    },
+                    "subResourceType": {
+                      "type": "string",
+                      "examples": [
+                        "sheet"
+                      ],
+                      "description": "The type of the sub-resource (e.g. \"sheet\", \"chart\", \"dimension\"). Omitted when not applicable."
+                    }
+                  },
+                  "description": "The tool execution details, including the tool name, execution time in milliseconds, and any error encountered during execution.\n"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.ai.mcp.tool.executed",
+                  "description": "Describes the type of event related to the originating occurrence."
+                },
+                "clientid": {
+                  "type": "string",
+                  "examples": [
+                    "client_12345"
+                  ],
+                  "description": "The client ID of the OAuth application that requested the tool execution. Absent when the request was made using an impersonated JWT (act claim) without an OAuth client ID.\n"
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a tool is executed in MCP. Includes the tool name, client ID, execution latency in milliseconds, and any error message if execution failed. Optionally includes resource context (resourceId, resourceType, spaceId, subResourceId, subResourceType) when the tool operates on a specific resource. Use this to monitor tool performance and correlate tool calls.\n",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "id123"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2018-10-30T07:06:22Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "default": "com.qlik/mcp",
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "enum": [
+              "1.0"
+            ],
+            "type": "string",
+            "default": "1.0",
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid",
+          "userid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "format": "uuid",
+            "examples": [
+              "ad378d54-3e97-47c0-bc57-cd84dbb93fa2"
+            ],
+            "description": "The unique identifier for the user related to the event."
+          },
+          "tenantid": {
+            "type": "string",
+            "format": "uuid",
+            "examples": [
+              "103359ca-3579-4125-a0dc-d19531b53186"
+            ],
+            "description": "The unique identifier for the tenant related to the event."
+          }
+        },
+        "description": "Custom extensions for MCP events containing tenant and user context."
+      }
+    }
+  }
+}

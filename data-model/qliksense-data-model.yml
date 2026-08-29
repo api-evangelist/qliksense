@@ -1,0 +1,130 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  Derived from the id-reference fields and $ref links in the 78 OpenAPI 3.0.0
+  documents in openapi/ (1,258 distinct component schemas), cross-checked
+  against https://qlik.dev/manage/key-concepts/ and
+  https://qlik.dev/apis/namespaces/.
+docs: https://qlik.dev/manage/key-concepts/
+notation: >-
+  relationships use has_one / has_many / belongs_to with the foreign-key field
+  name; direction is from the entity that owns the reference.
+description: >-
+  Entity-relationship graph behind the Qlik Cloud API. Three fields carry almost
+  all of the structure: tenantId (65 schemas), spaceId (67) and ownerId (63).
+  Everything in Qlik Cloud lives in a TENANT, is placed in a SPACE, and is owned
+  by a USER — space membership plus role is what actually resolves authorization
+  on nearly every call, which is why an agent that ignores spaceId will get 403s
+  it cannot explain.
+id_format:
+  scheme: >-
+    Opaque identifiers with NO type prefix. Qlik uses bare GUIDs (users,
+    tenants, spaces, reloads) and 24-character hex object ids (apps, items). An
+    id therefore does not tell you what it identifies — unlike prefix-typed
+    schemes, you must know the endpoint you got it from.
+  examples:
+    tenantId: 103359ca-3579-4125-a0dc-d19531b53186
+    userId: ad378d54-3e97-47c0-bc57-cd84dbb93fa2
+
+entities:
+  - {name: Tenant, domain: core, api: openapi/qliksense-tenants.json, description: The top-level isolation boundary; every other resource belongs to exactly one.}
+  - {name: User, domain: core, api: openapi/qliksense-users.json, description: An identity inside a tenant; carries roles and assigned scopes.}
+  - {name: Group, domain: core, api: openapi/qliksense-groups.json, description: A collection of users, usually synced from the identity provider.}
+  - {name: Role, domain: core, api: openapi/qliksense-roles.json, description: A named bundle of scopes; the unit of access control.}
+  - {name: Space, domain: core, api: openapi/qliksense-spaces.json, description: Shared/managed/personal container that holds content and resolves who can do what to it.}
+  - {name: Item, domain: core, api: openapi/qliksense-items.json, description: The generic catalog record for any piece of content; the platform-wide search and discovery surface.}
+  - {name: Collection, domain: core, api: openapi/qliksense-collections.json, description: A curated set of items.}
+  - {name: App, domain: analytics, api: openapi/qliksense-apps.json, description: A Qlik analytics application — data model, load script, sheets and visualizations.}
+  - {name: Script, domain: analytics, api: openapi/qliksense-apps.json, description: The load script version history attached to an app.}
+  - {name: Reload, domain: analytics, api: openapi/qliksense-reloads.json, description: A single execution that refreshes an app's data.}
+  - {name: SchedulingTask, domain: analytics, api: openapi/qliksense-scheduling-tasks.json, description: The scheduled-execution surface that replaces the deprecated Reload Tasks API.}
+  - {name: DataConnection, domain: data, api: openapi/qliksense-data-connections.json, description: A configured connection to an external data source.}
+  - {name: DataCredential, domain: data, api: openapi/qliksense-data-credentials.json, description: Credentials bound to a data connection.}
+  - {name: DataSet, domain: data, api: openapi/qliksense-data-sets.json, description: A registered dataset with profiles and quality metrics.}
+  - {name: DataFile, domain: data, api: openapi/qliksense-data-files.json, description: An uploaded file in a space.}
+  - {name: DataStore, domain: data, api: openapi/qliksense-data-stores.json, description: A storage target in a data-integration project.}
+  - {name: DIProject, domain: data-integration, api: openapi/qliksense-di-projects.json, description: A Qlik Talend Cloud data-integration project and its tasks.}
+  - {name: DataProduct, domain: data-governance, api: openapi/qliksense-data-governance-data-products.json, description: A governed, published bundle of data assets.}
+  - {name: Glossary, domain: data-governance, api: openapi/qliksense-glossaries.json, description: A business glossary; holds terms and categories.}
+  - {name: Term, domain: data-governance, api: openapi/qliksense-glossaries.json, description: A business term inside a glossary.}
+  - {name: LineageGraph, domain: data-governance, api: openapi/qliksense-lineage-graphs.json, description: Upstream/downstream lineage for a data asset.}
+  - {name: TrustScore, domain: data-governance, api: openapi/qliksense-data-governance-trust-scores.json, description: Qlik Trust Score for datasets, retrievable in bulk.}
+  - {name: Assistant, domain: ai, api: openapi/qliksense-assistants.json, description: A Qlik Answers assistant; the entity behind the MCP question-answering tool.}
+  - {name: Thread, domain: ai, api: openapi/qliksense-assistants.json, description: A conversation with an assistant.}
+  - {name: Interaction, domain: ai, api: openapi/qliksense-assistants.json, description: One prompt/response turn inside a thread, with feedback and review.}
+  - {name: Knowledgebase, domain: ai, api: openapi/qliksense-knowledgebases.json, description: The indexed unstructured-content source an assistant answers from.}
+  - {name: MLExperiment, domain: machine-learning, api: openapi/qliksense-ml.json, description: A Qlik Predict AutoML experiment and its versions.}
+  - {name: MLDeployment, domain: machine-learning, api: openapi/qliksense-automl-deployments.json, description: A deployed model serving predictions.}
+  - {name: MLPrediction, domain: machine-learning, api: openapi/qliksense-automl-predictions.json, description: A prediction job with SHAP explanations.}
+  - {name: Automation, domain: workflows, api: openapi/qliksense-workflows-automations.json, description: A no-code Qlik Automate workflow.}
+  - {name: AutomationConnection, domain: workflows, api: openapi/qliksense-workflows-automation-connections.json, description: A configured connection an automation uses.}
+  - {name: Webhook, domain: platform, api: openapi/qliksense-webhooks.json, description: An HTTP subscription to tenant events.}
+  - {name: Report, domain: reporting, api: openapi/qliksense-reports.json, description: A generated report asset.}
+  - {name: ReportTemplate, domain: reporting, api: openapi/qliksense-report-templates.json, description: The template a report renders from.}
+  - {name: AuditEvent, domain: telemetry, api: openapi/qliksense-audits.json, description: An immutable record of an action taken in the tenant.}
+  - {name: License, domain: telemetry, api: openapi/qliksense-licenses.json, description: Entitlement assignment and consumption.}
+
+relationships:
+  - {from: Tenant, to: User, type: has_many, via: tenantId}
+  - {from: Tenant, to: Space, type: has_many, via: tenantId}
+  - {from: Tenant, to: License, type: has_one, via: tenantId}
+  - {from: User, to: Role, type: has_many, via: assignedRoles}
+  - {from: Group, to: User, type: has_many, via: userId}
+  - {from: Space, to: App, type: has_many, via: spaceId}
+  - {from: Space, to: DataConnection, type: has_many, via: spaceId}
+  - {from: Space, to: DataSet, type: has_many, via: spaceId}
+  - {from: Space, to: Automation, type: has_many, via: spaceId}
+  - {from: Item, to: Space, type: belongs_to, via: spaceId}
+  - {from: Item, to: User, type: belongs_to, via: ownerId}
+  - {from: Collection, to: Item, type: has_many, via: itemId}
+  - {from: App, to: User, type: belongs_to, via: ownerId}
+  - {from: App, to: Space, type: belongs_to, via: spaceId}
+  - {from: App, to: Script, type: has_many, via: appId}
+  - {from: App, to: Reload, type: has_many, via: appId}
+  - {from: Reload, to: App, type: belongs_to, via: appId}
+  - {from: SchedulingTask, to: App, type: belongs_to, via: appId}
+  - {from: DataConnection, to: DataCredential, type: has_one, via: connectionId}
+  - {from: DataConnection, to: Space, type: belongs_to, via: spaceId}
+  - {from: DataSet, to: DataConnection, type: belongs_to, via: connectionId}
+  - {from: DataSet, to: TrustScore, type: has_one, via: datasetId}
+  - {from: DataSet, to: LineageGraph, type: has_one, via: datasetId}
+  - {from: DataProduct, to: DataSet, type: has_many, via: datasetId}
+  - {from: Glossary, to: Term, type: has_many, via: termId}
+  - {from: DIProject, to: DataStore, type: has_many, via: projectId}
+  - {from: Assistant, to: Knowledgebase, type: has_many, via: knowledgebaseId}
+  - {from: Assistant, to: Thread, type: has_many, via: assistantId}
+  - {from: Thread, to: Interaction, type: has_many, via: threadId}
+  - {from: MLExperiment, to: MLDeployment, type: has_many, via: experimentId}
+  - {from: MLDeployment, to: MLPrediction, type: has_many, via: deploymentId}
+  - {from: Automation, to: AutomationConnection, type: has_many, via: connectionId}
+  - {from: Report, to: ReportTemplate, type: belongs_to, via: templateId}
+  - {from: Webhook, to: Tenant, type: belongs_to, via: tenantId}
+  - {from: AuditEvent, to: Tenant, type: belongs_to, via: tenantId}
+  - {from: AuditEvent, to: User, type: belongs_to, via: userId}
+
+id_reference_frequency:
+  note: How often each foreign-key field appears across the 1,258 component schemas.
+  spaceId: 67
+  tenantId: 65
+  ownerId: 63
+  appId: 25
+  userId: 17
+  datasetId: 10
+  connectionId: 9
+  glossaryId: 4
+  taskId: 4
+  reloadId: 3
+  knowledgebaseId: 3
+  deploymentId: 3
+  templateId: 3
+
+engine_model:
+  note: >-
+    The REST entities above sit on top of a second, older object model exposed
+    over WebSocket JSON-RPC by the Associative Engine (QIX): Doc, GenericObject,
+    GenericDimension, GenericMeasure, GenericBookmark, GenericVariable, Field,
+    Variable. That graph is fully described in
+    json-rpc/qliksense-qix-openrpc.json (OpenRPC 1.0.0) and is what enigma.js,
+    enigma-go and nebula.js talk to.
+  contract: json-rpc/qliksense-qix-openrpc.json
+  docs: https://qlik.dev/apis/json-rpc/qix/

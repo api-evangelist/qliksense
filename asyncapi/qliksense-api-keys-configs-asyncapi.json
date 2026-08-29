@@ -1,0 +1,188 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "api-keys-configs",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsApiKeys": {
+      "address": "system-events.api-keys",
+      "messages": {
+        "apiKeysConfigUpdated": {
+          "$ref": "#/components/messages/api-keys.apiKeysConfigUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "apiKeysConfigUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApiKeys"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApiKeys/messages/apiKeysConfigUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "api-keys.apiKeysConfigUpdated": {
+        "name": "com.qlik.api-keys-config.updated",
+        "title": "API key config updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "apiKeysEnabled",
+                    "maxApiKeyExpiry",
+                    "maxKeysPerUser",
+                    "scimExternalClientExpiry"
+                  ],
+                  "properties": {
+                    "apiKeysEnabled": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "Determines if API keys functionality is enabled."
+                    },
+                    "maxKeysPerUser": {
+                      "type": "string",
+                      "example": 5,
+                      "description": "Maximum number of active API keys per user."
+                    },
+                    "maxApiKeyExpiry": {
+                      "type": "string",
+                      "example": "PT24H",
+                      "description": "Maximum expiry for an API key, in ISO 8601 format."
+                    },
+                    "scimExternalClientExpiry": {
+                      "type": "string",
+                      "example": "P365D",
+                      "description": "Expiry of the SCIM `externalClient` token in ISO 8601 duration format, for example `P365D` for 365 days. Set when creating an `externalClient` API key for a SCIM-compatible identity provider."
+                    }
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.api-keys-config.updated",
+                  "description": "Unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when the API key configuration is updated.",
+        "x-qlik-deprecated": false,
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the user triggering the event."
+          },
+          "originip": {
+            "type": "string",
+            "examples": [
+              "0.0.0.0"
+            ],
+            "description": "Origin IP address."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          },
+          "sessionid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "Unique identifier for the session related to the event."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,3385 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "apps",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsApp": {
+      "address": "system-events.app",
+      "messages": {
+        "appOpened": {
+          "$ref": "#/components/messages/app.appOpened"
+        },
+        "appReloadFinished": {
+          "$ref": "#/components/messages/app.appReloadFinished"
+        }
+      }
+    },
+    "systemEventsEngineApp": {
+      "address": "system-events.engine.app",
+      "messages": {
+        "appCreated": {
+          "$ref": "#/components/messages/engine.appCreated"
+        },
+        "appDataUpdated": {
+          "$ref": "#/components/messages/engine.appDataUpdated"
+        },
+        "appDeleted": {
+          "$ref": "#/components/messages/engine.appDeleted"
+        },
+        "appExported": {
+          "$ref": "#/components/messages/engine.appExported"
+        },
+        "appHarddeleted": {
+          "$ref": "#/components/messages/engine.appHarddeleted"
+        },
+        "appPublished": {
+          "$ref": "#/components/messages/engine.appPublished"
+        },
+        "appSoftdeleted": {
+          "$ref": "#/components/messages/engine.appSoftdeleted"
+        }
+      }
+    }
+  },
+  "operations": {
+    "appCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appCreated"
+        }
+      ]
+    },
+    "appDataUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appDataUpdated"
+        }
+      ]
+    },
+    "appDeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appDeleted"
+        }
+      ]
+    },
+    "appExported": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appExported"
+        }
+      ]
+    },
+    "appHarddeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appHarddeleted"
+        }
+      ]
+    },
+    "appOpened": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApp/messages/appOpened"
+        }
+      ]
+    },
+    "appPublished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appPublished"
+        }
+      ]
+    },
+    "appReloadFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsApp/messages/appReloadFinished"
+        }
+      ]
+    },
+    "appSoftdeleted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsEngineApp"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsEngineApp/messages/appSoftdeleted"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "app.appOpened": {
+        "name": "com.qlik.v1.app.opened",
+        "title": "AppOpened",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppOpened"
+                },
+                {}
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.v1.app.opened",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence"
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was opened.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "app.appReloadFinished": {
+        "name": "com.qlik.v1.app.reload.finished",
+        "title": "AppReloadFinished",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppReloadFinished"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.v1.app.reload.finished",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence"
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "A reload of an app was finished v1",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appCreated": {
+        "name": "com.qlik.app.created",
+        "title": "AppCreated",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppCreated"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.created",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was created.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appDataUpdated": {
+        "name": "com.qlik.app.data.updated",
+        "title": "AppDataUpdated",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppDataUpdated"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.data.updated",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "The data of an app was updated.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appDeleted": {
+        "name": "com.qlik.app.deleted",
+        "title": "AppDeleted",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppDeleted"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.deleted",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was deleted.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appExported": {
+        "name": "com.qlik.app.exported",
+        "title": "AppExported",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppExported"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.exported",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was exported.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appHarddeleted": {
+        "name": "com.qlik.app.harddeleted",
+        "title": "AppHardDeleted",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppHardDeleted"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.harddeleted",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was hard deleted and can no longer be restored.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appPublished": {
+        "name": "com.qlik.app.published",
+        "title": "AppPublished",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppPublished"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.published",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was published.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      },
+      "engine.appSoftdeleted": {
+        "name": "com.qlik.app.softdeleted",
+        "title": "AppSoftDeleted",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "CloudEvent Identifier."
+            },
+            "data": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AppSoftDeleted"
+                },
+                {
+                  "x-qlik-stability": "stable",
+                  "x-qlik-visibility": "public"
+                }
+              ]
+            },
+            "host": {
+              "type": "string",
+              "examples": [
+                "id"
+              ],
+              "description": "Unique identifier for event producer."
+            },
+            "time": {
+              "type": "string",
+              "format": "date",
+              "examples": [
+                "2022-10-30T07:06:22Z"
+              ],
+              "description": "Time when event was sent."
+            },
+            "type": {
+              "type": "string",
+              "default": "com.qlik.app.softdeleted",
+              "description": "Event message name."
+            },
+            "reason": {
+              "type": "string",
+              "examples": [
+                "publishreplace"
+              ],
+              "description": "Reason for event."
+            },
+            "source": {
+              "type": "string",
+              "default": "com.qlik/engine",
+              "description": "CloudEvent source Identifier."
+            },
+            "userid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "User Identifier."
+            },
+            "ownerid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Owner Identifier."
+            },
+            "spaceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Space Identifier if resource is in a space."
+            },
+            "authtype": {
+              "type": "string",
+              "examples": [
+                "service_account"
+              ],
+              "description": "A string representing the type of principal that triggered the occurrence."
+            },
+            "clientid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "OAuth-Client Identifier of the Event for OAuth token requests."
+            },
+            "tenantid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Tenant Identifier."
+            },
+            "sessionid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Session Identifier."
+            },
+            "authclaims": {
+              "type": "string",
+              "examples": [
+                "{\"iss\":\"02_Open_App_V1\", \"sub\":\"7eddf8df-ce4f-4b94-9388-8d9e21b9ed75\", \"subType\":\"api-key\"}"
+              ],
+              "description": "A JSON string representing claims of the principal that triggered the event."
+            },
+            "specversion": {
+              "type": "string",
+              "default": "1.0",
+              "description": "CloudEvents version."
+            },
+            "datacontenttype": {
+              "type": "string",
+              "default": "application/json",
+              "description": "CloudEvent content type."
+            },
+            "toplevelresourceid": {
+              "type": "string",
+              "examples": [
+                "ccb149fb-e2dd-420b-8d9f-e6aacb95eb76"
+              ],
+              "description": "Identifier of the top level resource"
+            }
+          }
+        },
+        "description": "An app was soft deleted and can still be restored.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "AppCreated": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "size": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AppDataSize"
+              },
+              {}
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "description": "App owner.",
+            "x-qlik-deprecated": true
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "custom": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonObject"
+              }
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "App owner identifier."
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App space identifier."
+          },
+          "published": {
+            "type": "boolean",
+            "description": "When true, the app was distributed."
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "App thumbnail."
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when app was created."
+          },
+          "description": {
+            "type": "string",
+            "description": "App description."
+          },
+          "originAppId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Origin app identifier."
+          },
+          "publishTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when app was published."
+          },
+          "dynamicColor": {
+            "type": "string",
+            "description": "App dynamic color."
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when app was last modified."
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "_resourcetype": {
+            "type": "string",
+            "description": "App resource type.",
+            "x-qlik-deprecated": true
+          },
+          "lastReloadTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of last successful reload."
+          },
+          "createdByAction": {
+            "$ref": "#/components/schemas/AppCreatedByAction"
+          },
+          "hasSectionAccess": {
+            "type": "boolean",
+            "description": "When true, the app has section access."
+          },
+          "isDirectQueryMode": {
+            "type": "boolean",
+            "description": "When true, the app is a Direct Query app."
+          }
+        },
+        "description": "An app was created.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppCreatedByAction": {
+        "type": "string",
+        "oneOf": [
+          {
+            "title": "create",
+            "description": "APP_CREATED_BY_CREATE",
+            "x-qlik-const": 0
+          },
+          {
+            "title": "copy",
+            "description": "APP_CREATED_BY_COPY",
+            "x-qlik-const": 1
+          },
+          {
+            "title": "publish",
+            "description": "APP_CREATED_BY_PUBLISH",
+            "x-qlik-const": 2
+          },
+          {
+            "title": "import",
+            "description": "APP_CREATED_BY_IMPORT",
+            "x-qlik-const": 3
+          },
+          {
+            "title": "restore",
+            "description": "APP_CREATED_BY_RESTORE",
+            "x-qlik-const": 4
+          }
+        ]
+      },
+      "AppDataSize": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "file": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Data model size on file (bytes)."
+          },
+          "memory": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Data model size in memory (bytes)."
+          }
+        },
+        "x-qlik-stability": "stable"
+      },
+      "AppDataSizeV1": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "memory": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Data model size in memory (bytes)."
+          }
+        },
+        "x-qlik-stability": "stable"
+      },
+      "AppDataUpdated": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "size": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AppDataSize"
+              },
+              {}
+            ]
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App space identifier."
+          },
+          "_updates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CloudEventsObjectUpdate"
+            }
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "_resourcetype": {
+            "type": "string",
+            "description": "App resource type.",
+            "x-qlik-deprecated": true
+          },
+          "lastReloadTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of last successful reload."
+          },
+          "lineageChanged": {
+            "type": "boolean",
+            "description": "When true, there is new lineage information saved."
+          }
+        },
+        "description": "The data of an app was updated.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppDeleted": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App space identifier."
+          },
+          "deleteType": {
+            "$ref": "#/components/schemas/DeleteTypeEnum"
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "_resourcetype": {
+            "type": "string",
+            "description": "App resource type.",
+            "x-qlik-deprecated": true
+          },
+          "isDirectQueryMode": {
+            "type": "boolean",
+            "description": "When true, the app is a Direct Query app."
+          }
+        },
+        "description": "An app was deleted.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppExported": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "owner": {
+            "type": "string",
+            "description": "App owner.",
+            "x-qlik-deprecated": true
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "custom": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonObject"
+              }
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "App owner."
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Space identifier."
+          },
+          "dataReduced": {
+            "type": "boolean",
+            "description": "When true, data was reduced for smaller file size."
+          },
+          "dataExported": {
+            "type": "boolean",
+            "description": "When true, data was exported."
+          },
+          "exportedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when app was exported."
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "_resourcetype": {
+            "type": "string",
+            "description": "App resource type.",
+            "x-qlik-deprecated": true
+          }
+        },
+        "description": "An app was exported.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppHardDeleted": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App space identifier."
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "isDirectQueryMode": {
+            "type": "boolean",
+            "description": "When true, the app is a Direct Query app."
+          }
+        },
+        "description": "An app was hard deleted and can no longer be restored.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppOpened": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "workloadType": {
+            "type": "string",
+            "description": "Workload type."
+          },
+          "_resourcetype": {
+            "type": "string",
+            "description": "App resource type.",
+            "x-qlik-deprecated": true
+          }
+        },
+        "description": "An app was opened.",
+        "x-qlik-stability": "stable"
+      },
+      "AppPublished": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "owner": {
+            "type": "string",
+            "description": "App owner.",
+            "x-qlik-deprecated": true
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "custom": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonObject"
+              }
+            ]
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Space identifier."
+          },
+          "originAppId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Origin app identifier."
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "_resourcetype": {
+            "type": "string",
+            "description": "App resource type.",
+            "x-qlik-deprecated": true
+          },
+          "dataPublished": {
+            "type": "boolean",
+            "description": "When true, data was published."
+          },
+          "originSpaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Origin space identifier."
+          },
+          "publishedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when app was published."
+          }
+        },
+        "description": "An app was published.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppReloadFinished": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "size": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AppDataSizeV1"
+              },
+              {}
+            ]
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppReloadError"
+            },
+            "description": "Reload errors. Max items 5.",
+            "x-qlik-deprecated": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Reload status - error or ok."
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when reload ended."
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Duration of reload (ms)."
+          },
+          "reloadId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Reload identifier."
+          },
+          "rowLimit": {
+            "type": "integer",
+            "format": "int64",
+            "default": -1,
+            "description": "If greater than or equal 0, defines max number of rows loaded from a data source."
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppReloadWarning"
+            },
+            "description": "Reload warnings. Max items 5.",
+            "x-qlik-deprecated": true
+          },
+          "statements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppReloadScriptStatement"
+            },
+            "examples": [],
+            "description": "An empty list intended to hold script statements and their metadata. Use the Apps API to fetch reload metadata.",
+            "x-qlik-deprecated": true
+          },
+          "isSkipStore": {
+            "type": "boolean",
+            "description": "True if store statements are blocked from executing."
+          },
+          "isSessionApp": {
+            "type": "boolean",
+            "description": "App is a Session app."
+          },
+          "isPartialReload": {
+            "type": "boolean",
+            "description": "True if the reload is a partial reload."
+          },
+          "peakMemoryBytes": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Maximum number of bytes used during reload of the app."
+          },
+          "isDirectQueryMode": {
+            "type": "boolean",
+            "description": "App is a Direct Query app"
+          },
+          "endedWithMemoryConstraint": {
+            "type": "boolean",
+            "description": "true if memory limits were exhausted during reload."
+          }
+        },
+        "description": "A reload of an app was finished v1",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "AppSoftDeleted": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "App name."
+          },
+          "usage": {
+            "$ref": "#/components/schemas/UsageEnum"
+          },
+          "purgeAt": {
+            "type": "string",
+            "description": "Earliest date the soft deleted app may be hard deleted (permanently purged). Once this date is reached, purge can happen at any time and is not under user control."
+          },
+          "spaceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "App space identifier."
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "App resource type."
+          },
+          "isDirectQueryMode": {
+            "type": "boolean",
+            "description": "When true, the app is a Direct Query app."
+          }
+        },
+        "description": "An app was soft deleted and can still be restored.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public"
+      },
+      "CloudEventsObjectUpdate": {
+        "type": "object",
+        "examples": [],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the updated value."
+          },
+          "newValue": {
+            "type": "string",
+            "description": "Value after update."
+          },
+          "oldValue": {
+            "type": "string",
+            "description": "Value before update."
+          }
+        },
+        "x-qlik-stability": "stable"
+      },
+      "DeleteTypeEnum": {
+        "type": "string",
+        "oneOf": [
+          {
+            "title": "SOFT",
+            "x-qlik-const": 0
+          },
+          {
+            "title": "HARD",
+            "x-qlik-const": 1
+          }
+        ]
+      },
+      "JsonObject": {
+        "type": "object",
+        "examples": [],
+        "description": "Contains dynamic JSON data specified by the client.",
+        "x-qlik-stability": "stable"
+      },
+      "NxLocalizedErrorCode": {
+        "type": "string",
+        "oneOf": [
+          {
+            "title": "LOCERR_INTERNAL_ERROR",
+            "x-qlik-const": -128
+          },
+          {
+            "title": "LOCERR_GENERIC_UNKNOWN",
+            "x-qlik-const": -1
+          },
+          {
+            "title": "LOCERR_GENERIC_OK",
+            "x-qlik-const": 0
+          },
+          {
+            "title": "LOCERR_GENERIC_NOT_SET",
+            "x-qlik-const": 1
+          },
+          {
+            "title": "LOCERR_GENERIC_NOT_FOUND",
+            "x-qlik-const": 2
+          },
+          {
+            "title": "LOCERR_GENERIC_ALREADY_EXISTS",
+            "x-qlik-const": 3
+          },
+          {
+            "title": "LOCERR_GENERIC_INVALID_PATH",
+            "x-qlik-const": 4
+          },
+          {
+            "title": "LOCERR_GENERIC_ACCESS_DENIED",
+            "x-qlik-const": 5
+          },
+          {
+            "title": "LOCERR_GENERIC_OUT_OF_MEMORY",
+            "x-qlik-const": 6
+          },
+          {
+            "title": "LOCERR_GENERIC_NOT_INITIALIZED",
+            "x-qlik-const": 7
+          },
+          {
+            "title": "LOCERR_GENERIC_INVALID_PARAMETERS",
+            "x-qlik-const": 8
+          },
+          {
+            "title": "LOCERR_GENERIC_EMPTY_PARAMETERS",
+            "x-qlik-const": 9
+          },
+          {
+            "title": "LOCERR_GENERIC_INTERNAL_ERROR",
+            "x-qlik-const": 10
+          },
+          {
+            "title": "LOCERR_GENERIC_CORRUPT_DATA",
+            "x-qlik-const": 11
+          },
+          {
+            "title": "LOCERR_GENERIC_MEMORY_INCONSISTENCY",
+            "x-qlik-const": 12
+          },
+          {
+            "title": "LOCERR_GENERIC_INVISIBLE_OWNER_ABORT",
+            "x-qlik-const": 13
+          },
+          {
+            "title": "LOCERR_GENERIC_PROHIBIT_VALIDATE",
+            "x-qlik-const": 14
+          },
+          {
+            "title": "LOCERR_GENERIC_ABORTED",
+            "x-qlik-const": 15
+          },
+          {
+            "title": "LOCERR_GENERIC_CONNECTION_LOST",
+            "x-qlik-const": 16
+          },
+          {
+            "title": "LOCERR_GENERIC_UNSUPPORTED_IN_PRODUCT_VERSION",
+            "x-qlik-const": 17
+          },
+          {
+            "title": "LOCERR_GENERIC_REST_CONNECTION_FAILURE",
+            "x-qlik-const": 18
+          },
+          {
+            "title": "LOCERR_GENERIC_MEMORY_LIMIT_REACHED",
+            "x-qlik-const": 19
+          },
+          {
+            "title": "LOCERR_GENERIC_NOT_IMPLEMENTED",
+            "x-qlik-const": 20
+          },
+          {
+            "title": "LOCERR_GENERIC_ENGINE_TERMINATED",
+            "x-qlik-const": 21
+          },
+          {
+            "title": "LOCERR_GENERIC_WRITE_OPERATIONS_LIMIT_REACHED",
+            "x-qlik-const": 22
+          },
+          {
+            "title": "LOCERR_HTTP_400",
+            "x-qlik-const": 400
+          },
+          {
+            "title": "LOCERR_HTTP_401",
+            "x-qlik-const": 401
+          },
+          {
+            "title": "LOCERR_HTTP_402",
+            "x-qlik-const": 402
+          },
+          {
+            "title": "LOCERR_HTTP_403",
+            "x-qlik-const": 403
+          },
+          {
+            "title": "LOCERR_HTTP_404",
+            "x-qlik-const": 404
+          },
+          {
+            "title": "LOCERR_HTTP_405",
+            "x-qlik-const": 405
+          },
+          {
+            "title": "LOCERR_HTTP_406",
+            "x-qlik-const": 406
+          },
+          {
+            "title": "LOCERR_HTTP_407",
+            "x-qlik-const": 407
+          },
+          {
+            "title": "LOCERR_HTTP_408",
+            "x-qlik-const": 408
+          },
+          {
+            "title": "LOCERR_HTTP_409",
+            "x-qlik-const": 409
+          },
+          {
+            "title": "LOCERR_HTTP_410",
+            "x-qlik-const": 410
+          },
+          {
+            "title": "LOCERR_HTTP_411",
+            "x-qlik-const": 411
+          },
+          {
+            "title": "LOCERR_HTTP_412",
+            "x-qlik-const": 412
+          },
+          {
+            "title": "LOCERR_HTTP_413",
+            "x-qlik-const": 413
+          },
+          {
+            "title": "LOCERR_HTTP_414",
+            "x-qlik-const": 414
+          },
+          {
+            "title": "LOCERR_HTTP_415",
+            "x-qlik-const": 415
+          },
+          {
+            "title": "LOCERR_HTTP_416",
+            "x-qlik-const": 416
+          },
+          {
+            "title": "LOCERR_HTTP_417",
+            "x-qlik-const": 417
+          },
+          {
+            "title": "LOCERR_HTTP_422",
+            "x-qlik-const": 422
+          },
+          {
+            "title": "LOCERR_HTTP_423",
+            "x-qlik-const": 423
+          },
+          {
+            "title": "LOCERR_HTTP_429",
+            "x-qlik-const": 429
+          },
+          {
+            "title": "LOCERR_HTTP_500",
+            "x-qlik-const": 500
+          },
+          {
+            "title": "LOCERR_HTTP_501",
+            "x-qlik-const": 501
+          },
+          {
+            "title": "LOCERR_HTTP_502",
+            "x-qlik-const": 502
+          },
+          {
+            "title": "LOCERR_HTTP_503",
+            "x-qlik-const": 503
+          },
+          {
+            "title": "LOCERR_HTTP_504",
+            "x-qlik-const": 504
+          },
+          {
+            "title": "LOCERR_HTTP_505",
+            "x-qlik-const": 505
+          },
+          {
+            "title": "LOCERR_HTTP_509",
+            "x-qlik-const": 509
+          },
+          {
+            "title": "LOCERR_HTTP_COULD_NOT_RESOLVE_HOST",
+            "x-qlik-const": 700
+          },
+          {
+            "title": "LOCERR_APP_ALREADY_EXISTS",
+            "x-qlik-const": 1000
+          },
+          {
+            "title": "LOCERR_APP_INVALID_NAME",
+            "x-qlik-const": 1001
+          },
+          {
+            "title": "LOCERR_APP_ALREADY_OPEN",
+            "x-qlik-const": 1002
+          },
+          {
+            "title": "LOCERR_APP_NOT_FOUND",
+            "x-qlik-const": 1003
+          },
+          {
+            "title": "LOCERR_APP_IMPORT_FAILED",
+            "x-qlik-const": 1004
+          },
+          {
+            "title": "LOCERR_APP_SAVE_FAILED",
+            "x-qlik-const": 1005
+          },
+          {
+            "title": "LOCERR_APP_CREATE_FAILED",
+            "x-qlik-const": 1006
+          },
+          {
+            "title": "LOCERR_APP_INVALID",
+            "x-qlik-const": 1007
+          },
+          {
+            "title": "LOCERR_APP_CONNECT_FAILED",
+            "x-qlik-const": 1008
+          },
+          {
+            "title": "LOCERR_APP_ALREADY_OPEN_IN_DIFFERENT_MODE",
+            "x-qlik-const": 1009
+          },
+          {
+            "title": "LOCERR_APP_MIGRATION_COULD_NOT_CONTACT_MIGRATION_SERVICE",
+            "x-qlik-const": 1010
+          },
+          {
+            "title": "LOCERR_APP_MIGRATION_COULD_NOT_START_MIGRATION",
+            "x-qlik-const": 1011
+          },
+          {
+            "title": "LOCERR_APP_MIGRATION_FAILURE",
+            "x-qlik-const": 1012
+          },
+          {
+            "title": "LOCERR_APP_SCRIPT_MISSING",
+            "x-qlik-const": 1013
+          },
+          {
+            "title": "LOCERR_APP_EXPORT_FAILED",
+            "x-qlik-const": 1014
+          },
+          {
+            "title": "LOCERR_APP_SIZE_EXCEEDED",
+            "x-qlik-const": 1015
+          },
+          {
+            "title": "LOCERR_APP_DIRECT_QUERY_WORKLOAD_NOT_SUPPORTED",
+            "x-qlik-const": 1016
+          },
+          {
+            "title": "LOCERR_APP_NOT_OPEN",
+            "x-qlik-const": 1017
+          },
+          {
+            "title": "LOCERR_APP_EVENT_SOURCE_TIMEOUT",
+            "x-qlik-const": 1018
+          },
+          {
+            "title": "LOCERR_APP_SOFT_DELETED",
+            "x-qlik-const": 1019
+          },
+          {
+            "title": "LOCERR_CONNECTION_ALREADY_EXISTS",
+            "x-qlik-const": 2000
+          },
+          {
+            "title": "LOCERR_CONNECTION_NOT_FOUND",
+            "x-qlik-const": 2001
+          },
+          {
+            "title": "LOCERR_CONNECTION_FAILED_TO_LOAD",
+            "x-qlik-const": 2002
+          },
+          {
+            "title": "LOCERR_CONNECTION_FAILED_TO_IMPORT",
+            "x-qlik-const": 2003
+          },
+          {
+            "title": "LOCERR_CONNECTION_NAME_IS_INVALID",
+            "x-qlik-const": 2004
+          },
+          {
+            "title": "LOCERR_CONNECTION_MISSING_CREDENTIALS",
+            "x-qlik-const": 2005
+          },
+          {
+            "title": "LOCERR_CONNECTOR_NO_FILE_STREAMING_SUPPORT",
+            "x-qlik-const": 2300
+          },
+          {
+            "title": "LOCERR_CONNECTOR_FILESIZE_EXCEEDED_BUFFER_SIZE",
+            "x-qlik-const": 2301
+          },
+          {
+            "title": "LOCERR_FILE_ACCESS_DENIED",
+            "x-qlik-const": 3000
+          },
+          {
+            "title": "LOCERR_FILE_NAME_INVALID",
+            "x-qlik-const": 3001
+          },
+          {
+            "title": "LOCERR_FILE_CORRUPT",
+            "x-qlik-const": 3002
+          },
+          {
+            "title": "LOCERR_FILE_NOT_FOUND",
+            "x-qlik-const": 3003
+          },
+          {
+            "title": "LOCERR_FILE_FORMAT_UNSUPPORTED",
+            "x-qlik-const": 3004
+          },
+          {
+            "title": "LOCERR_FILE_OPENED_IN_UNSUPPORTED_MODE",
+            "x-qlik-const": 3005
+          },
+          {
+            "title": "LOCERR_FILE_TABLE_NOT_FOUND",
+            "x-qlik-const": 3006
+          },
+          {
+            "title": "LOCERR_USER_ACCESS_DENIED",
+            "x-qlik-const": 4000
+          },
+          {
+            "title": "LOCERR_USER_IMPERSONATION_FAILED",
+            "x-qlik-const": 4001
+          },
+          {
+            "title": "LOCERR_SERVER_OUT_OF_SESSION_AND_USER_CALS",
+            "x-qlik-const": 5000
+          },
+          {
+            "title": "LOCERR_SERVER_OUT_OF_SESSION_CALS",
+            "x-qlik-const": 5001
+          },
+          {
+            "title": "LOCERR_SERVER_OUT_OF_USAGE_CALS",
+            "x-qlik-const": 5002
+          },
+          {
+            "title": "LOCERR_SERVER_OUT_OF_CALS",
+            "x-qlik-const": 5003
+          },
+          {
+            "title": "LOCERR_SERVER_OUT_OF_NAMED_CALS",
+            "x-qlik-const": 5004
+          },
+          {
+            "title": "LOCERR_SERVER_OFF_DUTY",
+            "x-qlik-const": 5005
+          },
+          {
+            "title": "LOCERR_SERVER_BUSY",
+            "x-qlik-const": 5006
+          },
+          {
+            "title": "LOCERR_SERVER_LICENSE_EXPIRED",
+            "x-qlik-const": 5007
+          },
+          {
+            "title": "LOCERR_SERVER_AJAX_DISABLED",
+            "x-qlik-const": 5008
+          },
+          {
+            "title": "LOCERR_SERVER_NO_TOKEN",
+            "x-qlik-const": 5009
+          },
+          {
+            "title": "LOCERR_HC_INVALID_OBJECT",
+            "x-qlik-const": 6000
+          },
+          {
+            "title": "LOCERR_HC_RESULT_TOO_LARGE",
+            "x-qlik-const": 6001
+          },
+          {
+            "title": "LOCERR_HC_INVALID_OBJECT_STATE",
+            "x-qlik-const": 6002
+          },
+          {
+            "title": "LOCERR_HC_MODAL_OBJECT_ERROR",
+            "x-qlik-const": 6003
+          },
+          {
+            "title": "LOCERR_CALC_INVALID_DEF",
+            "x-qlik-const": 7000
+          },
+          {
+            "title": "LOCERR_CALC_NOT_IN_LIB",
+            "x-qlik-const": 7001
+          },
+          {
+            "title": "LOCERR_CALC_HEAP_ERROR",
+            "x-qlik-const": 7002
+          },
+          {
+            "title": "LOCERR_CALC_TOO_LARGE",
+            "x-qlik-const": 7003
+          },
+          {
+            "title": "LOCERR_CALC_TIMEOUT",
+            "x-qlik-const": 7004
+          },
+          {
+            "title": "LOCERR_CALC_EVAL_CONDITION_FAILED",
+            "x-qlik-const": 7005
+          },
+          {
+            "title": "LOCERR_CALC_MIXED_LINKED_AGGREGATION",
+            "x-qlik-const": 7006
+          },
+          {
+            "title": "LOCERR_CALC_MISSING_LINKED",
+            "x-qlik-const": 7007
+          },
+          {
+            "title": "LOCERR_CALC_INVALID_COL_SORT",
+            "x-qlik-const": 7008
+          },
+          {
+            "title": "LOCERR_CALC_PAGES_TOO_LARGE",
+            "x-qlik-const": 7009
+          },
+          {
+            "title": "LOCERR_CALC_SEMANTIC_FIELD_NOT_ALLOWED",
+            "x-qlik-const": 7010
+          },
+          {
+            "title": "LOCERR_CALC_VALIDATION_STATE_INVALID",
+            "x-qlik-const": 7011
+          },
+          {
+            "title": "LOCERR_CALC_PIVOT_DIMENSIONS_ALREADY_EXISTS",
+            "x-qlik-const": 7012
+          },
+          {
+            "title": "LOCERR_CALC_MISSING_LINKED_FIELD",
+            "x-qlik-const": 7013
+          },
+          {
+            "title": "LOCERR_CALC_NOT_CALCULATED",
+            "x-qlik-const": 7014
+          },
+          {
+            "title": "LOCERR_LAYOUT_EXTENDS_INVALID_ID",
+            "x-qlik-const": 8000
+          },
+          {
+            "title": "LOCERR_LAYOUT_LINKED_OBJECT_NOT_FOUND",
+            "x-qlik-const": 8001
+          },
+          {
+            "title": "LOCERR_LAYOUT_LINKED_OBJECT_INVALID",
+            "x-qlik-const": 8002
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_WRITE_FAILED",
+            "x-qlik-const": 9000
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_READ_FAILED",
+            "x-qlik-const": 9001
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_DELETE_FAILED",
+            "x-qlik-const": 9002
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_NOT_FOUND",
+            "x-qlik-const": 9003
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_UNSUPPORTED_VERSION",
+            "x-qlik-const": 9004
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_MIGRATION_FAILED_READ_ONLY",
+            "x-qlik-const": 9005
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_MIGRATION_CANCELLED",
+            "x-qlik-const": 9006
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_MIGRATION_BACKUP_FAILED",
+            "x-qlik-const": 9007
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_DISK_FULL",
+            "x-qlik-const": 9008
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_NOT_SUPPORTED_FOR_SESSION_APP",
+            "x-qlik-const": 9009
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_MOVE_FAILED",
+            "x-qlik-const": 9010
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_OBJECT_LOCKED",
+            "x-qlik-const": 9011
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_ENCRYPTION_KEY_MIGRATION_ONGOING",
+            "x-qlik-const": 9012
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_SYNC_SET_CHUNK_INVALID_PARAMETERS",
+            "x-qlik-const": 9510
+          },
+          {
+            "title": "LOCERR_PERSISTENCE_SYNC_GET_CHUNK_INVALID_PARAMETERS",
+            "x-qlik-const": 9511
+          },
+          {
+            "title": "LOCERR_SCRIPT_DATASOURCE_ACCESS_DENIED",
+            "x-qlik-const": 10000
+          },
+          {
+            "title": "LOCERR_RELOAD_IN_PROGRESS",
+            "x-qlik-const": 11000
+          },
+          {
+            "title": "LOCERR_RELOAD_TABLE_X_NOT_FOUND",
+            "x-qlik-const": 11001
+          },
+          {
+            "title": "LOCERR_RELOAD_UNKNOWN_STATEMENT",
+            "x-qlik-const": 11002
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_SOMETHING_FOUND_UNKNOWN",
+            "x-qlik-const": 11003
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_NOTHING_FOUND_UNKNOWN",
+            "x-qlik-const": 11004
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_1_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11005
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_2_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11006
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_3_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11007
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_4_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11008
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_5_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11009
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_6_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11010
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_7_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11011
+          },
+          {
+            "title": "LOCERR_RELOAD_EXPECTED_ONE_OF_8_OR_MORE_TOKENS_FOUND_UNKNOWN",
+            "x-qlik-const": 11012
+          },
+          {
+            "title": "LOCERR_RELOAD_FIELD_X_NOT_FOUND",
+            "x-qlik-const": 11013
+          },
+          {
+            "title": "LOCERR_RELOAD_MAPPING_TABLE_X_NOT_FOUND",
+            "x-qlik-const": 11014
+          },
+          {
+            "title": "LOCERR_RELOAD_LIB_CONNECTION_X_NOT_FOUND",
+            "x-qlik-const": 11015
+          },
+          {
+            "title": "LOCERR_RELOAD_NAME_ALREADY_TAKEN",
+            "x-qlik-const": 11016
+          },
+          {
+            "title": "LOCERR_RELOAD_WRONG_FILE_FORMAT_DIF",
+            "x-qlik-const": 11017
+          },
+          {
+            "title": "LOCERR_RELOAD_WRONG_FILE_FORMAT_BIFF",
+            "x-qlik-const": 11018
+          },
+          {
+            "title": "LOCERR_RELOAD_WRONG_FILE_FORMAT_ENCRYPTED",
+            "x-qlik-const": 11019
+          },
+          {
+            "title": "LOCERR_RELOAD_OPEN_FILE_ERROR",
+            "x-qlik-const": 11020
+          },
+          {
+            "title": "LOCERR_RELOAD_AUTO_GENERATE_COUNT",
+            "x-qlik-const": 11021
+          },
+          {
+            "title": "LOCERR_RELOAD_PE_ILLEGAL_PREFIX_COMB",
+            "x-qlik-const": 11022
+          },
+          {
+            "title": "LOCERR_RELOAD_MATCHING_CONTROL_STATEMENT_ERROR",
+            "x-qlik-const": 11023
+          },
+          {
+            "title": "LOCERR_RELOAD_MATCHING_LIBPATH_X_NOT_FOUND",
+            "x-qlik-const": 11024
+          },
+          {
+            "title": "LOCERR_RELOAD_MATCHING_LIBPATH_X_INVALID",
+            "x-qlik-const": 11025
+          },
+          {
+            "title": "LOCERR_RELOAD_MATCHING_LIBPATH_X_OUTSIDE",
+            "x-qlik-const": 11026
+          },
+          {
+            "title": "LOCERR_RELOAD_NO_QUALIFIED_PATH_FOR_FILE",
+            "x-qlik-const": 11027
+          },
+          {
+            "title": "LOCERR_RELOAD_MODE_STATEMENT_ONLY_FOR_LIB_PATHS",
+            "x-qlik-const": 11028
+          },
+          {
+            "title": "LOCERR_RELOAD_INCONSISTENT_USE_OF_SEMANTIC_FIELDS",
+            "x-qlik-const": 11029
+          },
+          {
+            "title": "LOCERR_RELOAD_NO_OPEN_DATABASE",
+            "x-qlik-const": 11030
+          },
+          {
+            "title": "LOCERR_RELOAD_AGGREGATION_REQUIRED_BY_GROUP_BY",
+            "x-qlik-const": 11031
+          },
+          {
+            "title": "LOCERR_RELOAD_CONNECT_MUST_USE_LIB_PREFIX_IN_THIS_MODE",
+            "x-qlik-const": 11032
+          },
+          {
+            "title": "LOCERR_RELOAD_ODBC_CONNECT_FAILED",
+            "x-qlik-const": 11033
+          },
+          {
+            "title": "LOCERR_RELOAD_OLEDB_CONNECT_FAILED",
+            "x-qlik-const": 11034
+          },
+          {
+            "title": "LOCERR_RELOAD_CUSTOM_CONNECT_FAILED",
+            "x-qlik-const": 11035
+          },
+          {
+            "title": "LOCERR_RELOAD_ODBC_READ_FAILED",
+            "x-qlik-const": 11036
+          },
+          {
+            "title": "LOCERR_RELOAD_OLEDB_READ_FAILED",
+            "x-qlik-const": 11037
+          },
+          {
+            "title": "LOCERR_RELOAD_CUSTOM_READ_FAILED",
+            "x-qlik-const": 11038
+          },
+          {
+            "title": "LOCERR_RELOAD_BINARY_LOAD_PROHIBITED",
+            "x-qlik-const": 11039
+          },
+          {
+            "title": "LOCERR_RELOAD_CONNECTOR_START_FAILED",
+            "x-qlik-const": 11040
+          },
+          {
+            "title": "LOCERR_RELOAD_CONNECTOR_NOT_RESPONDING",
+            "x-qlik-const": 11041
+          },
+          {
+            "title": "LOCERR_RELOAD_CONNECTOR_REPLY_ERROR",
+            "x-qlik-const": 11042
+          },
+          {
+            "title": "LOCERR_RELOAD_CONNECTOR_CONNECT_ERROR",
+            "x-qlik-const": 11043
+          },
+          {
+            "title": "LOCERR_RELOAD_CONNECTOR_NOT_FOUND_ERROR",
+            "x-qlik-const": 11044
+          },
+          {
+            "title": "LOCERR_RELOAD_INPUT_FIELD_WITH_DUPLICATE_KEYS",
+            "x-qlik-const": 11045
+          },
+          {
+            "title": "LOCERR_RELOAD_CONCATENATE_LOAD_NO_PREVIOUS_TABLE",
+            "x-qlik-const": 11046
+          },
+          {
+            "title": "LOCERR_RELOAD_WRONG_FILE_FORMAT_QVD",
+            "x-qlik-const": 11047
+          },
+          {
+            "title": "LOCERR_RELOAD_ACTION_BLOCKED_ENTITLEMENT",
+            "x-qlik-const": 11048
+          },
+          {
+            "title": "LOCERR_RELOAD_EXIT_ERROR",
+            "x-qlik-const": 11049
+          },
+          {
+            "title": "LOCERR_PERSONAL_NEW_VERSION_AVAILABLE",
+            "x-qlik-const": 12000
+          },
+          {
+            "title": "LOCERR_PERSONAL_VERSION_EXPIRED",
+            "x-qlik-const": 12001
+          },
+          {
+            "title": "LOCERR_PERSONAL_SECTION_ACCESS_DETECTED",
+            "x-qlik-const": 12002
+          },
+          {
+            "title": "LOCERR_PERSONAL_APP_DELETION_FAILED",
+            "x-qlik-const": 12003
+          },
+          {
+            "title": "LOCERR_USER_AUTHENTICATION_FAILURE",
+            "x-qlik-const": 12004
+          },
+          {
+            "title": "LOCERR_EXPORT_OUT_OF_MEMORY",
+            "x-qlik-const": 13000
+          },
+          {
+            "title": "LOCERR_EXPORT_NO_DATA",
+            "x-qlik-const": 13001
+          },
+          {
+            "title": "LOCERR_SYNC_INVALID_OFFSET",
+            "x-qlik-const": 14000
+          },
+          {
+            "title": "LOCERR_SEARCH_TIMEOUT",
+            "x-qlik-const": 15000
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_LINKED_EXPRESSION_FAIL",
+            "x-qlik-const": 16000
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_ROWCOUNT_OVERFLOW",
+            "x-qlik-const": 16001
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_EMPTY_RESULT",
+            "x-qlik-const": 16002
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_DB_CONNECTION_FAILED",
+            "x-qlik-const": 16003
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_MEASURE_NOT_ALLOWED",
+            "x-qlik-const": 16004
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_DETAIL_NOT_ALLOWED",
+            "x-qlik-const": 16005
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_NOT_SYNTH_CIRCULAR_ALLOWED",
+            "x-qlik-const": 16006
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_ONLY_ONE_DD_TABLE_ALLOWED",
+            "x-qlik-const": 16007
+          },
+          {
+            "title": "LOCERR_DIRECT_DISCOVERY_DB_AUTHORIZATION_FAILED",
+            "x-qlik-const": 16008
+          },
+          {
+            "title": "LOCERR_SMART_LOAD_TABLE_NOT_FOUND",
+            "x-qlik-const": 17000
+          },
+          {
+            "title": "LOCERR_SMART_LOAD_TABLE_DUPLICATED",
+            "x-qlik-const": 17001
+          },
+          {
+            "title": "LOCERR_VARIABLE_NO_NAME",
+            "x-qlik-const": 18000
+          },
+          {
+            "title": "LOCERR_VARIABLE_DUPLICATE_NAME",
+            "x-qlik-const": 18001
+          },
+          {
+            "title": "LOCERR_VARIABLE_INCONSISTENCY",
+            "x-qlik-const": 18002
+          },
+          {
+            "title": "LOCERR_VARIABLE_CONSTRAINT_INCONSISTENCY",
+            "x-qlik-const": 18003
+          },
+          {
+            "title": "LOCERR_VARIABLE_CONSTRAINT_FAILED",
+            "x-qlik-const": 18004
+          },
+          {
+            "title": "LOCERR_MEDIA_LIBRARY_LIST_FAILED",
+            "x-qlik-const": 19000
+          },
+          {
+            "title": "LOCERR_MEDIA_LIBRARY_CONTENT_FAILED",
+            "x-qlik-const": 19001
+          },
+          {
+            "title": "LOCERR_MEDIA_BUNDLING_FAILED",
+            "x-qlik-const": 19002
+          },
+          {
+            "title": "LOCERR_MEDIA_UNBUNDLING_FAILED",
+            "x-qlik-const": 19003
+          },
+          {
+            "title": "LOCERR_MEDIA_LIBRARY_NOT_FOUND",
+            "x-qlik-const": 19004
+          },
+          {
+            "title": "LOCERR_FEATURE_DISABLED",
+            "x-qlik-const": 20000
+          },
+          {
+            "title": "LOCERR_LOAD_TOO_MANY_FIELDS",
+            "x-qlik-const": 21000
+          },
+          {
+            "title": "LOCERR_LOAD_TOO_MANY_TABLES",
+            "x-qlik-const": 21001
+          },
+          {
+            "title": "LOCERR_JSON_RPC_INVALID_REQUEST",
+            "x-qlik-const": -32600
+          },
+          {
+            "title": "LOCERR_JSON_RPC_METHOD_NOT_FOUND",
+            "x-qlik-const": -32601
+          },
+          {
+            "title": "LOCERR_JSON_RPC_INVALID_PARAMETERS",
+            "x-qlik-const": -32602
+          },
+          {
+            "title": "LOCERR_JSON_RPC_INTERNAL_ERROR",
+            "x-qlik-const": -32603
+          },
+          {
+            "title": "LOCERR_JSON_RPC_RESPONSE_TOO_LARGE",
+            "x-qlik-const": -32604
+          },
+          {
+            "title": "LOCERR_JSON_RPC_PARSE_ERROR",
+            "x-qlik-const": -32700
+          },
+          {
+            "title": "LOCERR_MQ_SOCKET_CONNECT_FAILURE",
+            "x-qlik-const": 33000
+          },
+          {
+            "title": "LOCERR_MQ_SOCKET_OPEN_FAILURE",
+            "x-qlik-const": 33001
+          },
+          {
+            "title": "LOCERR_MQ_PROTOCOL_NO_RESPONE",
+            "x-qlik-const": 33002
+          },
+          {
+            "title": "LOCERR_MQ_PROTOCOL_LIBRARY_EXCEPTION",
+            "x-qlik-const": 33003
+          },
+          {
+            "title": "LOCERR_MQ_PROTOCOL_CONNECTION_CLOSED",
+            "x-qlik-const": 33004
+          },
+          {
+            "title": "LOCERR_MQ_PROTOCOL_CHANNEL_CLOSED",
+            "x-qlik-const": 33005
+          },
+          {
+            "title": "LOCERR_MQ_PROTOCOL_UNKNOWN_ERROR",
+            "x-qlik-const": 33006
+          },
+          {
+            "title": "LOCERR_MQ_PROTOCOL_INVALID_STATUS",
+            "x-qlik-const": 33007
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_OK",
+            "x-qlik-const": 22000
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_CANCELLED",
+            "x-qlik-const": 22001
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_UNKNOWN",
+            "x-qlik-const": 22002
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_INVALID_ARGUMENT",
+            "x-qlik-const": 22003
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_DEADLINE_EXCEEDED",
+            "x-qlik-const": 22004
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_NOT_FOUND",
+            "x-qlik-const": 22005
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_ALREADY_EXISTS",
+            "x-qlik-const": 22006
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_PERMISSION_DENIED",
+            "x-qlik-const": 22007
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_RESOURCE_EXHAUSTED",
+            "x-qlik-const": 22008
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_FAILED_PRECONDITION",
+            "x-qlik-const": 22009
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_ABORTED",
+            "x-qlik-const": 22010
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_OUT_OF_RANGE",
+            "x-qlik-const": 22011
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_UNIMPLEMENTED",
+            "x-qlik-const": 22012
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_INTERNAL",
+            "x-qlik-const": 22013
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_UNAVAILABLE",
+            "x-qlik-const": 22014
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_DATA_LOSS",
+            "x-qlik-const": 22015
+          },
+          {
+            "title": "LOCERR_EXTENGINE_GRPC_STATUS_UNAUTHENTICATED",
+            "x-qlik-const": 22016
+          },
+          {
+            "title": "LOCERR_LXW_INVALID_OBJ",
+            "x-qlik-const": 23001
+          },
+          {
+            "title": "LOCERR_LXW_INVALID_FILE",
+            "x-qlik-const": 23002
+          },
+          {
+            "title": "LOCERR_LXW_INVALID_SHEET",
+            "x-qlik-const": 23003
+          },
+          {
+            "title": "LOCERR_LXW_INVALID_EXPORT_RANGE",
+            "x-qlik-const": 23004
+          },
+          {
+            "title": "LOCERR_LXW_ERROR",
+            "x-qlik-const": 23005
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_MEMORY_MALLOC_FAILED",
+            "x-qlik-const": 23006
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_CREATING_XLSX_FILE",
+            "x-qlik-const": 23007
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_CREATING_TMPFILE",
+            "x-qlik-const": 23008
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_ZIP_FILE_OPERATION",
+            "x-qlik-const": 23009
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_ZIP_FILE_ADD",
+            "x-qlik-const": 23010
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_ZIP_CLOSE",
+            "x-qlik-const": 23011
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_NULL_PARAMETER_IGNORED",
+            "x-qlik-const": 23012
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_MAX_STRING_LENGTH_EXCEEDED",
+            "x-qlik-const": 23013
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_255_STRING_LENGTH_EXCEEDED",
+            "x-qlik-const": 23014
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_SHARED_STRING_INDEX_NOT_FOUND",
+            "x-qlik-const": 23015
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_WORKSHEET_INDEX_OUT_OF_RANGE",
+            "x-qlik-const": 23016
+          },
+          {
+            "title": "LOCERR_LXW_ERROR_WORKSHEET_MAX_NUMBER_URLS_EXCEEDED",
+            "x-qlik-const": 23017
+          },
+          {
+            "title": "LOCERR_BDI_STATUS_OK",
+            "x-qlik-const": 24000
+          },
+          {
+            "title": "LOCERR_BDI_GENERIC_ERROR_NOT_TRANSLATED",
+            "x-qlik-const": 24001
+          },
+          {
+            "title": "LOCERR_TRENDLINE_INVALID_DEF",
+            "x-qlik-const": 25000
+          },
+          {
+            "title": "LOCERR_TRENDLINE_INVALID_MATH_ERROR",
+            "x-qlik-const": 25001
+          },
+          {
+            "title": "LOCERR_CURL_UNSUPPORTED_PROTOCOL",
+            "x-qlik-const": 30000
+          },
+          {
+            "title": "LOCERR_CURL_COULDNT_RESOLVE_PROXY",
+            "x-qlik-const": 30001
+          },
+          {
+            "title": "LOCERR_CURL_COULDNT_CONNECT",
+            "x-qlik-const": 30002
+          },
+          {
+            "title": "LOCERR_CURL_REMOTE_ACCESS_DENIED",
+            "x-qlik-const": 30003
+          },
+          {
+            "title": "LOCERR_CURL_FTP_ACCEPT_FAILED",
+            "x-qlik-const": 30004
+          },
+          {
+            "title": "LOCERR_CURL_FTP_ACCEPT_TIMEOUT",
+            "x-qlik-const": 30005
+          },
+          {
+            "title": "LOCERR_CURL_FTP_CANT_GET_HOST",
+            "x-qlik-const": 30006
+          },
+          {
+            "title": "LOCERR_CURL_PARTIAL_FILE",
+            "x-qlik-const": 30007
+          },
+          {
+            "title": "LOCERR_CURL_QUOTE_ERROR",
+            "x-qlik-const": 30008
+          },
+          {
+            "title": "LOCERR_CURL_WRITE_ERROR",
+            "x-qlik-const": 30009
+          },
+          {
+            "title": "LOCERR_CURL_UPLOAD_FAILED",
+            "x-qlik-const": 30010
+          },
+          {
+            "title": "LOCERR_CURL_OUT_OF_MEMORY",
+            "x-qlik-const": 30011
+          },
+          {
+            "title": "LOCERR_CURL_OPERATION_TIMEDOUT",
+            "x-qlik-const": 30012
+          },
+          {
+            "title": "LOCERR_CURL_FTP_COULDNT_USE_REST",
+            "x-qlik-const": 30013
+          },
+          {
+            "title": "LOCERR_CURL_HTTP_POST_ERROR",
+            "x-qlik-const": 30014
+          },
+          {
+            "title": "LOCERR_CURL_SSL_CONNECT_ERROR",
+            "x-qlik-const": 30015
+          },
+          {
+            "title": "LOCERR_CURL_FILE_COULDNT_READ_FILE",
+            "x-qlik-const": 30016
+          },
+          {
+            "title": "LOCERR_CURL_LDAP_CANNOT_BIND",
+            "x-qlik-const": 30017
+          },
+          {
+            "title": "LOCERR_CURL_LDAP_SEARCH_FAILED",
+            "x-qlik-const": 30018
+          },
+          {
+            "title": "LOCERR_CURL_TOO_MANY_REDIRECTS",
+            "x-qlik-const": 30019
+          },
+          {
+            "title": "LOCERR_CURL_PEER_FAILED_VERIFICATION",
+            "x-qlik-const": 30020
+          },
+          {
+            "title": "LOCERR_CURL_GOT_NOTHING",
+            "x-qlik-const": 30021
+          },
+          {
+            "title": "LOCERR_CURL_SSL_ENGINE_NOTFOUND",
+            "x-qlik-const": 30022
+          },
+          {
+            "title": "LOCERR_CURL_SSL_ENGINE_SETFAILED",
+            "x-qlik-const": 30023
+          },
+          {
+            "title": "LOCERR_CURL_SSL_CERTPROBLEM",
+            "x-qlik-const": 30024
+          },
+          {
+            "title": "LOCERR_CURL_SSL_CIPHER",
+            "x-qlik-const": 30025
+          },
+          {
+            "title": "LOCERR_CURL_SSL_CACERT",
+            "x-qlik-const": 30026
+          },
+          {
+            "title": "LOCERR_CURL_BAD_CONTENT_ENCODING",
+            "x-qlik-const": 30027
+          },
+          {
+            "title": "LOCERR_CURL_LDAP_INVALID_URL",
+            "x-qlik-const": 30028
+          },
+          {
+            "title": "LOCERR_CURL_USE_SSL_FAILED",
+            "x-qlik-const": 30029
+          },
+          {
+            "title": "LOCERR_CURL_SSL_ENGINE_INITFAILED",
+            "x-qlik-const": 30030
+          },
+          {
+            "title": "LOCERR_CURL_LOGIN_DENIED",
+            "x-qlik-const": 30031
+          },
+          {
+            "title": "LOCERR_CURL_TFTP_NOTFOUND",
+            "x-qlik-const": 30032
+          },
+          {
+            "title": "LOCERR_CURL_TFTP_ILLEGAL",
+            "x-qlik-const": 30033
+          },
+          {
+            "title": "LOCERR_CURL_SSH",
+            "x-qlik-const": 30034
+          },
+          {
+            "title": "LOCERR_SETEXPRESSION_TOO_LARGE",
+            "x-qlik-const": 30100
+          },
+          {
+            "title": "LOCERR_RELOAD_MERGE_LOAD_ERROR",
+            "x-qlik-const": 30101
+          },
+          {
+            "title": "LOCERR_WIN_FTP_DROPPED",
+            "x-qlik-const": 30200
+          },
+          {
+            "title": "LOCERR_WIN_FTP_NO_PASSIVE_MODE",
+            "x-qlik-const": 30201
+          },
+          {
+            "title": "LOCERR_WIN_HTTP_DOWNLEVEL_SERVER",
+            "x-qlik-const": 30210
+          },
+          {
+            "title": "LOCERR_WIN_HTTP_INVALID_SERVER_RESPONSE",
+            "x-qlik-const": 30211
+          },
+          {
+            "title": "LOCERR_WIN_HTTP_REDIRECT_NEEDS_CONFIRMATION",
+            "x-qlik-const": 30212
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_FORCE_RETRY",
+            "x-qlik-const": 30220
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_CANNOT_CONNECT",
+            "x-qlik-const": 30221
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_CONNECTION_ABORTED",
+            "x-qlik-const": 30222
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_CONNECTION_RESET",
+            "x-qlik-const": 30223
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_DISCONNECTED",
+            "x-qlik-const": 30224
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_INCORRECT_FORMAT",
+            "x-qlik-const": 30225
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_INVALID_CA",
+            "x-qlik-const": 30226
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_INVALID_OPERATION",
+            "x-qlik-const": 30227
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_INVALID_URL",
+            "x-qlik-const": 30228
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_ITEM_NOT_FOUND",
+            "x-qlik-const": 30229
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_LOGIN_FAILURE",
+            "x-qlik-const": 30230
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_NAME_NOT_RESOLVED",
+            "x-qlik-const": 30231
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_NEED_UI",
+            "x-qlik-const": 30232
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_SEC_CERT_CN_INVALID",
+            "x-qlik-const": 30233
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_SEC_CERT_DATE_INVALID",
+            "x-qlik-const": 30234
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_SEC_CERT_ERRORS",
+            "x-qlik-const": 30235
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_SEC_INVALID_CERT",
+            "x-qlik-const": 30236
+          },
+          {
+            "title": "LOCERR_WIN_INTERNET_SERVER_UNREACHABLE",
+            "x-qlik-const": 30237
+          },
+          {
+            "title": "LOCERR_BM_RESULT_TOO_LARGE",
+            "x-qlik-const": 31000
+          }
+        ]
+      },
+      "UsageEnum": {
+        "type": "string",
+        "oneOf": [
+          {
+            "title": "ANALYTICS",
+            "x-qlik-const": 0
+          },
+          {
+            "title": "DATA_PREPARATION",
+            "x-qlik-const": 1
+          },
+          {
+            "title": "DATAFLOW_PREP",
+            "x-qlik-const": 2
+          },
+          {
+            "title": "SINGLE_TABLE_PREP",
+            "x-qlik-const": 3
+          },
+          {
+            "title": "DIRECT_QUERY_MODE",
+            "x-qlik-const": 4
+          }
+        ]
+      }
+    }
+  }
+}

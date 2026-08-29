@@ -1,0 +1,101 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  Direct unauthenticated HTTPS GETs on 2026-08-29 with a browser User-Agent,
+  against every host this provider's profile names: the developer portal
+  (qlik.dev) and the corporate site (qlik.com / www.qlik.com).
+description: >-
+  Well-known document probe for Qlik. NOTHING WAS SERVED — every path on every
+  host returned 404. Both hosts answer 404 with a full HTML shell (qlik.dev is
+  an Astro site, www.qlik.com a Next.js site), so the 404 code and the HTML body
+  agree; there is no soft-200 masking a real document here.
+  No WellKnown or SecurityTxt pointer is emitted in apis.yml as a result: this
+  file records a measured absence, not a presence.
+notes:
+  - >-
+    Qlik DOES serve /.well-known/oauth-authorization-server, but on the TENANT
+    host, not on any host reachable without a customer tenant. It is documented
+    at https://qlik.dev/apis/rest/.well-known/ with base URL
+    https://{tenant}.{region}.qlikcloud.com and returns issuer, jwks_uri,
+    token_endpoint, revocation_endpoint, authorization_endpoint,
+    grant_types_supported and response_types_supported. Because {tenant} is
+    customer-specific there is no anonymous URL to probe, so this is recorded
+    from the documentation rather than from a fetch. See
+    authentication/qliksense-authentication.yml.
+  - >-
+    Qlik publishes a security contact (security@qlik.com) and a responsible
+    disclosure posture on https://www.qlik.com/us/trust and
+    https://security.qlik.com/, but does not expose it as an RFC 9116
+    /.well-known/security.txt on any probed host. See
+    security/qliksense-vulnerability-disclosure.yml.
+hosts:
+  - host: qlik.dev
+    note: Developer portal and API reference host.
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: www.qlik.com
+    note: Corporate site; qlik.com redirects here.
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: qlik.com
+    note: Apex domain; every probe followed the redirect to www.qlik.com.
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: "{tenant}.{region}.qlikcloud.com"
+    note: >-
+      Customer tenant host. NOT PROBED — the hostname is templated on a
+      customer-specific tenant name and there is no anonymous instance to call.
+      Qlik documents that this host serves
+      /.well-known/oauth-authorization-server.
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: null
+        file: null

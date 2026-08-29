@@ -1,0 +1,482 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "automations",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsAutomation": {
+      "address": "system-events.automation",
+      "messages": {
+        "automationRunEnded": {
+          "$ref": "#/components/messages/automation.automationRunEnded"
+        }
+      }
+    }
+  },
+  "operations": {
+    "automationRunEnded": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsAutomation"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsAutomation/messages/automationRunEnded"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "automation.automationRunEnded": {
+        "name": "com.qlik.v1.automation.run.ended",
+        "tags": [
+          {
+            "name": "automation"
+          },
+          {
+            "name": "run"
+          }
+        ],
+        "title": "Run ended",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsContextAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/runObject"
+                    },
+                    {
+                      "$ref": "#/components/schemas/metricsObject"
+                    }
+                  ],
+                  "properties": {
+                    "automation": {
+                      "$ref": "#/components/schemas/runEndedAutomationObject"
+                    }
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.v1.automation.run.ended",
+                  "description": "Unique identifier for the event type."
+                },
+                "toplevelresourceid": {
+                  "type": "string",
+                  "examples": [
+                    "00000000-0000-0000-0000-000000000000"
+                  ],
+                  "description": "Unique identifier for the automation that has just started a single execution."
+                }
+              }
+            }
+          ]
+        },
+        "description": "The run ended event will be published when an automation execution has ended.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "cloudEventsContextAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.automation.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "default": "com.qlik/automations",
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0.2"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "default": "application/json",
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema"
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "00000000-0000-0000-0000-000000000000"
+            ],
+            "description": "Unique identifier for the user triggering the event"
+          },
+          "ownerid": {
+            "type": "string",
+            "examples": [
+              "00000000-0000-0000-0000-000000000000"
+            ],
+            "description": "Unique identifier for the owner of the resource related to the event"
+          },
+          "spaceid": {
+            "type": "string",
+            "examples": [
+              "00000000-0000-0000-0000-000000000000"
+            ],
+            "description": "Unique identifier for the space related to the event"
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "00000000-0000-0000-0000-000000000000"
+            ],
+            "description": "Unique identifier for the tenant related to the event."
+          }
+        }
+      },
+      "metricsObject": {
+        "type": "object",
+        "properties": {
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "snippetBlock",
+                    "endpointBlock",
+                    "baseBlock"
+                  ],
+                  "type": "string",
+                  "examples": [
+                    "endpointBlock"
+                  ],
+                  "description": "Type of the block."
+                },
+                "params": {
+                  "type": "array",
+                  "description": "Parameters of the block (only present for base blocks)"
+                },
+                "rxBytes": {
+                  "type": "integer",
+                  "examples": [
+                    18329921
+                  ],
+                  "description": "Total amount of received bytes sent by the current block."
+                },
+                "txBytes": {
+                  "type": "integer",
+                  "examples": [
+                    18329921
+                  ],
+                  "description": "Total amount of sent bytes sent by the current block."
+                },
+                "apiCalls": {
+                  "type": "integer",
+                  "examples": [
+                    40
+                  ],
+                  "description": "API calls to external resources made by the current block."
+                },
+                "duration": {
+                  "type": "integer",
+                  "examples": [
+                    1000
+                  ],
+                  "description": "Duration of the block execution"
+                },
+                "blockName": {
+                  "type": "string",
+                  "examples": [
+                    "SleepBlock"
+                  ],
+                  "description": "Name of the block (only present for base blocks)"
+                },
+                "snippetId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the snippet block used within the execution."
+                },
+                "endpointId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the endpoint."
+                },
+                "connectorId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the connector used within the block of the execution."
+                }
+              },
+              "description": "Information of the execution per block."
+            },
+            "description": "List of blocks used during execution."
+          },
+          "network": {
+            "type": "object",
+            "properties": {
+              "rxBytes": {
+                "type": "integer",
+                "default": 0,
+                "description": "The number of received bytes."
+              },
+              "txBytes": {
+                "type": "integer",
+                "default": 0,
+                "description": "The number of received bytes."
+              }
+            }
+          },
+          "totalApiCalls": {
+            "type": "integer",
+            "description": "The number of API calls made."
+          }
+        }
+      },
+      "runObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "examples": [
+              "d452d100-9b0b-11ec-b199-8323e1031c3e"
+            ],
+            "readOnly": true
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "exceeded limit",
+              "failed",
+              "finished",
+              "finished with warnings",
+              "must stop",
+              "not started",
+              "queued",
+              "running",
+              "starting",
+              "stopped"
+            ],
+            "type": "string"
+          },
+          "context": {
+            "enum": [
+              "test_run",
+              "editor",
+              "detail",
+              "api_sync",
+              "api_async",
+              "webhook",
+              "lookup"
+            ],
+            "type": "string",
+            "description": "The source that triggers the automation will set the context. Certain contexts impact the execution of an automation (for examples, The \"test_run\" context will not process all results when listing items)."
+          },
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "blocks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "connectorGuid",
+                    "rxBytes",
+                    "txBytes"
+                  ],
+                  "properties": {
+                    "type": {
+                      "enum": [
+                        "snippetBlock",
+                        "endpointBlock"
+                      ],
+                      "type": "string",
+                      "examples": [
+                        "endpointBlock"
+                      ],
+                      "description": "Type of the block."
+                    },
+                    "rxBytes": {
+                      "type": "integer",
+                      "examples": [
+                        18329921
+                      ],
+                      "description": "Total amount of received bytes sent by the current block."
+                    },
+                    "txBytes": {
+                      "type": "integer",
+                      "examples": [
+                        18329921
+                      ],
+                      "description": "Total amount of sent bytes sent by the current block."
+                    },
+                    "apiCalls": {
+                      "type": "integer",
+                      "examples": [
+                        40
+                      ],
+                      "description": "API calls to external resources made by the current block."
+                    },
+                    "snippetId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the snippet block used within the execution."
+                    },
+                    "endpointId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the snippet block used within the execution."
+                    },
+                    "connectorId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the connector used within the block of the execution."
+                    }
+                  },
+                  "description": "Information of the ended execution per block."
+                },
+                "description": "List of blocks used during execution. Note: this list currently only contains endpointBlocks and snippetBlocks"
+              },
+              "network": {
+                "type": "object",
+                "properties": {
+                  "rxBytes": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "The number of received bytes."
+                  },
+                  "txBytes": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "The number of received bytes."
+                  }
+                }
+              },
+              "totalApiCalls": {
+                "type": "integer",
+                "default": 0,
+                "description": "The number of API calls made."
+              }
+            }
+          },
+          "billable": {
+            "type": "boolean",
+            "examples": [
+              false
+            ],
+            "readOnly": true,
+            "description": "Indicates if this automation run is billable (if there are executed blocks that are linked to billable connectors)"
+          },
+          "stopTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2021-12-23T12:28:21.000000Z"
+            ],
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2021-12-23T12:28:21.000000Z"
+            ],
+            "readOnly": true
+          },
+          "isTestRun": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2021-12-23T12:28:21.000000Z"
+            ],
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2021-12-23T12:28:21.000000Z"
+            ],
+            "readOnly": true
+          },
+          "isArchived": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "executedById": {
+            "type": "string",
+            "examples": [
+              "00000000-0000-0000-0000-000000000000"
+            ],
+            "description": "Id of the executer of the affected resource."
+          },
+          "scheduledStartTime": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2021-12-23T12:28:21.000000Z"
+            ],
+            "readOnly": true
+          }
+        }
+      }
+    }
+  }
+}

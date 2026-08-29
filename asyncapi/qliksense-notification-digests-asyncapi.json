@@ -1,0 +1,202 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "notification-digests",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsNotificationDigest": {
+      "address": "system-events.notification-digest",
+      "messages": {
+        "notificationDigestUpdated": {
+          "$ref": "#/components/messages/notification-digest.notificationDigestUpdated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "notificationDigestUpdated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsNotificationDigest"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsNotificationDigest/messages/notificationDigestUpdated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "notification-digest.notificationDigestUpdated": {
+        "name": "com.qlik.notification-digest.updated",
+        "tags": [
+          {
+            "name": "notification-digests"
+          }
+        ],
+        "title": "A notification digest has been updated",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Indicates if the notification digest is enabled or not."
+                    },
+                    "frequency": {
+                      "type": "string",
+                      "description": "The frequency of the notification digest."
+                    },
+                    "chronosJobID": {
+                      "type": "string",
+                      "description": "The identifier of the Chronos job responsible for generating the notification digest."
+                    }
+                  },
+                  "description": "Contains the event specific attributes of the payload."
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.notification-digest.updated",
+                  "description": "The unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a notification digest configuration is updated. Includes frequency and enabled status. Use this to track digest configuration changes.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "cloudEventsAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-01-15T10:43:17Z",
+              "2025-01-15T10:43:17.123Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "The unique identifier for the user triggering the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "User",
+              "ServiceAccount"
+            ],
+            "description": "The type of principal that triggered the occurrence."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "The unique identifier for the tenant related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\n  \"sub\": \"VZhiEfgW2bLd7HgR-jjzAh6VnicipweT\",\n  \"email\": \"user@example.com\",\n  \"roles\": [\"admin\", \"editor\"]\n}\n"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event."
+          },
+          "tracestate": {
+            "type": "string",
+            "examples": [
+              "rojo=00f067aa0ba902b7,congo=t61rcWkgMzE"
+            ],
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "examples": [
+              "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+            ],
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          }
+        }
+      }
+    }
+  }
+}

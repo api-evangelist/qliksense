@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/qlik-oss/schemas/refs/heads/main/qtcp/newtaskdefaults.settings.streamingtransform.schema.json",
+  "title": "Defaults for new Streaming Transform Task",
+  "description": "Schema for Streaming Transform task default configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "taskRuntime": {
+      "type": "object",
+      "description": "Runtime configuration for the task",
+      "additionalProperties": false,
+			"properties": {
+				"lakehouseClusterId": {
+					"type": "string",
+					"description": "Name of the lakehouse cluster to use"
+        }
+			}
+    },
+    "catalogIntegration": {
+      "$ref": "newtaskdefaults.settings.common.schema.json#/definitions/catalogIntegration"
+    },
+    "folderLocationType": {
+      "$ref": "newtaskdefaults.settings.common.schema.json#/definitions/folderLocationType"
+    },
+    "specificFolder": {
+      "$ref": "newtaskdefaults.settings.common.schema.json#/definitions/specificFolder"
+    },
+		"viewDefinitionSettings": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"standardViewHeaders": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"hdrFromTimestamp": {
+							"type": "boolean",
+							"enum": [true, false],
+							"default": false
+						}
+					}
+				}
+			}
+		}
+  }
+}

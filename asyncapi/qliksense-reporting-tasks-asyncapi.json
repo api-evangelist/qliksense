@@ -1,0 +1,262 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "reporting-tasks",
+    "version": ""
+  },
+  "channels": {
+    "systemEventsSharing": {
+      "address": "system-events.sharing",
+      "messages": {
+        "reportingTaskSummaryCreated": {
+          "$ref": "#/components/messages/sharing.reportingTaskSummaryCreated"
+        }
+      }
+    }
+  },
+  "operations": {
+    "reportingTaskSummaryCreated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/systemEventsSharing"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/systemEventsSharing/messages/reportingTaskSummaryCreated"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "sharing.reportingTaskSummaryCreated": {
+        "name": "com.qlik.reporting-task.summary.created",
+        "tags": [
+          {
+            "name": "reporting-task"
+          }
+        ],
+        "title": "Reporting task summary created",
+        "payload": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/cloudEventsAttributes"
+            },
+            {
+              "$ref": "#/components/schemas/cloudEventsQlikExtensionsAttributes"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/reportSubscriptionData"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "com.qlik.reporting-task.summary.created",
+                  "description": "The unique identifier for the event type."
+                }
+              }
+            }
+          ]
+        },
+        "description": "Published when a summary is generated for a reporting task execution. Includes task metadata and execution statistics. Use this to track reporting outcomes.",
+        "x-qlik-stability": "stable",
+        "x-qlik-visibility": "public",
+        "x-qlik-deprecated": false
+      }
+    },
+    "schemas": {
+      "attachmentInfo": {
+        "type": "object",
+        "properties": {
+          "fileType": {
+            "type": "string"
+          },
+          "fileLocation": {
+            "type": "string"
+          }
+        },
+        "description": "Attachment information."
+      },
+      "cloudEventsAttributes": {
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "specversion",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "A234-1234-1234"
+            ],
+            "minLength": 1,
+            "description": "Identifies the event."
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2025-01-15T10:43:17Z",
+              "2025-01-15T10:43:17.123Z"
+            ],
+            "minLength": 1,
+            "description": "Timestamp of when the occurrence happened. Must adhere to RFC 3339."
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "com.qlik.v1.app.created"
+            ],
+            "minLength": 1,
+            "description": "Describes the type of event related to the originating occurrence."
+          },
+          "source": {
+            "type": "string",
+            "format": "uri-reference",
+            "examples": [
+              "com.qlik/my-service"
+            ],
+            "minLength": 1,
+            "description": "Identifies the context in which an event happened."
+          },
+          "specversion": {
+            "type": "string",
+            "examples": [
+              "1.0"
+            ],
+            "minLength": 1,
+            "description": "The version of the CloudEvents specification which the event uses."
+          },
+          "datacontenttype": {
+            "type": "string",
+            "examples": [
+              "application/json"
+            ],
+            "minLength": 1,
+            "description": "Content type of the data value. Must adhere to RFC 2046 format."
+          }
+        },
+        "description": "CloudEvents Specification JSON Schema."
+      },
+      "cloudEventsQlikExtensionsAttributes": {
+        "type": "object",
+        "required": [
+          "tenantid"
+        ],
+        "properties": {
+          "userid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "The unique identifier for the user triggering the event."
+          },
+          "authtype": {
+            "type": "string",
+            "examples": [
+              "User",
+              "ServiceAccount"
+            ],
+            "description": "The type of principal that triggered the occurrence."
+          },
+          "tenantid": {
+            "type": "string",
+            "examples": [
+              "VZhiEfgW2bLd7HgR-jjzAh6VnicipweT"
+            ],
+            "description": "The unique identifier for the tenant related to the event."
+          },
+          "authclaims": {
+            "type": "string",
+            "examples": [
+              "{\n  \"sub\": \"VZhiEfgW2bLd7HgR-jjzAh6VnicipweT\",\n  \"email\": \"user@example.com\",\n  \"roles\": [\"admin\", \"editor\"]\n}\n"
+            ],
+            "description": "A JSON string representing claims of the principal that triggered the event."
+          },
+          "tracestate": {
+            "type": "string",
+            "examples": [
+              "rojo=00f067aa0ba902b7,congo=t61rcWkgMzE"
+            ],
+            "description": "A comma-delimited list of key-value pairs."
+          },
+          "traceparent": {
+            "type": "string",
+            "examples": [
+              "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+            ],
+            "description": "Contains a version, trace ID, span ID, and trace options."
+          }
+        }
+      },
+      "reportSubscriptionData": {
+        "type": "object",
+        "required": [
+          "taskId",
+          "executionId",
+          "name",
+          "objectType",
+          "attachmentLocation",
+          "insightLink"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My chart",
+            "description": "The name of the report subscription."
+          },
+          "taskId": {
+            "type": "string",
+            "example": "602653af0a232c000170dec3",
+            "description": "The unique identifier of the sharing recurring task."
+          },
+          "message": {
+            "type": "string",
+            "example": "",
+            "description": "Message to be included in the mail body."
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "E347EilunjGVd3RTYcDXTVketixiwq_2",
+            "description": "The identifier of the sharing recurring task owner."
+          },
+          "objectType": {
+            "type": "string",
+            "example": "chart",
+            "description": "Object type is the template type (chart or sheet)."
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/attachmentInfo"
+            },
+            "description": "Array of attachment objects."
+          },
+          "executionId": {
+            "type": "string",
+            "example": "60265e3b7c14f800011d99bc",
+            "description": "The unique identifier of the sharing recurring task execution."
+          },
+          "insightLink": {
+            "type": "string",
+            "description": "The insight link to open the app from the email."
+          },
+          "imageLocation": {
+            "type": "string",
+            "description": "The temporary contents service URL of the PNG report to include in the email body."
+          },
+          "attachmentLocation": {
+            "type": "string",
+            "description": "The temporary contents service URL of the PDF report to be attached in the email."
+          }
+        },
+        "description": "Contains the event-specific attributes of the payload."
+      }
+    }
+  }
+}
