@@ -47,6 +47,17 @@ tags:
 - Data Visualization
 - Embedded Analytics
 - Enterprise
+- Machine-Learning
+tags_raw:
+- Agents
+- Analytics
+- Artificial Intelligence
+- Business Intelligence
+- Cloud
+- Data Integration
+- Data Visualization
+- Embedded Analytics
+- Enterprise
 - Machine Learning
 apis:
 - aid: qliksense:engine-api
@@ -74,6 +85,13 @@ apis:
   humanURL: https://github.com/qlik-oss/server-side-extension
   baseURL: grpc://{plugin-host}:{port}
   tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Extensibility
+  - gRPC
+  - Machine-Learning
+  - Protobuf
+  tags_raw:
   - Artificial Intelligence
   - Business Intelligence
   - Extensibility
@@ -120,6 +138,11 @@ apis:
   humanURL: https://www.qlik.com/us/products/model-context-protocol
   baseURL: https://{tenant}.{region}.qlikcloud.com/api/ai/mcp
   tags:
+  - Agents
+  - Artificial Intelligence
+  - Business Intelligence
+  - MCP
+  tags_raw:
   - Agents
   - Artificial Intelligence
   - Business Intelligence
@@ -415,6 +438,11 @@ apis:
   tags:
   - Artificial Intelligence
   - Business Intelligence
+  - Machine-Learning
+  - REST
+  tags_raw:
+  - Artificial Intelligence
+  - Business Intelligence
   - Machine Learning
   - REST
   properties:
@@ -433,6 +461,11 @@ apis:
   humanURL: https://qlik.dev/apis/rest/automl-predictions/
   baseURL: https://{tenant}.{region}.qlikcloud.com/api/v1/automl-predictions
   tags:
+  - Artificial Intelligence
+  - Business Intelligence
+  - Machine-Learning
+  - REST
+  tags_raw:
   - Artificial Intelligence
   - Business Intelligence
   - Machine Learning
