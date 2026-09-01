@@ -1686,6 +1686,9 @@ apis:
   - type: Overlay
     url: overlays/qliksense-workflows-automations-overlay.yaml
 common:
+- type: License
+  name: MIT
+  url: https://github.com/qlik-oss/server-side-extension/blob/master/LICENSE
 - type: Website
   url: https://www.qlik.com/us/products/qlik-sense
 - type: DeveloperPortal
