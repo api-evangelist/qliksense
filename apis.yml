@@ -1,5 +1,5 @@
 aid: qliksense
-name: Qlik Sense APIs
+name: Qlik Sense
 description: 'Qlik Sense and Qlik Cloud from Qlik Parent, Inc. — a business intelligence, data integration
   and AI analytics platform. Qlik publishes one of the broadest machine-readable API surfaces in the analytics
   market: 78 OpenAPI 3.0.0 documents covering 681 REST operations, 29 AsyncAPI 3.0.0 event documents carrying
@@ -35,7 +35,7 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/qliksense.png
 url: https://raw.githubusercontent.com/api-evangelist/qliksense/refs/heads/main/apis.yml
 created: '2024-01-15'
-modified: '2026-08-29'
+modified: '2026-09-15'
 specificationVersion: '0.23'
 tags:
 - Agents
@@ -1685,6 +1685,108 @@ apis:
     url: openapi/qliksense-workflows-automations.json
   - type: Overlay
     url: overlays/qliksense-workflows-automations-overlay.yaml
+- name: Qlik Sense Engine API
+  description: WebSocket-based API for interacting with the Qlik Associative Engine, including data modeling,
+    selections, and visualizations.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  tags:
+  - Analytics
+  - Business Intelligence
+  - Data Engine
+  - WebSocket
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/json-rpc/qix
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+  - type: ChangeLog
+    url: https://qlik.dev/changelog
+- name: Qlik Sense Repository API
+  description: REST API for managing Qlik Sense repository objects including apps, streams, users, and
+    security rules.
+  humanURL: https://help.qlik.com/en-US/sense-developer/APIs/RepositoryServiceAPI/index.html
+  tags:
+  - Repository
+  - Administration
+  - Security
+  - REST
+  properties:
+  - type: Documentation
+    url: https://help.qlik.com/en-US/sense-developer/APIs/RepositoryServiceAPI/index.html
+- name: Qlik Sense Proxy API
+  description: REST API for session management and authentication through the Qlik Sense Proxy Service.
+  humanURL: https://help.qlik.com/en-US/sense-developer/APIs/ProxyAPI/index.html
+  tags:
+  - Proxy
+  - Authentication
+  - Sessions
+  - REST
+  properties:
+  - type: Documentation
+    url: https://help.qlik.com/en-US/sense-developer/APIs/ProxyAPI/index.html
+- name: Qlik Data Integration API
+  description: REST API for managing data integration tasks, connections, and data pipelines.
+  humanURL: https://qlik.dev/apis/rest/data-integration
+  tags:
+  - Data Integration
+  - ETL
+  - REST
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-integration
+- name: Qlik Embedding API
+  description: JavaScript API for embedding Qlik Sense visualizations and mashups into web applications.
+  humanURL: https://qlik.dev/embed
+  tags:
+  - Embedding
+  - JavaScript
+  - Visualization
+  - Mashups
+  properties:
+  - type: Documentation
+    url: https://qlik.dev/embed
+  - type: Tutorials
+    url: https://qlik.dev/tutorials/embed-analytics
+- name: Qlik Sense Apps API
+  description: Manage Qlik Sense analytics applications including creating, copying, importing, exporting,
+    publishing, and retrieving app metadata.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  tags:
+  - Application
+  tags_raw:
+  - Apps
+  properties:
+  - type: OpenAPI
+    url: openapi/qlik-sense-apps-api-openapi.yml
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+- name: Qlik Sense Reloads API
+  description: Trigger and manage data reloads for apps to refresh data from connected sources.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  tags:
+  - Reloads
+  properties:
+  - type: OpenAPI
+    url: openapi/qlik-sense-reloads-api-openapi.yml
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+- name: Qlik Sense Spaces API
+  description: Manage spaces, which are logical containers within a tenant that control access for users
+    and groups through role-based assignments.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  tags:
+  - Spaces
+  properties:
+  - type: OpenAPI
+    url: openapi/qlik-sense-spaces-api-openapi.yml
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: Authentication
+    url: https://qlik.dev/authenticate
 common:
 - type: License
   name: MIT
@@ -1842,3 +1944,5 @@ maintainers:
   url: https://apievangelist.com
 x-parent: qlik
 x-relationship: product
+x-aliases:
+- Qlik Sense APIs
