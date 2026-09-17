@@ -14578,332 +14578,6 @@ apis:
     url: https://qlik.dev/apis/rest
   - type: Authentication
     url: https://qlik.dev/authenticate
-- aid: qliksense:qliksense-data-set-api
-  name: Qlik Sense Data Set API
-  description: The data-set API from Qlik Sense — 2 operation(s) for data-set.
-  humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
-  tags:
-  - data-set
-  properties:
-  - type: OpenAPI
-    url: openapi/qliksense-data-set-api-openapi.yml
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/change-stores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/change-stores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-links/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-links/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-requests/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-requests/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/api-keys/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/api-keys/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/assistants/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/assistants/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/audits/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/audits/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automation-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automation-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automation-connectors/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automation-connectors/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automl-deployments/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automl-deployments/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automl-predictions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automl-predictions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/banners/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/banners/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/brands/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/brands/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/collections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/collections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/conditions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/conditions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/consumption/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/consumption/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/core/auth-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/core/auth-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/core/ip-policies/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/core/ip-policies/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/csp-origins/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/csp-origins/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/csrf-token/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/csrf-token/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-alerts/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-alerts/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-assets/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-assets/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-credentials/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-credentials/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-files/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-files/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/data-products/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/data-products/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-qualities/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-qualities/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-sets/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-sets/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-sources/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-sources/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-stores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-stores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/di-projects/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/di-projects/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/direct-access-agents/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/direct-access-agents/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/encryption/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/encryption/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/extensions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/extensions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/glossaries/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/glossaries/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/groups/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/groups/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/identity-providers/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/identity-providers/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/items/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/items/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/knowledgebases/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/knowledgebases/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/licenses/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/licenses/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/lineage-graphs/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/lineage-graphs/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/login/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/login/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/ml/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/ml/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/notes/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/notes/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/notifications/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/notifications/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/oauth-clients/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/oauth-clients/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/oauth-tokens/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/oauth-tokens/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/questions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/questions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/quotas/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/quotas/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reload-tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reload-tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reloads/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reloads/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/report-templates/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/report-templates/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reports/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reports/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/roles/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/roles/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/scheduling/tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/scheduling/tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/sharing-tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/sharing-tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/spaces/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/spaces/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/temp-contents/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/temp-contents/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tenant-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tenant-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tenants/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tenants/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/themes/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/themes/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/transports/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/transports/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/ui-config/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/ui-config/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/users/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/users/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/web-integrations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/web-integrations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/web-notifications/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/web-notifications/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/webhooks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/webhooks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automation-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automation-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest
-  - type: Authentication
-    url: https://qlik.dev/authenticate
 - aid: qliksense:qliksense-data-sources-api
   name: Qlik Sense Data Sources API
   description: The data-sources API from Qlik Sense — 4 operation(s) for data-sources.
@@ -14914,332 +14588,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/qliksense-data-sources-api-openapi.yml
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/change-stores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/change-stores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-links/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-links/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-requests/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-requests/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/api-keys/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/api-keys/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/assistants/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/assistants/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/audits/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/audits/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automation-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automation-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automation-connectors/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automation-connectors/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automl-deployments/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automl-deployments/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automl-predictions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automl-predictions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/banners/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/banners/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/brands/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/brands/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/collections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/collections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/conditions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/conditions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/consumption/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/consumption/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/core/auth-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/core/auth-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/core/ip-policies/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/core/ip-policies/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/csp-origins/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/csp-origins/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/csrf-token/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/csrf-token/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-alerts/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-alerts/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-assets/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-assets/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-credentials/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-credentials/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-files/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-files/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/data-products/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/data-products/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-qualities/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-qualities/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-sets/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-sets/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-sources/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-sources/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-stores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-stores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/di-projects/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/di-projects/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/direct-access-agents/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/direct-access-agents/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/encryption/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/encryption/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/extensions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/extensions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/glossaries/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/glossaries/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/groups/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/groups/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/identity-providers/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/identity-providers/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/items/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/items/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/knowledgebases/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/knowledgebases/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/licenses/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/licenses/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/lineage-graphs/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/lineage-graphs/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/login/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/login/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/ml/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/ml/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/notes/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/notes/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/notifications/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/notifications/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/oauth-clients/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/oauth-clients/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/oauth-tokens/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/oauth-tokens/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/questions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/questions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/quotas/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/quotas/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reload-tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reload-tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reloads/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reloads/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/report-templates/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/report-templates/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reports/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reports/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/roles/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/roles/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/scheduling/tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/scheduling/tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/sharing-tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/sharing-tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/spaces/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/spaces/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/temp-contents/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/temp-contents/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tenant-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tenant-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tenants/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tenants/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/themes/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/themes/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/transports/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/transports/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/ui-config/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/ui-config/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/users/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/users/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/web-integrations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/web-integrations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/web-notifications/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/web-notifications/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/webhooks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/webhooks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automation-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automation-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest
-  - type: Authentication
-    url: https://qlik.dev/authenticate
-- aid: qliksense:qliksense-data-store-api
-  name: Qlik Sense Data Store API
-  description: The data-store API from Qlik Sense — 4 operation(s) for data-store.
-  humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
-  tags:
-  - data-store
-  properties:
-  - type: OpenAPI
-    url: openapi/qliksense-data-store-api-openapi.yml
   - type: Documentation
     url: https://qlik.dev/apis/rest/analytics/apps/
   - type: APIReference
@@ -24044,332 +23392,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/qliksense-jobs-api-openapi.yml
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/change-stores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/change-stores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-links/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-links/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-requests/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-requests/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/analytics/odag-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/analytics/odag-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/api-keys/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/api-keys/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/apps/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/apps/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/assistants/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/assistants/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/audits/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/audits/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automation-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automation-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automation-connectors/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automation-connectors/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automl-deployments/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automl-deployments/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/automl-predictions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/automl-predictions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/banners/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/banners/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/brands/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/brands/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/collections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/collections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/conditions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/conditions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/consumption/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/consumption/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/core/auth-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/core/auth-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/core/ip-policies/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/core/ip-policies/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/csp-origins/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/csp-origins/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/csrf-token/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/csrf-token/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-alerts/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-alerts/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-assets/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-assets/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-credentials/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-credentials/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-files/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-files/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/data-products/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/data-products/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-qualities/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-qualities/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-sets/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-sets/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-sources/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-sources/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/data-stores/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/data-stores/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/di-projects/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/di-projects/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/direct-access-agents/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/direct-access-agents/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/encryption/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/encryption/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/extensions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/extensions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/glossaries/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/glossaries/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/groups/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/groups/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/identity-providers/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/identity-providers/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/items/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/items/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/knowledgebases/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/knowledgebases/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/licenses/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/licenses/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/lineage-graphs/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/lineage-graphs/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/login/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/login/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/ml/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/ml/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/notes/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/notes/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/notifications/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/notifications/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/oauth-clients/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/oauth-clients/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/oauth-tokens/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/oauth-tokens/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/questions/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/questions/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/quotas/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/quotas/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reload-tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reload-tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reloads/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reloads/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/report-templates/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/report-templates/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/reports/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/reports/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/roles/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/roles/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/scheduling/tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/scheduling/tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/sharing-tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/sharing-tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/spaces/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/spaces/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tasks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tasks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/temp-contents/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/temp-contents/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tenant-settings/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tenant-settings/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/tenants/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/tenants/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/themes/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/themes/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/transports/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/transports/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/ui-config/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/ui-config/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/users/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/users/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/web-integrations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/web-integrations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/web-notifications/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/web-notifications/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/webhooks/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/webhooks/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automation-connections/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automation-connections/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest/workflows/automations/
-  - type: APIReference
-    url: https://qlik.dev/apis/rest/workflows/automations/
-  - type: Documentation
-    url: https://qlik.dev/apis/rest
-  - type: Authentication
-    url: https://qlik.dev/authenticate
-- aid: qliksense:qliksense-knowledgebases-api
-  name: Qlik Sense Knowledgebases API
-  description: The knowledgebases API from Qlik Sense — 11 operation(s) for knowledgebases.
-  humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
-  tags:
-  - knowledgebases
-  properties:
-  - type: OpenAPI
-    url: openapi/qliksense-knowledgebases-api-openapi.yml
   - type: Documentation
     url: https://qlik.dev/apis/rest/analytics/apps/
   - type: APIReference
@@ -41002,6 +40024,984 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/qliksense-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/audits/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/audits/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/banners/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/banners/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/brands/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/brands/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/collections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/collections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/groups/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/groups/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/items/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/items/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/login/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/login/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ml/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ml/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notes/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/questions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/questions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reports/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/roles/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/roles/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/themes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/themes/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/transports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/transports/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/users/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/users/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+- aid: qliksense:qliksense-dataset-api
+  name: Qlik Sense Dataset API
+  description: The Dataset API from Qlik Sense — 2 operation(s) for dataset.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  baseURL: wss://your-tenant.qlikcloud.com/app/
+  tags:
+  - Dataset
+  properties:
+  - type: OpenAPI
+    url: openapi/qliksense-dataset-api-openapi.yml
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/audits/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/audits/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/banners/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/banners/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/brands/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/brands/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/collections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/collections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/groups/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/groups/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/items/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/items/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/login/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/login/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ml/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ml/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notes/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/questions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/questions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reports/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/roles/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/roles/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/themes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/themes/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/transports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/transports/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/users/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/users/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+- aid: qliksense:qliksense-datastore-api
+  name: Qlik Sense Datastore API
+  description: The Datastore API from Qlik Sense — 4 operation(s) for datastore.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  baseURL: wss://your-tenant.qlikcloud.com/app/
+  tags:
+  - Datastore
+  properties:
+  - type: OpenAPI
+    url: openapi/qliksense-datastore-api-openapi.yml
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/change-stores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/discovery-agent/adaptive-cards/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-links/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-requests/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/analytics/odag-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/api-keys/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/apps/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/apps/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/assistants/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/audits/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/audits/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automation-connectors/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-deployments/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/automl-predictions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/banners/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/banners/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/brands/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/brands/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/collections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/collections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/conditions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/consumption/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/auth-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/core/ip-policies/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csp-origins/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/csrf-token/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-alerts/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-assets/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-credentials/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-files/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-products/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/data-qualities/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-governance/trust-scores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-qualities/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sets/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-sources/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/data-stores/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/di-projects/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/direct-access-agents/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/encryption/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/extensions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/glossaries/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/groups/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/groups/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/identity-providers/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/items/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/items/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/knowledgebases/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/licenses/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/lineage-graphs/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/login/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/login/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ml/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ml/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notes/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/notifications/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-clients/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/oauth-tokens/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/questions/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/questions/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/quotas/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reload-tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reloads/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/report-templates/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/reports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/reports/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/roles/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/roles/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/scheduling/tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/sharing-tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/spaces/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tasks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/temp-contents/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenant-settings/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/tenants/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/themes/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/themes/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/transports/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/transports/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/ui-config/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/users/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/users/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-integrations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/web-notifications/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/webhooks/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connections/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automation-connectors/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: APIReference
+    url: https://qlik.dev/apis/rest/workflows/automations/
+  - type: Documentation
+    url: https://qlik.dev/apis/rest
+  - type: Authentication
+    url: https://qlik.dev/authenticate
+- aid: qliksense:qliksense-knowledge-bases-api
+  name: Qlik Sense Knowledge Bases API
+  description: The Knowledge Bases API from Qlik Sense — 11 operation(s) for knowledge bases.
+  humanURL: https://qlik.dev/apis/json-rpc/qix
+  baseURL: wss://your-tenant.qlikcloud.com/app/
+  tags:
+  - Knowledge Bases
+  properties:
+  - type: OpenAPI
+    url: openapi/qliksense-knowledge-bases-api-openapi.yml
   - type: Documentation
     url: https://qlik.dev/apis/rest/analytics/apps/
   - type: APIReference
