@@ -216,6 +216,11 @@ apis:
     JavaScript API for embedding Qlik Sense visualizations and mashups into web applications.
   humanURL: https://qlik.dev/embed
   tags:
+  - Embeddings
+  - JavaScript
+  - Visualization
+  - Mashups
+  tags_raw:
   - Embedding
   - JavaScript
   - Visualization
@@ -1536,6 +1541,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Aliases
+  tags_raw:
   - aliases
   properties:
   - type: OpenAPI
@@ -2188,6 +2195,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - APIKeys
+  tags_raw:
   - api-keys
   properties:
   - type: OpenAPI
@@ -2841,6 +2850,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - API Settings
+  tags_raw:
   - api settings
   properties:
   - type: OpenAPI
@@ -3167,6 +3178,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Application
+  tags_raw:
   - Apps
   properties:
   - type: OpenAPI
@@ -3493,6 +3506,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Assignments
+  tags_raw:
   - assignments
   properties:
   - type: OpenAPI
@@ -3819,6 +3834,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Assistant
+  tags_raw:
   - assistants
   properties:
   - type: OpenAPI
@@ -4471,6 +4488,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Audit
+  tags_raw:
   - audits
   properties:
   - type: OpenAPI
@@ -5451,6 +5470,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Automation
+  tags_raw:
   - automations
   properties:
   - type: OpenAPI
@@ -6429,6 +6450,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Banner
+  tags_raw:
   - banner
   properties:
   - type: OpenAPI
@@ -6755,6 +6778,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Brands
+  tags_raw:
   - brands
   properties:
   - type: OpenAPI
@@ -7081,6 +7106,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Categories
+  tags_raw:
   - categories
   properties:
   - type: OpenAPI
@@ -7733,6 +7760,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Changes
+  tags_raw:
   - changes
   properties:
   - type: OpenAPI
@@ -8059,6 +8088,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Chat
+  tags_raw:
   - chat
   properties:
   - type: OpenAPI
@@ -8385,6 +8416,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Collection
+  tags_raw:
   - collections
   properties:
   - type: OpenAPI
@@ -8711,6 +8744,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Computation
+  tags_raw:
   - computation
   properties:
   - type: OpenAPI
@@ -9363,6 +9398,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Conditions
+  tags_raw:
   - conditions
   properties:
   - type: OpenAPI
@@ -10341,6 +10378,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - CSRF
+  tags_raw:
   - csrf
   properties:
   - type: OpenAPI
@@ -10993,6 +11032,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Data Connections
+  tags_raw:
   - data-connections
   properties:
   - type: OpenAPI
@@ -11972,6 +12013,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Data Product
+  tags_raw:
   - data-product
   properties:
   - type: OpenAPI
@@ -14258,6 +14301,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Data Quality
+  tags_raw:
   - data-quality
   properties:
   - type: OpenAPI
@@ -14584,6 +14629,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Data Sources
+  tags_raw:
   - data-sources
   properties:
   - type: OpenAPI
@@ -15888,6 +15935,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Data Files
+  tags_raw:
   - datafiles
   properties:
   - type: OpenAPI
@@ -16214,6 +16263,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Deliveries
+  tags_raw:
   - deliveries
   properties:
   - type: OpenAPI
@@ -16540,6 +16591,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Deployment
+  tags_raw:
   - deployments
   properties:
   - type: OpenAPI
@@ -18498,6 +18551,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Evaluation
+  tags_raw:
   - evaluation
   properties:
   - type: OpenAPI
@@ -18824,6 +18879,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Evaluation
+  tags_raw:
   - evaluations
   properties:
   - type: OpenAPI
@@ -19150,6 +19207,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Experiments
+  tags_raw:
   - experiments
   properties:
   - type: OpenAPI
@@ -19476,6 +19535,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Extensions
+  tags_raw:
   - extensions
   properties:
   - type: OpenAPI
@@ -19802,6 +19863,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Filters
+  tags_raw:
   - filters
   properties:
   - type: OpenAPI
@@ -20128,6 +20191,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Glossary
+  tags_raw:
   - glossaries
   properties:
   - type: OpenAPI
@@ -20454,6 +20519,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Group
+  tags_raw:
   - groups
   properties:
   - type: OpenAPI
@@ -21432,6 +21499,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - IDP
+  tags_raw:
   - idp
   properties:
   - type: OpenAPI
@@ -21758,6 +21827,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Impact
+  tags_raw:
   - impact
   properties:
   - type: OpenAPI
@@ -22736,6 +22807,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Item
+  tags_raw:
   - items
   properties:
   - type: OpenAPI
@@ -23388,6 +23461,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Job
+  tags_raw:
   - jobs
   properties:
   - type: OpenAPI
@@ -23714,6 +23789,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Licenses
+  tags_raw:
   - licenses
   properties:
   - type: OpenAPI
@@ -24692,6 +24769,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Links
+  tags_raw:
   - links
   properties:
   - type: OpenAPI
@@ -25018,6 +25097,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Login
+  tags_raw:
   - login
   properties:
   - type: OpenAPI
@@ -25344,6 +25425,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Notification
+  tags_raw:
   - notifications
   properties:
   - type: OpenAPI
@@ -25670,6 +25753,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - OAuth Clients
+  tags_raw:
   - oauth-clients
   properties:
   - type: OpenAPI
@@ -25996,6 +26081,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - OAuth Tokens
+  tags_raw:
   - oauth-tokens
   properties:
   - type: OpenAPI
@@ -26322,6 +26409,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Outputs
+  tags_raw:
   - outputs
   properties:
   - type: OpenAPI
@@ -26648,6 +26737,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - OWL
+  tags_raw:
   - owl
   properties:
   - type: OpenAPI
@@ -27300,6 +27391,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Predictions
+  tags_raw:
   - predictions
   properties:
   - type: OpenAPI
@@ -27626,6 +27719,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Profiles
+  tags_raw:
   - profile
   properties:
   - type: OpenAPI
@@ -28278,6 +28373,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Questions
+  tags_raw:
   - questions
   properties:
   - type: OpenAPI
@@ -28604,6 +28701,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Quotas
+  tags_raw:
   - quotas
   properties:
   - type: OpenAPI
@@ -29256,6 +29355,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Reloads
+  tags_raw:
   - reloads
   properties:
   - type: OpenAPI
@@ -29582,6 +29683,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Report Templates
+  tags_raw:
   - report-templates
   properties:
   - type: OpenAPI
@@ -29908,6 +30011,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Reports
+  tags_raw:
   - reports
   properties:
   - type: OpenAPI
@@ -30560,6 +30665,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Roles
+  tags_raw:
   - roles
   properties:
   - type: OpenAPI
@@ -30886,6 +30993,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Search
+  tags_raw:
   - search
   properties:
   - type: OpenAPI
@@ -31212,6 +31321,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Setting
+  tags_raw:
   - setting
   properties:
   - type: OpenAPI
@@ -31864,6 +31975,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Share
+  tags_raw:
   - shares
   properties:
   - type: OpenAPI
@@ -33496,6 +33609,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Space
+  tags_raw:
   - spaces
   properties:
   - type: OpenAPI
@@ -34148,6 +34263,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Status
+  tags_raw:
   - status
   properties:
   - type: OpenAPI
@@ -34474,6 +34591,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Task
+  tags_raw:
   - task
   properties:
   - type: OpenAPI
@@ -36760,6 +36879,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Tenant Settings
+  tags_raw:
   - tenant-settings
   properties:
   - type: OpenAPI
@@ -37086,6 +37207,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Tenants
+  tags_raw:
   - tenants
   properties:
   - type: OpenAPI
@@ -37412,6 +37535,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Terms
+  tags_raw:
   - terms
   properties:
   - type: OpenAPI
@@ -37738,6 +37863,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Themes
+  tags_raw:
   - themes
   properties:
   - type: OpenAPI
@@ -38064,6 +38191,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Threads
+  tags_raw:
   - threads
   properties:
   - type: OpenAPI
@@ -38390,6 +38519,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Tokens
+  tags_raw:
   - tokens
   properties:
   - type: OpenAPI
@@ -39042,6 +39173,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - User
+  tags_raw:
   - users
   properties:
   - type: OpenAPI
@@ -39368,6 +39501,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Web Integrations
+  tags_raw:
   - web-integrations
   properties:
   - type: OpenAPI
@@ -40020,6 +40155,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Webhook
+  tags_raw:
   - webhooks
   properties:
   - type: OpenAPI
@@ -40346,6 +40483,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Datasets
+  tags_raw:
   - Dataset
   properties:
   - type: OpenAPI
