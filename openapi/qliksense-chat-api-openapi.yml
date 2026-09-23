@@ -1,0 +1,290 @@
+openapi: 3.2.0
+info:
+  title: assistants Chat API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Chat
+paths:
+  /api/v1/assistants/{assistantId}/threads/{threadId}/actions/invoke:
+    post:
+      tags:
+      - Chat
+      summary: Execute synchronous prompt
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/promptOutputInvoke'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the Assistant
+          description: Prompt is successfully executed.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The user does not have privileges to perform the requested action.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Assistant is not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Prompt processing error.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the Assistant containing requested Thread
+      - in: path
+        name: threadId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the Thread to retrieve
+      description: Execute prompt in synchronous non-streaming mode.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/promptInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1AssistantsByAssistantIdThreadsByThreadIdActionsInvoke
+      x-operation-id-source: derived
+  /api/v1/assistants/{assistantId}/threads/{threadId}/actions/stream:
+    post:
+      tags:
+      - Chat
+      summary: Execute asynchronous prompt
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/promptOutput'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the Assistant
+          description: Prompt is successfully executed.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The user does not have privileges to perform the requested action.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Method is not allowed.
+        '405':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Assistant is not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Prompt processing error.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the Assistant containing requested Thread
+      - in: path
+        name: threadId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the Thread to retrieve
+      description: Execute prompt in asynchronous streaming mode.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/promptInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1AssistantsByAssistantIdThreadsByThreadIdActionsStream
+      x-operation-id-source: derived
+components:
+  schemas:
+    source:
+      type: object
+      properties:
+        chunks:
+          type: array
+          items:
+            type: object
+            example:
+              text: LLM stands for Large Language Model
+              chunkId: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: List of Chunks used for "AI" generated messages
+        source:
+          type: string
+          example: Reference.md
+          description: path to the document used
+        documentId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: reference to Document used for "AI" generated messages
+        datasourceId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: reference to DataSource used for "AI" generated messages
+        knowledgebaseId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: reference to KnowledgeBase used for "AI" generated messages
+    promptOutputInvoke:
+      type: object
+      properties:
+        output:
+          type: string
+          example: LLM stands for Large Language Model
+          description: Assistant's response to the prompt
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/source'
+          description: List of sources used to generate AI messages
+        question:
+          type: string
+          example: What was the primary goal of the Apollo program?
+          description: Question asked by the user for assistant to answer
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'Custom error codes
+
+            * AE-1 - Internal processing error
+
+            * AE-2 - Incorrect request
+
+            * AE-3 - Authentication issue
+
+            * AE-4 - Prompt is rejected
+
+            * AE-5 - Resource is not found
+
+            * AE-6 - API usage rate limit is exceeded
+
+            * AE-7 - Method is not allowed
+
+            '
+        title:
+          type: string
+        detail:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    promptOutput:
+      type: object
+      properties:
+        output:
+          type: string
+          example: LLM stands for Large Language Model
+          description: Assistant's response to the prompt
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/source'
+          description: List of sources used to generate AI messages
+    promptInput:
+      type: object
+      properties:
+        input:
+          type: object
+          properties:
+            prompt:
+              type: string
+              example: What is a LLM?
+              description: Input prompt string for the Assistant to respond to.
+            promptType:
+              enum:
+              - thread
+              type: string
+              example: thread
+              description: Sets the prompt type to thread.
+            includeText:
+              type: boolean
+              example: true
+              description: Returns text from chunks in sources output. Default value is false.

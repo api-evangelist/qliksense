@@ -1,0 +1,328 @@
+openapi: 3.2.0
+info:
+  title: direct-access-agents Direct Access Agent Benchmarking API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: direct-access-agent-benchmarking
+paths:
+  /api/v1/direct-access-agents/{agentId}/benchmarks:
+    post:
+      tags:
+      - direct-access-agent-benchmarking
+      summary: Start agent benchmark
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunBenchmarkResponse'
+          description: Benchmark task created successfully with a unique identifier.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requestor does not have the required permissions for the gateway's space.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The agent was not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There was an error processing the request.
+        '501':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: All or part of the request has not yet been implemented.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service is unavailable.
+      parameters:
+      - in: path
+        name: agentId
+        schema:
+          type: string
+        required: true
+        description: The agent ID
+      - in: query
+        name: force
+        schema:
+          type: boolean
+          default: false
+        description: Forces the benchmark to start regardless of the state of the agent. Does not override QCS resource limits. Use with caution.
+      - in: query
+        name: gigaBytesToTransfer
+        schema:
+          type: integer
+          format: int32
+          default: 1
+        description: The volume of data in GB to transfer during the throughput measurement part of the benchmark.
+      description: Starts a background benchmark task to measure the performance of a Direct Access agent. Use this endpoint to evaluate agent throughput and latency for capacity planning and performance optimization. Requestor must be assigned the `TenantAdmin` role and needs to be either a Gateway's space owner or a member in the Gateway's space with `Can Consume Data` role. Available in Direct Access Gateway V1.7.8+.
+      operationId: runBenchmark
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/direct-access-agents/{agentId}/benchmarks/{benchmarkId}:
+    get:
+      tags:
+      - direct-access-agent-benchmarking
+      summary: Get benchmark status
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBenchmarkStatusResponse'
+          description: Benchmark status and performance metrics retrieved successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requestor does not have the required permissions for the gateway's space.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The benchmark was not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There was an error processing the request.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service is unavailable.
+      parameters:
+      - in: path
+        name: agentId
+        schema:
+          type: string
+        required: true
+        description: The agent ID
+      - in: path
+        name: benchmarkId
+        schema:
+          type: string
+        required: true
+        description: The benchmark ID
+      description: Retrieves the current status and progress of a running or completed benchmark task. Use this endpoint to monitor benchmark execution and retrieve performance metrics once the task is completed. Requestor must be assigned the `TenantAdmin` role and needs to be either a Gateway's space owner or a member in the Gateway's space with `Can Consume Data` role. Available in Direct Access Gateway V1.7.8+.
+      operationId: getBenchmarkStatus
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/direct-access-agents/{agentId}/benchmarks/{benchmarkId}/cancel:
+    post:
+      tags:
+      - direct-access-agent-benchmarking
+      summary: Requests a cancellation on a running benchmark
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelBenchmarkResponse'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL to check the status of the benchmark
+          description: The cancellation was requested successfully.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requestor does not have the required permissions for the gateway's space.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The benchmark was not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There was an error processing the request.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service is unavailable.
+      parameters:
+      - in: path
+        name: agentId
+        schema:
+          type: string
+        required: true
+        description: The agent ID
+      - in: path
+        name: benchmarkId
+        schema:
+          type: string
+        required: true
+        description: The benchmark ID
+      description: Requests a cancellation on a running benchmark by id for the specified agent. Requestor must be assigned the `TenantAdmin` role and needs to be either a Gateway's space owner or a member in the Gateway's space with `Can Consume Data` role. Available in Direct Access Gateway V1.7.8+.
+      operationId: cancelBenchmark
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    LinkResponseObject:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          description: The URL to the related resource
+      additionalProperties: false
+    GetBenchmarkStatusResponse:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+          description: The benchmark status
+        results:
+          $ref: '#/components/schemas/GetBenchmarkStatusResults'
+        benchmarkId:
+          type:
+          - string
+          - 'null'
+          description: The benchmark ID
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: Additional details about the benchmark status
+        benchmarkEndTime:
+          type:
+          - string
+          - 'null'
+          description: The ISO 8601 formatted timestamp when the benchmark task completed or was cancelled
+        benchmarkStartTime:
+          type:
+          - string
+          - 'null'
+          description: The ISO 8601 formatted timestamp when the benchmark task started execution
+        totalBytesRequested:
+          type: integer
+          format: int64
+          description: The total bytes requested to be transferred during the benchmark
+      additionalProperties: false
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        detail:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorMessage'
+        traceId:
+          type:
+          - string
+          - 'null'
+        hasErrors:
+          type: boolean
+          readOnly: true
+      additionalProperties: false
+    RunBenchmarkResponse:
+      type: object
+      properties:
+        benchmarkId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CancelBenchmarkResponse:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+        statusUrl:
+          $ref: '#/components/schemas/LinkResponseObject'
+      additionalProperties: false
+    GetBenchmarkStatusResults:
+      type: object
+      properties:
+        latency:
+          type: integer
+          format: int64
+          description: The latency in ms measured during data transmission
+        throughput:
+          type: integer
+          format: int64
+          description: The data throughput in KB/s measured during data transmission
+        totalBytesTransferred:
+          type: integer
+          format: int64
+          description: The total number of bytes successfully transferred during data transmission
+        dataTransmissionEndTime:
+          type:
+          - string
+          - 'null'
+          description: The ISO 8601 formatted timestamp when data transmission completed
+        dataTransmissionStartTime:
+          type:
+          - string
+          - 'null'
+          description: The ISO 8601 formatted timestamp when data transmission start
+      additionalProperties: false

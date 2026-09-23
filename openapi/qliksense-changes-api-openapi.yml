@@ -1,0 +1,374 @@
+openapi: 3.2.0
+info:
+  title: analytics/change-stores Changes API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Changes
+paths:
+  /api/analytics/change-stores/{storeId}/changes:
+    get:
+      tags:
+      - Changes
+      summary: Get changes
+      responses:
+        '200':
+          $ref: '#/components/responses/GetChangesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      parameters:
+      - $ref: '#/components/parameters/JWTAuthHeader'
+      - $ref: '#/components/parameters/StoreId'
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/FilterParamChanges'
+      - $ref: '#/components/parameters/SortParamChanges'
+      description: Returns a list of changes within the specified change-store.
+      operationId: listChanges
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/analytics/change-stores/{storeId}/changes/tabular-views:
+    get:
+      tags:
+      - Changes
+      summary: Get rows in tabular view
+      responses:
+        '200':
+          $ref: '#/components/responses/GetChangesTabularViewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      parameters:
+      - in: query
+        name: expandRow
+        schema:
+          type: boolean
+        required: false
+        description: When set to true, the records returned by this endpoint will include the latest change (if available) for each editable column in the record. This parameter should be used in combination with a filter on updatedAt for use cases that require all editable columns to be included in each response.
+      - $ref: '#/components/parameters/JWTAuthHeader'
+      - $ref: '#/components/parameters/StoreId'
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/FilterParamChanges'
+      description: Returns changes in tabular format, showing modified rows with optional expansion to include all columns.
+      operationId: getTabularViewChanges
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  schemas:
+    ListDefaultData:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 10
+        currentPageCount:
+          type: integer
+          example: 2
+    Change:
+      type: object
+      example:
+        meta:
+          tenantId: tenant123
+          createdAt: '2023-01-01T12:00:00Z'
+          createdBy: user123
+        committed: true
+        columnValue: '100'
+      properties:
+        tenantId:
+          type: string
+          example: tenant123
+          description: The tenant id.
+        cellValue:
+          type: string
+          description: The value of the cell.
+        committed:
+          type: boolean
+          description: Whether the change has been committed.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'
+          description: 'The time when a user starts typing in a cell and the row becomes locked.
+
+            '
+        createdBy:
+          type: string
+          example: user123
+          description: The id of the user who created the change.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'
+          description: 'The time when an update to the change has been done.
+
+            Examples of when this value is updated:
+
+            - User starts typing in a cell, locking the row.
+
+            - User edits an unsaved change.
+
+            - User saves the change.
+
+            '
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: list of errors
+        traceId:
+          type: string
+    Pagination:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<next-cursor>
+            prev:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<previous-cursor>
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<self-cursor>
+    CellKey:
+      type: object
+      required:
+      - rowKey
+      - columnId
+      properties:
+        rowKey:
+          $ref: '#/components/schemas/RowKey'
+        columnId:
+          type: string
+          example: 690b5975fddd52c0fba8dd10
+          description: The id of the column.
+    RowKey:
+      type: object
+      example:
+        product: table
+      description: A map of row keys.
+      additionalProperties:
+        type: string
+    GetChangesData:
+      type: object
+      properties:
+        cellKey:
+          $ref: '#/components/schemas/CellKey'
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Change'
+        columnName:
+          type: string
+          example: price
+          description: The name of the column.
+    TabularView:
+      type: object
+      example:
+        data:
+        - Color: red
+          Price: '200'
+          Product: table
+          updatedAt: '2023-10-01T12:00:00Z'
+          updatedBy: abc123
+        - Color: green
+          Price: '100'
+          Product: chair
+          updatedAt: '2023-10-01T13:00:00Z'
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              updatedAt:
+                type: string
+                format: date-time
+                example: '2023-10-01T12:00:00Z'
+                description: The timestamp when the row was last updated.
+              updatedBy:
+                type: string
+                example: abc123
+                description: The user id that performed the latest update in the row (corresponds to updatedAt).
+            additionalProperties:
+              type: string
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          example: FOO-123
+          description: The error code.
+        title:
+          type: string
+          example: You don't have permission to view this resource.
+          description: Description of the error.
+        detail:
+          type: string
+          example: This resource requires app read privileges.
+          description: Extra information about the error.
+      description: An error object.
+  responses:
+    ForbiddenResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    GetChangesTabularViewResponse:
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ListDefaultData'
+            - $ref: '#/components/schemas/Pagination'
+            - $ref: '#/components/schemas/TabularView'
+      description: Returns change-store values in tabular format.
+    BadRequestResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Bad Request
+    InternalServerErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    GetChangesResponse:
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ListDefaultData'
+            - $ref: '#/components/schemas/Pagination'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/GetChangesData'
+      description: Changes response.
+    UnauthorizedResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
+    NotFoundResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
+  parameters:
+    SortParamChanges:
+      in: query
+      name: sort
+      schema:
+        type: string
+        pattern: ^[+-]?(createdAt|updatedAt|cellKey)$
+      example: +createdAt
+      description: Sort results by a field, with optional + (asc) or - (desc) prefix
+    StoreId:
+      in: path
+      name: storeId
+      schema:
+        type: string
+      example: 507f1f77bcf86cd799439011
+      required: true
+      description: The id of the change store.
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: string
+      example: 1a2b3c
+      required: false
+      description: Used for cursor-based pagination.
+    JWTAuthHeader:
+      in: header
+      name: Authorization
+      schema:
+        type: string
+      required: true
+      description: The JWT used for authentication. Send the JWT in the AuthRequest header using the Bearer schema.
+    FilterParamChanges:
+      in: query
+      name: filter
+      schema:
+        type: string
+      examples:
+        createdBy:
+          value: createdBy eq "6900ba43dff989b49c63cbe8"
+          summary: Filter by createdBy
+        committedChanges:
+          value: committed eq "true"
+          summary: Filter by committed changes
+        logicalExpression:
+          value: committed eq "true" and updatedAt gt "2025-11-06T13:11:07Z"
+          summary: Filter by logical expression
+        changesUpdatedAfter:
+          value: updatedAt gt "2025-11-06T13:11:07Z"
+          summary: Filter changes updated after timestamp
+      required: false
+      description: "A SCIM filter expression used to filter the result.\nThe filter parameter allows complex logical expressions using comparison operators and grouping.\n- **Supported attributes:** `committed`, `cellKey.columnId`, `columnId`, `createdBy`, `createdAt`, `updatedAt`\n- **Supported operators:** `eq`, `ne`, `co`, `sw`, `ew`, `pr`, `gt`, `ge`, `lt`, `le`  \n- **Logical operators:** `and`, `or`, `not`\n"
+    LimitParam:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        maximum: 100
+      example: 100
+      required: false
+      description: Defines the size of each paged result (maximum 100).

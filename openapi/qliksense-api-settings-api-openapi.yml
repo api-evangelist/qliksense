@@ -1,0 +1,162 @@
+openapi: 3.2.0
+info:
+  title: conditions api settings API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: API Settings
+paths:
+  /api/v1/conditions/settings:
+    get:
+      tags:
+      - API Settings
+      summary: Retrieves condition manager settings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APISettings'
+          description: The api settings have been successfully returned
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Error response.
+      description: Lists api settings.
+      operationId: ConditionManagerAPISettingsGet
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    put:
+      tags:
+      - API Settings
+      summary: Updates condition manager settings
+      responses:
+        '204':
+          description: api settings have been successfully updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request body
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Error response.
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: false
+        description: The JWT used for authentication. Send the JWT in the AuthRequest header using the Bearer schema.
+      description: Updates API configuration. Accessible only by tenant admins.
+      operationId: conditionManagerAPISettingsUpload
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APISettingsUpload'
+        description: Request for updating the api settings
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    APISettings:
+      type: object
+      required:
+      - enable-conditions
+      properties:
+        tenantId:
+          type: string
+          example: cgdsAumGmQ6l0Bi7CUKt9V8P_Y9GL0sC
+          readOnly: true
+          description: These persisted api settings are only available for this tenant. Extracted from request JWT.
+        enable-conditions:
+          type: boolean
+          example: true
+          description: Whether API endpoints for condition manager are enabled
+    ErrorResponse:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleErrorResponse'
+          description: Array of errors
+        traceId:
+          type: string
+          example: d6dba97c917e3f3d77c82f40f37c9d85
+          description: trace id
+    SingleErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to condition manager.
+        meta:
+          type: object
+          properties: {}
+          description: meta properties for an error.
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    APISettingsUpload:
+      type: object
+      required:
+      - enable-conditions
+      properties:
+        enable-conditions:
+          type: boolean
+          example: true
+          description: Whether API endpoints for condition manager are enabled

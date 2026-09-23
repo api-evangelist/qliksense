@@ -1,0 +1,509 @@
+openapi: 3.2.0
+info:
+  title: di-projects data project deployment API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: data project deployment
+paths:
+  /api/v1/di-projects/{projectId}/actions/export:
+    post:
+      tags:
+      - data project deployment
+      summary: Export a project
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal Server Error
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      - in: header
+        name: Accept
+        schema:
+          enum:
+          - application/octet-stream
+          type: string
+        required: false
+        description: Optional; only 'application/octet-stream' is supported.
+      description: Exports the specified data integration project.
+      operationId: export_project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportDiProjectReq'
+        description: Options for the export process
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/di-projects/{projectId}/actions/import:
+    post:
+      tags:
+      - data project deployment
+      summary: Import a project (JSON zip)
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportDiProjectRsp'
+          description: OK — the JSON-based project was imported successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request — for example, if a YAML-based zip is submitted to this endpoint.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal Server Error
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      description: 'Imports a data integration project synchronously from a legacy JSON-based `.zip` file.
+
+        This endpoint only accepts zips that contain JSON project files (the legacy format). The import is processed synchronously and completes before the response is returned.
+
+        Submitting a YAML-based zip to this endpoint returns `400`. To import a YAML-based zip, use `POST /di-projects/{projectId}/actions/import-async` instead.'
+      operationId: import_project
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                zip:
+                  type: string
+                  format: binary
+        required: true
+        description: The ZIP file containing the JSON-based project to import.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/di-projects/{projectId}/actions/import-async:
+    post:
+      tags:
+      - data project deployment
+      summary: Import a project asynchronously
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncActionRsp'
+          headers:
+            Location:
+              $ref: '#/components/headers/AsyncActionLocation'
+          description: The project import has started. Poll the returned `actionId` using `GET /di-projects/actions/{actionId}` to track progress.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal Server Error
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      description: Imports a data integration project from a `.zip` file and returns an action identifier for tracking the background import operation. Accepts both JSON-based (legacy) and YAML-based project formats, making it the recommended endpoint for deploying YAML-defined pipeline definitions programmatically. Poll the import status using `GET /di-projects/actions/{actionId}`.
+      operationId: import_project_async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                zip:
+                  type: string
+                  format: binary
+        required: true
+        description: A `.zip` file containing the project to import. Accepts both JSON-based (legacy) and YAML-based formats.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/di-projects/{projectId}/bindings:
+    get:
+      tags:
+      - data project deployment
+      summary: Get project export variables
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDiExportProjectVariablesRsp'
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      - in: query
+        name: recalculate
+        schema:
+          type: boolean
+          default: true
+        examples:
+          example:
+            value: true
+        required: false
+        description: Recalculate the bindings if true, otherwise saved bindings are returned.
+      description: Retrieves the export variables for a specific data integration project.
+      operationId: get_project_export_variables
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    put:
+      tags:
+      - data project deployment
+      summary: Update project export variables
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateDiExportProjectVariablesRsp'
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal Server Error
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      description: Updates the export variables for a specific data integration project.
+      operationId: update_project_export_variables
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDiExportProjectVariablesReq'
+        required: true
+        description: The details of the export variables to update
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/di-projects/utils/actions/validate-project-definitions:
+    post:
+      tags:
+      - data project deployment
+      summary: Validate project definitions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateProjectDefinitionsRsp'
+          description: Validation completed. The response contains a report of warnings and errors found in the project definitions.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal Server Error
+      description: Validates the project definition files in a `.zip` and returns a structured report of warnings and errors. The validation runs synchronously and completes before the response is returned. Use this operation before importing with `POST /di-projects/{projectId}/actions/import-async` to confirm that YAML-based pipeline definitions are correct.
+      operationId: validate_project_definitions
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                zip:
+                  type: string
+                  format: binary
+        required: true
+        description: A `.zip` file containing the project definition files to validate.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    DiExportMode:
+      enum:
+      - MINIMAL
+      - ALL
+      - LEGACY
+      type: string
+      description: 'Defines the export format for the project files.
+
+        - ''LEGACY'': Exports a ZIP of the previous JSON files. Deprecated and will be removed in a future release.
+
+        - ''MINIMAL'': Exports a ZIP of the new YAML files, including only non-default attribute values.
+
+        - ''ALL'': Exports a ZIP of the new YAML files, including all attributes.
+
+        '
+    ValidateProjectDefinitionsRsp:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidateProjectDefinitionsReport'
+          description: List of validation findings. An empty array indicates no issues were found.
+    UpdateDiExportProjectVariablesRsp:
+      type: object
+    ValidateProjectDefinitionsReportLevel:
+      enum:
+      - WARNING
+      - ERROR
+      type: string
+      description: Severity of the validation finding. `WARNING` indicates a potential issue that does not block import; `ERROR` indicates a critical issue that must be resolved before importing.
+    UpdateDiExportProjectVariablesReq:
+      type: object
+      properties:
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+            example: value
+            description: The value of the variable
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    GetDiExportProjectVariablesRsp:
+      type: object
+      properties:
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+            example: value
+            description: The value of the variable
+        nameToIdMap:
+          type: object
+          additionalProperties:
+            type: string
+            example: value
+            description: The calculated ID of the variable value, when relevant.
+    AsyncActionRsp:
+      type: object
+      required:
+      - actionId
+      properties:
+        actionId:
+          type: string
+          example: action-123456
+          description: Identifier for tracking the action
+    ValidateProjectDefinitionsReport:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the field or file in the project definition where the issue was found.
+        level:
+          $ref: '#/components/schemas/ValidateProjectDefinitionsReportLevel'
+        reason:
+          type: string
+          description: Human-readable description of the validation finding.
+      description: A single validation finding, including its severity, a human-readable description of the issue, and the location in the project definition where it was found.
+    ExportDiProjectReq:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/DiExportMode'
+        includeBindings:
+          type: boolean
+          default: false
+          description: Include bindings in the exported zip file. If not specified, defaults to `false`.
+    ImportDiProjectRsp:
+      type: object
+  headers:
+    AsyncActionLocation:
+      schema:
+        type: string
+      examples:
+        example:
+          value: /api/v1/di-projects/actions/action-123456
+      description: URL to check the status of the async action

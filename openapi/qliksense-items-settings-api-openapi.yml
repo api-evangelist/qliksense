@@ -1,0 +1,207 @@
+openapi: 3.2.0
+info:
+  title: Items Settings API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: items-settings
+paths:
+  /api/v1/items/settings:
+    get:
+      tags:
+      - items-settings
+      summary: Get items settings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsSettingsResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: OK response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Bad Request response.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Unauthorized response.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Internal Server Error response.
+      description: Finds and returns the items service settings for the current tenant. Currently used to enable or disable usage metrics in the tenant.
+      operationId: items#GetSettings
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - items-settings
+      summary: Update items settings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsSettingsResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: OK response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Bad Request response.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Unauthorized response.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Forbidden response.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-B3-Traceid:
+              $ref: '#/components/headers/X-B3-Traceid'
+          description: Internal Server Error response.
+      description: Updates the settings provided in the patch body. Currently used to enable or disable usage metrics in the tenant.
+      operationId: items#PatchSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemsSettingsPatch'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    ServiceError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code is a unique identifier for this error class.
+        meta:
+          $ref: '#/components/schemas/meta'
+        title:
+          type: string
+          description: Title is the name of this class of errors.
+        detail:
+          type: string
+          description: Detail is a human-readable explanation specific to this occurrence of the problem.
+    meta:
+      type: object
+      properties:
+        fault:
+          type: boolean
+          description: Is the error a server-side fault?
+        explain:
+          type: object
+          description: Further explanation of the error
+        timeout:
+          type: boolean
+          description: Is the error a timeout?
+        temporary:
+          type: boolean
+          description: Is the error temporary?
+    ItemsSettingsPatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed. Only "replace" is supported.
+          path:
+            enum:
+            - /usageMetricsEnabled
+            type: string
+            description: Field of Settings to be patched (updated).
+          value:
+            type: boolean
+            description: 'The value to be used within the operations.
+
+              '
+        description: A JSONPatch document as defined by RFC 6902.
+    ErrorResponseBody:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceError'
+    ItemsSettingsResponseBody:
+      type: object
+      required:
+      - usageMetricsEnabled
+      properties:
+        usageMetricsEnabled:
+          type: boolean
+          default: true
+          description: Decides if the usage metrics will be shown in the hub UI.
+  headers:
+    X-B3-Traceid:
+      schema:
+        type: string
+      description: The TraceId for the trace associated with the call stack. Every span in a trace shares this ID.

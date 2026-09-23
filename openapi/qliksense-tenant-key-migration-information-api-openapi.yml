@@ -1,0 +1,138 @@
+openapi: 3.2.0
+info:
+  title: encryption tenant key migration information API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: tenant key migration information
+paths:
+  /api/v1/encryption/keyproviders/migration/actions/details:
+    get:
+      tags:
+      - tenant key migration information
+      summary: Retrieve most recent migration details
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationInformation'
+          description: Successfully fetched migration information
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardError'
+          description: Unauthorized, invalid JWT
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardError'
+          description: There is no ongoing migration for this tenant
+        '417':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardError'
+          description: Failed to get ongoing migration information
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        example:
+        - Authorization: Bearer jwt-token
+        required: true
+        description: The JWT used for authentication. Send the JWT in the request header using the Bearer schema.
+      description: Retrieve details for the ongoing or last completed migration for the tenant.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1EncryptionKeyprovidersMigrationActionsDetails
+      x-operation-id-source: derived
+components:
+  schemas:
+    StandardError:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/StandardErrorItem'
+    StandardErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional error object metadata.
+        title:
+          type: string
+          description: Description of the error.
+        detail:
+          type: string
+          description: Extra information about the error.
+    MigrationInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uid
+          description: Migration operation ID.
+        state:
+          enum:
+          - New
+          - InProgress
+          - Completed
+          type: string
+          description: Migration operation state.
+        progress:
+          type: number
+          description: Progress in percentage.
+        tenantId:
+          type: string
+          format: uid
+          description: Tenant ID.
+        completedAt:
+          type: string
+          format: date-time
+        initiatedAt:
+          type: string
+          format: date-time
+        migratingTo:
+          type: string
+          description: The new key ARN that keys should be migrated to.
+        migratingFrom:
+          type: string
+          description: The key ARN being migrated from (in case of QlikVault, could be a short name only).
+        migratingToPrefix:
+          type: string
+          description: The new key prefix (to help services know which prefix should NOT be migrated).
+        migratingToFingerprint:
+          type: string
+          description: The new key ARN fingerprint.

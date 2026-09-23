@@ -1,0 +1,1331 @@
+openapi: 3.2.0
+info:
+  title: Glossaries API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Glossaries
+paths:
+  /api/v1/glossaries:
+    get:
+      tags:
+      - Glossaries
+      summary: Returns all glossaries
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/glossariesResult'
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The user does not have privileges to perform the requested action.
+      parameters:
+      - in: query
+        name: countTotal
+        schema:
+          type: boolean
+        description: Optional parameter to request total count for query
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of glossaries to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - name
+          - +name
+          - -name
+          - description
+          - +description
+          - -description
+          type: string
+        description: Optional resource field name to sort on, eg. name. Can be prefixed with +/- to determine order, defaults to (+) ascending.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1Glossaries
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Glossaries
+      summary: Creates a new glossary
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/glossary'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Glossary version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully created a new glossary.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The user does not have privileges to perform the requested action.
+      description: Only a steward can create a glossary.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createGlossary'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1Glossaries
+      x-operation-id-source: derived
+  /api/v1/glossaries/{id}:
+    get:
+      tags:
+      - Glossaries
+      summary: Retrieves a glossary
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/glossary'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Glossary version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully retrieved the glossary.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The glossary is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The id of the glossary to retrieve.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesById
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Glossaries
+      summary: Updates glossary properties with json-patch formatted data
+      responses:
+        '204':
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Glossary version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Glossary updated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request. Payload could not be parsed to a JSON Patch or Patch operations are invalid.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not authorized.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The term to patch was not found.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          headers:
+            retry-after:
+              schema:
+                type: integer
+                default: 1
+              description: The amount of seconds to wait before retrying the request.
+          description: Request has been rate limited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the glossary was fetched.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatchArray'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: patchApiV1GlossariesById
+      x-operation-id-source: derived
+    put:
+      tags:
+      - Glossaries
+      summary: Updates a glossary
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/glossary'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Glossary version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully updated the glossary.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The id of the glossary to update.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the glossary was fetched.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createGlossary'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: putApiV1GlossariesById
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Glossaries
+      summary: Deletes a glossary and all of its terms
+      responses:
+        '204':
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The glossary is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The id of the glossary to delete.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: deleteApiV1GlossariesById
+      x-operation-id-source: derived
+  /api/v1/glossaries/{id}/actions/export:
+    get:
+      tags:
+      - Glossaries
+      summary: Exports a glossary
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exportGlossary'
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+          description: Successfully exported the glossary.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The glossary is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: query
+        name: format
+        schema:
+          enum:
+          - json
+          - xlsx
+          type: string
+        required: false
+        description: The output format
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdActionsExport
+      x-operation-id-source: derived
+  /api/v1/glossaries/actions/import:
+    post:
+      tags:
+      - Glossaries
+      summary: Imports a glossary from file
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/glossary'
+          description: Successfully created a new glossary.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseBadRequest'
+          description: See custom codes
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseForbidden'
+          description: See custom codes
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseNotFound'
+          description: See custom codes
+      parameters:
+      - in: query
+        name: importerAsFallbackSteward
+        schema:
+          type: boolean
+        description: Appending the current importer user as steward to categories/terms where no steward is defined/not match the identity service.
+      - in: query
+        name: lookupUserOnEmail
+        schema:
+          type: boolean
+        description: Using email in the steward fields to lookup userIds in the identity service
+      - in: query
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        description: The spaceId (leave blank or omit for personal)
+      description: 'Creates a new or updates an existing glossary, including categories and terms, based on a glossary definition file.
+
+        Supported formats are currently, qlik, atlan and atlas.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/qlikGlossary'
+          application/json+qlik:
+            schema:
+              $ref: '#/components/schemas/qlikGlossary'
+          application/json+atlan:
+            schema:
+              $ref: '#/components/schemas/atlanGlossary'
+          application/json+atlas:
+            schema:
+              $ref: '#/components/schemas/atlasGlossary'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1GlossariesActionsImport
+      x-operation-id-source: derived
+components:
+  schemas:
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      description: An array of JSON Patch documents
+    qlikGlossary:
+      type: object
+      properties:
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - tag1
+          - tag2
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/importTerm'
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        overview:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":""}]}]'
+          description: 'Overview of the glossary. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/importCategory'
+        description:
+          type: string
+        termTemplate:
+          $ref: '#/components/schemas/termTemplate'
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    importOwner:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Joe Smith
+        email:
+          type: string
+          example: joe.smith@qlik.com
+        userId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+    atlanTermHeader:
+      type: object
+      properties:
+        guid:
+          type: string
+        steward:
+          type: string
+        expression:
+          type: string
+        description:
+          type: string
+        displayText:
+          type: string
+        entityStatus:
+          type: string
+        relationGuid:
+          type: string
+    atlanResourceLink:
+      type: object
+      properties:
+        url:
+          type: string
+        displayName:
+          type: string
+    exportCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
+        name:
+          type: string
+          description: 'The name of the category. May not be identical to another category belonging to the same parent.
+
+            '
+        parentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+        stewardDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+    errorResponseForbidden:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+      description: '### Custom error codes
+
+        * BG-3 - Access denied, no read access
+
+        * BG-30 - Feature not enabled on tenant.
+
+        '
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
+    atlasGlossary:
+      type: object
+      properties:
+        guid:
+          type: string
+        name:
+          type: string
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/atlasTerm'
+        usage:
+          type: string
+        language:
+          type: string
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/atlasCategory'
+        qualifiedName:
+          type: string
+        longDescription:
+          type: string
+        shortDescription:
+          type: string
+    termTemplate:
+      type: object
+      properties:
+        relatedInformation:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":""}]}]'
+          description: 'Template text for new terms. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+    importTerm:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: 'The id of the term. Used to identify the term in future updates. If not provided, will use the leading 30 chars of the term name and an incremental index
+
+            '
+        name:
+          type: string
+          example: name
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - tag1
+          - tag2
+        owner:
+          type: array
+          items:
+            $ref: '#/components/schemas/importOwner'
+        linksTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termCreateLinksTo'
+        stewards:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+        relatesTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termRelatesTo'
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+          description: 'Categories that the term belongs to. Refers to the `id` property of the category object
+
+            '
+        description:
+          type: string
+          example: description
+        abbreviation:
+          type: string
+          example: abbr
+        stewardDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
+    termCreateLinksTo:
+      type: object
+      required:
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+          description: 'The type of relationship between the term and the linked resource:
+
+            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
+
+            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
+
+            '
+        resourceId:
+          type: string
+          description: The unique identifier of the resource (app or dataset) to link to the term.
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          description: The type of resource being linked to the term.
+        subResourceId:
+          type: string
+          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
+        subResourceName:
+          type: string
+          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
+      description: 'Describes links to other data assets such as analytics applications or dataset.
+
+
+        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
+
+        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
+
+        If any one subresource field is specified, all three are required.
+
+        '
+    atlanRelationEntity:
+      type: object
+      properties:
+        guid:
+          type: string
+        typeName:
+          type: string
+        displayText:
+          type: string
+        entityStatus:
+          type: string
+    termRelatesTo:
+      type: object
+      required:
+      - termId
+      - type
+      properties:
+        type:
+          enum:
+          - isA
+          - hasA
+          - seeAlso
+          - synonym
+          - antonym
+          - classifies
+          - other
+          - replaces
+          - replacedBy
+          - hasSubtype
+          - preferredTerm
+          - seeInstead
+          - defines
+          - definedBy
+          type: string
+          description: How the term related to the other object
+        termId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: The unique identifier of the related term. NOTE! In case of import the string refers to the index of the term in the import document.
+    glossary:
+      type: object
+      required:
+      - id
+      - name
+      - description
+      - tags
+      - ownerId
+      - createdBy
+      - createdAt
+      - updatedBy
+      - updatedAt
+      - spaceId
+      - termTemplate
+      - overview
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Unique identifier of the glossary
+        name:
+          type: string
+          example: Organization wide glossary
+          description: Name of the glossary
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: List of tags associated with the glossary.
+        ownerId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: The unique identifier of the glossary owner
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: The unique identifier of the space containing the glossary
+        overview:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":"This glossary contains business terms"}]}]'
+          description: 'Overview of the glossary contents. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the glossary was created
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: Unique identifier of the user who created the glossary
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the glossary was updated
+        updatedBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: The unique identifier of the user who last updated the glossary
+        description:
+          type: string
+          example: This glossary contains definitions and concepts of business terms.
+          description: Description of the glossary
+        termTemplate:
+          $ref: '#/components/schemas/termTemplate'
+    atlasCategory:
+      type: object
+      properties:
+        description:
+          type: string
+        displayText:
+          type: string
+        categoryGuid:
+          type: string
+        relationGuid:
+          type: string
+        parentCategoryGuid:
+          type: string
+    atlanRelationshipAttributes:
+      type: object
+      properties:
+        isA:
+          $ref: '#/components/schemas/atlanTermHeader'
+        terms:
+          $ref: '#/components/schemas/atlanRelationEntity'
+        seeAlso:
+          $ref: '#/components/schemas/atlanTermHeader'
+        antonyms:
+          $ref: '#/components/schemas/atlanTermHeader'
+        synonyms:
+          $ref: '#/components/schemas/atlanTermHeader'
+        categories:
+          $ref: '#/components/schemas/atlanRelationEntity'
+        classifies:
+          $ref: '#/components/schemas/atlanTermHeader'
+        replacedBy:
+          $ref: '#/components/schemas/atlanTermHeader'
+    atlasTerm:
+      type: object
+      properties:
+        source:
+          type: string
+        status:
+          type: string
+        steward:
+          type: string
+        termGuid:
+          type: string
+        expression:
+          type: string
+        description:
+          type: string
+        displayText:
+          type: string
+        relationGuid:
+          type: string
+    atlanEntityAttributes:
+      type: object
+      properties:
+        guid:
+          type: string
+        name:
+          type: string
+        usage:
+          type: string
+        examples: {}
+        relations:
+          $ref: '#/components/schemas/atlanResourceLink'
+        displayText:
+          type: string
+        abbreviation:
+          type: string
+        relationGuid:
+          type: string
+        parentCategory:
+          type: string
+        userDescription:
+          type: string
+    exportGlossary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - tag1
+          - tag2
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/exportTerm'
+        ownerId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        overview:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":"This glossary contains business terms"}]}]'
+          description: 'Overview of the glossary. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        updatedBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: The uid of the user who last updated the glossary
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/exportCategory'
+        description:
+          type: string
+        termTemplate:
+          $ref: '#/components/schemas/termTemplate'
+    createGlossary:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: Organization wide glossary
+          description: Name of the glossary
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: List of tags for glossary
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: Unique unique identifier of the space to contain the glossary
+        overview:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":"This glossary contains business terms"}]}]'
+          description: 'Overview of the glossary content. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+        description:
+          type: string
+          example: This glossary contains definitions and concepts of business terms.
+          description: Description of the glossary
+        termTemplate:
+          $ref: '#/components/schemas/termTemplate'
+    importCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
+        name:
+          type: string
+          description: 'The name of the category. May not be identical to another category belonging to the same parent.
+
+            '
+        parentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        stewards:
+          type: array
+          items:
+            type: string
+            format: uid
+            example: 507f191e810c19729de860ea
+        description:
+          type: string
+        stewardDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+    exportTerm:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: 'The id of the term. Used to identify the term in future updates. If not provided, will use the leading 30 chars of the term name and an incremental index
+
+            '
+        name:
+          type: string
+          example: name
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - tag1
+          - tag2
+        owner:
+          type: array
+          items:
+            $ref: '#/components/schemas/importOwner'
+        linksTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termCreateLinksTo'
+        stewards:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+        relatesTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termRelatesTo'
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+          description: 'Categories that the term belongs to. Refers to the `id` property of the category object
+
+            '
+        description:
+          type: string
+          example: description
+        abbreviation:
+          type: string
+          example: abbr
+        stewardDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+    atlanGlossary:
+      type: object
+      properties:
+        entity:
+          $ref: '#/components/schemas/atlanEntity'
+        referredEntities:
+          type: array
+          items:
+            $ref: '#/components/schemas/atlanEntity'
+      description: Atlan glossary format. For more information, see https://docs.atlan.com/
+    glossariesResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/glossary'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    stewardDetail:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        userId:
+          type: string
+          format: uid
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    errorResponseNotFound:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+      description: '### Custom error codes
+
+        * BG-8 - Glossary not found
+
+        * BG-9 - Category not found
+
+        * BG-10 - Term not found
+
+        '
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    atlanEntity:
+      type: object
+      properties:
+        guid:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        typeName:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/atlanEntityAttributes'
+        relationshipAttributes:
+          $ref: '#/components/schemas/atlanRelationshipAttributes'
+    errorResponseBadRequest:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+      description: '### Custom error codes
+
+        * BG-1 - Context JWT is missing tenantId.
+
+        * BG-2 - Context JWT is missing userId.
+
+        * BG-4 - Invalid or unsupported Content Type. Valid types are: application/json, application/json+qlik, application/json+atlan, application/json+atlas
+
+        * BG-5 - Failed to decode JSON payload.
+
+        * BG-6 - A glossary name is required.
+
+        * BG-7 - Two categories with the same name cannot have the same parent.
+
+        * BG-11 - Glossary validation failed - A value or parameter is invalid or not set
+
+        * BG-12 - Category validation failed - A value or parameter is invalid or not set
+
+        * BG-13 - Term validation failed - A value or parameter is invalid or not set
+
+        * BG-14 - Two or more categories share Id
+
+        * BG-15 - Two or more terms share Id
+
+        * BG-16 - Not detecting proper Atlas format
+
+        * BG-17 - Not detecting proper Atlan format
+
+        * BG-18 - Not detecting proper Qlik format
+
+        * BG-19 - Invalid format in term
+
+        * BG-20 - Duplicate link definition
+
+        * BG-21 - Rich text validation failed. Rich text fields must be valid JSON strings in the format: [{"type":"paragraph","children":[{"text":"your text here"}]}]
+
+        * BG-22 - Import cancelled
+
+        * BG-23 - Duplicate link related
+
+        '

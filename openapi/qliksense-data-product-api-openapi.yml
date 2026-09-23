@@ -1,0 +1,763 @@
+openapi: 3.2.0
+info:
+  title: data-governance/data-products Data Product API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Data Product
+paths:
+  /api/data-governance/data-products:
+    post:
+      tags:
+      - Data Product
+      summary: Create a data product
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataProductResponse'
+          description: Data product created successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The data product limit has been exceeded for this tenant.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      description: 'Creates a new data product with specified metadata, datasets, and governance information.
+
+        Use this endpoint to package related datasets into a governed, discoverable asset.
+
+        Requires create permissions in the target space.'
+      operationId: createDataProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDataProductRequest'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/data-governance/data-products/{dataProductId}:
+    get:
+      tags:
+      - Data Product
+      summary: Get a data product
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataProductResponse'
+          description: Data product details retrieved successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataProductIdPath'
+      description: 'Retrieves the details of the specified data product, including name, description, associated datasets, key contacts, and activation status.
+
+        Requires read access to the Data Product.'
+      operationId: getDataProduct
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Data Product
+      summary: Update a data product
+      responses:
+        '204':
+          description: Data product updated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataProductIdPath'
+      description: 'Partially updates an existing data product using JSON Patch operations.
+
+        Use this endpoint to modify properties such as name, description, datasets, tags, or key contacts.
+
+        Changes are tracked in the data product changelog.'
+      operationId: patchDataProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDataProductRequest'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Data Product
+      summary: Delete a data product
+      responses:
+        '204':
+          description: Data product deleted successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataProductIdPath'
+      description: 'Permanently removes a data product from the tenant.
+
+        This action cannot be undone and does not affect the underlying datasets.
+
+        Requires delete permissions for the data product.'
+      operationId: deleteDataProduct
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/data-governance/data-products/{dataProductId}/actions/export-documentation:
+    get:
+      tags:
+      - Data Product
+      summary: Export data product documentation
+      responses:
+        '200':
+          content:
+            text/markdown:
+              schema:
+                type: string
+              example: '# Data product Dataproduct-name'
+          description: Documentation exported successfully in Markdown format.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: MIME type isn't supported.
+        '415':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unsupported output format requested.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataProductIdPath'
+      description: 'Exports data product documentation in Markdown format.
+
+        Use this endpoint to generate documentation for sharing or archiving.
+
+        Requires read access to the data product.'
+      operationId: getDataProductDoc
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/data-governance/data-products/{dataProductId}/actions/move:
+    post:
+      tags:
+      - Data Product
+      summary: Move a data product
+      responses:
+        '204':
+          description: No content
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataProductIdPath'
+      description: 'Moves a data product from its current space to a different space.
+
+        Use this endpoint to reorganize data products across workspaces or governance domains.
+
+        Requires delete permissions in the source space and create permissions in the target space.'
+      operationId: moveDataProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveDataProductRequest'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    PatchDataProductRequest:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+          path:
+            enum:
+            - /name
+            - /description
+            - /datasetIds
+            - /glossaryIds
+            - /readMe
+            - /keyContacts
+            - /tags
+            - /apiConsumableDatasetIds
+            type: string
+          value:
+            oneOf:
+            - type:
+              - string
+              - 'null'
+              description: Value is expected to be null or a string if the path is either /name, /description, or /readMe
+            - $ref: '#/components/schemas/ArrayOfUniqueStrings'
+            - type:
+              - array
+              - 'null'
+              items:
+                type: object
+              description: Value is expected to be null or an array of object if the path is /keyContacts
+      maxItems: 8
+    KeyContact:
+      type: object
+      required:
+      - userId
+      properties:
+        role:
+          type: string
+          example: Data Steward
+          maxLength: 200
+          description: Role of the key contact in the Data Product.
+        userId:
+          type: string
+          example: exampleUserId
+          description: Unique identifier of the user.
+      description: 'Represents a designated contact person for a data product, optionally with their role.
+
+        '
+    MoveDataProductRequest:
+      type: object
+      required:
+      - spaceId
+      properties:
+        spaceId:
+          type: string
+          example: exampleSpaceId
+          description: Unique identifier of the space.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    TrustScore:
+      type: object
+      required:
+      - score
+      - applicableDatasets
+      properties:
+        score:
+          type: number
+          format: float
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrustScoreDimension'
+        previousScore:
+          type: number
+          format: float
+        applicableDatasets:
+          type: number
+          format: int32
+    Quality:
+      type: object
+      required:
+      - validity
+      - completeness
+      properties:
+        validity:
+          type: number
+          format: float
+        completeness:
+          type: number
+          format: float
+    CreateDataProductRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: ExampleDataProductName
+          pattern: ^(\S.*\S|\S)*$
+          maxLength: 200
+          minLength: 1
+          description: Display name of the data product.
+        tags:
+          type: array
+          items:
+            type: string
+            example: example
+            description: Individual tag for the data product.
+          example:
+          - exampleTag1
+          - exampleTag2
+          description: List of tags for the data product.
+          x-field-extra-annotation: '@jakarta.validation.constraints.Size(max = 50, message = "tags: must contain at most {max} items")'
+        readMe:
+          type: string
+          example: This is an example readme for the Data Product.
+          maxLength: 100000
+          description: A readme of the Data Product.
+          x-size-message: The readMe must be set with a maximal length of 100000 characters
+        spaceId:
+          type: string
+          example: ExampleSpaceId
+          description: Unique identifier of the space.
+        datasetIds:
+          type: array
+          items:
+            type: string
+            uniqueItems: true
+          maxItems: 100
+          description: List of dataset IDs associated with the Data Product. Maximum of 100 items.
+          uniqueItems: true
+        description:
+          type: string
+          example: This is an example Data Product.
+          maxLength: 1024
+          description: A description of the Data Product.
+          x-size-message: The description should be set with a maximal length of 1024 characters
+        glossaryIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+            maxLength: 36
+            description: UUIDv4 format glossary identifier.
+          maxItems: 100
+          description: 'List of glossary IDs linked to the Data Product. Each entry must be a valid UUIDv4 (maximum 36 characters). Maximum of 100 items.
+
+            '
+        keyContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyContact'
+          example:
+          - role: Data Steward
+            userId: exampleUserId
+          maxItems: 100
+          description: List of key contacts for the data product.
+        apiConsumableDatasetIds:
+          type: array
+          items:
+            type: string
+          description: 'List of dataset IDs for which API consumption is enabled. Must be a subset of datasetIds.
+
+            '
+          uniqueItems: true
+      description: 'Request payload for creating a data product.
+
+        '
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    TrustScoreDimension:
+      type: object
+      required:
+      - id
+      - applicableDatasets
+      properties:
+        id:
+          type: string
+        score:
+          type: number
+          format: float
+        previousScore:
+          type: number
+          format: float
+        applicableDatasets:
+          type: number
+          format: int32
+    ArrayOfUniqueStrings:
+      type:
+      - array
+      - 'null'
+      items:
+        type: string
+        uniqueItems: true
+    DataProductResponse:
+      type: object
+      required:
+      - id
+      - tenantId
+      - name
+      - createdAt
+      - createdBy
+      - updatedAt
+      - updatedBy
+      - ownerId
+      - datasetIds
+      - apiConsumableDatasetIds
+      - glossaryIds
+      - keyContacts
+      - tags
+      - activatedOn
+      - qri
+      properties:
+        id:
+          type: string
+        qri:
+          type: string
+          description: Qlik Resource Identifier (QRI) uniquely identifying the data product across the platform.
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        mainId:
+          type: string
+          description: Primary identifier used for main data product reference.
+        readMe:
+          type: string
+          description: Documentation in Markdown format providing detailed information about the data product.
+        ownerId:
+          type: string
+          description: Identifier of the user who owns the data product and is responsible for governance.
+        quality:
+          $ref: '#/components/schemas/Quality'
+        spaceId:
+          type: string
+        tenantId:
+          type: string
+        activated:
+          type: boolean
+          description: Indicates whether the data product is currently activated for consumption.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          description: Timestamp when the data product was created in ISO 8601 format.
+        createdBy:
+          type: string
+          description: Identifier of the user who created the data product.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          description: Timestamp of the most recent update in ISO 8601 format.
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the data product.
+        datasetIds:
+          type: array
+          items:
+            type: string
+        trustScore:
+          $ref: '#/components/schemas/TrustScore'
+        activatedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          description: Timestamp when the data product was most recently activated in ISO 8601 format.
+        activatedOn:
+          type: array
+          items:
+            type: string
+          description: List of target environments or platforms where the data product is activated.
+        description:
+          type: string
+        glossaryIds:
+          type: array
+          items:
+            type: string
+        keyContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyContact'
+        pendingChangesCount:
+          type: integer
+          format: int32
+          description: Number of pending changes that are not yet activated.
+        apiConsumableDatasetIds:
+          type: array
+          items:
+            type: string
+            description: List of dataset IDs for which API consumption is enabled
+          uniqueItems: true
+  parameters:
+    DataProductIdPath:
+      in: path
+      name: dataProductId
+      schema:
+        type: string
+      required: true
+      description: Unique identifier of the data product. Must be a valid GUID assigned when the data product was created.

@@ -1,0 +1,160 @@
+openapi: 3.2.0
+info:
+  title: sharing-tasks sharing tasks actions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: sharing tasks actions
+paths:
+  /api/v1/sharing-tasks/{taskId}/actions/cancel:
+    post:
+      tags:
+      - sharing tasks actions
+      summary: Cancel sharing task execution
+      responses:
+        '204':
+          description: The sharing task has been successfully cancelled.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request, malformed syntax or errors in parameters.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Task not found, if the provided sharing task cannot be found or otherwise unable to be cancelled
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+        required: true
+        description: The sharing task identifier.
+      description: Requests cancellation of an execution of the specified recurring sharing task.
+      operationId: sharingTasksActionsCancel
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/sharing-tasks/actions/execute:
+    post:
+      tags:
+      - sharing tasks actions
+      summary: Start sharing task execution
+      responses:
+        '204':
+          description: The sharing task has been successfully set up for execution.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request, malformed syntax or errors in parameters.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Task not found, if the provided sharing task cannot be found or otherwise unable to be executed
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      description: Requests execution of the specified recurring sharing task.
+      operationId: sharingTasksActionsRecurring
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingActionsTriggerCreateRequest'
+        required: true
+        description: The sharing task execute request definition.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    SharingActionsTriggerCreateRequest:
+      type: object
+      required:
+      - sharingTaskID
+      properties:
+        sharingTaskID:
+          type: string
+          example: a1b2c3d4f5
+          description: Identifier of the sharing task to trigger.

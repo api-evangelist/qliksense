@@ -1,0 +1,168 @@
+openapi: 3.2.0
+info:
+  title: users Invite API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Invite
+paths:
+  /api/v1/users/actions/invite:
+    post:
+      tags:
+      - Invite
+      summary: Invite one or more users by email address
+      responses:
+        '207':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteDataResponse'
+          description: Request completed successfully. See Results for ResultDetail on each invite.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsResponse'
+          description: Request denied.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsResponse'
+          description: Request error. See Errors.
+      operationId: inviteUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteRequest'
+            example:
+              invitees:
+              - name: Elvis Presley
+                email: foo@qlik.com
+                resend: true
+                language: en
+        required: true
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    InviteItem:
+      type: object
+      required:
+      - email
+      properties:
+        name:
+          type: string
+          description: Optional display name for this invitee. Example - "Elvis Presley".
+        email:
+          type: string
+          description: Email address for this invitee. Example - "foo@qlik.com".
+        resend:
+          type: boolean
+          description: Flag - when true invite message is sent to inactive or invited users. Typically used to force email resend to users who are not yet active.
+        language:
+          type: string
+          description: Optional ISO 639-1 2 letter code for invite language. Defaults to 'en' when missing or not found.
+    ErrorsResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+    InviteErrorItem:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ErrorItem'
+      - type: object
+        required:
+        - status
+        - email
+        properties:
+          code:
+            type: string
+            description: Error code - | HTTP Status code | 1001 - Active User | 1002 - Disabled User | 1003 - Default External Dependency Error |
+          email:
+            type: string
+            description: Invitee email
+          status:
+            enum:
+            - error
+            type: string
+            description: Result status = "error"
+      description: Error object.
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: integer
+          description: Error code
+        title:
+          type: string
+          description: Summary of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem (if applicable)
+      description: Error object.
+    InviteRequest:
+      type: object
+      properties:
+        invitees:
+          type: array
+          items:
+            $ref: '#/components/schemas/InviteItem'
+          required:
+          - items
+          description: List of invitees who should receive an invite email.
+    ResultItem:
+      type: object
+      required:
+      - status
+      - email
+      - subject
+      - userId
+      properties:
+        email:
+          type: string
+          description: Email specified for this invitee
+        status:
+          enum:
+          - ok
+          - exists
+          type: string
+          description: Result status = {"ok" (new user; email sent) | "exists" (existing user; no email sent)}
+        userId:
+          type: string
+          format: uid
+          description: UserId for this invitee
+        subject:
+          type: string
+          format: uuid
+          description: IdP generated UUID for this invitee
+      description: Invitee result item
+    InviteDataResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ResultItem'
+            - $ref: '#/components/schemas/InviteErrorItem'
+      description: Data list - ResultItem or ErrorItem for each InviteeItem.

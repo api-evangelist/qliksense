@@ -1,0 +1,562 @@
+openapi: 3.2.0
+info:
+  title: spaces Assignments API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Assignments
+paths:
+  /api/v1/spaces/{spaceId}/assignments:
+    get:
+      tags:
+      - Assignments
+      summary: List assignments for a space
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignments'
+          description: Assignments retrieved.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Assignments retrieve operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space of the assignment.
+      - in: query
+        name: assigneeId
+        schema:
+          type: string
+        required: false
+        description: Filters assignment for a specific assigneeid.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: 10
+        required: false
+        description: Maximum number of assignments to return.
+      - in: query
+        name: next
+        schema:
+          type: string
+        required: false
+        description: The next page cursor. Next links make use of this.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        required: false
+        description: The previous page cursor. Previous links make use of this.
+      - in: query
+        name: type
+        schema:
+          $ref: '#/components/schemas/AssignmentType'
+        required: false
+        description: The type of assignment. Supported values are user or group.
+      description: Retrieves the assignments of the space matching the query. Each assignment represents one user or group and their corresponding roles in the space. Assignments are not shown for the owner of a space, who receive all `assignableRoles` by default.
+      operationId: getSpaceAssignments
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Assignments
+      summary: Assign a user or group to a space
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: Assignment created.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Assignment create operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Assignment already exists. `assigneeId` must be unique.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space of the assignment.
+      description: Creates an assignment for a user or group (assignee) to a space with the specified roles. Assignments are not required for space owners, who receive all `assignableRoles` by default. Only one assignment can exist per space, per user or group.
+      operationId: createSpaceAssignment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentCreate'
+        required: true
+        description: Attributes that the user wants to set for the assignment for the space.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/spaces/{spaceId}/assignments/{assignmentId}:
+    get:
+      tags:
+      - Assignments
+      summary: Retrieve an assignment for a space
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: Assignment retrieved.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Assignment retrieve operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied or assignment not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: assignmentId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the assignment to retrieve.
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space of the assignment.
+      description: Retrieves a single assignment by assignment ID. Use `GET /spaces/{spaceId}/assignments` to list all users and groups assigned to the space and their assignment ID.
+      operationId: getSpaceAssignmentById
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    put:
+      tags:
+      - Assignments
+      summary: Update an assignment for a space
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: Assignment updated.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Assignment update operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: assignmentId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the assignment to update.
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space of the assignment.
+      description: Updates a single assignment by assignment ID. Use `GET /spaces/{spaceId}/assignments` to list all users and groups assigned to the space and their assignment ID. The complete list of roles must be provided.
+      operationId: updateSpaceAssignmentById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentUpdate'
+        required: true
+        description: Attributes that the user wants to update for the specified assignment.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Assignments
+      summary: Delete an assignment
+      responses:
+        '204':
+          description: Assignment deleted.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Assignment delete operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied or assignment not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: assignmentId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the assignment to delete.
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space of the assignment.
+      description: Deletes an assignment.
+      operationId: deleteSpaceAssignmentById
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    AssignmentType:
+      enum:
+      - user
+      - group
+      - bot
+      type: string
+      description: The type of assignment such as user or group
+    Assignments:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - count
+          properties:
+            count:
+              type: integer
+              description: The total number of assignments matching the current filter.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    AssignmentCreate:
+      required:
+      - type
+      - assigneeId
+      - roles
+      properties:
+        type:
+          $ref: '#/components/schemas/AssignmentType'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleType'
+          description: The roles assigned to the assigneeId. For the full list of roles assignable in this space type, call `GET /spaces/{spaceId}` and inspect the `meta.assignableRoles` object.
+        assigneeId:
+          type: string
+          format: uid
+          description: The userId or groupId based on the type.
+    AssignmentUpdate:
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleType'
+          description: The roles assigned to the assigneeId. For the full list of roles assignable in this space type, call `GET /spaces/{spaceId}` and inspect the `meta.assignableRoles` object.
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL that defines the resource.
+    Errors:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code.
+          x-qlik-deprecated: true
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+          x-qlik-deprecated: true
+        title:
+          type: string
+          description: Summary of the problem.
+          x-qlik-deprecated: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+          x-qlik-deprecated: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+          x-qlik-deprecated: true
+        traceId:
+          type: string
+    Error:
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.
+    RoleType:
+      enum:
+      - consumer
+      - contributor
+      - dataconsumer
+      - datapreview
+      - facilitator
+      - operator
+      - producer
+      - publisher
+      - basicconsumer
+      - codeveloper
+      type: string
+      description: 'Supported roles by space type:
+
+        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
+
+        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
+
+        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
+
+        '
+    Assignment:
+      required:
+      - id
+      - type
+      - assigneeId
+      - roles
+      - spaceId
+      - tenantId
+      - links
+      properties:
+        id:
+          type: string
+          format: uid
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/AssignmentType'
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            self:
+              $ref: '#/components/schemas/Link'
+            space:
+              $ref: '#/components/schemas/Link'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleType'
+          description: The roles assigned to a user or group. Must not be empty.
+        spaceId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The unique identifier for the space.
+        tenantId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The unique identifier for the tenant.
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date and time when the space was created.
+        createdBy:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID of the user who created the assignment.
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date and time when the space was updated.
+        updatedBy:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID of the user who updated the assignment.
+        assigneeId:
+          type: string
+          format: uid
+          description: The userId or groupId based on the type.

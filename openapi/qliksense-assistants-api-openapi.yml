@@ -1,0 +1,888 @@
+openapi: 3.2.0
+info:
+  title: Assistants API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Assistants
+paths:
+  /api/v1/assistants:
+    get:
+      tags:
+      - Assistants
+      summary: List assistants
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/assistantsResult'
+          description: Successful operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The user does not have privileges to perform the requested action.
+      parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of assistants to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - NAME
+          - -NAME
+          - DESCRIPTION
+          - -DESCRIPTION
+          - CREATED
+          - -CREATED
+          - UPDATED
+          - -UPDATED
+          type: string
+        description: Optional resource field name to sort on, case insensitive, e.g. `name`. Can be prefixed with `-` to set descending order; defaults to ascending.
+      - in: query
+        name: spaceId
+        schema:
+          type: string
+        description: Optional parameter to filter assistants by space ID.
+      - in: query
+        name: countTotal
+        schema:
+          type: boolean
+          default: false
+        description: Optional parameter to request total count for query.
+        x-qlik-deprecated: true
+      description: Retrieves the list of assistants. The result can be filtered, sorted, and paginated.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1Assistants
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Assistants
+      summary: Create an assistant
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assistant'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version.
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the assistant.
+          description: Successfully created an assistant.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The user does not have privileges to perform the requested action.
+      description: Creates a new assistant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createAssistant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/createAssistantWithAvatar'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1Assistants
+      x-operation-id-source: derived
+  /api/v1/assistants/{assistantId}/feedback:
+    get:
+      tags:
+      - Assistants
+      summary: Get feedback
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/feedbackSummary'
+          description: Successfully retrieved the feedback summary for the assistant.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The assistant was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant from which to retrieve feedback summary.
+      description: Retrieves feedback summary for the assistant.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1AssistantsByAssistantIdFeedback
+      x-operation-id-source: derived
+  /api/v1/assistants/{assistantId}/sources/plaintexts:
+    post:
+      tags:
+      - Assistants
+      summary: Bulk search source chunks
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sourcesPlaintext'
+          description: Successfully retrieved plaintext of the chunks.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The user does not have privileges to perform the requested action.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The resource was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant in which to search for source chunks.
+      description: Perform a bulk search for the plaintext of source chunks for the assistant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChunksRefs'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1AssistantsByAssistantIdSourcesPlaintexts
+      x-operation-id-source: derived
+  /api/v1/assistants/{id}:
+    get:
+      tags:
+      - Assistants
+      summary: Get an assistant
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assistant'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version.
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the assistant.
+          description: Successfully retrieved the assistant.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The assistant was not found.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant to retrieve.
+      description: Retrieves the specified assistant.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1AssistantsById
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Assistants
+      summary: Update assistant properties
+      responses:
+        '204':
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version.
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the assistant.
+          description: Assistant updated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: Bad request. Payload could not be parsed to a JSON Patch or Patch operations are invalid.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: Not authorized.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The term to patch was not found.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          headers:
+            retry-after:
+              schema:
+                type: integer
+                default: 1
+              description: The amount of seconds to wait before retrying the request.
+          description: The request has been rate-limited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The assistant ID.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the assistant was fetched.
+      description: Updates the properties of an existing assistant with JSON Patch-formatted data.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatchArray'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: patchApiV1AssistantsById
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Assistants
+      summary: Delete an assistant
+      responses:
+        '204':
+          description: Successful operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The assistant was not found.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant to delete.
+      description: Deletes the assistant and all of its resources.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: deleteApiV1AssistantsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      - op: add
+        path: /defaultPromptType
+        value: thread
+      - op: remove
+        path: /avatar
+      - op: add
+        path: /avatar
+        value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
+      - op: replace
+        path: /avatar
+        value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
+      description: An array of JSON Patch documents.
+    Assistant:
+      type: object
+      required:
+      - id
+      - name
+      - description
+      - tags
+      - ownerId
+      - createdBy
+      - createdAt
+      - updatedBy
+      - updatedAt
+      - tenantId
+      - spaceId
+      - knowledgeBases
+      - welcomeMessage
+      - customProperties
+      - legacy
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the assistant.
+        name:
+          type: string
+          example: Organization-wide Assistant
+          description: The name of the assistant.
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: The list of tags associated with the assistant.
+        title:
+          type: string
+          example: Assistant for Sales activities
+          description: The title of the assistant.
+        ownerId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the assistant owner.
+        spaceId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the space containing the assistant.
+        tenantId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the assistant tenant.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the assistant was created.
+        createdBy:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: Unique identifier of the user who created the assistant.
+        hasAvatar:
+          type: boolean
+          example: true
+          description: Indicates if the assistant has an avatar.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the assistant was updated.
+        updatedBy:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: Unique identifier of the user who last updated the assistant.
+        description:
+          type: string
+          example: This assistant is used for...
+          description: The description of the assistant.
+        systemMessage:
+          type: string
+          example: You are helpful Sales assistant. Provide concise and actionable insights.
+          description: System prompt setting up conversation context.
+          x-qlik-deprecated: true
+        knowledgeBases:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          description: List of knowledgebases the assistant is using.
+        welcomeMessage:
+          type: string
+          example: Welcome to Sales process support Assistant.
+          description: Initial message in the chat conversation.
+        customProperties:
+          type: object
+          example:
+            customErrors:
+              outsideScopeError: Outside of scope error
+              complexQuestionError: Complex question error
+              promptInjectionError: Prompt injection error
+          description: freeform JSON to allow custom customization options.
+        defaultPromptType:
+          enum:
+          - thread
+          - oneshot
+          type: string
+          example: thread
+          description: Default prompt type for the assistant.
+        orderedStarterIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          - 787f191e810c19729de860er
+          description: List of starter IDs in the order they will be sorted.
+    assistantsResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assistant'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    errorResponseCopy:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+    ChunksRefs:
+      type: object
+      example:
+        chunkIds:
+        - c2ef42d9-7164-4fb0-bdbb-6534ae37263e
+        - 486ada2c-f895-4961-8ba5-7995f1026d26
+      required:
+      - chunkIds
+      properties:
+        chunkIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            description: Unique identifier of the Chunk.
+    sourcesPlaintext:
+      type: object
+      properties:
+        textByChunkId:
+          type: object
+          example:
+            chunk1_id: chunk1_text
+            chunk2_id: chunk2_text
+          additionalProperties: true
+    errorResponseCodeCopy:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    createAssistant:
+      type: object
+      required:
+      - name
+      - title
+      - description
+      - tags
+      - spaceId
+      - knowledgeBases
+      - welcomeMessage
+      - customProperties
+      properties:
+        name:
+          type: string
+          example: Organization-wide assistant
+          description: The name of the assistant.
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: The list of tags for the assistant.
+        title:
+          type: string
+          example: Assistant for Sales activities
+          description: The title of the assistant.
+        spaceId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the space to contain the assistant.
+        description:
+          type: string
+          example: This assistant is used for...
+          description: The description of the assistant.
+        systemMessage:
+          type: string
+          example: You are helpful Sales assistant. Provide concise and actionable insights.
+          description: System prompt setting up conversation context.
+          x-qlik-deprecated: true
+        knowledgeBases:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          description: List of knowledgebases the assistant is using.
+        welcomeMessage:
+          type: string
+          example: Welcome to Sales process support Assistant.
+          description: Initial message in the chat conversation.
+        customProperties:
+          type: object
+          example:
+            customErrors:
+              outsideScopeError: Outside of scope error
+              complexQuestionError: Complex question error
+              promptInjectionError: Prompt injection error
+          description: freeform JSON to allow custom customization options.
+        defaultPromptType:
+          enum:
+          - thread
+          - oneshot
+          type: string
+          example: thread
+          description: Default prompt type for the assistant.
+        orderedStarterIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          - 787f191e810c19729de860er
+          description: List of starter IDs in the order they will be sorted.
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    feedbackSummary:
+      type: object
+      required:
+      - likes
+      - dislikes
+      - interactions
+      - reviews
+      properties:
+        likes:
+          type: integer
+          description: Amount of likes for a thread or an assistant.
+        other:
+          type: integer
+          description: Count of answers which users disliked and gave "other" as reason.
+        reviews:
+          type: integer
+          description: Amount of reviews for a thread or an assistant.
+        dislikes:
+          type: integer
+          description: Amount of dislikes for a thread or an assistant.
+        unhelpful:
+          type: integer
+          description: Count of answers which users marked as "unhelpful".
+        inaccurate:
+          type: integer
+          description: Count of answers which users marked as "inaccurate".
+        irrelevant:
+          type: integer
+          description: Count of answers which users marked as "irrelevant".
+        repetitive:
+          type: integer
+          description: Count of answers which users marked as "repetitive".
+        unanswered:
+          type: integer
+          description: Count of questions for which the assistant provided no answer.
+        interactions:
+          type: integer
+          description: Amount of interactions for a thread or an assistant.
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          - add
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    createAssistantWithAvatar:
+      type: object
+      required:
+      - name
+      - title
+      - description
+      - tags
+      - spaceId
+      - knowledgeBases
+      - welcomeMessage
+      - customProperties
+      properties:
+        name:
+          type: string
+          example: Organization-wide assistant
+          description: The name of the assistant.
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: The list of tags for the assistant.
+        title:
+          type: string
+          example: Assistant for Sales activities
+          description: The title of the assistant.
+        avatar:
+          type: string
+          format: file
+          description: user uploaded avatar, filetype must be png
+        spaceId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the space to contain the assistant.
+        description:
+          type: string
+          example: This assistant is used for...
+          description: The description of the assistant.
+        systemMessage:
+          type: string
+          example: You are helpful Sales assistant. Provide concise and actionable insights.
+          description: System prompt setting up conversation context.
+          x-qlik-deprecated: true
+        knowledgeBases:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          description: List of knowledgebases the assistant is using.
+        welcomeMessage:
+          type: string
+          example: Welcome to Sales process support Assistant.
+          description: Initial message in the chat conversation.
+        customProperties:
+          type: object
+          example:
+            customErrors:
+              outsideScopeError: Outside of scope error
+              complexQuestionError: Complex question error
+              promptInjectionError: Prompt injection error
+          description: freeform JSON to allow custom customization options.
+        defaultPromptType:
+          enum:
+          - thread
+          - oneshot
+          type: string
+          example: thread
+          description: Default prompt type for the assistant.

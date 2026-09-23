@@ -1,0 +1,740 @@
+openapi: 3.2.0
+info:
+  title: data-alerts alerting tasks executions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: alerting tasks executions
+paths:
+  /api/v1/data-alerts/{alertId}/executions/{executionId}:
+    get:
+      tags:
+      - alerting tasks executions
+      summary: Get data alert task execution
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertingExecutionResponse'
+          description: The execution has been successfully returned.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: The specified task or execution ID is invalid (e.g. not a number).
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Task or execution not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      parameters:
+      - in: path
+        name: alertId
+        schema:
+          type: string
+        required: true
+        description: The alerting task identifier.
+      - in: path
+        name: executionId
+        schema:
+          type: string
+        required: true
+        description: The execution identifier. If value is "latest", the latest execution will be returned
+      description: Retrieves a specific execution for the specified data alerting task.
+      operationId: alertingExecutionsIDGet
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    delete:
+      tags:
+      - alerting tasks executions
+      summary: Delete data alert task execution
+      responses:
+        '204':
+          description: The execution has been successfully deleted.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: The specified task or execution ID is invalid (e.g. not a number).
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Task or execution not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      parameters:
+      - in: path
+        name: alertId
+        schema:
+          type: string
+        required: true
+        description: The alerting task identifier.
+      - in: path
+        name: executionId
+        schema:
+          type: string
+        required: true
+        description: The execution identifier.
+      description: Deletes a specific data alerting task execution.
+      operationId: alertingExecutionsDelete
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/data-alerts/{taskId}/executions:
+    get:
+      tags:
+      - alerting tasks executions
+      summary: List data alert task executions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertingExecutionListResponse'
+          description: The alerting-executions list has been successfully returned.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request, malformed syntax or errors in parameters.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Task or execution not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+        required: true
+        description: The alerting task identifier.
+      - in: query
+        name: conditionId
+        schema:
+          type: string
+        required: false
+        description: Filter by condition id related to the executions.
+      - in: query
+        name: conditionStatus
+        schema:
+          enum:
+          - FINISHED
+          - FAILED
+          - ALL
+          type: string
+        required: false
+        description: Filter by whether the alerting task execution status is FINISHED or FAILED.
+      - in: query
+        name: daysOfMonth
+        schema:
+          type: array
+          items:
+            type: integer
+            maximum: 31
+            minimum: 1
+        required: false
+        description: Specifies required days of the month that the execution was created in
+      - in: query
+        name: daysOfWeek
+        schema:
+          type: array
+          items:
+            enum:
+            - MONDAY
+            - TUESDAY
+            - WEDNESDAY
+            - THURSDAY
+            - FRIDAY
+            - SATURDAY
+            - SUNDAY
+            type: string
+        required: false
+        description: Specifies a filter for custom handled periods of time in which the executions were handled
+      - in: query
+        name: fields
+        schema:
+          type: array
+          items:
+            enum:
+            - evaluationId
+            - triggerTime
+            - conditionStatus
+            - executionEvaluationStatus
+            - evaluation
+            - evaluation.endTime
+            - evaluation.resultData
+            - evaluation.resultData.count
+            - evaluation.resultData.headers
+            - evaluation.resultData.positive
+            - evaluation.resultData.negative
+            - evaluation.resultData.dimensions
+            - evaluation.resultData.measures
+            type: string
+        required: false
+        description: Specifies specific properties to be populated
+      - in: query
+        name: includeEvaluation
+        schema:
+          type: boolean
+        required: false
+        description: Specifies whether to include evaluation details
+      - in: query
+        name: lastEachDay
+        schema:
+          type: boolean
+        required: false
+        description: Specifies whether to only show the last execution in each day
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: Limit the returned result set
+      - in: query
+        name: minimumGapDays
+        schema:
+          type: integer
+        required: false
+        description: Specifies the number of days required between each entry. This should require a sort by triggertime
+      - in: query
+        name: next
+        schema:
+          type: string
+        required: false
+        description: The cursor to the next page of data. Only one of next or previous may be specified.
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          default: 0
+          minimum: 0
+        required: false
+        description: Offset for pagination - how many elements to skip
+      - in: query
+        name: prev
+        schema:
+          type: string
+        required: false
+        description: The cursor to the previous page of data. Only one of next or previous may be specified.
+      - in: query
+        name: searchResultsLimit
+        schema:
+          type: integer
+        required: false
+        description: Specifies a limit number for the search query, affects total count and is not related to pagination
+      - in: query
+        name: since
+        schema:
+          type: string
+        required: false
+        description: Specifies a date that executions should have been created after. Date in RFC3339Nano format, such as 2020-01-01T00:00:00.000Z
+      - in: query
+        name: sort
+        schema:
+          type: array
+          items:
+            enum:
+            - triggertime
+            - -triggertime
+            - +triggertime
+            type: string
+        required: false
+        description: Sort the returned result set by the specified field
+      - in: query
+        name: timezone
+        schema:
+          type: string
+        required: false
+        description: Specifies a timezone the other time-based filters in this query should consider. Expecting a momentjs format, such as America/Los_Angeles
+      - in: query
+        name: triggered
+        schema:
+          type: boolean
+        required: false
+        description: Filter by whether the alerting task is triggered.
+      - in: query
+        name: until
+        schema:
+          type: string
+        required: false
+        description: Specifies a date that executions should have been created before. Date in RFC3339Nano format, such as 2020-01-01T00:00:00.000Z
+      description: Lists executions for the specified data alerting task.
+      operationId: alertingExecutionsList
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/data-alerts/{taskId}/executions/{executionId}/evaluations:
+    get:
+      tags:
+      - alerting tasks executions
+      summary: Get data alert task execution evaluation
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationGetResponse'
+          description: Evaluation successfully returned.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: A task or execution with the specified ID was not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      parameters:
+      - in: path
+        name: executionId
+        schema:
+          type: string
+        required: true
+        description: The execution identifier.
+      - in: path
+        name: taskId
+        schema:
+          type: string
+        required: true
+        description: The alerting task identifier.
+      description: Retrieves the content of an evaluation for a specified data alerting task execution.
+      operationId: alertingExecutionsEvaluationGet
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/data-alerts/{taskId}/executions/stats:
+    get:
+      tags:
+      - alerting tasks executions
+      summary: Get data alert task execution stats
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertingTaskExecutionStats'
+          description: Evaluation successfully returned.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: A task or execution with the specified ID was not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+        required: true
+        description: The alerting task identifier.
+      - in: query
+        name: period
+        schema:
+          enum:
+          - month
+          type: string
+        required: true
+        description: The period by which the stats aggregation needs to be performed.
+      description: Retrieves stats for overall data alerting task executions.
+      operationId: alertingExecutionsEvaluationStats
+      x-qlik-deprecated: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  schemas:
+    ListLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'
+    Self:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    AlertingExecutionListResponse:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          executions:
+            type: array
+            items:
+              $ref: '#/components/schemas/AlertingExecutionResponse'
+            description: Gets a list of alerting-executions.
+    ExecutionStats:
+      type: object
+      properties:
+        endTime:
+          type: string
+        periodKey:
+          type: string
+        startTime:
+          type: string
+        totalExecutions:
+          type: string
+        triggeredExecutions:
+          type: string
+    AlertingExecutionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/AlertingExecutionError'
+    StandardListResponseProps:
+      type: object
+      required:
+      - currentPageCount
+      - totalCount
+      properties:
+        totalCount:
+          type: integer
+          description: total count of entries in the collection as a whole
+        currentPageCount:
+          type: integer
+          description: count of entries on the currently shown page
+      description: properties that should be added to every list response
+    AlertingExecutionResult:
+      type: object
+      properties:
+        alertTriggerStatus:
+          type: string
+          example: alertSent
+        throttlerTokensLeft:
+          type: integer
+          example: 5
+    AlertingExecutionError:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Page:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items?limit=12
+          description: URL to particular set of elements
+        type:
+          enum:
+          - prev
+          - next
+          type: string
+          example: next
+          description: Page type, can be next or prev
+        token:
+          type: string
+          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
+          description: Page unique token
+    AlertingExecutionResponse:
+      allOf:
+      - $ref: '#/components/schemas/AlertingExecutionPersist'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/Links'
+          evaluation:
+            $ref: '#/components/schemas/Evaluation'
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
+    Evaluation:
+      properties:
+        id:
+          type: string
+          format: uid
+          readOnly: true
+          description: The unique id for the resource
+        result:
+          enum:
+          - success
+          - failure
+          - error
+          type: string
+          readOnly: true
+          description: The final result of the evalution
+        status:
+          enum:
+          - RUNNING
+          - FAILED
+          - FINISHED
+          type: string
+          readOnly: true
+          description: The status of the evaluation execution
+        endTime:
+          type: string
+          format: string
+          readOnly: true
+          description: The time the evaluation ended
+        ownerId:
+          type: string
+          format: uid
+          readOnly: true
+          description: userId of user being impersonated to evaluate the condition
+        tenantId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The tenant id
+        contextId:
+          type: string
+          description: Extra context information to carry through to the result if one was included on when the evaluation was triggered
+        startTime:
+          type: string
+          format: string
+          readOnly: true
+          description: The time the evaluation started
+        resultData:
+          type: object
+          properties: {}
+          description: Condition type specific result, one of dataResult or compoundResult
+        causalEvent:
+          type: object
+          properties: {}
+          description: Representation of the event that caused the condition to be evaluated if one was included on when the evaluation was triggered
+        conditionId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The unique id of the associated condition
+        dataConditionEvaluatorId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The unique id for the resource given from Data Condition Evaluator
+    Links:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    AlertingExecutionPersist:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Gets the execution identifier.
+          x-go-custom-tag: bson:"_id"
+        errors:
+          $ref: '#/components/schemas/AlertingExecutionErrors'
+        result:
+          $ref: '#/components/schemas/AlertingExecutionResult'
+        alertId:
+          type: string
+          description: ID for the alerting task that this execution references
+        ownerId:
+          type: string
+          description: The owner that this execution belongs to
+        measures:
+          type: array
+          items:
+            type: string
+          description: Measures applied in the condition
+        tenantId:
+          type: string
+          description: The tenant that this execution belongs to
+        accessMode:
+          enum:
+          - SOURCE_ACCESS
+          - TARGET_ACCESS
+          type: string
+        bookmarkId:
+          type: string
+          description: Id of the bookmark associated with an alert
+        dimensions:
+          type: array
+          items:
+            type: string
+          description: Dimensions applied in the condition
+        workflowId:
+          type: string
+          description: ID for the workflow, coming from eventing service
+        conditionId:
+          type: string
+          description: Id of the condition the alert is associated with
+        triggerTime:
+          type: string
+          description: Timestamp of execution start
+        evaluationId:
+          type: string
+          description: Id of the evaluation for the condition
+        executionType:
+          enum:
+          - INDIVIDUAL
+          - SHARED
+          type: string
+        conditionStatus:
+          enum:
+          - FINISHED
+          - FAILED
+          type: string
+        executionEvaluationStatus:
+          enum:
+          - CONDITION_MET
+          - CONDITION_NOT_MET
+          - FAILED
+          type: string
+    AlertingTaskExecutionStats:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          executionsStats:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExecutionStats'
+      x-qlik-deprecated: true
+    EvaluationGetResponse:
+      type: object
+      properties:
+        condition:
+          type: object
+          properties: {}
+        evaluation:
+          $ref: '#/components/schemas/Evaluation'
+        hideSelections:
+          type: boolean

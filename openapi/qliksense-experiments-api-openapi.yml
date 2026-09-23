@@ -1,0 +1,2176 @@
+openapi: 3.2.0
+info:
+  title: ml Experiments API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Experiments
+paths:
+  /api/v1/ml/experiments:
+    get:
+      tags:
+      - Experiments
+      summary: List experiments
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentFindResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentsFilter'
+      - $ref: '#/components/parameters/experimentsSort'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      description: 'Retrieves a list of experiments based on provided filter and sort
+
+        parameters.'
+      operationId: getExperiments
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Experiments
+      summary: Create an experiment
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentPostResponse'
+          description: '`Created`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      operationId: postExperiment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/experiments/{experimentId}:
+    get:
+      tags:
+      - Experiments
+      summary: Get an experiment
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentGetResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      operationId: getExperiment
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Experiments
+      summary: Update an experiment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      operationId: patchExperiment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentPatch'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Experiments
+      summary: Delete an experiment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      operationId: deleteExperiment
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/experiments/{experimentId}/actions/recommend-models:
+    post:
+      tags:
+      - Experiments
+      summary: Request model recommendations for an experiment
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentModelRecommendationPostResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      description: Returns model recommendations for a specified experiment, including the best-performing, fastest, and most accurate models based on evaluation metrics.
+      operationId: postExperimentRecommendModels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentModelRecommendationFilter'
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/experiments/{experimentId}/models:
+    get:
+      tags:
+      - Experiments
+      summary: List models
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelFindResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      - $ref: '#/components/parameters/modelsFilter'
+      - $ref: '#/components/parameters/modelsSort'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      operationId: getExperimentModels
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/ml/experiments/{experimentId}/models/{modelId}:
+    get:
+      tags:
+      - Experiments
+      summary: Get a model
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelGetResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      - $ref: '#/components/parameters/modelId'
+      operationId: getExperimentModel
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/ml/experiments/{experimentId}/versions:
+    get:
+      tags:
+      - Experiments
+      summary: List experiment versions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentVersionFindResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      - $ref: '#/components/parameters/experimentVersionsFilter'
+      - $ref: '#/components/parameters/experimentVersionsSort'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      operationId: getExperimentVersions
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Experiments
+      summary: Create an experiment version
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentVersionPostResponse'
+          description: '`Accepted`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      description: 'Creates an experiment version.
+
+        Poll this version and check its `status` field to determine when models
+
+        are finished training.'
+      operationId: postExperimentVersion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentVersionInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/experiments/{experimentId}/versions/{experimentVersionId}:
+    get:
+      tags:
+      - Experiments
+      summary: Get an experiment version
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentVersionGetResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      - $ref: '#/components/parameters/experimentVersionId'
+      operationId: getExperimentVersion
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Experiments
+      summary: Update an experiment version
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      - $ref: '#/components/parameters/experimentVersionId'
+      operationId: patchExperimentVersion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentVersionPatch'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Experiments
+      summary: Delete an experiment version
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/experimentId'
+      - $ref: '#/components/parameters/experimentVersionId'
+      operationId: deleteExperimentVersion
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    EnumSortExperiments:
+      enum:
+      - createdAt
+      - +createdAt
+      - -createdAt
+      - description
+      - +description
+      - -description
+      - name
+      - +name
+      - -name
+      - updatedAt
+      - +updatedAt
+      - -updatedAt
+      type: string
+    PreprocessedInsightColumn:
+      type: object
+      required:
+      - name
+      - insights
+      - willBeDropped
+      properties:
+        name:
+          type: string
+          description: Name of the preprocessed insight column
+        insights:
+          type: array
+          items:
+            enum:
+            - is_free_text
+            - cannot_be_processed_as_free_text
+            - is_date_engineered
+            - has_target_leakage
+            - feature_type_change_invalid
+            - feature_type_change_failed
+            - feature_type_change_successful
+            - data_bias_detected
+            - representation_bias_detected
+            type: string
+          default: []
+          description: 'Preliminary list of column/feature insights available after
+
+            preprocessing but before feature insights are available
+
+            '
+        willBeDropped:
+          type: boolean
+          description: 'Whether this feature insight will be dropped due to free text or
+
+            high cardinality that makes it less useful
+
+            '
+      description: 'Metadata about features/columns from dataset after preprocessing
+
+        '
+      additionalProperties: false
+    ModelMetricsTimeseries:
+      type: object
+      properties:
+        mae:
+          type: number
+          description: Mean absolute error (training data)
+        mape:
+          type: number
+          description: Mean absolute percentage error (training data)
+        mase:
+          type: number
+          description: Mean absolute scaled error (training data)
+        rmse:
+          type: number
+          description: Root mean squared error (training data)
+        mdape:
+          type: number
+          description: Median absolute percentage error (training data)
+        smape:
+          type: number
+          description: Symmetric mean absolute percentage error (training data)
+        wmape:
+          type: number
+          description: Weighted mean absolute percentage error (training data)
+        mnrmse:
+          type: number
+          description: Mean root mean squared error (training data)
+        maeTest:
+          type: number
+          description: Mean absolute error (test data)
+        mdnrmse:
+          type: number
+          description: Median root mean squared error (training data)
+        mapeTest:
+          type: number
+          description: Mean absolute percentage error (test data)
+        maseTest:
+          type: number
+          description: Mean absolute scaled error (test data)
+        rmseTest:
+          type: number
+          description: Root mean squared error (test data)
+        mdapeTest:
+          type: number
+          description: Median absolute percentage error (test data)
+        smapeTest:
+          type: number
+          description: Symmetric mean absolute percentage error (test data)
+        wmapeTest:
+          type: number
+          description: Weighted mean absolute percentage error (test data)
+        mnrmseTest:
+          type: number
+          description: Mean root mean squared error (test data)
+        mdnrmseTest:
+          type: number
+          description: Median root mean squared error (test data)
+      description: 'Timeseries metrics experiments valid for timeseries forecasting.
+
+        '
+      additionalProperties: false
+    DateIndexes:
+      type: array
+      items:
+        type: string
+      maxItems: 1
+      minItems: 0
+      description: A optional date column name to index
+    ModelAlgorithmAbbreviation:
+      enum:
+      - CATBC
+      - CATBR
+      - ELNC
+      - GNBC
+      - LGBMC
+      - LGBMR
+      - LINR
+      - LOGC
+      - LSOC
+      - RAFC
+      - RAFR
+      - SGDR
+      - XGBC
+      - XGBR
+      type: string
+      description: Model algorithm name abbreviation
+    ResponseLinks:
+      type: object
+      required:
+      - first
+      - prev
+      - self
+      - next
+      - last
+      properties:
+        last:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the last set of responses from `limit` minus `offset` to
+
+                `limit`
+
+                '
+        next:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the next set of responses
+
+                '
+        prev:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the previous set of responses
+
+                '
+        self:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the current set of responses
+
+                '
+        first:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the first set of responses from `offset` 0 to count `limit``
+
+                '
+      description: Resource links included in paginated responses
+      additionalProperties: false
+    ModelMetrics:
+      type: object
+      properties:
+        binary:
+          $ref: '#/components/schemas/ModelMetricsBinary'
+        multiclass:
+          $ref: '#/components/schemas/ModelMetricsMulticlass'
+        regression:
+          $ref: '#/components/schemas/ModelMetricsRegression'
+        timeseries:
+          $ref: '#/components/schemas/ModelMetricsTimeseries'
+      description: 'Model metrics based on the type of model
+
+        '
+      additionalProperties: false
+    FeatureType:
+      enum:
+      - categorical
+      - numeric
+      - date
+      - freetext
+      type: string
+      description: 'The default feature type based on the feature''s data type.
+
+        If you want a value to be interpreted differently (e.g. 0/1
+
+        as categorical/boolean instead of numeric), use `changeType`.
+
+        '
+    Pipeline:
+      type: object
+      properties:
+        transforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transform'
+      description: 'Pipeline metadata including transformations to apply to columns and
+
+        specific schema configuration data
+
+        '
+    ModelGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - model
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Model'
+          additionalProperties: false
+      additionalProperties: false
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/APIError'
+      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
+
+        '
+      description: JSON string with list of error objects
+    ExperimentVersion:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - createdByUserId
+      - experimentId
+      - status
+      - target
+      - dataSetId
+      - experimentType
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          $ref: '#/components/schemas/EntityName'
+        errors:
+          $ref: '#/components/schemas/Errors'
+        status:
+          enum:
+          - ready
+          - error
+          - cancelled
+          - pending
+          - dataprep_requested
+          - datasync_requested
+          - datasync_done
+          type: string
+          default: pending
+          description: Current status of this entity
+          x-qlik-filterable: true
+        target:
+          type: string
+          example: TargetColumn
+          description: The target field in the dataset
+        pipeline:
+          $ref: '#/components/schemas/Pipeline'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        dataSetId:
+          $ref: '#/components/schemas/DataSetId'
+        profileId:
+          type: string
+          description: ID of the dataset profile with metadata about source data
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        algorithms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelAlgorithm'
+          description: 'List of algorithms selected for model training in this version
+
+            '
+        topModelId:
+          type: string
+          description: 'ID of the top model (based on training scores) in this experiment
+
+            version
+
+            '
+        dateIndexes:
+          $ref: '#/components/schemas/DateIndexes'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorMessage'
+        experimentId:
+          $ref: '#/components/schemas/ExperimentId'
+        featuresList:
+          $ref: '#/components/schemas/FeaturesList'
+        lastBatchNum:
+          type: integer
+          description: Number of the last batch
+        datasetOrigin:
+          $ref: '#/components/schemas/DatasetOrigin'
+        versionNumber:
+          type: integer
+          description: 1-based sequential version number within the experiment
+        experimentMode:
+          $ref: '#/components/schemas/ExperimentMode'
+        experimentType:
+          $ref: '#/components/schemas/ExperimentType'
+        createdByUserId:
+          $ref: '#/components/schemas/OwnerId'
+        trainingDuration:
+          $ref: '#/components/schemas/TrainingDuration'
+        preprocessedInsights:
+          type: array
+          items:
+            $ref: '#/components/schemas/PreprocessedInsightColumn'
+          description: 'Preprocessed insights. Like feature insights but with fewer details.
+
+            '
+      description: 'An AutoML experiment version. This is a configuration for training
+
+        models within an experiment.
+
+        '
+      additionalProperties: false
+    Transform:
+      type: object
+      required:
+      - name
+      - changeType
+      properties:
+        column:
+          $ref: '#/components/schemas/ColumnTransform'
+    DroppedFeature:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of dropped feature in the dataset
+        reason:
+          enum:
+          - highly_correlated
+          - has_target_leakage
+          - is_date_engineered
+          - feature_with_low_importance
+          type: string
+          description: Reason the feature was dropped
+      description: Feature dropped during preprocessing
+      additionalProperties: false
+    FeaturesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Feature'
+      description: 'List of features from your dataset for creating Experiment
+
+        Versions. This appears in from ProfileInsights response (in the
+
+        defaultVersionConfig). You can adjust the default settings before
+
+        using it as input to create or update Experiment Versions.
+
+        '
+    ExperimentVersionId:
+      type: string
+      format: uuid
+      description: ID of the experiment version
+      x-qlik-filterable: true
+    Feature:
+      type: object
+      properties:
+        name:
+          type: string
+          example: ColumnA
+          description: Name of the feature column
+        include:
+          type: boolean
+          description: 'Include this feature in your experiment version? Default
+
+            here is based on insights for this feature
+
+            (e.g. willBeDropped).
+
+            '
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        changeType:
+          $ref: '#/components/schemas/ChangeType'
+        featureType:
+          $ref: '#/components/schemas/FeatureType'
+        parentFeature:
+          type:
+          - string
+          - 'null'
+          default: null
+          description: The parent feature name for engineered features. e.g. `OrderDate` may be the parent of its engineered features (features extracted from parent) like `OrderDate.YEAR`, `OrderDate.MONTH`, etc.
+      description: A feature (column) from your dataset
+      additionalProperties: false
+    ExperimentVersionInput:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              enum:
+              - experiment-version
+              type: string
+              default: experiment-version
+            attributes:
+              type: object
+              required:
+              - name
+              - dataSetId
+              - experimentMode
+              - featuresList
+              - target
+              - experimentType
+              properties:
+                name:
+                  type: string
+                  default: Experiment version name. Defaults to current date.
+                  example: '1999-12-31T23:59:59.123Z'
+                target:
+                  type: string
+                  example: TargetColumn
+                  description: 'The target field in the dataset. Set in first experiment
+
+                    version and can''t be changed in subsequent versions.
+
+                    '
+                pipeline:
+                  $ref: '#/components/schemas/Pipeline'
+                dataSetId:
+                  $ref: '#/components/schemas/DataSetId'
+                algorithms:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModelAlgorithm'
+                  description: 'Algorithms used for model training in this version. See
+
+                    documentation for valid algorithms for each
+
+                    `experimentType`.
+
+
+                    If not provided, defaults to all valid algorithms for your
+
+                    experimentType.
+
+                    '
+                dateIndexes:
+                  $ref: '#/components/schemas/DateIndexes'
+                featuresList:
+                  $ref: '#/components/schemas/FeaturesList'
+                datasetOrigin:
+                  $ref: '#/components/schemas/DatasetOrigin'
+                experimentMode:
+                  $ref: '#/components/schemas/ExperimentMode'
+                experimentType:
+                  $ref: '#/components/schemas/ExperimentType'
+                trainingDuration:
+                  $ref: '#/components/schemas/TrainingDuration'
+              additionalProperties: false
+          additionalProperties: false
+      description: 'Input for creating a new experiment version. Defaults provided in the
+
+        ProfileInsights response.
+
+        '
+      additionalProperties: false
+    ModelMetricsMulticlass:
+      type: object
+      properties:
+        f1Macro:
+          type: number
+          description: 'Macro F1 is the averaged F1 value for each class without weighting
+
+            (training data)
+
+            '
+        f1Micro:
+          type: number
+          description: 'Micro F1 is the F1 value calculated across the entire confusion
+
+            matrix (training data)
+
+            '
+        accuracy:
+          type: number
+          description: 'Average of how often the model made a correct prediction (training
+
+            data)
+
+            '
+        f1Weighted:
+          type: number
+          description: Weighted F1 (training data)
+        f1MacroTest:
+          type: number
+          description: 'Macro F1 is the averaged F1 value for each class without weighting
+
+            (test data)
+
+            '
+        f1MicroTest:
+          type: number
+          description: 'Micro F1 is the F1 value calculated across the entire confusion
+
+            matrix (test data)
+
+            '
+        accuracyTest:
+          type: number
+          description: 'Average of how often the model made a correct prediction (test data)
+
+            '
+        f1WeightedTest:
+          type: number
+          description: Weighted F1 (test data)
+        confusionMatrix:
+          type: string
+          description: 'A matrix summary of the accuracy of predictions in a classification
+
+            model (training data)
+
+            '
+        confusionMatrixTest:
+          type: string
+          description: 'A matrix summary of the accuracy of predictions in a classification
+
+            model (training data)
+
+            '
+      description: 'Multiclass metrics for categorical values with 3+ options. Details:
+
+        https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/AutoML/scoring-multiclass-classification.htm
+
+        '
+      additionalProperties: false
+    TenantId:
+      type: string
+      format: uuid
+      description: Tenant ID for this entity
+      x-qlik-filterable: true
+    ExperimentMode:
+      enum:
+      - intelligent
+      - manual
+      - manual_hpo
+      type: string
+      default: intelligent
+      description: The model training mode for the experiment version
+    ModelState:
+      enum:
+      - pending
+      - enabled
+      - disabled
+      - inactive
+      type: string
+      description: 'Model state. These are the state of the model in relation to
+
+        deployments.
+
+        '
+      x-qlik-filterable: true
+    UpdatedAt:
+      type: string
+      description: Timestamp when this was updated
+    TrainingDuration:
+      type: integer
+      maximum: 21600
+      minimum: 900
+      description: 'Optional training duration in seconds. If not provided, max value used.
+
+        If provided, min 900 (15m) and max 21600 (6h).
+
+        '
+    CreatedAt:
+      type: string
+      description: Timestamp when this was created
+    ModelForRecommendations:
+      allOf:
+      - $ref: '#/components/schemas/Model'
+      - type: object
+        properties:
+          metrics:
+            type: object
+            required:
+            - predictionSpeed
+            properties:
+              predictionSpeed:
+                type:
+                - number
+                - 'null'
+                description: This represents model prediction speed in rows/second
+            additionalProperties: false
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
+    FindResponseMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+      description: Meta for FIND operations
+      additionalProperties: false
+    EntityName:
+      type: string
+      description: Name of this entity
+      x-qlik-filterable: true
+    ExperimentModelRecommendationPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              enum:
+              - model-recommendation
+              type: string
+            attributes:
+              type: object
+              properties:
+                bestModel:
+                  $ref: '#/components/schemas/ModelForRecommendations'
+                fastestModel:
+                  $ref: '#/components/schemas/ModelForRecommendations'
+                mostAccurateModel:
+                  $ref: '#/components/schemas/ModelForRecommendations'
+              description: Model recommendations
+              additionalProperties: false
+          additionalProperties: false
+      additionalProperties: false
+    EntityId:
+      type: string
+      format: uuid
+      description: ID of this entity
+      x-qlik-filterable: true
+    ExperimentModelRecommendationFilter:
+      type: object
+      properties:
+        deployed:
+          type: boolean
+          description: Whether to only consider models that are already deployed
+        algorithms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelAlgorithm'
+          description: The model algorithms to consider
+        fullSampling:
+          type: boolean
+          description: Whether to only consider models with 100% sampling
+        versionNumbers:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          description: The versionNumbers of the experiment versions to consider models from
+      description: Criteria to determine which pool of models to provide recommendations from
+      additionalProperties: false
+    ExperimentVersionFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - experiment-version
+                type: string
+              attributes:
+                $ref: '#/components/schemas/ExperimentVersion'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
+    ExperimentPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - experiment
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Experiment'
+          additionalProperties: false
+      additionalProperties: false
+    DataSetId:
+      type: string
+      example: 672e55cfcadfb8a18281523e
+      description: The Qlik catalog dataset ID
+    ExperimentVersionPatch:
+      type: array
+      items:
+        type: object
+        example:
+          op: replace
+          path: /name
+          value: New name
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: All patch requests use the replace operation
+          path:
+            enum:
+            - /name
+            type: string
+            description: 'Path for the properties you can update.
+
+              '
+          value:
+            $ref: '#/components/schemas/AnyType'
+        description: 'Values that can be patched.
+
+          '
+        additionalProperties: false
+    Model:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          $ref: '#/components/schemas/EntityName'
+        errors:
+          $ref: '#/components/schemas/Errors'
+        hpoNum:
+          type: number
+          description: Version number of the hyperparameter optimization
+        seqNum:
+          type: number
+          description: Model sequence number within the experiment version
+        status:
+          $ref: '#/components/schemas/ModelStatus'
+        columns:
+          type: array
+          items:
+            type: string
+          description: Dataset columns selected as features
+        metrics:
+          $ref: '#/components/schemas/ModelMetrics'
+        batchNum:
+          type: number
+          description: 'Batch number indicates the index of the experiment version fold
+
+            (most relevant when HPO is enabled)
+
+            '
+          x-qlik-filterable: true
+        algoAbbrv:
+          $ref: '#/components/schemas/ModelAlgorithmAbbreviation'
+        algorithm:
+          type: string
+          description: The algorithm used by this model
+          x-qlik-filterable: true
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        modelState:
+          $ref: '#/components/schemas/ModelState'
+        description:
+          $ref: '#/components/schemas/EntityDescription'
+        anomalyRatio:
+          type:
+          - number
+          - 'null'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorMessage'
+        samplingRatio:
+          type: number
+          description: Ratio of sample data in relation to the dataset
+          x-qlik-filterable: true
+        binningFeatures:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        droppedFeatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/DroppedFeature'
+          description: Features dropped because they're unsuitable
+        experimentVersionId:
+          $ref: '#/components/schemas/ExperimentVersionId'
+        powerTransformFeatures:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        binaryImbalanceSampling:
+          $ref: '#/components/schemas/BinaryImbalanceSampling'
+      description: 'A model based on an algorithm within an experiment version.
+
+        '
+      additionalProperties: false
+    BinaryImbalanceSampling:
+      type: object
+      properties:
+        sampleClass:
+          type: string
+        sampleRatio:
+          type: number
+        sampleDirection:
+          enum:
+          - up
+          - down
+          type: string
+      additionalProperties: false
+    AnyType:
+      description: Use for fields that can be `any` type (string, number, etc.)
+    ColumnTransform:
+      type: object
+      required:
+      - name
+      - changeType
+      properties:
+        name:
+          type: string
+        changeType:
+          type: string
+    EnumSortModels:
+      enum:
+      - createdAt
+      - +createdAt
+      - -createdAt
+      - description
+      - +description
+      - -description
+      - name
+      - +name
+      - -name
+      - updatedAt
+      - +updatedAt
+      - -updatedAt
+      type: string
+    ModelStatus:
+      enum:
+      - pending
+      - training_requested
+      - training_done
+      - ready
+      - error
+      type: string
+      description: 'Model status. These are the status of the model in relation to
+
+        experiments (i.e. training status).
+
+        '
+    ModelAlgorithm:
+      enum:
+      - catboost_classifier
+      - catboost_regression
+      - elasticnet_regression
+      - gaussian_nb
+      - kneighbors_classifier
+      - lasso_regression
+      - lasso
+      - lgbm_classifier
+      - lgbm_regression
+      - linear_regression
+      - logistic_regression
+      - random_forest_classifier
+      - random_forest_regression
+      - sgd_regression
+      - xgb_classifier
+      - xgb_regression
+      type: string
+      description: 'Enumeration of model algorithms.
+
+
+        A subset of these may be provided based on your ExperimentType. This is
+
+        based on your target''s featureType. When you select a target feature
+
+        from your ProfileInsights response (defaultVersionConfig.featuresList),
+
+        it tells you which algorithms will be available if you choose it as your
+
+        target.
+
+        '
+    ExperimentVersionPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - experiment-version
+              type: string
+            attributes:
+              $ref: '#/components/schemas/ExperimentVersion'
+          additionalProperties: false
+      additionalProperties: false
+    ExperimentGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - experiment
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Experiment'
+          additionalProperties: false
+      additionalProperties: false
+    EntityDescription:
+      type: string
+      description: Description of this entity
+    ModelMetricsBinary:
+      type: object
+      properties:
+        f1:
+          type: number
+          description: The harmonic mean of precision and recall for training data
+        auc:
+          type: number
+          description: Area under curve (training data)
+        mcc:
+          type: number
+          description: Matthews correlation coefficient (training data)
+        npv:
+          type: number
+          description: Negative predictive value (training data)
+        f1Test:
+          type: number
+          description: The harmonic mean of precision and recall for test data
+        recall:
+          type: number
+          description: The true positive rate (training data)
+        aucTest:
+          type: number
+          description: Area under curve (test data)
+        fallout:
+          type: number
+          description: The false positive rate (training data)
+        logLoss:
+          type: number
+          description: Measures accuracy in logistic regression (training data)
+        mccTest:
+          type: number
+          description: Matthews correlation coefficient (test data)
+        npvTest:
+          type: number
+          description: Negative predictive value (test data)
+        accuracy:
+          type: number
+          description: 'Average measure of how often the model made correct predictions
+
+            (training data)
+
+            '
+        missRate:
+          type: number
+          description: The false negative rate (training data)
+        precision:
+          type: number
+          description: 'Positive predictive value. Probability that the model was correct
+
+            when it predicted something was true. (training data)
+
+            '
+        threshold:
+          type: number
+          description: Probability that a prediction is true (training data)
+        recallTest:
+          type: number
+          description: The true positive rate (test data)
+        falloutTest:
+          type: number
+          description: The false positive rate (test data)
+        logLossTest:
+          type: number
+          description: Measures accuracy in logistic regression (test data)
+        specificity:
+          type: number
+          description: The true negative rate (training data)
+        accuracyTest:
+          type: number
+          description: 'Average measure of how often the model made correct predictions
+
+            (test data)
+
+            '
+        missRateTest:
+          type: number
+          description: The false negative rate (test data)
+        trueNegative:
+          type: number
+          description: 'Actual false values correctly predicted as false (training data)
+
+            '
+        truePositive:
+          type: number
+          description: 'Actual true values correctly predicted as true (training data)
+
+            '
+        falseNegative:
+          type: number
+          description: 'Actual true values incorrectly predicted as false (training data)
+
+            '
+        falsePositive:
+          type: number
+          description: 'Actual false values incorrectly predicted as true (training data)
+
+            '
+        precisionTest:
+          type: number
+          description: 'Positive predictive value. Probability that the model was correct
+
+            when it predicted something was true. (test data)
+
+            '
+        thresholdTest:
+          type: number
+          description: Probability that a prediction is true (test data)
+        specificityTest:
+          type: number
+          description: The true negative rate (test data)
+        trueNegativeTest:
+          type: number
+          description: 'Actual false values correctly predicted as false (test data)
+
+            '
+        truePositiveTest:
+          type: number
+          description: 'Actual true values correctly predicted as true (test data)
+
+            '
+        falseNegativeTest:
+          type: number
+          description: 'Actual true values incorrectly predicted as false (test data)
+
+            '
+        falsePositiveTest:
+          type: number
+          description: 'Actual false values incorrectly predicted as true (test data)
+
+            '
+      description: 'Binary metrics for categorical values with two options. Details:
+
+        https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/AutoML/scoring-binary-classification.htm
+
+        '
+      additionalProperties: false
+    Experiment:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - tenantId
+      - ownerId
+      - spaceId
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          $ref: '#/components/schemas/EntityName'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        spaceId:
+          $ref: '#/components/schemas/SpaceId'
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        description:
+          $ref: '#/components/schemas/EntityDescription'
+      description: An AutoML experiment
+      additionalProperties: false
+    ExperimentVersionGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - experiment-version
+              type: string
+            attributes:
+              $ref: '#/components/schemas/ExperimentVersion'
+          additionalProperties: false
+      additionalProperties: false
+    ExperimentInput:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              enum:
+              - experiment
+              type: string
+              default: experiment
+            attributes:
+              type: object
+              required:
+              - name
+              - spaceId
+              properties:
+                name:
+                  $ref: '#/components/schemas/EntityName'
+                spaceId:
+                  $ref: '#/components/schemas/SpaceId'
+                description:
+                  $ref: '#/components/schemas/EntityDescription'
+              description: Experiment input attributes
+              additionalProperties: false
+          description: Data container for ExperimentInput
+          additionalProperties: false
+      description: Input for creating this entity
+      additionalProperties: false
+    DataType:
+      enum:
+      - DATE
+      - TIME
+      - DATETIME
+      - TIMESTAMP
+      - STRING
+      - DOUBLE
+      - DECIMAL
+      - INTEGER
+      - BOOLEAN
+      - BINARY
+      - CUSTOM
+      - FLOAT
+      - OBJECT
+      type: string
+      example: STRING
+      description: 'The data type of this feature in your dataset
+
+        '
+    EnumSortExperimentVersions:
+      enum:
+      - createdAt
+      - +createdAt
+      - -createdAt
+      - description
+      - +description
+      - -description
+      - experimentMode
+      - +experimentMode
+      - -experimentMode
+      - experimentType
+      - +experimentType
+      - -experimentType
+      - name
+      - +name
+      - -name
+      - status
+      - +status
+      - -status
+      - updatedAt
+      - +updatedAt
+      - -updatedAt
+      - versionNumber
+      - +versionNumber
+      - -versionNumber
+      type: string
+    ExperimentPatchItem:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: All patch requests use the replace operation
+        path:
+          enum:
+          - /name
+          - /description
+          - /spaceId
+          type: string
+          description: Path for the property you want to update
+        value:
+          $ref: '#/components/schemas/AnyType'
+      description: 'Experiment fields that can be patched. The following paths all require `value` to be a string: `/name`, `/spaceId`, and `/description`'
+      additionalProperties: false
+    ExperimentFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - experiment
+                type: string
+              attributes:
+                $ref: '#/components/schemas/Experiment'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
+    ModelFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - model
+                type: string
+              attributes:
+                $ref: '#/components/schemas/Model'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
+    ErrorMessage:
+      type: string
+      description: JSON string of error object
+    OwnerId:
+      type: string
+      description: ID of owner/user for this entity
+      x-qlik-filterable: true
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    SpaceId:
+      type: string
+      description: Space ID for this entity (empty string for personal space)
+      x-qlik-filterable: true
+    ExperimentId:
+      type: string
+      format: uuid
+      description: ID of the experiment
+    ExperimentType:
+      enum:
+      - binary
+      - multiclass
+      - regression
+      type: string
+      description: Experiment type
+    ExperimentPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/ExperimentPatchItem'
+      example:
+      - op: replace
+        path: /name
+        value: New name
+      - op: replace
+        path: /description
+        value: New description
+      - op: replace
+        path: /spaceId
+        value: NEW_SPACE_ID
+    ModelMetricsRegression:
+      type: object
+      properties:
+        r2:
+          type: number
+          description: R squared (training data)
+        mae:
+          type: number
+          description: Mean absolute error (training data)
+        mse:
+          type: number
+          description: Mean squared error (training data)
+        rmse:
+          type: number
+          description: Root mean squared error (training data)
+        r2Test:
+          type: number
+          description: R squared (test data)
+        maeTest:
+          type: number
+          description: Mean absolute error (test data)
+        mseTest:
+          type: number
+          description: Mean squared error (test data)
+        rmseTest:
+          type: number
+          description: Root mean squared error (test data)
+      description: 'Regression metrics for numeric values. Details:
+
+        https://help.qlik.com/en-US/cloud-services/Subsystems/Hub/Content/Sense_Hub/AutoML/scoring-regression.htm
+
+        '
+      additionalProperties: false
+    DatasetOrigin:
+      enum:
+      - new
+      - changed
+      - refreshed
+      - same
+      type: string
+      default: new
+      description: Whether this is a new or other dataset
+    ChangeType:
+      enum:
+      - categorical
+      - numeric
+      - date
+      - freetext
+      type:
+      - string
+      - 'null'
+      default: null
+      description: 'Indicates if you want to change the featureType for this
+
+        feature within the experiment version
+
+        '
+  parameters:
+    modelsFilter:
+      in: query
+      name: filter
+      style: deepObject
+      schema:
+        type: string
+      example: '`filter="id eq "UUID1" and experimentId eq "UUID" and hasDeployment eq true`'
+      required: false
+      description: "Model fields you can filter by:<br><br>\n\n- `experimentVersionId` UUID string - Find by experiment version ID\n- `batchNum` UUID string - Search by batch number\n- `isHpo` boolean - Is hyperparameter optimization used?\n- `isMetrics` boolean - Are metrics for regression, binary, or multiclass are used?\n- `id` UUID string - Find by model ID\n- `algorithm` enum string - Find by algorithm<br><br>\n\n  - Valid algorithms: catboost_classifier, catboost_regression,\n    elasticnet_regression, gaussian_nb, kneighbors_classifier,\n    lasso_regression, lasso, lgbm_classifier, lgbm_regression,\n    linear_regression, logistic_regression, random_forest_classifier,\n    random_forest_regression, sgd_regression, xgb_classifier,\n    xgb_regression<br><br>\n\n- `status` enum string - find by status<br><br>\n  - Valid statuses: pending, training_requested, training_done, ready, error<br><br>\n- `hasDeployment` boolean - Models that are part of a deployment\n- `nameContains` string - Models with name includes this case-insensitive string\n- `exactName` string - Models with exact name. Model names may not be unique\n- `samplingRatio` number - Find models by sampling ratio\n- `modelState` enum string - State by which to find models<br><br>\n  - Valid states: `pending, enabled, disabled, inactive`\n"
+    modelsSort:
+      in: query
+      name: sort
+      style: form
+      schema:
+        $ref: '#/components/schemas/EnumSortModels'
+      example: sort=field1,+field2,-field3,...
+      required: false
+      description: 'Field(s) by which to sort response
+
+        '
+    experimentVersionsFilter:
+      in: query
+      name: filter
+      style: deepObject
+      schema:
+        type: string
+      example: '`filter=isRunning eq false and status eq "finished"`'
+      required: false
+      description: "Experiment version filter options\n- `isRunning` boolean - Is the experiment version running (training models)?\n- `isSettled` boolean - Is the experiment version settled?\n- `status` enum string - Status to filter by. Omit to get models of any status.\n  - Valid statuses: pending, ready, error, cancelled\n- `modelId` UUID string - ID of a model associated with the experiment\n"
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 32
+        maximum: 100
+      example: 10
+      required: false
+      description: Number of results per page. Default is 32.
+    experimentVersionsSort:
+      in: query
+      name: sort
+      style: form
+      schema:
+        $ref: '#/components/schemas/EnumSortExperimentVersions'
+      example: sort=field1,+field2,-field3,...
+      required: false
+      description: 'Field(s) by which to sort response
+
+        '
+    experimentsSort:
+      in: query
+      name: sort
+      style: form
+      schema:
+        $ref: '#/components/schemas/EnumSortExperiments'
+      example: sort=field1,+field2,-field3,...
+      required: false
+      description: 'Field(s) by which to sort response
+
+        '
+    offset:
+      in: query
+      name: offset
+      schema:
+        type: integer
+      example: 32
+      required: false
+      description: Number of rows to skip before getting page[size]
+    experimentVersionId:
+      in: path
+      name: experimentVersionId
+      schema:
+        type: string
+      required: true
+      description: ID of the experiment version
+    experimentId:
+      in: path
+      name: experimentId
+      schema:
+        type: string
+      required: true
+      description: ID of the experiment
+    modelId:
+      in: path
+      name: modelId
+      schema:
+        type: string
+      required: true
+      description: ID of the model
+    experimentsFilter:
+      in: query
+      name: filter
+      style: deepObject
+      schema:
+        type: string
+      example: '`filter=ownerId eq UUID and experimentVersionId eq UUID`'
+      required: false
+      description: 'Experiment fields by which you can filter responses within this tenant
+
+        - `ownerId` ID string - ID of the owner/user that created the experiment
+
+        - `spaceId` ID string (or empty string for personal space) - ID of the space where the experiment is saved.
+
+        - `experimentVersionId` UUID string - ID of an experiment version in the experiment
+
+        - `modelId` UUID string - ID of a model associated with the experiment
+
+        - `deploymentId` UUID string - ID of a deployment of a model associated with the experiment
+
+        '
+  responses:
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    204NoContent:
+      description: '`No Content`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    401Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unauthorized`'
+    404NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Not Found`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'

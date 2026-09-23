@@ -1,0 +1,2841 @@
+openapi: 3.2.0
+info:
+  title: Qliksense Task API
+  version: ''
+  description: 'Operations tagged task across 2 of this provider''s published API definitions: qliksense-scheduling-tasks.json, qliksense-tasks.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Task
+paths:
+  /api/scheduling/tasks:
+    get:
+      tags:
+      - Task
+      summary: List tasks
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+          description: Tasks retrieved successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: query
+        name: filter
+        schema:
+          type: string
+        required: false
+        description: 'Advanced filter expression using RFC 7644 SCIM syntax. Refer to [RFC 7644](https://datatracker.ietf.org/doc/rfc7644/) for syntax details. All comparisons are case-insensitive. Supported fields: `name`, `enabled`, `resourceId`, `ownerId`, `spaceId`, `createdAt`, `updatedAt`, `updatedBy`, `lastStatus`, `lastTriggeredBy`, `lastStartedAt`, `lastEndedAt`, `lastExecutedAs`, and `triggerType`.
+
+          '
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: Maximum number of tasks to return per page.
+      - in: query
+        name: page
+        schema:
+          type: string
+        required: false
+        description: Cursor token for fetching the next page of results.
+      - in: query
+        name: resourceId
+        schema:
+          type: string
+        required: false
+        description: The unique identifier of the resource to filter tasks by.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - +createdAt
+          - -createdAt
+          - +enabled
+          - -enabled
+          - +name
+          - -name
+          - +ownerId
+          - -ownerId
+          - +resourceId
+          - -resourceId
+          - +spaceId
+          - -spaceId
+          - +updatedAt
+          - -updatedAt
+          - +updatedBy
+          - -updatedBy
+          - +lastStatus
+          - -lastStatus
+          - +lastTriggeredBy
+          - -lastTriggeredBy
+          - +lastStartedAt
+          - -lastStartedAt
+          - +lastEndedAt
+          - -lastEndedAt
+          - +lastExecutedAs
+          - -lastExecutedAs
+          - +triggerType
+          - -triggerType
+          type: string
+          default: -updatedAt
+        required: false
+        description: 'Field and direction to sort results by. Prefix the field name with
+
+          `+` for ascending or `-` for descending order. Defaults to `-updatedAt`.
+
+          '
+      description: Retrieves a paginated list of tasks the requesting user has access to. Results include task metadata such as owner, resource, space, and last run status. Use the `filter` parameter to narrow results by field values, or `sort` to control the ordering.
+      operationId: listTasks
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/tasks
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Task
+      summary: Create a task
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Task created successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters: []
+      description: Creates a new task for the specified resource. The task is owned by the requesting user and is disabled by default until explicitly enabled. The `resourceId` is derived automatically from the task's state definitions and cannot be set directly in the request body.
+      operationId: createTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+            examples:
+              objectExample:
+                $ref: '#/components/examples/createSingleEventTriggerTask'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: POST:/v1/tasks
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/scheduling/tasks/{id}:
+    get:
+      tags:
+      - Task
+      summary: Get a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Task details retrieved successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task to retrieve.
+      description: Retrieves the full definition and metadata for a specific task, including its trigger configuration, state definitions, owner, and last run status. Use this operation to inspect a task before updating or starting it.
+      operationId: getTask
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/tasks/{id}
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Task
+      summary: Patch a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Task updated successfully.
+        '204':
+          description: Task updated with no content to return.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task to update.
+      description: Partially updates a specific task using a JSON Patch document (RFC 6902). Only the fields included in the patch operations are modified. All other fields remain unchanged. If the task is owned by another user, ownership is transferred to the requesting user.
+      operationId: patchTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    put:
+      tags:
+      - Task
+      summary: Replace a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Task replaced successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task to replace.
+      description: Replaces the full definition of a specific task with the supplied payload. All fields not included in the request body are reset to their defaults. If the task is owned by another user, ownership is transferred to the requesting user. Use `PATCH` instead to apply a partial update.
+      operationId: updateTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: PUT:/v1/tasks/{id}
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Task
+      summary: Delete a task
+      responses:
+        '204':
+          description: Task deleted successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task to delete.
+      description: Deletes a specific task and cancels any scheduled or pending runs associated with it. This action cannot be undone. Tenant admins can delete tasks owned by other users.
+      operationId: deleteTask
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: DELETE:/v1/tasks/{id}
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/scheduling/tasks/{id}/actions/start:
+    post:
+      tags:
+      - Task
+      summary: Start a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Task started successfully
+          description: Task started successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task to start.
+      - in: query
+        name: source
+        schema:
+          type: string
+          default: manual
+        required: false
+        description: 'The origin of the trigger. Defaults to `manual`. For event-triggered tasks, this can be the name of the triggering task.
+
+          '
+      description: Triggers an immediate run of the specified task outside its normal schedule. The optional `source` parameter identifies what initiated the run, which is recorded in the run history for auditing purposes.
+      operationId: startTask
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: POST:/v1/tasks/{id}/actions/start
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/scheduling/tasks/{id}/runs:
+    get:
+      tags:
+      - Task
+      summary: List task runs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchRunList'
+          description: Task runs retrieved successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: Maximum number of task runs to return per page.
+      - in: query
+        name: page
+        schema:
+          type: string
+        required: false
+        description: Cursor token for fetching the next page of results.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - +startedAt
+          - -startedAt
+          - +endedAt
+          - -endedAt
+          - +status
+          - -status
+          - +taskId
+          - -taskId
+          - +actionId
+          - -actionId
+          type: string
+          default: -startedAt
+        required: false
+        description: 'Field and direction to sort results by. Prefix the field name with `+` for ascending or `-` for descending order. Defaults to `-startedAt`.
+
+          '
+      description: Retrieves a paginated list of execution runs for the specified task, ordered by most recent run by default. Each run record includes the start and end time, status, and the identity that triggered it.
+      operationId: getTaskRuns
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/tasks/{id}/runs
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/scheduling/tasks/{id}/runs/{runId}/log:
+    get:
+      tags:
+      - Task
+      summary: Get task run log
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: object
+                properties:
+                  logContent:
+                    type: string
+                    example: Task run log content
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logContent:
+                    type: string
+                    example: Task run log content
+                    description: Log content in plain text format.
+          description: Task run log retrieved successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task.
+      - in: path
+        name: runId
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task run.
+      - in: header
+        name: Accept
+        schema:
+          enum:
+          - application/json
+          - text/plain
+          type: string
+          default: application/json
+        required: false
+        description: The preferred response format for the log content.
+      description: Retrieves the execution log for a specific task run. Set the `Accept` header to `text/plain` to receive the raw log as a downloadable file, or `application/json` (default) to receive it wrapped in a JSON object with a `logContent` field.
+      operationId: getTaskRunLog
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/tasks/{id}/runs/{runId}/log
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/scheduling/tasks/{id}/runs/last:
+    get:
+      tags:
+      - Task
+      summary: Get last task run
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchRun'
+          description: Last task run retrieved successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the task.
+      description: Retrieves the most recent execution run for the specified task. Returns a 404 response if the task has never been run. Use this operation to quickly check whether the last run succeeded or failed without paginating through the full run history.
+      operationId: getTaskLastRun
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/tasks/{id}/runs/last
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/scheduling/tasks/resources/{id}/runs:
+    get:
+      tags:
+      - Task
+      summary: List task runs for a resource
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchRunList'
+          description: Task runs retrieved successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The unique identifier of the resource to retrieve task runs for.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: Maximum number of task runs to return per page.
+      - in: query
+        name: page
+        schema:
+          type: string
+        required: false
+        description: Cursor token for fetching the next page of results.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - +startedAt
+          - -startedAt
+          - +endedAt
+          - -endedAt
+          - +status
+          - -status
+          - +taskId
+          - -taskId
+          - +actionId
+          - -actionId
+          type: string
+          default: -startedAt
+        required: false
+        description: 'Field and direction to sort results by. Prefix the field name with `+` for ascending or `-` for descending order. Defaults to `-startedAt`.
+
+          '
+      description: Retrieves a paginated list of task runs for a given resource, identified by `id`. Returns run history across all tasks associated with that resource, ordered by the most recent run by default.
+      operationId: getResourceRuns
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/tasks/resources/{id}/runs
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks:
+    get:
+      tags:
+      - Task
+      summary: List tasks
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: The maximum number of resources to return for a request.
+      - in: query
+        name: page
+        schema:
+          type: string
+        required: false
+        description: The page cursor.
+      - in: query
+        name: resourceId
+        schema:
+          type: string
+        required: false
+        description: 'Filter tasks by its target resource ID.
+
+          '
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - +createdAt
+          - -createdAt
+          - +updatedAt
+          - -updatedAt
+          type: string
+          default: -updatedAt
+        required: false
+        description: 'The property of a resource to sort on (default sort is
+
+          -updatedAt). A property must be prefixed by + or - to
+
+          indicate ascending or descending sort order respectively.
+
+          '
+      description: Retrieves a list of the tasks that the requesting user has access to.
+      operationId: ListTasks
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: GET:/scheduling/tasks
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    post:
+      tags:
+      - Task
+      summary: Create a task
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task_2'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: query
+        name: migrateFrom
+        schema:
+          type: string
+        required: false
+        description: ID of the reload-task to migrate from the old system (optional).
+      description: Creates a new task.
+      operationId: CreateTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task_2'
+            examples:
+              objectExample:
+                $ref: '#/components/examples/Task'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: POST:/scheduling/tasks
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks/{id}:
+    get:
+      tags:
+      - Task
+      summary: Get a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task_2'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      description: Retrieves details for a specific task.
+      operationId: GetTask
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: GET:/scheduling/tasks/{id}
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    put:
+      tags:
+      - Task
+      summary: Update a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task_2'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      description: Updates a specific task. If the task is owned by another user, ownership will be transferred to the requesting user.
+      operationId: UpdateTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task_2'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: PUT:/scheduling/tasks/{id}
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    delete:
+      tags:
+      - Task
+      summary: Delete a task
+      responses:
+        '204':
+          description: No Content response.
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      description: Deletes a specific task.
+      operationId: DeleteTask
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: DELETE:/scheduling/tasks/{id}
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks/{id}/actions/start:
+    post:
+      tags:
+      - Task
+      summary: Start a task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Task started successfully
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      - in: query
+        name: source
+        schema:
+          type: string
+          default: manual
+        required: false
+        description: 'Indicates the origin of the trigger. If not provided, defaults to ''manual''. For event-triggered tasks, this can be the name of the triggering task.
+
+          '
+      description: Starts the specified task.
+      operationId: StartTask
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: POST:/scheduling/tasks/{id}/actions/start
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks/{id}/runs:
+    get:
+      tags:
+      - Task
+      summary: List task runs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchRunList'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: The maximum number of task runs to return for a request.
+      - in: query
+        name: page
+        schema:
+          type: string
+        required: false
+        description: The page cursor.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - +startedAt
+          - -startedAt
+          - +endedAt
+          - -endedAt
+          - +status
+          - -status
+          - +taskId
+          - -taskId
+          - +actionId
+          - -actionId
+          type: string
+          default: -startedAt
+        required: false
+        description: 'The property of a resource to sort on (default sort is -startedAt).
+
+          A property must be prefixed by + or - to indicate ascending or descending sort order respectively.
+
+          '
+      description: Returns runs for the specified task.
+      operationId: GetTaskRuns
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: GET:/scheduling/tasks/{id}/runs
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks/{id}/runs/{runId}/log:
+    get:
+      tags:
+      - Task
+      summary: Get task run log
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: object
+                properties:
+                  logContent:
+                    type: string
+                    example: Task run log content
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logContent:
+                    type: string
+                    example: Task run log content
+                    description: Log content in plain text format
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      - in: path
+        name: runId
+        schema:
+          type: string
+        required: true
+        description: The run's unique identifier.
+      - in: header
+        name: Accept
+        schema:
+          enum:
+          - application/json
+          - text/plain
+          type: string
+          default: application/json
+        required: false
+        description: The acceptable content types.
+      description: Get specific run log of a task.
+      operationId: GetTaskRunLog
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: GET:/scheduling/tasks/{id}/runs/{runId}/log
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks/{id}/runs/last:
+    get:
+      tags:
+      - Task
+      summary: Get last task run
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchRun_2'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The task's unique identifier.
+      description: Returns the last run of a specific task.
+      operationId: GetTaskLastRun
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: GET:/scheduling/tasks/{id}/runs/last
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/tasks/resources/{id}/runs:
+    get:
+      tags:
+      - Task
+      summary: List task runs for a resource
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrchRunList'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest_2'
+        '401':
+          $ref: '#/components/responses/Unauthorized_2'
+        '403':
+          $ref: '#/components/responses/Forbidden_2'
+        '404':
+          $ref: '#/components/responses/NotFound_2'
+        '500':
+          $ref: '#/components/responses/InternalServerError_2'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable_2'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Filter tasks by its target resource ID
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        required: false
+        description: The maximum number of task runs to return for a request.
+      - in: query
+        name: page
+        schema:
+          type: string
+        required: false
+        description: The page cursor.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - +startedAt
+          - -startedAt
+          - +endedAt
+          - -endedAt
+          - +status
+          - -status
+          - +taskId
+          - -taskId
+          - +actionId
+          - -actionId
+          type: string
+          default: -startedAt
+        required: false
+        description: 'The property of a resource to sort on (default sort is -startedAt).
+
+          A property must be prefixed by + or - to indicate ascending or descending sort order respectively.
+
+          '
+      description: Returns a list of task runs for a specified `resourceId`.
+      operationId: GetResourceRuns
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-replaced-by:
+      - namespace: scheduling
+        uniqueIdentifier: GET:/scheduling/tasks/resources/{id}/runs
+      x-qlik-tier:
+        tier: special
+        limit: 600
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+components:
+  schemas:
+    OrchMeta:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        id:
+          type: string
+          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
+          description: The unique identifier of the orchestration instance associated with this task in the scheduling service.
+        type:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          type: integer
+          example: 3
+          description: The type identifier of the orchestration system handling this task.
+          x-enum-varnames:
+          - AUTOMATION
+          - DI_PIPELINE
+          - TEMPORAL
+          - MINIBUS
+        attrs:
+          type: object
+          example:
+            last_run_status: SUCCEEDED
+            last_run_worker_type: reloads
+          description: Additional attributes of the orchestration instance associated with this task in the scheduling service.
+          additionalProperties:
+            type: string
+        lastRun:
+          $ref: '#/components/schemas/OrchRunBase'
+    eventTimeout:
+      type: string
+      example: 3S
+      minLength: 1
+      description: The maximum duration to wait for the defined events to be received, expressed as an ISO 8601 duration string or an expression that evaluates to one.
+    functionref:
+      type: object
+      oneOf:
+      - type: string
+        example: app.reload
+        pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+        maxLength: 100
+        minLength: 1
+        description: The name of the referenced function.
+      - type: object
+        required:
+        - refName
+        properties:
+          invoke:
+            enum:
+            - SYNC
+            - ASYNC
+            type: string
+            default: SYNC
+            description: Specifies whether the function is invoked synchronously or asynchronously.
+          refName:
+            enum:
+            - app.reload
+            type: string
+            example: app.reload
+            description: The name of the function to invoke.
+          arguments:
+            type: object
+            example:
+              appId: 80c6f35f-c9d7-4488-bb5a-ad973b13ec00
+              partial: false
+            description: Arguments to pass to the function.
+            additionalProperties: true
+          selectionSet:
+            type: string
+            example: '{id n}'
+            description: A GraphQL selection set string. Only applicable when the function type is `graphql`.
+        description: A structured function reference with arguments and invocation options.
+        additionalProperties: false
+      example:
+        refName: app.reload
+        arguments:
+          appId: 80c6f35f-c9d7-4488-bb5a-ad973b13ec00
+          partial: false
+      description: A reference to a function to invoke, either as a name string or a structured object.
+    action:
+      type: object
+      properties:
+        name:
+          type: string
+          example: app.reload
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          maxLength: 100
+          minLength: 1
+          description: A unique name for this action within the workflow.
+        retryRef:
+          type: string
+          example: default-retry
+          description: A reference to a defined workflow retry policy. If absent, the default retry policy applies.
+        condition:
+          type: string
+          example: ${ .resourceId != null }
+          minLength: 1
+          description: An expression that must evaluate to `true` for this action to be performed. When `false`, the action is skipped.
+        functionRef:
+          $ref: '#/components/schemas/functionref'
+        retryableErrors:
+          type: array
+          items:
+            type: string
+            example: io.qlik.error.temporary-failure
+            description: A unique reference to a defined workflow error.
+          minItems: 1
+          description: Workflow error references for which this action must be retried. Used only when `autoRetries` is `false`.
+        nonRetryableErrors:
+          type: array
+          items:
+            type: string
+            example: io.qlik.error.invalid-state
+            description: A unique reference to a defined workflow error.
+          minItems: 1
+          description: Workflow error references for which this action must not be retried. Used only when `autoRetries` is `true`.
+      additionalProperties: false
+    eventdef:
+      type: object
+      properties:
+        name:
+          type: string
+          example: task1-succeeded
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          maxLength: 100
+          minLength: 1
+          description: A unique name identifying this event definition within the workflow.
+        type:
+          enum:
+          - com.qlik.v1.task.run.finished
+          - com.qlik/active-analytics-orch
+          type: string
+          example: com.qlik.v1.task.run.finished
+          description: The CloudEvents type attribute identifying the kind of event.
+        source:
+          enum:
+          - system-events.task
+          - dataset.updated
+          type: string
+          example: system-events.task
+          description: The CloudEvents source attribute identifying the origin of the event.
+        dataOnly:
+          type: boolean
+          default: true
+          description: When `true`, only the event payload is accessible to consuming workflow states. When `false`, both the payload and context attributes are accessible.
+        correlation:
+          type: array
+          items:
+            $ref: '#/components/schemas/correlationDef'
+          minItems: 1
+          description: Correlation definitions used to match incoming CloudEvents to this workflow instance.
+      additionalProperties: false
+    OrchRunList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrchRun'
+        links:
+          type: object
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    onevents:
+      type: object
+      required:
+      - eventRefs
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/action'
+          description: Actions to perform when the matched events are consumed.
+        eventRefs:
+          type: array
+          items:
+            type: string
+            example: task1-succeeded
+            pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+            description: A unique event name defined in the workflow.
+          maxItems: 100
+          minItems: 1
+          description: References to one or more unique event names defined in the workflow events list.
+          uniqueItems: true
+        actionMode:
+          enum:
+          - SEQUENTIAL
+          - PARALLEL
+          type: string
+          default: SEQUENTIAL
+          description: Specifies whether actions are performed sequentially or in parallel.
+      additionalProperties: false
+    schedule:
+      oneOf:
+      - type: string
+        example: PT15M
+        minLength: 1
+        description: A repeating time interval in ISO 8601 format that defines when workflow instances are automatically created. UTC timezone is assumed.
+      - type: object
+        properties:
+          cron:
+            $ref: '#/components/schemas/crondef'
+          interval:
+            type: string
+            example: PT15M
+            minLength: 1
+            description: A repeating time interval in ISO 8601 format that defines when workflow instances are automatically created.
+          timezone:
+            type: string
+            default: UTC
+            example: Australia/Sydney
+            description: The timezone name used to evaluate the interval and cron expression. Defaults to `UTC`.
+          recurrence:
+            type: string
+            example: RRULE:FREQ=DAILY;INTERVAL=1
+            description: An RRULE recurrence rule string defining when the workflow recurs.
+          endDateTime:
+            type: string
+            example: '2024-09-30T23:59:59Z'
+            description: The date and time (ISO 8601 format) when the workflow schedule ends.
+          startDateTime:
+            type: string
+            example: '2024-08-13T09:45:00Z'
+            description: The date and time (ISO 8601 format) when the workflow schedule begins.
+        description: A structured schedule definition with optional recurrence, date range, and timezone.
+        additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/HttpResult'
+        traceId:
+          type: string
+          description: A trace identifier for correlating the error to a specific service request.
+    TriggerMeta:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        id:
+          type: string
+          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
+          description: The unique identifier of the trigger associated with this task.
+        type:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          example: 1
+          description: The type identifier of the trigger associated with this task.
+          x-enum-varnames:
+          - TIME_SCHEDULE
+          - SINGLE_EVENT
+          - MULTI_EVENT
+          - MIXED
+          - AAO_DATA_UPDATED
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: The URL of the linked resource.
+    PatchValue:
+      oneOf:
+      - type: string
+      - type: number
+      - type: integer
+      - type: boolean
+      - type: array
+        items: {}
+      - type: object
+      description: The value to use in a JSON Patch operation.
+    JSONPatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        properties:
+          op:
+            enum:
+            - add
+            - remove
+            - replace
+            - move
+            - copy
+            type: string
+            description: The patch operation to perform.
+          path:
+            type: string
+            description: A JSON Pointer (RFC 6901) identifying the field to patch.
+          value:
+            $ref: '#/components/schemas/PatchValue'
+        description: A JSON Patch document as defined by RFC 6902.
+    crondef:
+      oneOf:
+      - type: string
+        example: 0 0 * * *
+        minLength: 1
+        description: A cron expression defining when workflow instances should be created automatically.
+      - type: object
+        required:
+        - expression
+        properties:
+          expression:
+            type: string
+            example: 0 0 * * *
+            minLength: 1
+            description: A cron expression describing when the workflow instance should be created.
+          validUntil:
+            type: string
+            example: '2024-09-30T23:59:59Z'
+            description: The date and time (ISO 8601 format) after which this cron expression is no longer active.
+        additionalProperties: false
+    OrchRunBase:
+      type: object
+      required:
+      - status
+      - id
+      - workerId
+      - workerType
+      - triggeredBy
+      properties:
+        id:
+          type: string
+          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
+          description: The unique identifier of the task run.
+        status:
+          enum:
+          - RUNNING
+          - SUCCEEDED
+          - FAILED
+          type: string
+          example: SUCCEEDED
+          description: The current status of the task run.
+        endedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          readOnly: true
+          description: The UTC timestamp when the task run ended.
+        workerId:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+          description: The unique identifier of the worker that executed the job. For example, a reload run carries the reload ID from the engine, and an automation run carries the automation run ID.
+        startedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          readOnly: true
+          description: The UTC timestamp when the task run started.
+        executedAs:
+          type: string
+          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
+          description: The user ID of the user on whose behalf the task was executed.
+        workerType:
+          type: string
+          example: reloads
+          description: The type or name of the target system that executed the run.
+        triggeredBy:
+          type: string
+          example: manual
+          description: The identity or event that triggered the task run.
+    actionExecTimeout:
+      type: string
+      example: 3S
+      minLength: 1
+      description: The maximum duration for executing a single action, expressed as an ISO 8601 duration string or an expression that evaluates to one.
+    Events:
+      type: array
+      items:
+        $ref: '#/components/schemas/eventdef'
+      minItems: 1
+      description: CloudEvent definitions for the workflow. Defines the events that can be consumed or produced by the workflow.
+    stateExecTimeout:
+      type: string
+      example: 3S
+      minLength: 1
+      description: The maximum duration for executing this state, expressed as an ISO 8601 duration string or an expression that evaluates to one.
+    TaskList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        links:
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    OrchRun:
+      allOf:
+      - $ref: '#/components/schemas/OrchRunBase'
+      - type: object
+        required:
+        - resourceId
+        - taskId
+        - actionId
+        - taskName
+        - taskMeta
+        properties:
+          log:
+            type: string
+            description: The raw log output from the task run.
+          taskId:
+            type: string
+            description: The unique identifier of the task.
+          actionId:
+            type: string
+            description: The unique identifier of the action that was executed.
+          taskMeta:
+            $ref: '#/components/schemas/taskMetadata'
+          taskName:
+            type: string
+            description: The name of the task at the time it was run.
+          resourceId:
+            type: string
+            description: The unique identifier of the resource the task operated on.
+    startdef:
+      type: object
+      oneOf:
+      - type: object
+        required:
+        - schedule
+        properties:
+          schedule:
+            $ref: '#/components/schemas/schedule'
+          stateName:
+            type: string
+            example: init_state
+            pattern: ^[a-z0-9](-?[a-z0-9])*$
+            minLength: 1
+            description: The name of the starting workflow state.
+        description: A scheduled workflow start definition.
+        additionalProperties: false
+      example:
+        schedule:
+          recurrence: RRULE:FREQ=DAILY;INTERVAL=1
+          startDateTime: '2025-08-31T23:22:27Z'
+      description: The start definition for a workflow, including optional schedule configuration.
+    correlationDef:
+      type: object
+      required:
+      - contextAttributeName
+      properties:
+        contextAttributeName:
+          enum:
+          - id
+          - status
+          - appId
+          - spaceId
+          - datasetId
+          type: string
+          example: id
+          description: The name of the CloudEvent extension context attribute to match on.
+        contextAttributeValue:
+          type: string
+          example: task-1
+          minLength: 1
+          description: The expected value of the CloudEvent extension context attribute.
+      description: A correlation definition used to match a CloudEvent to a specific workflow instance.
+      additionalProperties: false
+    end:
+      type: boolean
+      default: true
+      description: Marks this state as a terminal state in the workflow.
+    taskTopology:
+      type: object
+      properties:
+        isChild:
+          type: boolean
+          example: false
+          description: When `true`, this task is triggered by one or more parent tasks.
+        isParent:
+          type: boolean
+          example: true
+          description: When `true`, this task has one or more downstream dependent tasks.
+      description: Indicates the task's position in a dependency graph.
+      additionalProperties: false
+    Task:
+      type: object
+      example:
+        id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        name: TaskExample
+        events:
+        - name: event1
+          type: com.qlik/active-analytics-orch
+          source: dataset.updated
+          correlation:
+          - contextAttributeName: appId
+            contextAttributeValue: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        states:
+        - end: true
+          name: Reload
+          type: event
+          onEvents:
+          - actions:
+            - name: app.reload
+              functionRef:
+                refName: app.reload
+                arguments:
+                  appId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                  partial: false
+            eventRefs:
+            - app1-dataset-updated
+          exclusive: false
+        enabled: true
+        version: 1.0.0
+        metadata:
+          usage: ANALYTICS
+          ownerId: 0
+          spaceId: ''
+          trigger:
+            id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+            type: 4
+          tenantId: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          createdAt: '2025-08-31T23:22:27.929Z'
+          createdBy: 0
+          updatedAt: '2025-08-31T23:27:51.207Z'
+          orchestration:
+            id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+            type: 3
+            attrs:
+              last_run_status: SUCCEEDED
+              last_run_endedAt: '2025-08-31T23:28:06Z'
+              last_run_startedAt: '2025-08-31T23:28:04Z'
+              last_run_worker_type: reloads
+        keepActive: false
+        resourceId: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        description: this is an example of task response
+        specVersion: 1.16.0
+      required:
+      - name
+      - specVersion
+      properties:
+        id:
+          type: string
+          example: 1111aaaa-bbbb-1a1a-b22b-aaaa1111bbbb2222
+          readOnly: true
+          description: The unique identifier assigned to the task by the service.
+        key:
+          type: string
+          example: reload
+          description: An optional expression used to generate a domain-specific workflow instance identifier.
+        name:
+          type: string
+          example: Scheduling of demo-app
+          maxLength: 100
+          minLength: 1
+          description: The name that identifies the workflow definition. Combined with `version`, the name forms a unique identifier for the task.
+          x-qlik-filterable: true
+        start:
+          $ref: '#/components/schemas/startdef'
+        events:
+          $ref: '#/components/schemas/Events'
+        states:
+          type: array
+          items:
+            $ref: '#/components/schemas/eventstate'
+          minItems: 1
+          description: The list of state definitions that compose the workflow.
+        enabled:
+          type: boolean
+          default: false
+          description: Indicates whether the task is enabled. Disabled tasks will not trigger automatically.
+        version:
+          type: string
+          example: 1.0.0
+          pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+          description: The semantic version of the workflow definition.
+        metadata:
+          $ref: '#/components/schemas/taskMetadata'
+        keepActive:
+          type: boolean
+          default: false
+          description: When `true`, workflow instances are not terminated when there are no active execution paths. Instances can be ended via a terminate end definition or a configured `workflowExecTimeout`.
+        resourceId:
+          type: string
+          example: 80c6f35f-c9d7-4488-bb5a-ad973b13ec00
+          description: The unique identifier of the resource this task operates on. The value supplied in a request body is ignored and is derived automatically from `states`.
+          x-qlik-filterable: true
+        annotations:
+          type: array
+          items:
+            type: string
+            example: reload app
+            description: A single annotation term.
+          minItems: 1
+          description: A list of terms describing the workflow's intended purpose, subject areas, or other important qualities.
+        description:
+          type: string
+          example: time-schedule reload task for test-app
+          maxLength: 1024
+          description: A human-readable description of the workflow's purpose.
+        specVersion:
+          type: string
+          example: 1.12.0
+          minLength: 1
+          description: The Serverless Workflow specification version used by this task.
+      additionalProperties: false
+    eventstate:
+      type: object
+      properties:
+        end:
+          $ref: '#/components/schemas/end'
+        name:
+          type: string
+          example: App.Reload
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          maxLength: 100
+          minLength: 1
+          description: The name of this state, unique within the workflow.
+        type:
+          enum:
+          - EVENT
+          type: string
+          example: event
+          description: The state type. Must be `EVENT` for event-driven states.
+        onEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/onevents'
+          description: The events to consume and the optional actions to perform when they are received.
+        timeouts:
+          type: object
+          properties:
+            eventTimeout:
+              $ref: '#/components/schemas/eventTimeout'
+            stateExecTimeout:
+              $ref: '#/components/schemas/stateExecTimeout'
+            actionExecTimeout:
+              $ref: '#/components/schemas/actionExecTimeout'
+          description: State-specific timeout durations.
+        exclusive:
+          type: boolean
+          default: true
+          description: When `true`, consuming any one of the defined events causes its associated actions to execute. When `false`, all defined events must be consumed before actions are performed.
+        compensatedBy:
+          type: string
+          example: reload
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          minLength: 1
+          description: The unique name of a workflow state responsible for compensating this state if it fails.
+      description: A workflow state that waits for one or more CloudEvents, then consumes them and invokes one or more actions sequentially or in parallel.
+      additionalProperties: false
+    taskMetadata:
+      type: object
+      properties:
+        usage:
+          enum:
+          - ANALYTICS
+          - DATA_PREPARATION
+          - DATAFLOW_PREP
+          - SINGLE_TABLE_PREP
+          type: string
+          example: ANALYTICS
+          description: The product domain in which the resource is used. Defaults to `ANALYTICS` when not present.
+        ownerId:
+          type: string
+          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
+          description: The user ID of the task owner.
+          x-qlik-filterable: true
+        spaceId:
+          type: string
+          example: 434f9f7c-4eeb-43f0-8f08-88b91f357c07
+          description: The unique identifier of the space the task operates in.
+        trigger:
+          $ref: '#/components/schemas/TriggerMeta'
+        tenantId:
+          type: string
+          example: rpxzti_ptV0RS4eGPSsaI0SCKl-6h2a
+          description: The unique identifier of the tenant the task operates in.
+        topology:
+          $ref: '#/components/schemas/taskTopology'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          readOnly: true
+          description: The UTC timestamp when the task was created.
+        createdBy:
+          type: string
+          example: LP_LlaXYhUUWMr5csy8pFfTHecXePH5Z
+          description: The user ID of the user who created the task.
+          x-qlik-filterable: true
+        deletedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          readOnly: true
+          description: The UTC timestamp when the task was deleted.
+        spaceType:
+          enum:
+          - personal
+          - shared
+          - managed
+          type: string
+          example: shared
+          description: The type of space the task operates in.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          description: The UTC timestamp when the task was last updated.
+        disabledCode:
+          enum:
+          - MANUALLY
+          - CONSECUTIVE-FAILURES
+          - APP-SCRIPT-UPDATED
+          - OWNER-DELETED
+          - OWNER-DISABLED
+          - APP-MOVED-SPACE
+          - OWNER-MOVED
+          type: string
+          example: MANUALLY
+          description: The reason the task is currently disabled.
+        migratedFrom:
+          type: string
+          example: c7dba73-dd5a-4725-9dd2-8bd9c8d126d7
+          description: The unique identifier of the legacy reload task this task was migrated from, if applicable.
+        resourceName:
+          type: string
+          example: sample app
+          description: The name of the resource on which the task was created.
+        resourceType:
+          type: string
+          example: app
+          description: The type of resource on which the task was created.
+        orchestration:
+          $ref: '#/components/schemas/OrchMeta'
+        scriptOwnerId:
+          type: string
+          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
+          description: The user ID of the owner whose script context is used when running the task.
+        resourceSubType:
+          type: string
+          example: script
+          description: The subtype of resource on which the task was created.
+      additionalProperties: false
+    HttpResult:
+      type: object
+      properties:
+        code:
+          type: integer
+        inner:
+          $ref: '#/components/schemas/HttpResult'
+        title:
+          type: string
+        result: {}
+        context:
+          type: string
+        timestamp:
+          type: string
+    OrchMeta_2:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        id:
+          type: string
+          description: The ID of the orchestration associated with the task in the choreographer
+        type:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          type: integer
+          description: orchestration system type
+          x-enum-varnames:
+          - AUTOMATION
+          - DI_PIPELINE
+          - TEMPORAL
+          - MINIBUS
+        attrs:
+          type: object
+          additionalProperties:
+            type: string
+    eventTimeout_2:
+      type: string
+      minLength: 1
+      description: Timeout duration to wait for consuming defined events (literal ISO 8601 duration format or expression which evaluation results in an ISO 8601 duration)
+    functionref_2:
+      type: object
+      oneOf:
+      - type: string
+        pattern: ^[a-z0-9](-?[a-z0-9])*$
+        minLength: 1
+        description: Name of the referenced function
+      - type: object
+        required:
+        - refName
+        properties:
+          invoke:
+            enum:
+            - SYNC
+            - ASYNC
+            type: string
+            default: SYNC
+            description: Specifies if the function should be invoked sync or async
+          refName:
+            enum:
+            - app.reload
+            type: string
+            description: Name of the referenced function
+          arguments:
+            type: object
+            description: Function arguments/inputs
+          selectionSet:
+            type: string
+            description: Only used if function type is 'graphql'. A string containing a valid GraphQL selection set
+        description: Function Reference
+        additionalProperties: false
+    action_2:
+      type: object
+      oneOf:
+      - required:
+        - name
+        - functionRef
+      - required:
+        - name
+        - publish
+      - required:
+        - name
+        - subscribe
+      - required:
+        - name
+        - subFlowRef
+      properties:
+        name:
+          type: string
+          pattern: ^[a-z0-9](-?[a-z0-9])*$
+          description: Unique action definition name
+        retryRef:
+          type: string
+          description: References a defined workflow retry definition. If not defined the default retry policy is assumed
+        condition:
+          type: string
+          minLength: 1
+          description: Expression, if defined, must evaluate to true for this action to be performed. If false, action is disregarded
+        functionRef:
+          $ref: '#/components/schemas/functionref_2'
+        retryableErrors:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: List of unique references to defined workflow errors for which the action should be retried. Used only when `autoRetries` is set to `false`
+        nonRetryableErrors:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: List of unique references to defined workflow errors for which the action should not be retried. Used only when `autoRetries` is set to `true`
+      additionalProperties: false
+    eventdef_2:
+      type: object
+      properties:
+        name:
+          type: string
+          pattern: ^[a-z0-9](-?[a-z0-9])*$
+          minLength: 1
+          description: Unique event name
+        type:
+          enum:
+          - com.qlik.v1.task.run.finished
+          type: string
+          description: CloudEvent type
+        source:
+          enum:
+          - system-events.task
+          type: string
+          description: CloudEvent source
+        dataOnly:
+          type: boolean
+          default: true
+          description: If `true`, only the Event payload is accessible to consuming Workflow states. If `false`, both event payload and context attributes should be accessible
+        correlation:
+          type: array
+          items:
+            $ref: '#/components/schemas/correlationDef_2'
+          minItems: 1
+          description: CloudEvent correlation definitions
+      additionalProperties: false
+    onevents_2:
+      type: object
+      required:
+      - eventRefs
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/action_2'
+          description: Actions to be performed if expression matches
+        eventRefs:
+          type: array
+          items:
+            type: string
+            pattern: ^[a-z0-9](-?[a-z0-9])*$
+          minItems: 1
+          description: References one or more unique event names in the defined workflow events
+          uniqueItems: true
+        actionMode:
+          enum:
+          - SEQUENTIAL
+          - PARALLEL
+          type: string
+          default: SEQUENTIAL
+          description: Specifies how actions are to be performed (in sequence or in parallel)
+      additionalProperties: false
+    schedule_2:
+      oneOf:
+      - type: string
+        minLength: 1
+        description: Time interval (must be repeating interval) described with ISO 8601 format. Declares when workflow instances will be automatically created.  (UTC timezone is assumed)
+      - type: object
+        oneOf:
+        - required:
+          - interval
+        - required:
+          - cron
+        properties:
+          cron:
+            $ref: '#/components/schemas/crondef_2'
+          interval:
+            type: string
+            minLength: 1
+            description: Time interval (must be repeating interval) described with ISO 8601 format. Declares when workflow instances will be automatically created.
+          timezone:
+            type: string
+            description: 'Timezone name used to evaluate the interval & cron-expression. (default: UTC)'
+          recurrence:
+            type: string
+            description: The RRULE recurrence string for chronos job
+          endDateTime:
+            type: string
+            description: Specific date and time (ISO 8601 format) when the workflow instance should be terminated
+          startDateTime:
+            type: string
+            description: Specific date and time (ISO 8601 format) when the workflow instance should be created
+        description: Start state schedule definition
+        additionalProperties: false
+    ErrorResponse_2:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/HttpResult'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
+    TriggerMeta_2:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        id:
+          type: string
+          description: The ID of the Trigger associated with the task in the choreographer
+        type:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          type: integer
+          description: trigger type
+          x-enum-varnames:
+          - TIME_SCHEDULE
+          - SINGLE_EVENT
+          - MULTI_EVENT
+          - MIXED
+    Link_2:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL to a resource request
+    crondef_2:
+      oneOf:
+      - type: string
+        minLength: 1
+        description: Cron expression defining when workflow instances should be created (automatically)
+      - type: object
+        required:
+        - expression
+        properties:
+          expression:
+            type: string
+            minLength: 1
+            description: Repeating interval (cron expression) describing when the workflow instance should be created
+          validUntil:
+            type: string
+            description: Specific date and time (ISO 8601 format) when the cron expression invocation is no longer valid
+        additionalProperties: false
+    actionExecTimeout_2:
+      type: string
+      minLength: 1
+      description: Action execution timeout duration (literal ISO 8601 duration format or expression which evaluation results in an ISO 8601 duration)
+    Events_2:
+      type: array
+      items:
+        $ref: '#/components/schemas/eventdef_2'
+      minItems: 1
+      description: Workflow CloudEvent definitions. Defines CloudEvents that can be consumed or produced
+    stateExecTimeout_2:
+      type: string
+      minLength: 1
+      description: Workflow state execution timeout duration (literal ISO 8601 duration format or expression which evaluation results in an ISO 8601 duration)
+    OrchRun_2:
+      type: object
+      required:
+      - resourceId
+      - taskId
+      - actionId
+      - status
+      - id
+      - workerId
+      - workerType
+      - taskName
+      - taskMeta
+      - triggeredBy
+      properties:
+        id:
+          type: string
+          description: The ID of the task run
+        log:
+          type: string
+          description: log info of the run
+        status:
+          enum:
+          - RUNNING
+          - SUCCEEDED
+          - FAILED
+          type: string
+          description: task run status
+        taskId:
+          type: string
+          description: The ID of the task
+        endedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The UTC timestamp when the task run ended
+        actionId:
+          type: string
+          description: The ID of the action
+        taskMeta:
+          $ref: '#/components/schemas/taskMetadata_2'
+        taskName:
+          type: string
+          description: task name
+        workerId:
+          type: string
+          description: The ID of the worker who is carrying out the real job. e.g. App.Reload job is carried out by Reload Engine, in this case, workerId will be reloadId from reload engine. Or, if we are using Automation, workerId will be Automation runId.
+        startedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The UTC timestamp when the task run started
+        executedAs:
+          type: string
+          description: user ID of on behalf of whom the Task was executed.
+        resourceId:
+          type: string
+          description: The ID of the resource
+        workerType:
+          type: string
+          description: worker type or target system
+        triggeredBy:
+          type: string
+          example: manual
+          description: Information about who or what triggered the task run.
+    startdef_2:
+      type: object
+      oneOf:
+      - type: object
+        required:
+        - schedule
+        properties:
+          schedule:
+            $ref: '#/components/schemas/schedule_2'
+          stateName:
+            type: string
+            pattern: ^[a-z0-9](-?[a-z0-9])*$
+            minLength: 1
+            description: Name of the starting workflow state
+        description: Workflow start definition
+        additionalProperties: false
+    correlationDef_2:
+      type: object
+      required:
+      - contextAttributeName
+      properties:
+        contextAttributeName:
+          enum:
+          - id
+          - status
+          type: string
+          description: CloudEvent Extension Context Attribute name
+        contextAttributeValue:
+          type: string
+          minLength: 1
+          description: CloudEvent Extension Context Attribute value
+      description: CloudEvent correlation definition
+      additionalProperties: false
+    end_2:
+      type: boolean
+      default: true
+      description: State end definition
+    Task_2:
+      type: object
+      required:
+      - name
+      - specVersion
+      properties:
+        id:
+          type: string
+          readOnly: true
+          description: The choreographer's unique identifier
+        key:
+          type: string
+          description: Optional expression that will be used to generate a domain-specific workflow instance identifier
+        name:
+          type: string
+          pattern: ^[a-z0-9](-?[a-z0-9])*$
+          minLength: 1
+          description: The name that identifies the workflow definition, and which, when combined with its version, forms a unique identifier.
+        start:
+          $ref: '#/components/schemas/startdef_2'
+        events:
+          $ref: '#/components/schemas/Events_2'
+        states:
+          type: array
+          items:
+            $ref: '#/components/schemas/eventstate_2'
+          minItems: 1
+          description: State definitions
+        enabled:
+          type: boolean
+          default: false
+          description: Indicates whether the task is enabled or not
+        version:
+          type: string
+          pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+          description: Workflow version
+        metadata:
+          $ref: '#/components/schemas/taskMetadata_2'
+        keepActive:
+          type: boolean
+          default: false
+          description: If 'true', workflow instances is not terminated when there are no active execution paths. Instance can be terminated via 'terminate end definition' or reaching defined 'workflowExecTimeout'
+        resourceId:
+          type: string
+          description: The resource ID of the task. The `Task.resourceId` value from user input is ignored and will be calculated automatically from `Task.states`.
+        annotations:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: List of helpful terms describing the workflows intended purpose, subject areas, or other important qualities
+        description:
+          type: string
+          description: Workflow description
+        specVersion:
+          type: string
+          minLength: 1
+          description: Serverless Workflow schema version
+      additionalProperties: false
+    eventstate_2:
+      type: object
+      oneOf:
+      - required:
+        - name
+        - type
+        - onEvents
+        - end
+      - required:
+        - name
+        - type
+        - onEvents
+        - transition
+      properties:
+        end:
+          $ref: '#/components/schemas/end_2'
+        name:
+          type: string
+          pattern: ^[a-z0-9](-?[a-z0-9])*$
+          description: State name
+        type:
+          enum:
+          - EVENT
+          type: string
+          description: State type
+        onEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/onevents_2'
+          description: Define the events to be consumed and optional actions to be performed
+        timeouts:
+          type: object
+          properties:
+            eventTimeout:
+              $ref: '#/components/schemas/eventTimeout_2'
+            stateExecTimeout:
+              $ref: '#/components/schemas/stateExecTimeout_2'
+            actionExecTimeout:
+              $ref: '#/components/schemas/actionExecTimeout_2'
+          description: State specific timeouts
+        exclusive:
+          type: boolean
+          default: true
+          description: If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed
+        compensatedBy:
+          type: string
+          pattern: ^[a-z0-9](-?[a-z0-9])*$
+          minLength: 1
+          description: Unique Name of a workflow state which is responsible for compensation of this state
+      description: This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel
+      additionalProperties: false
+    taskMetadata_2:
+      type: object
+      properties:
+        usage:
+          enum:
+          - ANALYTICS
+          - DATA_PREPARATION
+          - DATAFLOW_PREP
+          - SINGLE_TABLE_PREP
+          type: string
+          description: resource usage. Normally it means in which product domain the resource is used. if this field is not presented, it has default of `ANALYTICS`
+        ownerId:
+          type: string
+          description: The user ID of the owner of the task
+        spaceId:
+          type: string
+          description: The space ID that the Task will operate in
+        trigger:
+          $ref: '#/components/schemas/TriggerMeta_2'
+        tenantId:
+          type: string
+          description: The tenant ID that the Task will operate in
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The UTC timestamp when the task was created
+        createdBy:
+          type: string
+          description: The user ID of the user that created the task
+        deletedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The UTC timestamp when the task was deleted
+        updatedAt:
+          type: string
+          format: date-time
+          description: The UTC timestamp when the task was last updated
+        disabledCode:
+          enum:
+          - MANUALLY
+          - CONSECUTIVE-FAILURES
+          - APP-SCRIPT-UPDATED
+          - OWNER-DELETED
+          - OWNER-DISABLED
+          type: string
+          description: why the Task is disabled
+        migratedFrom:
+          type: string
+          description: The ID of the reload-task this one was migrated from (if applicable)
+        orchestration:
+          $ref: '#/components/schemas/OrchMeta_2'
+      additionalProperties: false
+  responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            invalidPage:
+              value:
+                errors:
+                - code: 400
+                  context: GetTasks
+                  timestamp: '2023-07-17T12:00:00Z'
+                traceId: abc123
+              summary: Invalid page cursor
+            invalidSort:
+              value:
+                errors:
+                - code: 400
+                  context: GetTasks
+                  timestamp: '2023-07-17T12:00:00Z'
+                traceId: abc123
+              summary: Invalid sort field
+      description: The request is malformed or contains invalid parameters.
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Authentication credentials are missing or invalid.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The requested resource was not found.
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Access denied. You lack permission to perform this operation.
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: An unexpected error occurred on the server.
+    ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The service is temporarily unavailable. Retry the request after a short delay.
+    Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The request conflicts with the current state of the resource.
+    BadRequest_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+          examples:
+            invalidPage:
+              value:
+                errors:
+                - code: 400
+                  context: GetTasks
+                  timestamp: '2023-07-17T12:00:00Z'
+                traceId: abc123
+              summary: Invalid page cursor
+            invalidSort:
+              value:
+                errors:
+                - code: 400
+                  context: GetTasks
+                  timestamp: '2023-07-17T12:00:00Z'
+                traceId: abc123
+              summary: Invalid sort field
+      description: Bad Request
+    Unauthorized_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+      description: Unauthorized
+    NotFound_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+      description: Not found
+    Forbidden_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+      description: Forbidden
+    InternalServerError_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+      description: Internal Server Error
+    ServiceUnavailable_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+      description: Service Unavailable
+  examples:
+    createSingleEventTriggerTask:
+      value:
+        name: Reload app4 when Task 1 succeeded
+        events:
+        - name: task1-succeeded
+          type: com.qlik.v1.task.run.finished
+          source: system-events.task
+          correlation:
+          - contextAttributeName: id
+            contextAttributeValue: task-1
+        states:
+        - end: true
+          name: App4.Reload
+          type: event
+          onEvents:
+          - actions:
+            - name: app4.reload
+              functionRef:
+                refName: AppReload
+                arguments:
+                  appId: app4
+                  partial: false
+            eventRefs:
+            - task1-succeeded
+          exclusive: false
+        description: This is a Reload Task Demo in Serverless Workflow Spec
+      summary: payload for creating a Task
+    Task:
+      value:
+        id: task-4
+        name: Reload app4 when Task 1,2,3 succeeded
+        events:
+        - name: task1-succeeded
+          type: com.qlik.v1.task.run.finished
+          source: system-events.task
+          correlation:
+          - contextAttributeName: id
+            contextAttributeValue: task-1
+        states:
+        - end: true
+          name: App4.Reload
+          type: event
+          onEvents:
+          - actions:
+            - name: app4.reload
+              functionRef:
+                refName: AppReload
+                arguments:
+                  appId: app4
+                  partial: false
+            eventRefs:
+            - task1-succeeded
+          exclusive: false
+        version: 1.0.0
+        description: This is a Reload Task Demo in Serverless Workflow Spec
+        specVersion: '0.8'
+      summary: Example of Task
+x-refined-from:
+- qliksense-scheduling-tasks.json
+- qliksense-tasks.json

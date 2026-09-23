@@ -1,0 +1,1077 @@
+openapi: 3.2.0
+info:
+  title: glossaries Terms API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Terms
+paths:
+  /api/v1/glossaries/{id}/terms:
+    get:
+      tags:
+      - Terms
+      summary: Returns a list of terms for a glossary
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/termsResult'
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: query
+        name: countTotal
+        schema:
+          type: boolean
+        description: Optional parameter to request total count for query
+      - in: query
+        name: filter
+        schema:
+          type: string
+        description: 'Optional SCIM filter to be used to filter terms
+
+          Usable fields are
+
+
+          - id
+
+          - name
+
+          - relatedInformation
+
+          - description
+
+          - abbreviation
+
+          - tags
+
+          - stewards
+
+          - status
+
+          - categories
+
+          '
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of terms to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - abbreviation
+          - +abbreviation
+          - -abbreviation
+          - description
+          - +description
+          - -description
+          - name
+          - +name
+          - -name
+          - status
+          - +status
+          - -status
+          - updated
+          - +updated
+          - -updated
+          type: string
+        description: Optional resource field name to sort on, eg. name. Can be prefixed with +/- to determine order, defaults to (+) ascending.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdTerms
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Terms
+      summary: Creates a new term
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/term'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Term version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully created a new term.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createTerm'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1GlossariesByIdTerms
+      x-operation-id-source: derived
+  /api/v1/glossaries/{id}/terms/{termId}:
+    get:
+      tags:
+      - Terms
+      summary: Retrieves a term
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/term'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Term version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully retrieved the term.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdTermsByTermId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Terms
+      summary: Updates term properties with json-patch formatted data
+      responses:
+        '204':
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Term version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Term updated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request. Payload could not be parsed to a JSON Patch or Patch operations are invalid.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not authorized.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The term to patch was not found.
+        '412':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Conditional update failed. Trying to modify an old version.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          headers:
+            retry-after:
+              schema:
+                type: integer
+                default: 1
+              description: The amount of seconds to wait before retrying the request.
+          description: Request has been rate limited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the term was fetched.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatchArray'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: patchApiV1GlossariesByIdTermsByTermId
+      x-operation-id-source: derived
+    put:
+      tags:
+      - Terms
+      summary: Updates a term
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/term'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Term version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully updated the term.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+        '412':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Conditional update failed. Trying to modify an old version.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the term was fetched.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createTerm'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: putApiV1GlossariesByIdTermsByTermId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Terms
+      summary: Deletes a term
+      responses:
+        '204':
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: deleteApiV1GlossariesByIdTermsByTermId
+      x-operation-id-source: derived
+  /api/v1/glossaries/{id}/terms/{termId}/actions/change-status:
+    post:
+      tags:
+      - Terms
+      summary: Changes the status of the term
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/term'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Term version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully updated the term status.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+        '412':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Conditional update failed. Trying to modify an old version.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      - in: query
+        name: status
+        schema:
+          enum:
+          - draft
+          - verified
+          - deprecated
+          type: string
+        required: true
+        description: The status to update to.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the term was fetched.
+      description: Only a steward can verify a term. Once the term is verified only a steward can modify the term. Note that links to resources are considered external relations that can be managed independently of the status of the term.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1GlossariesByIdTermsByTermIdActionsChangeStatus
+      x-operation-id-source: derived
+  /api/v1/glossaries/{id}/terms/{termId}/revisions:
+    get:
+      tags:
+      - Terms
+      summary: Retrieves previous revisions of a term
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/termsResult'
+          description: Successfully retrieved the revisions.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      - in: query
+        name: countTotal
+        schema:
+          type: boolean
+        description: Optional parameter to request total count for query
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of terms to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - update
+          - +update
+          - -update
+          type: string
+        description: Optional resource field name to sort on, eg. name. Can be prefixed with +/- to determine order, defaults to (+) ascending.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdTermsByTermIdRevisions
+      x-operation-id-source: derived
+components:
+  schemas:
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      description: An array of JSON Patch documents
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
+    termStatus:
+      type: object
+      required:
+      - type
+      - updatedBy
+      - updatedAt
+      properties:
+        type:
+          enum:
+          - draft
+          - verified
+          - deprecated
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          description: Time when the state was changed
+        updatedBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: The unique identifier of the user who last changed the status of the term
+      description: Terms status is used determine the status of a term
+      x-qlik-filterable: true
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    createTerm:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: Earnings Before Interest and Tax (EBIT)
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Finance
+          - Accounting
+        linksTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termCreateLinksTo'
+        stewards:
+          type: array
+          items:
+            type: string
+          example:
+          - 6305e8691a1d504df06e2ab9
+          - 63075b341a1d504df06ef2bc
+          description: This list contain the UIDs for the term's stewards
+        relatesTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termRelatesTo'
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+          - 123e4567-e89b-12d3-a456-426614174001
+          description: Category Ids that the term belongs to. NOTE! In case of import the string refers to the index of the category in the import document.
+        description:
+          type: string
+        abbreviation:
+          type: string
+          example: EBIT
+        relatedInformation:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":"In accounting and finance, earnings before interest and taxes (EBIT) is a measure of a firm''s profit that includes all incomes and expenses (operating and non-operating) except interest expenses and income tax expenses."}]}]'
+          description: 'Related information for the term. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    term:
+      type: object
+      required:
+      - id
+      - glossaryId
+      - revision
+      - name
+      - description
+      - relatedInformation
+      - abbreviation
+      - tags
+      - stewards
+      - createdBy
+      - createdAt
+      - updatedBy
+      - updatedAt
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        name:
+          type: string
+          example: Earnings Before Interest and Tax (EBIT)
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Finance
+          - Accounting
+        status:
+          $ref: '#/components/schemas/termStatus'
+        linksTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termLinksTo'
+        revision:
+          type: number
+          example: 0
+        stewards:
+          type: array
+          items:
+            type: string
+          example:
+          - 6305e8691a1d504df06e2ab9
+          - 63075b341a1d504df06e2abc
+          description: This list contains the UIDs of the terms data stewards.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+        relatesTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termRelatesTo'
+          description: Term relations assigned to this term.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        updatedBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: The uid of the user who last updated the term
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+          - 123e4567-e89b-12d3-a456-426614174001
+        glossaryId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+        abbreviation:
+          type: string
+          example: EBIT
+        referredRelations:
+          type: array
+          items:
+            $ref: '#/components/schemas/termRelatesTo'
+          description: Term relations where this term is the target of the relation.
+        relatedInformation:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":"In accounting and finance, earnings before interest and taxes (EBIT) is a measure of a firm''s profit that includes all incomes and expenses (operating and non-operating) except interest expenses and income tax expenses."}]}]'
+          description: 'Related information for the term. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
+    termsResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/term'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    termCreateLinksTo:
+      type: object
+      required:
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+          description: 'The type of relationship between the term and the linked resource:
+
+            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
+
+            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
+
+            '
+        resourceId:
+          type: string
+          description: The unique identifier of the resource (app or dataset) to link to the term.
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          description: The type of resource being linked to the term.
+        subResourceId:
+          type: string
+          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
+        subResourceName:
+          type: string
+          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
+      description: 'Describes links to other data assets such as analytics applications or dataset.
+
+
+        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
+
+        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
+
+        If any one subresource field is specified, all three are required.
+
+        '
+    termLinksTo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          x-qlik-filterable: true
+        name:
+          type: string
+          example: Sales App
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+        title:
+          type: string
+          description: Describes reason for item status during batch operation. E.g. why an error occurs during creation.
+        status:
+          type: number
+          example: 201
+          description: Http status code for item during batch operation.
+        openUrl:
+          type: string
+          example: https://tenant.qlik.com/sense/app/52bc4307-f9f2-4ce6-b521-67ca87018759
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          x-qlik-filterable: true
+        resourceId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Different formats based on resource type. Could be e.g. OID or UUID.
+          x-qlik-filterable: true
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          x-qlik-filterable: true
+        subResourceId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Different formats based on subresource type. Could be e.g. OID or UUID.
+          x-qlik-filterable: true
+        resourceSpaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        subResourceName:
+          type: string
+          example: Sales YTD
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          x-qlik-filterable: true
+        subResourceInvalid:
+          type: boolean
+          description: Populated and true if no matching subresource is found on parent resource. E.g. if a dataset field no longer exist but a link to that field exists.
+      description: Describes links to other entities such as qlik charts, dataset columns etc.
+    termRelatesTo:
+      type: object
+      required:
+      - termId
+      - type
+      properties:
+        type:
+          enum:
+          - isA
+          - hasA
+          - seeAlso
+          - synonym
+          - antonym
+          - classifies
+          - other
+          - replaces
+          - replacedBy
+          - hasSubtype
+          - preferredTerm
+          - seeInstead
+          - defines
+          - definedBy
+          type: string
+          description: How the term related to the other object
+        termId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: The unique identifier of the related term. NOTE! In case of import the string refers to the index of the term in the import document.

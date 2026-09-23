@@ -1,0 +1,257 @@
+openapi: 3.2.0
+info:
+  title: di-projects data project API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: data project
+paths:
+  /api/v1/di-projects:
+    get:
+      tags:
+      - data project
+      summary: List projects
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDiProjectsRsp'
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+      parameters:
+      - in: query
+        name: spaceId
+        schema:
+          type: string
+        required: false
+        description: Filter by space id
+      description: List data integration projects.
+      operationId: list_projects
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - data project
+      summary: Create a new project
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiProjectItemRsp'
+          description: Created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal Server Error
+      description: Creates a new data integration project in the specified space.
+      operationId: create_project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDiProjectReq'
+        required: true
+        description: The details of the project to create
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/di-projects/{projectId}:
+    get:
+      tags:
+      - data project
+      summary: Get a project
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiProjectItemRsp'
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not Found
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      description: Get a specific data integration project.
+      operationId: get_project
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  schemas:
+    PlatformType:
+      enum:
+      - SNOWFLAKE
+      - BIGQUERY
+      - SYNAPSE
+      - DATABRICKS
+      - REDSHIFT
+      - MSSQL
+      - FABRIC
+      - QLIK_QVD
+      - QLIK_QVD_CUSTOMER_MANAGED
+      - QLIK_OPEN_LAKEHOUSE
+      - NONE
+      type: string
+      example: SNOWFLAKE
+      description: 'The platform type of the project. Supported values: - SNOWFLAKE: Snowflake - BIGQUERY: Google BigQuery - SYNAPSE: Azure Synapse - DATABRICKS: Databricks - REDSHIFT: Amazon Redshift - MSSQL: Microsoft SQL Server - FABRIC: Microsoft Fabric (OneLake) - QLIK_QVD: Qlik-managed QVD - QLIK_QVD_CUSTOMER_MANAGED: Customer-managed QVD - QLIK_OPEN_LAKEHOUSE: Qlik Open Lakehouse - NONE: No platform (e.g. replication-only projects)
+
+        '
+    ListDiProjectsRsp:
+      type: object
+      properties:
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiProjectItemRsp'
+    CreateDiProjectReq:
+      type: object
+      properties:
+        name:
+          type: string
+          example: New Project
+          description: The name of the project
+        type:
+          enum:
+          - DATA_PIPELINE
+          - DATA_MOVEMENT
+          type: string
+          example: DATA_PIPELINE
+          description: The type of the project
+        space:
+          type: string
+          example: space-456
+          description: The ID of the space where the project will be created
+        description:
+          type: string
+          example: This is a new data integration project.
+          description: A description of the project
+        platformType:
+          $ref: '#/components/schemas/PlatformType'
+        platformConnection:
+          type: string
+          example: connection-string
+          description: The platform connection string
+        cloudStagingConnection:
+          type: string
+          example: storage-connection-string
+          description: The cloud staging connection string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    DiProjectItemRsp:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          enum:
+          - DATA_PIPELINE
+          - DATA_MOVEMENT
+          type: string
+          example: DATA_PIPELINE
+          description: The type of the project
+        ownerId:
+          type: string
+        spaceId:
+          type: string
+        description:
+          type: string
+        platformType:
+          $ref: '#/components/schemas/PlatformType'
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.

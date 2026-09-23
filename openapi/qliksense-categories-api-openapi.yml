@@ -1,0 +1,613 @@
+openapi: 3.2.0
+info:
+  title: glossaries Categories API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Categories
+paths:
+  /api/v1/glossaries/{id}/categories:
+    get:
+      tags:
+      - Categories
+      summary: Returns a list of categories for a glossary
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categoriesResult'
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: query
+        name: countTotal
+        schema:
+          type: boolean
+        description: Optional parameter to request total count for query
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of terms to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - description
+          - +description
+          - -description
+          - name
+          - +name
+          - -name
+          - update
+          - +update
+          - -update
+          type: string
+        description: Optional resource field name to sort on, eg. name. Can be prefixed with +/- to determine order, defaults to (+) ascending.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdCategories
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Categories
+      summary: Creates a new category
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/category'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Category version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully created a new category.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createCategory'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1GlossariesByIdCategories
+      x-operation-id-source: derived
+  /api/v1/glossaries/{id}/categories/{categoryId}:
+    get:
+      tags:
+      - Categories
+      summary: Retrieves a category
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/category'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Category version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully retrieved the category.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The category id.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the category was fetched.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdCategoriesByCategoryId
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Categories
+      summary: Updates category properties with json-patch formatted data
+      responses:
+        '204':
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Category version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Category updated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request. Payload could not be parsed to a JSON Patch or Patch operations are invalid.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not authorized.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The term to patch was not found.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          headers:
+            retry-after:
+              schema:
+                type: integer
+                default: 1
+              description: The amount of seconds to wait before retrying the request.
+          description: Request has been rate limited.
+      parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The category id.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the category was fetched.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatchArray'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: patchApiV1GlossariesByIdCategoriesByCategoryId
+      x-operation-id-source: derived
+    put:
+      tags:
+      - Categories
+      summary: Updates a category
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/category'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Category version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully updated the category.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The category id.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the category was fetched.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createCategory'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: putApiV1GlossariesByIdCategoriesByCategoryId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - Categories
+      summary: Deletes a category
+      responses:
+        '204':
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The id for the category to delete. All subcategories are also deleted
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The id of the glossary.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: deleteApiV1GlossariesByIdCategoriesByCategoryId
+      x-operation-id-source: derived
+components:
+  schemas:
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      description: An array of JSON Patch documents
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    category:
+      type: object
+      required:
+      - id
+      - glossaryId
+      - name
+      - description
+      - createdBy
+      - createdAt
+      - updatedBy
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
+        name:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        stewards:
+          type: array
+          items:
+            type: string
+            format: uid
+          example:
+          - 6305e8691a1d504df06e2ab9
+          - 63075b341a1d504df06e2abc
+          description: This list contains the UIDs of the stewards of the category.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        updatedBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: The uid of the user who last updated the category
+        glossaryId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    categoriesResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/category'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
+    createCategory:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'The name of the category. May not be identical to another category belonging to the same parent.
+
+            '
+        parentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        stewards:
+          type: array
+          items:
+            type: string
+            format: uid
+          example:
+          - 6305e8691a1d504df06e2ab9
+          - 63075b341a1d504df06e2abc
+          description: This list contains the UIDs of the stewards of the category.
+        description:
+          type: string

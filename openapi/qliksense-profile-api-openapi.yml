@@ -1,0 +1,444 @@
+openapi: 3.2.0
+info:
+  title: data-sets Profile API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Profile
+paths:
+  /api/v1/data-sets/{data-set-id}/profiles:
+    get:
+      tags:
+      - Profile
+      summary: Get profile for the given dataset and connection Id pair, if the profile…
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataSetProfile'
+          description: Return profiles of data set.
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDataSetProfile'
+          description: The profile is currently running.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      parameters:
+      - in: path
+        name: data-set-id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: dataConnectionIds
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: Comma-separated data connection IDs.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+        required: false
+        description: Page size limit.
+      - in: query
+        name: page
+        schema:
+          type: integer
+          format: int32
+          default: 0
+        required: false
+      - in: query
+        name: projections
+        schema:
+          type: array
+          items:
+            type: string
+          default: []
+        required: false
+        description: Comma-separated fields to return in the response.
+      - in: query
+        name: sort
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+      operationId: getDataSetProfiles
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  schemas:
+    Frequency:
+      type: object
+      properties:
+        value:
+          type: string
+        frequency:
+          type: integer
+          format: int64
+    Tag:
+      type: object
+      properties:
+        tag:
+          type: string
+        score:
+          type: number
+          format: double
+    BinnedFrequency:
+      type: object
+      properties:
+        binEdge:
+          type: number
+          format: double
+        frequency:
+          type: integer
+          format: int64
+    Classification:
+      type: object
+      properties:
+        pii:
+          type: boolean
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        sensitive:
+          type: boolean
+        obfuscation:
+          type: string
+    TableSample:
+      type: object
+      title: Table Sample
+      properties:
+        name:
+          type: string
+          readOnly: true
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableRecord'
+          readOnly: true
+        fieldNames:
+          type: array
+          items:
+            type: string
+          readOnly: true
+    TableProfile:
+      type: object
+      title: Table Profile
+      properties:
+        name:
+          type: string
+          readOnly: true
+        sizeInBytes:
+          type: integer
+          format: int64
+          readOnly: true
+        numberOfRows:
+          type: integer
+          format: int64
+          readOnly: true
+        fieldProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldProfile'
+          readOnly: true
+    PageDataSetProfile:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSetProfile'
+        page:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        links:
+          $ref: '#/components/schemas/Links'
+        pages:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    FieldProfile:
+      type: object
+      title: Field Profile
+      properties:
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        index:
+          type: integer
+          format: int32
+        median:
+          type: number
+          format: double
+        average:
+          type: number
+          format: double
+        dataType:
+          enum:
+          - DATE
+          - TIME
+          - DATETIME
+          - TIMESTAMP
+          - STRING
+          - DOUBLE
+          - DECIMAL
+          - INTEGER
+          - BOOLEAN
+          - BINARY
+          - CUSTOM
+          type: string
+        evenness:
+          type: number
+          format: double
+        kurtosis:
+          type: number
+          format: double
+        skewness:
+          type: number
+          format: double
+        fractiles:
+          type: array
+          items:
+            type: number
+            format: double
+        sampleValues:
+          type: array
+          items:
+            type: string
+        technicalName:
+          type: string
+        classification:
+          $ref: '#/components/schemas/Classification'
+        nullValueCount:
+          type: integer
+          format: int64
+        textValueCount:
+          type: integer
+          format: int64
+        zeroValueCount:
+          type: integer
+          format: int64
+        maxNumericValue:
+          type: number
+          format: double
+        maxStringLength:
+          type: integer
+          format: int64
+        minNumericValue:
+          type: number
+          format: double
+        minStringLength:
+          type: integer
+          format: int64
+        sumStringLength:
+          type: integer
+          format: int64
+        emptyStringCount:
+          type: integer
+          format: int64
+        sumNumericValues:
+          type: number
+          format: double
+        numericValueCount:
+          type: integer
+          format: int64
+        standardDeviation:
+          type: number
+          format: double
+        distinctValueCount:
+          type: integer
+          format: int64
+        mostFrequentValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/Frequency'
+        negativeValueCount:
+          type: integer
+          format: int64
+        positiveValueCount:
+          type: integer
+          format: int64
+        averageStringLength:
+          type: number
+          format: double
+        frequencyDistribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/BinnedFrequency'
+        lastSortedStringValue:
+          type: string
+        firstSortedStringValue:
+          type: string
+        sumSquaredNumericValues:
+          type: number
+          format: double
+    TableRecord:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+    Links:
+      type: object
+      properties:
+        last:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        first:
+          $ref: '#/components/schemas/Link'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    ProfileMetadata:
+      type: object
+      title: Profile Metadata
+      properties:
+        status:
+          enum:
+          - QUEUED
+          - RUNNING
+          - FINISHED
+          - FAILED
+          - INCOMPLETE
+          - CANCELLED
+          - STALE
+          - PARTIAL
+          - DEFERRED
+          type: string
+        messages:
+          type: array
+          items:
+            type: string
+        dataSetId:
+          type: string
+        resultType:
+          enum:
+          - NORMAL
+          - BASIC
+          type: string
+        connectionId:
+          type: string
+        lastLoadTime:
+          type: string
+          format: date-time
+        computationEndTime:
+          type: string
+          format: date-time
+        computationStartTime:
+          type: string
+          format: date-time
+    DataSetProfile:
+      type: object
+      title: Data Set Profile
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProfileMetadata'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableSample'
+          readOnly: true
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableProfile'
+          readOnly: true

@@ -1,0 +1,868 @@
+openapi: 3.2.0
+info:
+  title: ml Deployments API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Deployments
+paths:
+  /api/v1/ml/deployments:
+    get:
+      tags:
+      - Deployments
+      summary: List deployments
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentFindResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentsFilter'
+      - $ref: '#/components/parameters/deploymentsSort'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      operationId: getDeployments
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Deployments
+      summary: Create a deployment
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentPostResponse'
+          description: '`Created`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      operationId: postDeployment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeploymentInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}:
+    get:
+      tags:
+      - Deployments
+      summary: Get a deployment
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentGetResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: getDeployment
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Deployments
+      summary: Update a deployment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: patchDeployment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeploymentPatch'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Deployments
+      summary: Delete a deployment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: deleteDeployment
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/actions/activate-models:
+    post:
+      tags:
+      - Deployments
+      summary: Activate the model for this deployment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: activateDeploymentModels
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/actions/deactivate-models:
+    post:
+      tags:
+      - Deployments
+      summary: Deactivate the model for this deployment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: deactivateDeploymentModels
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/models/actions/add:
+    post:
+      tags:
+      - Deployments
+      summary: Add deployed models for this deployment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: addDeployedModels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployedModelsInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/models/actions/remove:
+    post:
+      tags:
+      - Deployments
+      summary: Remove deployed models from this deployment
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: removeDeployedModels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployedModelsInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  responses:
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    401Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unauthorized`'
+    404NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Not Found`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'
+    204NoContent:
+      description: '`No Content`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+  parameters:
+    deploymentsFilter:
+      in: query
+      name: filter
+      style: deepObject
+      schema:
+        type: string
+      example: '`filter=spaceId eq "UUID" and predictionEnabled eq "true" and nameContains co "abc"`'
+      required: false
+      description: 'Deployment fields by which you can filter responses.<br><br>
+
+        - `spaceId` ID string (or empty string for personal space) - ID of space in which deployment(s) exist
+
+        - `modelId` UUID string - By model ID
+
+        - `createdBy` ID string
+
+        - `ownerId` ID string
+
+        - `experimentId` UUID string - ID of experiment in which model(s) exist
+
+        - `experimentVersionId` UUID string - ID of experiment version in which model(s) exist
+
+        - `predictionId` UUID string - ID of prediction which exists on deployment
+
+        - `predictionEnabled` boolean - Are predictions enabled
+
+        - `exactName` string - Deployments with exact name. Names may not be unique.
+
+        - `nameContains` string - Deployments where name includes this. Names may not be unique
+
+        - `experimentType` string - Deployments that have models of the experiment type
+
+        '
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 32
+        maximum: 100
+      example: 10
+      required: false
+      description: Number of results per page. Default is 32.
+    deploymentsSort:
+      in: query
+      name: sort
+      style: form
+      schema:
+        $ref: '#/components/schemas/EnumSortDeployments'
+      example: sort=field1,+field2,-field3,...
+      required: false
+      description: 'Field(s) by which to sort response
+
+        '
+    deploymentId:
+      in: path
+      name: deploymentId
+      schema:
+        type: string
+      required: true
+      description: ID of the deployment
+    offset:
+      in: query
+      name: offset
+      schema:
+        type: integer
+      example: 32
+      required: false
+      description: Number of rows to skip before getting page[size]
+  schemas:
+    DeployedModelsInput:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              enum:
+              - deployed-models
+              type: string
+              default: deployed-models
+            attributes:
+              type: object
+              required:
+              - deployedModelIds
+              properties:
+                deployedModelIds:
+                  $ref: '#/components/schemas/DeployedModelIds'
+              additionalProperties: false
+          additionalProperties: false
+      description: Input values for adding deployed models to a deployment
+      additionalProperties: false
+    ResponseLinks:
+      type: object
+      required:
+      - first
+      - prev
+      - self
+      - next
+      - last
+      properties:
+        last:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the last set of responses from `limit` minus `offset` to
+
+                `limit`
+
+                '
+        next:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the next set of responses
+
+                '
+        prev:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the previous set of responses
+
+                '
+        self:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the current set of responses
+
+                '
+        first:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the first set of responses from `offset` 0 to count `limit``
+
+                '
+      description: Resource links included in paginated responses
+      additionalProperties: false
+    DeploymentPatch:
+      type: array
+      items:
+        type: object
+        example:
+          op: replace
+          path: /name
+          value: New Name
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: All patch requests use the replace operation
+          path:
+            enum:
+            - /name
+            - /description
+            - /spaceId
+            type: string
+            description: Path for the property you want to update
+          value:
+            $ref: '#/components/schemas/AnyType'
+        description: Values that can be patched.
+        additionalProperties: false
+    UpdatedAt:
+      type: string
+      description: Timestamp when this was updated
+    DeploymentFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - deployment
+                type: string
+              attributes:
+                $ref: '#/components/schemas/Deployment'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
+    CreatedAt:
+      type: string
+      description: Timestamp when this was created
+    AnyType:
+      description: Use for fields that can be `any` type (string, number, etc.)
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/APIError'
+      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
+
+        '
+      description: JSON string with list of error objects
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
+    ErrorMessage:
+      type: string
+      description: JSON string of error object
+    CreatedBy:
+      type: string
+      description: ID of the owner/user that created this entity.
+      x-qlik-filterable: true
+    FindResponseMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+      description: Meta for FIND operations
+      additionalProperties: false
+    EntityName:
+      type: string
+      description: Name of this entity
+      x-qlik-filterable: true
+    OwnerId:
+      type: string
+      description: ID of owner/user for this entity
+      x-qlik-filterable: true
+    DeployedModelIds:
+      type: array
+      items:
+        type: string
+        format: uuid
+        description: ID of a modelID within the tenant
+      description: IDs of all models deployed to the deployment
+    EntityId:
+      type: string
+      format: uuid
+      description: ID of this entity
+      x-qlik-filterable: true
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    Deployment:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - name
+      - spaceId
+      - description
+      - modelId
+      - enablePredictions
+      - deprecated
+      - createdBy
+      - ownerId
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          $ref: '#/components/schemas/EntityName'
+        errors:
+          $ref: '#/components/schemas/Errors'
+        modelId:
+          $ref: '#/components/schemas/ModelId'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        spaceId:
+          $ref: '#/components/schemas/SpaceId'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        createdBy:
+          $ref: '#/components/schemas/CreatedBy'
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        deprecated:
+          type: boolean
+          description: Whether this deployment is deprecated
+        description:
+          $ref: '#/components/schemas/EntityDescription'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorMessage'
+        deployedModelIds:
+          $ref: '#/components/schemas/DeployedModelIds'
+        enablePredictions:
+          type: boolean
+          description: Whether to allow predictions
+          x-qlik-filterable: true
+      description: 'A deployed model against which you can run predictions
+
+        '
+      additionalProperties: false
+    ModelId:
+      type: string
+      format: uuid
+      description: ID of the model
+      x-qlik-filterable: true
+    SpaceId:
+      type: string
+      description: Space ID for this entity (empty string for personal space)
+      x-qlik-filterable: true
+    DeploymentGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - deployment
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Deployment'
+          additionalProperties: false
+      additionalProperties: false
+    DeploymentPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - deployment
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Deployment'
+          additionalProperties: false
+      additionalProperties: false
+    DeploymentInput:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              enum:
+              - deployment
+              type: string
+              default: deployment
+            attributes:
+              type: object
+              required:
+              - name
+              - spaceId
+              - modelId
+              properties:
+                name:
+                  $ref: '#/components/schemas/EntityName'
+                modelId:
+                  $ref: '#/components/schemas/ModelId'
+                spaceId:
+                  $ref: '#/components/schemas/SpaceId'
+                deprecated:
+                  type: boolean
+                  description: Whether this deployment is deprecated
+                description:
+                  $ref: '#/components/schemas/EntityDescription'
+                enablePredictions:
+                  type: boolean
+                  description: Whether to allow real-time predictions
+              additionalProperties: false
+          additionalProperties: false
+      description: Input for creating a new deployment
+      additionalProperties: false
+    EntityDescription:
+      type: string
+      description: Description of this entity
+    EnumSortDeployments:
+      enum:
+      - createdAt
+      - +createdAt
+      - -createdAt
+      - name
+      - +name
+      - -name
+      - updatedAt
+      - +updatedAt
+      - -updatedAt
+      type: string

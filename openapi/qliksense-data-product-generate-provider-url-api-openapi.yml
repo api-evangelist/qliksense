@@ -1,0 +1,114 @@
+openapi: 3.2.0
+info:
+  title: data-governance/data-products Data Product Generate…
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: data-product-generate-provider-url
+paths:
+  /api/data-governance/data-products/actions/generate-provider-url:
+    post:
+      tags:
+      - data-product-generate-provider-url
+      summary: Generate provider URL
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateProviderUrlResponse'
+          description: OK response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataSetIdInQuery'
+      description: 'Generates a URL to access a third-party provider''s user interface.
+
+        Use this endpoint to integrate external services with your data product.'
+      operationId: generateProviderUiUrl
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  parameters:
+    DataSetIdInQuery:
+      in: query
+      name: dataSetId
+      schema:
+        type: string
+        minLength: 1
+      required: true
+      description: Unique identifier of the dataset.
+  schemas:
+    GenerateProviderUrlResponse:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string

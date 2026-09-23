@@ -1,0 +1,672 @@
+openapi: 3.2.0
+info:
+  title: Qliksense Computation API
+  version: ''
+  description: 'Operations tagged computation across 2 of this provider''s published API definitions: qliksense-data-governance-data-qualities.json, qliksense-data-qualities.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: computation
+paths:
+  /api/data-governance/data-qualities/batch-computations/{batchComputationId}:
+    get:
+      tags:
+      - computation
+      summary: Get batch computation status
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchComputationStatusResponse'
+          description: Batch computation status retrieved successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Batch computation not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      parameters:
+      - in: path
+        name: batchComputationId
+        schema:
+          type: string
+          example: a3f1b2c4-5678-90ab-cdef-1234567890ab
+          pattern: ^[a-zA-Z0-9-]{1,36}$
+        required: true
+        description: Batch computation ID for tracking progress of the overall data quality computations.
+      description: Retrieves the status of a batch computation, including per-dataset statuses.
+      operationId: getBatchComputationStatus
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/data-governance/data-qualities/computations:
+    post:
+      tags:
+      - computation
+      summary: Trigger data quality computation
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputationResponse'
+          headers:
+            location:
+              schema:
+                type: string
+              description: URL to retrieve the computation status.
+          description: Computation triggered. The response body contains the `computationId` for tracking progress.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      description: 'Triggers a full data quality computation for a dataset, running profile calculation followed by data quality
+
+        assessment. Returns a `computationId` that can be used to track progress via the computation status endpoint
+
+        (`GET /data-governance/data-qualities/computations/{computationId}`). The computation runs asynchronously.
+
+        Poll the status endpoint until `status` is `SUCCEEDED` or `FAILED`.'
+      operationId: requestDataQualityComputation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataQualityComputationRequest'
+        required: true
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: POST:/v1/data-qualities/computations
+      x-qlik-tier:
+        tier: special
+        limit: 10
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/data-governance/data-qualities/computations/{computationId}:
+    get:
+      tags:
+      - computation
+      summary: Get data quality computation status
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputationStatusResponse'
+          description: Current execution status of the computation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No computation found with the specified `computationId`.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      parameters:
+      - in: path
+        name: computationId
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]{1,36}$
+        example: 4db06daa-3117-412e-8fb4-b29c937f9a0e
+        required: true
+        description: The unique identifier of the computation, as returned by `POST /data-governance/data-qualities/computations`.
+      description: 'Retrieves the current execution status of a data quality computation. Poll this endpoint after triggering a
+
+        computation to determine when results are available. The `status` field returns one of `REQUESTED`,
+
+        `SUBMITTED`, `PROFILE_REQUESTED`, `SUCCEEDED`, `FAILED`, or `PROFILE_FAILED`.'
+      operationId: getDataQualityComputation
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/data-qualities/computations/{computationId}
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/data-qualities/computations:
+    post:
+      tags:
+      - computation
+      summary: Trigger data quality computation
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputationResponse'
+          headers:
+            link:
+              schema:
+                type: string
+            sunset:
+              schema:
+                type: string
+                format: date-time
+            Deprecation:
+              schema:
+                type: boolean
+          description: Computation triggered. The response body contains the `computationId` for tracking progress.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: User does not have access to the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: Requested service is not available.
+      description: 'Triggers a full data quality computation for a dataset, running profile calculation followed by data quality
+
+        assessment. Returns a `computationId` that can be used to track progress via the computation status endpoint
+
+        (`GET /data-qualities/computations/{computationId}`). The computation runs asynchronously.
+
+        Poll the status endpoint until `status` is `SUCCEEDED` or `FAILED`.'
+      operationId: requestDataQualityComputation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataQualityComputationRequest'
+        required: true
+      x-qlik-stability: stable
+      x-qlik-deprecated: true
+      x-qlik-visibility: public
+      x-qlik-replaced-by:
+      - namespace: data-governance
+        uniqueIdentifier: POST:/data-governance/data-qualities/computations
+      x-qlik-tier:
+        tier: special
+        limit: 10
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/data-qualities/computations/{computationId}:
+    get:
+      tags:
+      - computation
+      summary: Get data quality computation status
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputationStatusResponse'
+          headers:
+            link:
+              schema:
+                type: string
+            sunset:
+              schema:
+                type: string
+                format: date-time
+            Deprecation:
+              schema:
+                type: boolean
+          description: Current execution status of the computation
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: No computation found with the specified `computationId`.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: Requested service is not available.
+      parameters:
+      - in: path
+        name: computationId
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]{1,36}$
+        example: 4db06daa-3117-412e-8fb4-b29c937f9a0e
+        required: true
+        description: The unique identifier of the computation, as returned by `POST /data-governance/data-qualities/computations`.
+      description: 'Retrieves the current execution status of a data quality computation. Poll this endpoint after triggering a
+
+        computation to determine when results are available. The `status` field returns one of `REQUESTED`,
+
+        `SUBMITTED`, `PROFILE_REQUESTED`, `SUCCEEDED`, `FAILED`, or `PROFILE_FAILED`.'
+      operationId: getDataQualityComputation
+      x-qlik-stability: stable
+      x-qlik-deprecated: true
+      x-qlik-visibility: public
+      x-qlik-replaced-by:
+      - namespace: data-governance
+        uniqueIdentifier: GET:/data-governance/data-qualities/computations/{computationId}
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+components:
+  schemas:
+    ComputationErrorCode:
+      enum:
+      - DQ-100
+      - DQ-110
+      - DQ-120
+      - DQ-121
+      - DQ-130
+      - DQ-140
+      - DQ-150
+      - DQ-200
+      - DQ-300
+      - DQ-310
+      - DQ-320
+      - DQ-400
+      - DQ-500
+      - DQ-160
+      - DQ-330
+      - DQ-170
+      - DQ-171
+      type: string
+      description: Error code indicating the reason for failure.
+    BatchComputationStatusResponse:
+      type: object
+      required:
+      - batchComputationId
+      - status
+      - computationStatuses
+      properties:
+        status:
+          $ref: '#/components/schemas/BatchComputationAggregatedStatus'
+        batchComputationId:
+          type: string
+          description: The unique identifier of the batch computation.
+        computationStatuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchComputationDatasetStatusResponse'
+          description: Status of each individual dataset computation within the batch.
+      description: Status of a batch computation, including per-dataset breakdown.
+    ComputationStatusResponse:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ExecutionStatus'
+    SamplingConfiguration:
+      type: object
+      properties:
+        sampleMode:
+          enum:
+          - ABSOLUTE
+          - RELATIVE
+          type: string
+          example: ABSOLUTE
+          description: Specifies how the dataset is sampled. `ABSOLUTE` represents a fixed number of rows, while `RELATIVE` refers to a percentage of the total dataset rows.
+        sampleSize:
+          type: integer
+          format: int64
+          example: 10000
+          maximum: 100000
+          minimum: 1
+          description: The actual value of the selected sampling method size (either a fixed number for `ABSOLUTE` mode or a percentage for `RELATIVE` mode). Maximum allowed value for `ABSOLUTE` mode is `100000`.
+        executionMode:
+          enum:
+          - PUSHDOWN
+          - PULLUP
+          type: string
+          example: PULLUP
+          description: Specifies where the data quality computation takes place. In `PUSHDOWN` mode, it runs within the Cloud Data Warehouse (e.g., Snowflake, Databricks), whereas in `PULLUP` mode, it runs in Qlik Cloud.
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors that occurred.
+        traceId:
+          type: string
+          description: Trace identifier for debugging purposes.
+      description: Standard error response wrapper.
+    DataQualityComputationRequest:
+      type: object
+      allOf:
+      - type: object
+        properties:
+          datasetId:
+            $ref: '#/components/schemas/DatasetIdType'
+          connectionId:
+            $ref: '#/components/schemas/ConnectionIdType'
+      - $ref: '#/components/schemas/SamplingConfiguration'
+      example:
+        datasetId: 669144f5aa2d642638ef1dd0
+        sampleMode: ABSOLUTE
+        sampleSize: 10000
+        connectionId: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
+        executionMode: PULLUP
+      required:
+      - datasetId
+      description: 'Request payload for triggering a data quality computation. The `connectionId` is optional for file-based datasets.
+
+        If none of the sampling parameters are provided, the following defaults apply:
+
+        - `executionMode: PULLUP`
+
+        - `sampleMode: ABSOLUTE`
+
+        - `sampleSize: 1000`
+
+        '
+    ConnectionIdType:
+      type: string
+      example: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
+    DatasetIdType:
+      type: string
+      example: 669144f5aa2d642638ef1dd0
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code identifying the type of error.
+        title:
+          type: string
+          description: A short summary of the error.
+        detail:
+          type: string
+          description: A human-readable explanation of the error.
+      description: An individual error detail.
+    ExecutionStatus:
+      enum:
+      - PROFILE_REQUESTED
+      - PROFILE_FAILED
+      - REQUESTED
+      - SUBMITTED
+      - SUCCEEDED
+      - FAILED
+      type: string
+      example: SUCCEEDED
+      description: Status of a data quality computation.
+    ComputationResponse:
+      type: object
+      required:
+      - computationId
+      properties:
+        computationId:
+          type: string
+          description: The unique identifier of the triggered computation. Use this value to poll for status.
+      description: Response returned when a data quality computation is successfully triggered.
+    BatchComputationDatasetStatusResponse:
+      type: object
+      required:
+      - datasetId
+      - status
+      - computationId
+      properties:
+        status:
+          $ref: '#/components/schemas/ExecutionStatus'
+        datasetId:
+          $ref: '#/components/schemas/DatasetIdType'
+        errorCode:
+          $ref: '#/components/schemas/ComputationErrorCode'
+        computationId:
+          type: string
+          description: The unique identifier of the individual computation for this dataset.
+      description: Status of a single dataset within a batch computation.
+    BatchComputationAggregatedStatus:
+      enum:
+      - IN_PROGRESS
+      - FINISHED
+      type: string
+      example: IN_PROGRESS
+      description: Overall status aggregated across all datasets in the batch.
+    SamplingConfiguration_2:
+      type: object
+      properties:
+        sampleMode:
+          enum:
+          - ABSOLUTE
+          - RELATIVE
+          type: string
+          description: Specifies how the dataset is sampled. `ABSOLUTE` represents a fixed number of rows, while `RELATIVE` refers to a percentage of the total dataset rows.
+        sampleSize:
+          type: integer
+          format: int64
+          maximum: 100000
+          minimum: 1
+          description: The actual value of the selected sampling method size (either a fixed number for `ABSOLUTE` mode or a percentage for `RELATIVE` mode). Maximum allowed value for `ABSOLUTE` mode is `100000`.
+        executionMode:
+          enum:
+          - PUSHDOWN
+          - PULLUP
+          type: string
+          description: Specifies where the data quality computation takes place. In `PUSHDOWN` mode, it runs within the Cloud Data Warehouse (e.g., Snowflake, Databricks), whereas in `PULLUP` mode, it runs in Qlik Cloud.
+    ErrorResponse_2:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error_2'
+        traceId:
+          type: string
+    ConnectionIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
+    DatasetIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
+    Error_2:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    ExecutionStatus_2:
+      enum:
+      - PROFILE_REQUESTED
+      - PROFILE_FAILED
+      - REQUESTED
+      - SUBMITTED
+      - SUCCEEDED
+      - FAILED
+      type: string
+x-refined-from:
+- qliksense-data-governance-data-qualities.json
+- qliksense-data-qualities.json

@@ -1,0 +1,356 @@
+openapi: 3.2.0
+info:
+  title: analytics/change-stores Editable Columns API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: editable-columns
+paths:
+  /api/analytics/change-stores/{storeId}/editable-columns:
+    get:
+      tags:
+      - editable-columns
+      summary: Get a list of editable-columns
+      responses:
+        '200':
+          $ref: '#/components/responses/GetEditableColumnsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+      parameters:
+      - $ref: '#/components/parameters/JWTAuthHeader'
+      - $ref: '#/components/parameters/StoreId'
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/FilterParamEditableColumns'
+      - $ref: '#/components/parameters/SortParamEditableColumns'
+      description: Returns a paginated list of editable-columns that belong to the specified change store, supporting optional filtering and sorting.
+      operationId: listEditableColumns
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  parameters:
+    SortParamEditableColumns:
+      in: query
+      name: sort
+      schema:
+        type: string
+        pattern: ^[+-]?(createdAt|updatedAt|columnName)$
+      example: +createdAt
+      description: Sort results by a field, with optional + (asc) or - (desc) prefix
+    StoreId:
+      in: path
+      name: storeId
+      schema:
+        type: string
+      example: 507f1f77bcf86cd799439011
+      required: true
+      description: The id of the change store.
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: string
+      example: 1a2b3c
+      required: false
+      description: Used for cursor-based pagination.
+    FilterParamEditableColumns:
+      in: query
+      name: filter
+      schema:
+        type: string
+      examples:
+        type:
+          value: type eq "editable-text"
+          summary: Filter by editable-text type
+        createdBy:
+          value: createdBy eq "6900ba43dff989b49c63cbe8"
+          summary: Filter by createdBy
+        typeDatePicker:
+          value: type eq "editable-date"
+          summary: Filter by editable-date type
+        logicalExpression:
+          value: spaceId eq "6900babe81b5b8bb19e6f92a" and usedBy.appId pr and columnName co "column"
+          summary: Filter by logical expression
+        columnNameContains:
+          value: columnName co "column"
+          summary: Filter by columnName containing text
+      required: false
+      description: "A SCIM filter expression used to filter the result.\nThe filter parameter allows complex logical expressions using comparison operators and grouping.\n- **Supported attributes:** `referenceId`, `spaceId`, `createdBy`, `type`, `columnName`, `usedBy.appId`, `usedBy.chartId` \n- **Supported operators:** `eq`, `ne`, `co`, `sw`, `ew`, `pr`, `gt`, `ge`, `lt`, `le`  \n- **Logical operators:** `and`, `or`, `not`\n"
+    JWTAuthHeader:
+      in: header
+      name: Authorization
+      schema:
+        type: string
+      required: true
+      description: The JWT used for authentication. Send the JWT in the AuthRequest header using the Bearer schema.
+    LimitParam:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        maximum: 100
+      example: 100
+      required: false
+      description: Defines the size of each paged result (maximum 100).
+  schemas:
+    UsedBy:
+      type: object
+      required:
+      - appId
+      - chartId
+      properties:
+        appId:
+          type: string
+          example: af604296-14f6-48c2-8bac-12ce49ba83cc
+          description: The id of the app.
+        chartId:
+          type: string
+          example: chartId
+          description: The id of the chart.
+    ListDefaultData:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 10
+        currentPageCount:
+          type: integer
+          example: 2
+    EditableColumn:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6835b0135cf7147c01979e5d
+          description: The unique id of the editable column.
+        type:
+          enum:
+          - editable-text
+          - editable-selector
+          - editable-date
+          type: string
+          example: editable-text
+          description: Type of the editable column.
+        config:
+          type: object
+          properties:
+            maxDate:
+              type: string
+              format: date
+              example: '2025-12-31'
+              description: Maximum selectable date for editable-date columns (ISO 8601 date).
+            minDate:
+              type: string
+              format: date
+              example: '2025-01-01'
+              description: Minimum selectable date for editable-date columns (ISO 8601 date).
+            selectorType:
+              enum:
+              - fixed
+              - dynamic
+              - ''
+              type: string
+              example: fixed
+              description: Type of selector. fixed, dynamic or empty if editable-column type is not editable-selector.
+            selectorValues:
+              type: array
+              items:
+                type: object
+                properties:
+                  label:
+                    type: string
+                    example: label1
+                    maxLength: 256
+                    description: The Label of the selector.
+                  value:
+                    type: string
+                    example: value1
+                    maxLength: 256
+                    description: The Value of the selector.
+              maxItems: 100
+              description: List of value/label key/value pairs.
+            selectorExpression:
+              type: string
+              example: BEL~Belgium|DNK~Denmark|SWE~Sweden
+              description: Expression used to create dynamic selector values.
+          description: Configuration values required for the editable-column type.
+        usedBy:
+          $ref: '#/components/schemas/UsedByArray'
+        spaceId:
+          type: string
+          example: 6835b0135cf7147c01979e5d
+          description: The space id that the editable columns are associated with.
+        storeId:
+          type: string
+          example: 507f1f77bcf86cd799439011
+          description: Store id.
+        tenantId:
+          type: string
+          example: tenantID
+          description: Tenant id.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-05-27T12:29:07.178Z'
+          description: Timestamp of creation.
+        createdBy:
+          type: string
+          example: testUser
+          description: The user who created the column.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '0001-01-01T00:00:00Z'
+          description: Timestamp of last update.
+        columnName:
+          type: string
+          example: Price4
+          description: Name of the editable column.
+        referenceId:
+          type: string
+          example: 6835b0135cf7147c01979e5d
+          description: The unique id used to keep a reference of editable columns in multiple spaces.
+        publishRefId:
+          type: string
+          example: 6835b0135cf7147c01979e5d
+          description: The publish reference id used to relate editable columns between published apps/spaces.
+        selectorValues:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                example: label1
+                maxLength: 256
+                description: The Label of the selector.
+              value:
+                type: string
+                example: value1
+                maxLength: 256
+                description: The Value of the selector.
+          maxItems: 100
+          description: List of value/label key/value pairs.
+    UsedByArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/UsedBy'
+      description: List of chart/app references.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: list of errors
+        traceId:
+          type: string
+    Pagination:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<next-cursor>
+            prev:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<previous-cursor>
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<self-cursor>
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          example: FOO-123
+          description: The error code.
+        title:
+          type: string
+          example: You don't have permission to view this resource.
+          description: Description of the error.
+        detail:
+          type: string
+          example: This resource requires app read privileges.
+          description: Extra information about the error.
+      description: An error object.
+  responses:
+    ForbiddenResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    GetEditableColumnsResponse:
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ListDefaultData'
+            - $ref: '#/components/schemas/Pagination'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EditableColumn'
+      description: Returns a list of editable-columns.
+    BadRequestResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Bad Request
+    InternalServerErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    UnauthorizedResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
+    NotFoundResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found

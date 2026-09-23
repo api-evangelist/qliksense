@@ -1,0 +1,640 @@
+openapi: 3.2.0
+info:
+  title: assistants Starters API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: starters
+paths:
+  /api/v1/assistants/{assistantId}/starters:
+    get:
+      tags:
+      - starters
+      summary: List starters
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/startersResult'
+          description: Successfully retrieved the assistant's starters.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The assistant was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant from which to retrieve starters.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of starters to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - QUESTION
+          - -QUESTION
+          - CREATED
+          - -CREATED
+          - UPDATED
+          - -UPDATED
+          type: string
+        description: Optional resource field name to sort on, case insensitive, e.g. `name`. Can be prefixed with `-` to set descending order; defaults to ascending.
+      description: Retrieves the list of starters for the assistant.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1AssistantsByAssistantIdStarters
+      x-operation-id-source: derived
+    post:
+      tags:
+      - starters
+      summary: Create a starter
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starter'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant starter version.
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the assistant starter.
+          description: Successfully created a new assistant starter.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format or starter limit exceeded.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The user does not have privileges to perform the requested action.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The assistant was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant in which to create the starter.
+      description: Creates a new starter for the assistant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createStarter'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1AssistantsByAssistantIdStarters
+      x-operation-id-source: derived
+  /api/v1/assistants/{assistantId}/starters/{starterId}:
+    get:
+      tags:
+      - starters
+      summary: Get a starter
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starter'
+          description: Successfully retrieved the starter.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The starter was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant containing the requested starter.
+      - in: path
+        name: starterId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the starter to retrieve.
+      description: Retrieves the specified starter.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1AssistantsByAssistantIdStartersByStarterId
+      x-operation-id-source: derived
+    put:
+      tags:
+      - starters
+      summary: Update a starter
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starter'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version.
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the assistant.
+          description: Successfully updated the starter.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The record was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant containing the requested starter.
+      - in: path
+        name: starterId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the starter to retrieve.
+      description: Updates the specified starter.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Starter'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: putApiV1AssistantsByAssistantIdStartersByStarterId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - starters
+      summary: Delete a starter
+      responses:
+        '204':
+          description: Successful operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The assistant was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant containing the requested starter.
+      - in: path
+        name: starterId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the starter to delete.
+      description: Deletes the starter and all of its resources.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: deleteApiV1AssistantsByAssistantIdStartersByStarterId
+      x-operation-id-source: derived
+  /api/v1/assistants/{assistantId}/starters/{starterId}/followups/{followupId}:
+    put:
+      tags:
+      - starters
+      summary: Update a Followup
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starter'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Assistant version.
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the Followup.
+          description: Successfully updated the Followup.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The record was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant containing the requested Followup.
+      - in: path
+        name: followupId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the Followup to update.
+      - in: path
+        name: starterId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the starter containing the requested Followup.
+      description: Updates the specified Followup.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/followup'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: putApiV1AssistantsByAssistantIdStartersByStarterIdFollowupsByFollowupId
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - starters
+      summary: Delete a Followup
+      responses:
+        '204':
+          description: Successful operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The request is in incorrect format.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseCopy'
+                x-qlik-merge-conflict: true
+          description: The Followup was not found.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the assistant containing the requested Followup.
+      - in: path
+        name: followupId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the Followup to delete.
+      - in: path
+        name: starterId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the starter containing the requested Followup.
+      description: Deletes the specified Followup.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: deleteApiV1AssistantsByAssistantIdStartersByStarterIdFollowupsByFollowupId
+      x-operation-id-source: derived
+components:
+  schemas:
+    followup:
+      type: object
+      required:
+      - question
+      - followups
+      - id
+      - recommendedAnswer
+      - additionalContext
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the Followup.
+        question:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Starter sample question.
+        additionalContext:
+          type: string
+          description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
+        recommendedAnswer:
+          $ref: '#/components/schemas/recommendedAnswer'
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    errorResponseCopy:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    errorResponseCodeCopy:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    startersResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Starter'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    recommendedAnswer:
+      type: object
+      required:
+      - content
+      - contentType
+      properties:
+        content:
+          type: string
+          description: Starter answer content.
+        contentType:
+          type: string
+          example: text | markdown | html
+          description: Answer type of content.
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    createStarter:
+      type: object
+      required:
+      - question
+      properties:
+        question:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Starter sample question.
+        followups:
+          type: array
+          items:
+            $ref: '#/components/schemas/followup'
+          maxItems: 5
+          description: List of followups.
+        additionalContext:
+          type: string
+          description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
+        recommendedAnswer:
+          $ref: '#/components/schemas/recommendedAnswer'
+    Starter:
+      type: object
+      required:
+      - id
+      - question
+      - createdAt
+      - updatedAt
+      - additionalContext
+      - recommendedAnswer
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the starter.
+        question:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Starter sample question.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the starter was created.
+        followups:
+          type: array
+          items:
+            $ref: '#/components/schemas/followup'
+          description: List of followups.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the starter was updated.
+        additionalContext:
+          type: string
+          description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
+        recommendedAnswer:
+          $ref: '#/components/schemas/recommendedAnswer'

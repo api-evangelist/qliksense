@@ -1,0 +1,160 @@
+openapi: 3.2.0
+info:
+  title: ml Jobs API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Jobs
+paths:
+  /api/v1/ml/jobs/{corrType}/{corrId}/actions/cancel:
+    post:
+      tags:
+      - Jobs
+      summary: Cancel jobs
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '405':
+          $ref: '#/components/responses/405MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/corrType'
+      - $ref: '#/components/parameters/corrId'
+      description: Cancels jobs for an experiment version or batch prediction.
+      operationId: cancelJobs
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  responses:
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    405MethodNotAllowed:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Method Not Allowed`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+    204NoContent:
+      description: '`No Content`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+  schemas:
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    CorrType:
+      enum:
+      - batch-prediction
+      - experiment-version
+      type: string
+      description: 'Types names of correlated resources (batch ''prediction'' and
+
+        experiment_version)
+
+        '
+  parameters:
+    corrId:
+      in: path
+      name: corrId
+      schema:
+        type: string
+      required: true
+      description: The ID of a correlated resource of corrType
+    corrType:
+      in: path
+      name: corrType
+      schema:
+        $ref: '#/components/schemas/CorrType'
+      required: true
+      description: The type of a resource paired with a corrId

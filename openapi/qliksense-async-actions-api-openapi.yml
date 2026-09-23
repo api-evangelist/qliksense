@@ -1,0 +1,191 @@
+openapi: 3.2.0
+info:
+  title: di-projects async actions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: async actions
+paths:
+  /api/v1/di-projects/actions/{actionId}:
+    get:
+      tags:
+      - async actions
+      summary: Get Action status
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncActionDetails'
+          description: OK
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Action not found
+      parameters:
+      - in: path
+        name: actionId
+        schema:
+          type: string
+        examples:
+          example:
+            value: action-123456
+        required: true
+        description: Identifier of the action.
+      - in: query
+        name: detailed
+        schema:
+          type: boolean
+          default: false
+        required: false
+        description: Specifies whether to include detailed status information in the response. Set to `true` to return detailed information.
+      description: Retrieves the status of an asynchronous operation.
+      operationId: get_async_action_status
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  schemas:
+    AsyncCallStatus:
+      enum:
+      - PENDING
+      - EXECUTING
+      - COMPLETED
+      - FAILED
+      - CANCELED
+      - SKIPPED
+      type: string
+      description: State of the action
+    AsyncActionError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        details:
+          type: string
+          description: Additional error details
+        message:
+          type: string
+          description: Error message
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    AsyncActionTaskProgress:
+      type: object
+      properties:
+        failed:
+          type: integer
+          description: Number of tasks that failed
+        pending:
+          type: integer
+          description: Number of tasks pending execution
+        skipped:
+          type: integer
+          description: Number of tasks skipped due to conflicts
+        canceled:
+          type: integer
+          description: Number of tasks canceled
+        completed:
+          type: integer
+          description: Number of tasks completed successfully
+        executing:
+          type: integer
+          description: Number of tasks currently executing
+    AsyncActionDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Prepare project myspace.demoproject
+          description: Name of the async operation
+        type:
+          $ref: '#/components/schemas/AsyncActionType'
+        error:
+          $ref: '#/components/schemas/AsyncActionError'
+        state:
+          $ref: '#/components/schemas/AsyncCallStatus'
+        endTime:
+          type: string
+          format: date-time
+        startTime:
+          type: string
+          format: date-time
+        taskDetails:
+          type: array
+          items:
+            type: object
+            properties:
+              info:
+                type: string
+                description: Additional details about task state
+              name:
+                type: string
+              error:
+                $ref: '#/components/schemas/AsyncActionError'
+              state:
+                $ref: '#/components/schemas/AsyncCallStatus'
+              taskId:
+                type: string
+        taskProgress:
+          $ref: '#/components/schemas/AsyncActionTaskProgress'
+    AsyncActionType:
+      enum:
+      - PROJECT_PREPARE
+      - PROJECT_VALIDATE
+      - TASK_PREPARE
+      - TASK_VALIDATE
+      - PROJECT_IMPORT
+      type: string
+      description: Type of action being performed

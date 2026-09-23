@@ -1,0 +1,285 @@
+openapi: 3.2.0
+info:
+  title: Qliksense Search API
+  version: ''
+  description: 'Operations tagged search across 2 of this provider''s published API definitions: qliksense-assistants.json, qliksense-knowledgebases.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Search
+paths:
+  /api/v1/assistants/{assistantId}/actions/search:
+    post:
+      tags:
+      - Search
+      summary: Perform search on an assistant
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+          description: Chunks retrieved successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The user does not have privileges to perform the requested action.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Assistant is not found.
+        '405':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Method is not allowed.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Prompt processing error.
+      parameters:
+      - in: path
+        name: assistantId
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID for the Assistant of interest
+      description: Perform search with either `SIMPLE` or `FULL` mode. SIMPLE does semantic search while FULL does semantic search, reranking and hybrid search. Use topN to control number of chunks in response, max limit is 50. Default to 5.
+      operationId: searchAssistants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/searchRequest'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/knowledgebases/{id}/actions/search:
+    post:
+      tags:
+      - Search
+      summary: Search chunks from a knowledge base
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+          description: Chunks retrieved successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The user does not have privileges to perform the requested action.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Knowledgebase is not found.
+        '405':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Method is not allowed.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Prompt processing error.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+        required: true
+        description: The ID of the knowledgebase
+      description: Execute search with either `SIMPLE` or `FULL` mode. SIMPLE does semantic search while FULL will also do reranking and include keyword based chunks. Use topN to control number of chunks in response, max limit is 50. Default to 5.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/searchRequest'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1KnowledgebasesByIdActionsSearch
+      x-operation-id-source: derived
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+components:
+  schemas:
+    chunk:
+      type: object
+      required:
+      - text
+      - chunkMeta
+      properties:
+        text:
+          type: string
+          example: LLM stands for Large Language Model
+          description: Text content of the chunk
+        chunkMeta:
+          $ref: '#/components/schemas/kbChunkMeta'
+        tfidfScore:
+          type: number
+          example: 0.9
+          description: Score from keyword search
+        searchSource:
+          type: string
+          description: search method for the chunk, e.g. `semantic search`, `keyword search` or `semantic and keyword search`
+        semanticScore:
+          type: number
+          example: 0.63
+          description: Similarity score from embedding match
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'Custom error codes
+
+            * AE-1 - Internal processing error
+
+            * AE-2 - Incorrect request
+
+            * AE-3 - Authentication issue
+
+            * AE-4 - Prompt is rejected
+
+            * AE-5 - Resource is not found
+
+            * AE-6 - API usage rate limit is exceeded
+
+            * AE-7 - Method is not allowed
+
+            '
+        title:
+          type: string
+        detail:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    searchResponse:
+      type: object
+      required:
+      - chunks
+      properties:
+        chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/chunk'
+          description: Retrieved document chunks
+    kbChunkMeta:
+      type: object
+      required:
+      - documentId
+      - datasourceId
+      - chunkId
+      - source
+      - knowledgeBaseId
+      properties:
+        source:
+          type: string
+          description: source of chunk
+        chunkId:
+          type: string
+          description: chunkId
+        documentId:
+          type: string
+          description: documentId of chunk
+        datasourceId:
+          type: string
+          description: datasourceId of chunk
+        knowledgeBaseId:
+          type: string
+          description: knowledgeBaseId of chunk
+      description: Metadata about the chunk
+    searchRequest:
+      type: object
+      required:
+      - prompt
+      properties:
+        topN:
+          type: integer
+          example: 20
+          description: Number of chunks to return in results.
+        prompt:
+          type: string
+          example: What is LLM?
+          description: Query text or question to search.
+        searchMode:
+          enum:
+          - SIMPLE
+          - FULL
+          type: string
+          example: SIMPLE
+          description: 'Search mode to use.   Allowed values: `SIMPLE` and `FULL`.   Default: `SIMPLE`.
+
+            '
+x-refined-from:
+- qliksense-assistants.json
+- qliksense-knowledgebases.json

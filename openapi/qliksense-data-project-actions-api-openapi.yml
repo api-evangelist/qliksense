@@ -1,0 +1,204 @@
+openapi: 3.2.0
+info:
+  title: di-projects data project actions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: data project actions
+paths:
+  /api/v1/di-projects/{projectId}/actions/prepare:
+    post:
+      tags:
+      - data project actions
+      summary: Prepare a project
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncActionRsp'
+          headers:
+            Location:
+              $ref: '#/components/headers/AsyncActionLocation'
+          description: Preparation started
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Invalid request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Project not found
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      description: Prepares the data integration project and its tasks for execution.
+      operationId: prepare_project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrepareProjectReq'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/di-projects/{projectId}/actions/validate:
+    post:
+      tags:
+      - data project actions
+      summary: Validate project
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncActionRsp'
+          headers:
+            Location:
+              $ref: '#/components/headers/AsyncActionLocation'
+          description: Validation started
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Invalid request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Project not found
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+        examples:
+          example:
+            value: 65424a71c11367914c1e659b
+        required: true
+        description: Identifier of the data project.
+      description: Validates the data integration project and its tasks.
+      operationId: validate_project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateProjectReq'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    ValidateProjectReq:
+      type: object
+      properties:
+        selectedTasks:
+          $ref: '#/components/schemas/TaskSelectionList'
+    PrepareProjectReq:
+      type: object
+      properties:
+        allowRecreate:
+          type: boolean
+          default: false
+        selectedTasks:
+          $ref: '#/components/schemas/TaskSelectionList'
+    TaskSelectionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DiProjectOperationSelectedTask'
+      description: Array of tasks to prepare. Leave empty to trigger project-level orchestration using built-in logic (same as in the user interface).
+    DiProjectOperationSelectedTask:
+      type: object
+      required:
+      - taskId
+      properties:
+        taskId:
+          type: string
+          description: Task identifier
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    AsyncActionRsp:
+      type: object
+      required:
+      - actionId
+      properties:
+        actionId:
+          type: string
+          example: action-123456
+          description: Identifier for tracking the action
+  headers:
+    AsyncActionLocation:
+      schema:
+        type: string
+      examples:
+        example:
+          value: /api/v1/di-projects/actions/action-123456
+      description: URL to check the status of the async action

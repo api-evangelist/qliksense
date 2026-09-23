@@ -1,0 +1,614 @@
+openapi: 3.2.0
+info:
+  title: spaces Shares API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Shares
+paths:
+  /api/v1/spaces/{spaceId}/shares:
+    get:
+      tags:
+      - Shares
+      summary: List space shares
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shares'
+          description: Shares retrieved.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Shares retrieve operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space containing the shares.
+      - in: query
+        name: groupId
+        schema:
+          type: string
+        description: The ID of the group to which the resource is shared.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: 10
+        required: false
+        description: Maximum number of shares to return.
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: The name of the shared resource.
+      - in: query
+        name: next
+        schema:
+          type: string
+        required: false
+        description: The next page cursor. Next links make use of this.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        required: false
+        description: The previous page cursor. Previous links make use of this.
+      - in: query
+        name: resourceId
+        schema:
+          type: string
+        description: The ID of the shared resource.
+      - in: query
+        name: resourceType
+        schema:
+          type: string
+        description: The type of the shared resource.
+      - in: query
+        name: type
+        schema:
+          $ref: '#/components/schemas/ShareType'
+        required: false
+        description: The type of share. `user` shares assign to a specific user, `group` shares assign to a specific group, and `link` shares provide anonymous access to a resource.
+      - in: query
+        name: userId
+        schema:
+          type: string
+        description: The ID of the user to which the resource is shared.
+      description: Retrieves the shares of the space matching the query.
+      operationId: getSpaceShares
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Shares
+      summary: Create a space share
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Share'
+          description: Share created.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Share create operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Share already exists. `assigneeId` must be unique.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space of the share.
+      description: Creates a share.
+      operationId: createSpaceShare
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShareCreate'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/spaces/{spaceId}/shares/{shareId}:
+    get:
+      tags:
+      - Shares
+      summary: Retrieve a space share
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Share'
+          description: Share retrieved.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Share retrieve operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied or share not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: shareId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the share to retrieve.
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to which the share belongs.
+      description: Retrieves a single space share by ID.
+      operationId: getSpaceShareById
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Shares
+      summary: Update a space share
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Share'
+          description: Share patched (updated).
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Share patch (update) operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Share not found or access denied.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: shareId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the share to update.
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to which the share belongs.
+      description: Updates properties of a space share (roles, and disabled state for link shares).
+      operationId: patchShareById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharePatch'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Shares
+      summary: Delete a space share
+      responses:
+        '204':
+          description: Share deleted.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: share delete operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied or share not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: shareId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the share to delete.
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to which the share belongs.
+      description: Deletes a space share.
+      operationId: deleteSpaceShareById
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    SharePatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed.
+          path:
+            enum:
+            - /roles
+            - /disabled
+            type: string
+            description: Field of Share to be patched (updated).
+          value:
+            type: string
+            description: 'The value to be used within the operations.
+
+              - roles: The roles assigned to the assigneeId.
+
+              - disabled: To disable the share (effective ONLY for link shares).
+
+              '
+        description: A JSONPatch document as defined by RFC 6902
+    Shares:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Share'
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - count
+          properties:
+            count:
+              type: integer
+              description: The total number of Shares matching the current filter.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    ShareCreate:
+      required:
+      - type
+      - assigneeId
+      - roles
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          $ref: '#/components/schemas/ShareType'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShareRoleType'
+          description: The roles assigned to the assigneeId.
+        assigneeId:
+          type: string
+          format: uid
+          description: The userId or groupId based on the type.
+        resourceId:
+          type: string
+          format: uid
+          description: The resource id for the shared item.
+        resourceType:
+          type: string
+          format: uid
+          description: The resource type for the shared item.
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL that defines the resource.
+    Errors:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code.
+          x-qlik-deprecated: true
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+          x-qlik-deprecated: true
+        title:
+          type: string
+          description: Summary of the problem.
+          x-qlik-deprecated: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+          x-qlik-deprecated: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+          x-qlik-deprecated: true
+        traceId:
+          type: string
+    Error:
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.
+    Share:
+      required:
+      - id
+      - type
+      - assigneeId
+      - role
+      - spaceId
+      - tenantId
+      - resourceType
+      - resourceId
+      properties:
+        id:
+          type: string
+          format: uid
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/ShareType'
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            self:
+              $ref: '#/components/schemas/Link'
+            space:
+              $ref: '#/components/schemas/Link'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShareRoleType'
+          description: The roles assigned to the assigneeId.
+        spaceId:
+          type: string
+          format: uid
+          readOnly: true
+        disabled:
+          type: boolean
+          description: If the share is disabled (effective ONLY for link shares).
+        tenantId:
+          type: string
+          format: uid
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID of the user who created the share.
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedBy:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID of the user who updated the share.
+        assigneeId:
+          type: string
+          format: uid
+          description: The userId or groupId based on the type.
+        resourceId:
+          type: string
+          format: uid
+          description: The ID of the shared resource.
+        resourceName:
+          type: string
+          maxLength: 256
+          description: The name of the shared resource.
+        resourceType:
+          enum:
+          - app
+          description: The type of the shared resource.
+    ShareRoleType:
+      enum:
+      - consumer
+      - contributor
+      - basicconsumer
+      type: string
+      description: 'The roles for the space share. Supported roles by space type:
+
+        - Shared: consumer
+
+        - Managed: basicconsumer, consumer, contributor
+
+        '
+    ShareType:
+      enum:
+      - user
+      - group
+      - link
+      type: string

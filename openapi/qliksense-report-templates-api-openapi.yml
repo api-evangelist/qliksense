@@ -1,0 +1,658 @@
+openapi: 3.2.0
+info:
+  title: Report Templates API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Report Templates
+paths:
+  /api/v1/report-templates:
+    get:
+      tags:
+      - Report Templates
+      summary: Get descriptive info for the specified templates
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTemplatesResponse'
+          description: The templates list was retrieved.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+      parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: If present, restrict the number of returned items to this value.
+      - in: query
+        name: name
+        schema:
+          type: string
+        example: Sales
+        description: Template name to search and filter for. Case-insensitive open search with wildcards both as prefix and suffix.
+      - in: query
+        name: ownerId
+        schema:
+          type: string
+        example: 0rTsxGg_rtsZAs19Zib_421n6haydjIh
+        description: Return the templates for the specified owner.
+      - in: query
+        name: skip
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2147483647
+          minimum: 0
+        description: If present, skip this number of the returned values in the result set (facilitates paging).
+      - in: query
+        name: sort
+        schema:
+          type: array
+          items:
+            enum:
+            - name
+            - +name
+            - -name
+            - createdAt
+            - +createdAt
+            - -createdAt
+            - updatedAt
+            - +updatedAt
+            - -updatedAt
+            - type
+            - +type
+            - -type
+            type: string
+        example: +name
+        description: Field to sort by. Prefix with +/- to indicate ascending/descending. By default, the sort order is ascending.
+      - in: query
+        name: sourceAppId
+        schema:
+          type: string
+        example: 78fb8e8d-bc83-4da1-b0d1-b0dc0a5c3e5b
+        description: Return the templates that are using the specified app as data source.
+      operationId: getReportTemplates
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Report Templates
+      summary: Create a new report template
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateResponse'
+          description: New template was created.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        '413':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: The template file exceeds the user's quota for maximum file to upload.
+      operationId: createReportTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTemplateRequest'
+        description: The upload request.
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/report-templates/{id}:
+    get:
+      tags:
+      - Report Templates
+      summary: Get descriptive info for the specified report template
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateResponse'
+          description: The template was located.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: A template with the specified ID was not found.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+        description: The ID of the report template.
+      operationId: getReportTemplate
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Report Templates
+      summary: Patch an existing report template
+      responses:
+        '204':
+          description: Patch successfully applied to template.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: A template with the specified ID was not found.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Conflict
+        '413':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: The template file exceeds the user's quota for maximum file to upload.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+        description: The ID of the report template to patch.
+      operationId: patchReportTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Operation'
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Operation'
+        description: A JSON patch request as defined by RFC 6902.
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    put:
+      tags:
+      - Report Templates
+      summary: Update an existing report template
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplateResponse'
+          description: The template was updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: A template with the specified ID was not found.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Conflict
+        '413':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: The template file exceeds the user's quota for maximum file to upload.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+        description: The ID of the report template to update.
+      operationId: updateReportTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTemplateRequest'
+        description: The upload request.
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Report Templates
+      summary: Delete the specified report template
+      responses:
+        '204':
+          description: The template was deleted.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+        description: The ID of the report template to delete.
+      operationId: deleteReportTemplate
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/report-templates/{id}/actions/download:
+    post:
+      tags:
+      - Report Templates
+      summary: Download the template file of the specified report template
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: The template file.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+        description: The ID of the report template.
+      operationId: downloadReportTemplate
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    ReportTemplateResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          example: c35f4b70-3ce4-4a30-b62b-2aef16943bc4
+          description: The template ID
+        name:
+          type:
+          - string
+          - 'null'
+          example: Sales by category
+          description: Template name
+        type:
+          enum:
+          - excel
+          - pixelPerfect
+          - html
+          - powerPoint
+          - word
+          type: string
+          example: excel
+          description: Template type
+        ownerId:
+          type:
+          - string
+          - 'null'
+          example: 0rTsxGg_rtsZAs19Zib_421n6haydjIh
+          description: The user that this template is scoped to.
+        createdAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2026-01-01T12:00:00.000Z'
+          description: The date and time when the template was created.
+        createdBy:
+          type:
+          - string
+          - 'null'
+          example: 0rTsxGg_rtsZAs19Zib_421n6htydjIh
+          description: The id of the user who created the template.
+        updatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2026-01-01T12:00:00.000Z'
+          description: The date and time when the template was last updated.
+        updatedBy:
+          type:
+          - string
+          - 'null'
+          example: 0rTsxGg_rtsZAs19Zib_421n6htydjIh
+          description: The id of the user who last updated the template.
+        description:
+          type:
+          - string
+          - 'null'
+          example: Sales grouped by product category
+          description: Template description
+        sourceAppId:
+          type:
+          - string
+          - 'null'
+          example: c4c70012-29c7-47c2-820d-4ff74cb164a9
+          description: The id of the app that this template is using as data source.
+        sourceAppName:
+          type:
+          - string
+          - 'null'
+          example: Qlik app
+          description: The name of the app that this template is using as data source.
+        metadataVersion:
+          type: integer
+          format: int32
+          example: 1
+          description: The template metadata version
+      additionalProperties: false
+    UpdateTemplateRequest:
+      type: object
+      required:
+      - name
+      - temporaryContentId
+      properties:
+        name:
+          type: string
+          example: Sales by category
+          maxLength: 255
+          minLength: 1
+          description: Template name
+        description:
+          type:
+          - string
+          - 'null'
+          example: Sales grouped by product category
+          maxLength: 255
+          description: Template description
+        sourceAppAction:
+          enum:
+          - validate
+          - replace
+          type: string
+          format: Enumeration
+          default: validate
+          description: Specifies the action to perform with the new source app. Use "validate" to verify that the source app of the uploaded template matches the target app. Use "replace" to migrate the uploaded template to the target app by replacing the source app id.
+        temporaryContentId:
+          type: string
+          example: 69b14f2bb93332c3ff8c64b8
+          minLength: 1
+          description: The ID of a previously uploaded temporary content file
+      additionalProperties: false
+    ErrorResult:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorResponseItem'
+          description: List of errors and their properties.
+        statusCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    CreateTemplateRequest:
+      type: object
+      required:
+      - name
+      - temporaryContentId
+      properties:
+        name:
+          type: string
+          example: Sales by category
+          maxLength: 255
+          minLength: 1
+          description: Template name
+        description:
+          type:
+          - string
+          - 'null'
+          example: Sales grouped by product category
+          maxLength: 255
+          description: Template description
+        sourceAppId:
+          type:
+          - string
+          - 'null'
+          example: 78fb8e8d-bc83-4da1-b0d1-b0dc0a5c3e5b
+          description: The ID of the app that this template is using as data source. The id stored in the template file metadata is used if no value is specified.
+        sourceAppAction:
+          enum:
+          - validate
+          - replace
+          type: string
+          format: Enumeration
+          default: validate
+          description: Specifies the action to perform with the given source app id. Use "validate" to verify that the template source app matches the provided value. Use "replace" to migrate the template to a different app by replacing the source app id.
+        temporaryContentId:
+          type: string
+          example: 69b14f2bb93332c3ff8c64b8
+          minLength: 1
+          description: The ID of a previously uploaded temporary content file
+      additionalProperties: false
+    GetTemplatesResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReportTemplateResponse'
+          description: The current page data.
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+      additionalProperties: false
+    PaginationLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/PaginationLink'
+        prev:
+          $ref: '#/components/schemas/PaginationLink'
+        self:
+          $ref: '#/components/schemas/PaginationLink'
+      additionalProperties: false
+    ErrorResponseItem:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          example: REPTPL-400001
+          description: The error code.
+        meta:
+          type:
+          - object
+          - 'null'
+          description: Additional error metadata.
+        title:
+          type:
+          - string
+          - 'null'
+          example: Cursor not formatted correctly.
+          description: Summary of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          example: Invalid encoding of cursor.
+          description: A human-readable explanation specific to this occurrence of the problem.
+      additionalProperties: false
+    PaginationLink:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: The URL for the pagination link.
+      additionalProperties: false
+    Operation:
+      type: object
+      properties:
+        op:
+          type:
+          - string
+          - 'null'
+        from:
+          type:
+          - string
+          - 'null'
+        path:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - object
+          - 'null'
+      additionalProperties: false

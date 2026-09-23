@@ -1,0 +1,193 @@
+openapi: 3.2.0
+info:
+  title: data-alerts alerting settings API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: alerting settings
+paths:
+  /api/v1/data-alerts/settings:
+    get:
+      tags:
+      - alerting settings
+      summary: Get data alert settings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertingSettings'
+          description: The alerting settings have been successfully returned
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      description: Retrieves the current settings for data alerts.
+      operationId: alertingSettingsGet
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    put:
+      tags:
+      - alerting settings
+      summary: Update data alert settings
+      responses:
+        '204':
+          description: Alerting settings have been successfully updated.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request body
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Request was denied at this time. This could happen when requesting to disable/enable the feature while there is an ongoing operation to enable/disable the feature
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      description: Updates the settings for data alerts. User must be assigned the `TenantAdmin` role.
+      operationId: alertingSettingsUpload
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertingSettingsUpload'
+        required: true
+        description: Request for updating the alerting settings
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    AlertingSettingsUpload:
+      type: object
+      required:
+      - enable-data-alerting
+      properties:
+        enable-data-alerting:
+          type: boolean
+          example: true
+          description: true if data-alerting feature is enabled. A status change could potentially result in a considerable amount of API operations to enable/disable triggers. Enabling this feature also requires that the license has this feature enabled.
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    AlertingSettings:
+      type: object
+      required:
+      - enable-data-alerting
+      properties:
+        tenantId:
+          type: string
+          example: cgdsAumGmQ6l0Bi7CUKt9V8P_Y9GL0sC
+          readOnly: true
+          description: These persisted alerting settings are only available for this tenant. Extracted from request JWT.
+        dataAlertsLimits:
+          type: number
+          example: 50
+          readOnly: true
+          description: Represents the number of data alerts limit to be consumed by the user either as an owner or recipient
+        dataAlertsConsumed:
+          type: number
+          example: 40
+          readOnly: true
+          description: Represents the number of data alerts consumed by the user either as an owner or recipient
+        enable-data-alerting:
+          type: boolean
+          example: true
+          description: true if data-alerting feature is enabled for this tenant. Enabling this feature also requires that the license has this feature enabled.
+        data-alerting-license-status:
+          enum:
+          - enabled
+          - disabled
+          type: string
+          description: Whether the license for the tenant has the data alerting feature enabled.
+        max-recipients-in-target-access:
+          type: integer
+          example: 100
+          readOnly: true
+          description: The maximum number of recipients that can be present in an alerting task in TARGET_ACCESS mode. New recipients cannot be added when this limit is exceeded
+        data-alerting-feature-operation-status:
+          enum:
+          - none
+          - enabling
+          - disabling
+          type: string
+          example: disabling
+          readOnly: true
+          description: This indicates that there is an ongoing operation to either disable or enable the data alerting feature. none means that no such operation is ongoing. enabling/disabling means that system is currently enabling/disabling the feature
+        data-alerting-feature-operation-status-change:
+          type: string
+          example: '2020-09-02T13:44:33Z'
+          readOnly: true
+          description: UTC timestamp of the most recent change of data-alerting-feature-operation-status. If there has not been any such change, this is the timestamp of the initial creation of the record.

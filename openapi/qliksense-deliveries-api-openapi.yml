@@ -1,0 +1,343 @@
+openapi: 3.2.0
+info:
+  title: webhooks Deliveries API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Deliveries
+paths:
+  /api/v1/webhooks/{id}/deliveries:
+    get:
+      tags:
+      - Deliveries
+      summary: Return deliveries for a webhook
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryList'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The webhook's unique identifier.
+      - in: query
+        name: eventType
+        schema:
+          type: string
+        description: Filter resources by event-type.
+      - in: query
+        name: limit
+        schema:
+          type: number
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: Maximum number of deliveries to retrieve.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Cursor to the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Cursor to the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - status
+          - +status
+          - -status
+          - triggeredAt
+          - +triggeredAt
+          - -triggeredAt
+          type: string
+          default: -triggeredAt
+        description: Field to sort by, prefix with -/+ to indicate order.
+      - in: query
+        name: status
+        schema:
+          enum:
+          - success
+          - fail
+          type: string
+        description: Filter resources by status (success or fail).
+      description: Returns deliveries for a specific webhook. Delivery history is stored for 1 week.
+      operationId: getWebhookDeliveryList
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/webhooks/{id}/deliveries/{deliveryId}:
+    get:
+      tags:
+      - Deliveries
+      summary: Return details for specific delivery
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+          description: OK Response
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: deliveryId
+        schema:
+          type: string
+        required: true
+        description: The delivery's unique identifier.
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The webhook's unique identifier.
+      description: Returns details for a specific delivery.
+      operationId: getWebhookDelivery
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+  /api/v1/webhooks/{id}/deliveries/{deliveryId}/actions/resend:
+    post:
+      tags:
+      - Deliveries
+      summary: Resend delivery
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+          description: OK Response
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Not found.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      parameters:
+      - in: path
+        name: deliveryId
+        schema:
+          type: string
+        required: true
+        description: The delivery's unique identifier.
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The webhook's unique identifier.
+      description: Resends the delivery with the same payload.
+      operationId: resendDelivery
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    Delivery:
+      type: object
+      readOnly: true
+      required:
+      - id
+      - webhookId
+      - triggeredAt
+      - status
+      - eventType
+      properties:
+        id:
+          type: string
+          description: The delivery's unique identifier.
+        status:
+          enum:
+          - success
+          - fail
+          type: string
+          description: The status of delivery.
+        request:
+          type: object
+          properties:
+            url:
+              type: string
+              description: URL used for this delivery.
+            body:
+              type: object
+              description: The sent body/payload of the delivery.
+            headers:
+              type: object
+              example:
+                headerName: headerValue
+                encryptedHeadersName: '**OMITTED**'
+              description: 'Headers sent for this delivery, values of encryptedHeaders are omitted as such "**OMITTED**". Maximum size: 2048 bytes for non-encrypted headers + 2048 bytes for encrypted headers.'
+              additionalProperties:
+                type: string
+          description: Request details for the delivery.
+        response:
+          type: object
+          properties:
+            body:
+              type: string
+              description: The received body of the delivery.
+            headers:
+              type: object
+              example:
+                headerName: headerValue
+                encryptedHeadersName: '**OMITTED**'
+              description: 'Headers received for this delivery, values of encryptedHeaders are omitted as such "**OMITTED**". Maximum size: 2048 bytes for non-encrypted headers + 2048 bytes for encrypted headers.'
+              additionalProperties:
+                type: string
+            statusCode:
+              type: number
+              description: The HTTP status code of the response.
+          description: Response details for the delivery.
+        eventType:
+          type: string
+          description: The name of the triggering event-type.
+        webhookId:
+          type: string
+          description: The unique webhook identifier that the delivery is for.
+        triggeredAt:
+          type: string
+          format: date-time
+          description: The UTC timestamp when the delivery was triggered.
+        statusMessage:
+          type: string
+          description: The status message of the delivery.
+    DeliveryList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delivery'
+        links:
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The unique code for the error.
+        title:
+          type: string
+          description: A summary of what went wrong.
+        detail:
+          type: string
+          description: May be used to provide additional details.
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL to a resource request.
+  responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
+    ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Service Unavailable
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Bad Request

@@ -1,0 +1,237 @@
+openapi: 3.2.0
+info:
+  title: transports Email Config Actions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: email-config-actions
+paths:
+  /api/v1/transports/email-config/actions/send-test-email:
+    post:
+      tags:
+      - email-config-actions
+      summary: Send test email
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/smtpResult'
+          description: Attempted send request. Response body indicates success/failure
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantAdminError'
+          description: Must be a tenant admin.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendTestMailConfigNotFoundError'
+          description: No email config exists for tenant.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsPublic'
+          description: Unexpected error.
+      description: Attempts to sends a test email using the active configuration, with the supplied email info (subject, body, recipient).
+      operationId: sendTestEmailAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/email'
+        required: true
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/transports/email-config/actions/validate:
+    post:
+      tags:
+      - email-config-actions
+      summary: Get configuration status
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/smtpCheck'
+          description: Returns boolean isValid for the email config.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsPublic'
+          description: Unexpected error.
+      description: Returns the current isValid value for the email configuration for the tenant. Does not attempt to connect to a server to verify the connection or send a test email. Will return false if no email configuration exists.
+      operationId: validateAction
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/transports/email-config/actions/verify-connection:
+    post:
+      tags:
+      - email-config-actions
+      summary: Verify configuration
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/smtpResult'
+          description: Performed email connection. Response body indicates success/failure
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyConnectionConfigNotFoundError'
+          description: No email config exists for tenant.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsPublic'
+          description: Unexpected error.
+      description: Attempts to verify connection to email server using a low-level protocol handshake to confirm the server is reachable and the credentials are valid, without sending a test email.
+      operationId: verifyConnectionAction
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    TenantAdminError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - code
+            - title
+            properties:
+              code:
+                type: string
+                example: ROLECHECK-1
+                description: The error code.
+              title:
+                type: string
+                example: Must be a tenant admin
+                description: Summary of the problem
+            description: An error object
+    VerifyConnectionConfigNotFoundError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - code
+            - title
+            properties:
+              code:
+                type: string
+                example: VERIFYCONNECTION-1
+                description: The error code.
+              title:
+                type: string
+                example: No email config for tenant
+                description: Summary of the problem
+            description: An error object
+    email:
+      properties:
+        body:
+          type: string
+          description: email body
+        subject:
+          type: string
+          description: email subject
+        recipient:
+          type: string
+          description: email recipient (email address)
+    smtpResult:
+      type: object
+      properties:
+        message:
+          type: string
+          description: error message from SMTP middleware .. a bit technical but could be useful to administrator
+        success:
+          type: boolean
+          description: was SMTP operation successful or not. Other fields herein provide more detail
+        connectionFailed:
+          type: boolean
+          description: could not resolve domain name, connection refused, connection timed out, SSL mismatch
+        smtpResponseCode:
+          type: integer
+          description: smtp result code string from the SMTP server. eg. "250 2.6.0"
+    ErrorsPublic:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorPublic'
+    smtpCheck:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          description: true if smtp config is correct and complete. Will return false if smtp-config does not exist at all
+        errorCode:
+          type: string
+          example: INVALID_CREDENTIALS
+          description: Indicates error with this email configuration. OK means that no error is indicated. Possible values are OK, CONFIG_NOT_SET, INCOMPLETE_CONFIG, INVALID_CREDENTIALS, PROVIDER_ERROR
+    SendTestMailConfigNotFoundError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - code
+            - title
+            properties:
+              code:
+                type: string
+                example: SENDTESTEMAIL-1
+                description: The error code.
+              title:
+                type: string
+                example: No email config for tenant
+                description: Summary of the problem
+            description: An error object
+    ErrorPublic:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        title:
+          type: string
+          description: Summary of the problem.
+      description: An error object.

@@ -1,0 +1,353 @@
+openapi: 3.2.0
+info:
+  title: Groups Settings API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: groups-settings
+paths:
+  /api/v1/groups/settings:
+    get:
+      tags:
+      - groups-settings
+      summary: Get group settings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSettings'
+          description: The requested tenant's group settings.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not authorized.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: The operation failed due to insufficient permissions.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          headers:
+            retry-after:
+              schema:
+                type: integer
+                default: 1
+              description: The amount of seconds to wait before retrying the request.
+          description: Request has been rate limited.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      description: Returns the tenant's group settings, such as whether automatic group creation and IdP group synchronization are enabled or disabled, and roles assigned to system groups.
+      operationId: groups_api_get_settings
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - groups-settings
+      summary: Update group settings
+      responses:
+        '204':
+          description: Config updated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request. Payload could not be parsed to a JSON Patch or Patch operations are invalid.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Not authorized.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: The operation failed due to insufficient permissions.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          headers:
+            retry-after:
+              schema:
+                type: integer
+                default: 1
+              description: The amount of seconds to wait before retrying the request.
+          description: Request has been rate limited.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      description: Updates the tenant's group settings, such as whether automatic group creation and IdP group synchronization are enabled or disabled, and roles assigned to system groups.
+      operationId: patchSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingsPatchSchema'
+        required: true
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    AssignedRolesRefNames:
+      type: array
+      items:
+        required:
+        - name
+        properties:
+          name:
+            type: string
+            example: TenantAdmin
+            description: The name of the role
+      example:
+      - name: TenantAdmin
+      description: An array of role reference names.
+    GroupSettings:
+      type: object
+      required:
+      - tenantId
+      - autoCreateGroups
+      - links
+      properties:
+        links:
+          type: object
+          required:
+          - self
+          properties:
+            self:
+              type: object
+              required:
+              - href
+              properties:
+                href:
+                  type: string
+                  format: uri
+                  example: http://mytenant.us.qlikcloud.com/api/v1/groups/settings
+                  description: Link to the current group settings document
+          description: Contains Links for current document
+        tenantId:
+          type: string
+          format: uid
+          description: The unique tenant identifier.
+        systemGroups:
+          type: object
+          properties:
+            '000000000000000000000001':
+              type: object
+              properties:
+                id:
+                  enum:
+                  - '000000000000000000000001'
+                  type: string
+                  description: The ID of the Everyone group. This value will not change and is immutable.
+                name:
+                  enum:
+                  - com.qlik.Everyone
+                  type: string
+                  description: The name of the Everyone group. This value will not change and is immutable.
+                enabled:
+                  type: boolean
+                  default: true
+                  description: For Everyone, this is always `true` and can't be patched.
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2021-03-22T10:01:02Z'
+                  description: The timestamp for when the Everyone group was created.
+                assignedRoles:
+                  $ref: '#/components/schemas/AssignedRoles'
+                lastUpdatedAt:
+                  type: string
+                  format: date-time
+                  example: '2021-03-22T10:01:02Z'
+                  description: The timestamp for when the Everyone group was last updated.
+        syncIdpGroups:
+          type: boolean
+          example: false
+          description: Determines if groups should be created on login.
+          x-qlik-deprecated: true
+        autoCreateGroups:
+          type: boolean
+          example: false
+          description: Determines if groups should be created on login.
+      description: represents a GroupSetting document
+    SettingsPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/SettingsPatch'
+      example:
+      - op: replace
+        path: /syncIdpGroups
+        value: true
+      - op: replace
+        path: /autoCreateGroups
+        value: true
+      - op: replace
+        path: /systemGroups/000000000000000000000001/assignedRoles
+        value:
+        - name: Steward
+      description: An array of JSON Patches for the groups settings.
+    SettingsPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          enum:
+          - /autoCreateGroups
+          - /syncIdpGroups
+          - /systemGroups/{id}/assignedRoles
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: boolean
+          - $ref: '#/components/schemas/AssignedRolesRefIDs'
+          - $ref: '#/components/schemas/AssignedRolesRefNames'
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    AssignedRoles:
+      type: array
+      items:
+        type: object
+        required:
+        - id
+        - name
+        - type
+        - level
+        properties:
+          id:
+            type: string
+            format: uid
+            example: 507f191e810c19729de860ea
+            description: The unique role identitier
+          name:
+            type: string
+            example: A Custom Role
+            readOnly: true
+            description: The role name
+          type:
+            enum:
+            - default
+            - custom
+            type: string
+            example: custom
+            readOnly: true
+            description: The type of role
+          level:
+            enum:
+            - admin
+            - user
+            type: string
+            example: user
+            readOnly: true
+            description: The role level
+        description: represents a role entity stored in the database
+      description: An array of role references. Visibility dependant on access level. Must have access to roles to view other users' assigned roles.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON Pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+        status:
+          type: integer
+          description: The HTTP status code.
+      description: An error object describing the error.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: GROUPS-7
+          title: Not found
+          status: 404
+        traceId: 00000000000000000137b213cf12a77b
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: An array of errors related to the operation.
+        traceId:
+          type: string
+          description: A unique identifier for tracing the error.
+      description: The error response object describing the error from the handling of an HTTP request.
+    AssignedRolesRefIDs:
+      type: array
+      items:
+        type: object
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            format: uid
+            example: 507f191e810c19729de860ea
+            description: The unique role identitier
+        description: represents a role entity stored in the database
+      example:
+      - id: 507f191e810c19729de860ea
+      description: An array of role reference identifiers.

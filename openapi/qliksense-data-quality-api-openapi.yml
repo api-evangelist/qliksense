@@ -1,0 +1,794 @@
+openapi: 3.2.0
+info:
+  title: Qliksense Data Quality API
+  version: ''
+  description: 'Operations tagged data-quality across 2 of this provider''s published API definitions: qliksense-data-governance-data-qualities.json, qliksense-data-qualities.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Data Quality
+paths:
+  /api/data-governance/data-qualities/field-qualities/actions/filter:
+    post:
+      tags:
+      - Data Quality
+      summary: Retrieve field qualities for multiple datasets
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldQualitiesFilterResponse'
+          description: Field qualities retrieved successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      description: 'Retrieves the latest computed field quality metrics for a list of datasets. The maximum number of datasets is 100.
+
+        When a dataset has been analyzed through multiple connections, the response returns the result from the most recently computed connection.'
+      operationId: getFieldQualitiesFiltered
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldQualitiesFilterRequest'
+        required: true
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/data-governance/data-qualities/global-results:
+    get:
+      tags:
+      - Data Quality
+      summary: Get global data quality
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetQualityGlobalResultsResponse'
+          description: Global quality results for the dataset, including counts of valid, invalid, empty, and total sample cells per connection.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No quality results found for the specified dataset.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      parameters:
+      - $ref: '#/components/parameters/DatasetIdInQuery'
+      - $ref: '#/components/parameters/OptionalConnectionIdInQuery'
+      description: 'Retrieves the global quality results for a dataset, showing counts of valid, invalid, empty, and total
+
+        sample cells.'
+      operationId: getDataQualityGlobalResults
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-replaces:
+      - namespace: ''
+        uniqueIdentifier: GET:/v1/data-qualities/global-results
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/data-governance/data-qualities/global-results/actions/filter:
+    post:
+      tags:
+      - Data Quality
+      summary: Get datasets data quality global results
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataQualityByDatasetIdResponse'
+          description: Data quality global results for the requested datasets.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Requested service is not available.
+      description: 'Retrieves the latest computed global quality metrics for a list of datasets. The maximum number of datasets is 100.
+
+        When a dataset has been analyzed through multiple connections, the response returns the result from the most recently computed connection.'
+      operationId: getDataQualityGlobalResultsFiltered
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetListRequest'
+        required: true
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+  /api/v1/data-qualities/global-results:
+    get:
+      tags:
+      - Data Quality
+      summary: Get global data quality
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetQualityGlobalResultsResponse'
+          headers:
+            link:
+              schema:
+                type: string
+            sunset:
+              schema:
+                type: string
+                format: date-time
+            Deprecation:
+              schema:
+                type: boolean
+          description: Global quality results for the dataset, including counts of valid, invalid, empty, and total sample cells per connection.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: No quality results found for the specified dataset.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: Internal Server Error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+          description: Requested service is not available.
+      parameters:
+      - $ref: '#/components/parameters/DatasetIdInQuery'
+      - $ref: '#/components/parameters/OptionalConnectionIdInQuery'
+      description: 'Retrieves the global quality results for a dataset, showing counts of valid, invalid, empty, and total
+
+        sample cells.'
+      operationId: getDataQualityGlobalResults
+      x-qlik-stability: stable
+      x-qlik-deprecated: true
+      x-qlik-visibility: public
+      x-qlik-replaced-by:
+      - namespace: data-governance
+        uniqueIdentifier: GET:/data-governance/data-qualities/global-results
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    servers:
+    - url: https://{tenant}.{region}.qlikcloud.com
+      variables:
+        region:
+          default: us
+          description: The region the tenant is hosted in
+        tenant:
+          default: your-tenant
+          description: Name of the tenant that will be called
+components:
+  schemas:
+    DatasetFieldQualityRequestItem:
+      type: object
+      required:
+      - datasetId
+      properties:
+        datasetId:
+          $ref: '#/components/schemas/DatasetIdType'
+      description: A single dataset identifier in a field quality filter request.
+    SchemaRulesQuality:
+      type: object
+      properties:
+        ruleId:
+          type: string
+          description: The unique identifier of the rule.
+        quality:
+          $ref: '#/components/schemas/SchemaRuleQuality'
+        ruleMappingId:
+          type: string
+          description: The unique identifier of the rule mapping.
+      description: Quality assessment for a specific rule applied to a field.
+    FieldQualitiesFilterResponse:
+      type: object
+      required:
+      - fieldQualities
+      properties:
+        fieldQualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetFieldQualityResult'
+          description: List of field quality results per dataset.
+      description: Response containing field quality results for the requested datasets.
+    FieldQuality:
+      type: object
+      required:
+      - name
+      - type
+      - quality
+      properties:
+        name:
+          type: string
+          description: The name of the field.
+        type:
+          $ref: '#/components/schemas/FieldInformation'
+        quality:
+          $ref: '#/components/schemas/Quality'
+      description: Quality metrics for a single field.
+    FieldInformation:
+      type: object
+      required:
+      - kind
+      properties:
+        kind:
+          $ref: '#/components/schemas/FieldTypeEnum'
+        name:
+          type: string
+          example: customer_id
+          description: The name of the standard type (if applicable).
+        precision:
+          $ref: '#/components/schemas/PrecisionEnum'
+        semanticTypeId:
+          type: string
+          example: 9996fbb942b02a6987534999
+          description: The ID of the semantic type (if applicable).
+      description: Information about the type of the field.
+    ConnectionIdType:
+      type: string
+      example: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
+    DatasetIdType:
+      type: string
+      example: 669144f5aa2d642638ef1dd0
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
+    ExecutionStatus:
+      enum:
+      - PROFILE_REQUESTED
+      - PROFILE_FAILED
+      - REQUESTED
+      - SUBMITTED
+      - SUCCEEDED
+      - FAILED
+      type: string
+      example: SUCCEEDED
+      description: Status of a data quality computation.
+    ComputedUserInformation:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Identifier of the user.
+      description: Details about the user who computed the quality.
+    FieldQualitiesFilterRequest:
+      type: object
+      required:
+      - datasets
+      properties:
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetFieldQualityRequestItem'
+          maxItems: 100
+          minItems: 1
+          description: List of datasets to retrieve field qualities for.
+    DatasetFieldQualityResult:
+      type: object
+      required:
+      - datasetId
+      - computed
+      - fields
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldQuality'
+          description: List of fields and their quality metrics.
+        computed:
+          $ref: '#/components/schemas/ComputedInformation'
+        datasetId:
+          $ref: '#/components/schemas/DatasetIdType'
+      description: Field quality results for a single dataset.
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors that occurred.
+        traceId:
+          type: string
+          description: Trace identifier for debugging purposes.
+      description: Standard error response wrapper.
+    PrecisionEnum:
+      enum:
+      - timestamp-millis
+      - timestamp-micros
+      - time-millis
+      - time-micros
+      - date
+      type: string
+      example: timestamp-millis
+      description: The precision of the type (e.g., for date/time fields).
+    Quality:
+      type: object
+      required:
+      - type
+      - aggregated
+      - rules
+      properties:
+        type:
+          $ref: '#/components/schemas/SchemaTypeQuality'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaRulesQuality'
+          description: Quality results per rule applied to this field.
+        aggregated:
+          $ref: '#/components/schemas/AggregatedQualityMetrics'
+      description: Quality metrics for the field.
+    DataQualityByDatasetIdResponse:
+      type: object
+      required:
+      - dataQualities
+      properties:
+        dataQualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/QualitiesAndErrorsResponse'
+          description: List of data quality results, one per dataset and connection pair.
+      description: Response containing data quality global results grouped by dataset.
+    DatasetQualityGlobalResultsResponse:
+      type: object
+      required:
+      - datasetId
+      - qualities
+      properties:
+        datasetId:
+          type: string
+          description: The unique identifier of the dataset.
+        qualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/QualitiesGlobalResultsResponse'
+    ExecutionError:
+      type: object
+      required:
+      - errorCode
+      properties:
+        reason:
+          type: string
+          description: A human-readable explanation of the failure.
+        errorCode:
+          type: string
+          description: The error code identifying the failure reason.
+        executedAt:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+          description: Timestamp when the execution failed.
+      description: Details of an execution failure.
+    QualitiesAndErrorsResponse:
+      type: object
+      required:
+      - datasetId
+      - connectionId
+      - status
+      properties:
+        error:
+          $ref: '#/components/schemas/ExecutionError'
+        status:
+          $ref: '#/components/schemas/ExecutionStatus'
+        quality:
+          $ref: '#/components/schemas/QualityGlobalResultsResponse'
+        datasetId:
+          type: string
+          description: The ID of the dataset
+        connectionId:
+          type: string
+          description: The ID of the connection
+      description: Data quality global results or error for a specific dataset and connection.
+    DatasetListRequest:
+      type: object
+      required:
+      - datasetIds
+      properties:
+        datasetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetIdType'
+          description: List of dataset IDs to retrieve results for.
+      description: Request containing a list of dataset IDs to filter on.
+    AggregatedQualityMetrics:
+      type: object
+      required:
+      - valid
+      - invalid
+      - empty
+      - total
+      properties:
+        empty:
+          type: integer
+          format: int64
+          description: Number of empty entries.
+        total:
+          type: integer
+          format: int64
+          description: Total number of entries.
+        valid:
+          type: integer
+          format: int64
+          description: Number of valid entries.
+        invalid:
+          type: integer
+          format: int64
+          description: Number of invalid entries.
+      description: Aggregated metrics for the field.
+    SchemaTypeQuality:
+      type: object
+      required:
+      - valid
+      - invalid
+      - empty
+      - total
+      properties:
+        empty:
+          type: integer
+          format: int64
+          description: Number of empty sample cells.
+        total:
+          type: integer
+          format: int64
+          description: Total number of cells in the sample.
+        valid:
+          type: integer
+          format: int64
+          description: Number of valid sample cells.
+        invalid:
+          type: integer
+          format: int64
+          description: Number of invalid sample cells.
+      description: Quality metrics based on type validation.
+    FieldTypeEnum:
+      enum:
+      - STANDARD
+      - SEMANTIC
+      type: string
+      example: STANDARD
+      description: The kind of the field type.
+    QualityGlobalResultsResponse:
+      type: object
+      required:
+      - valid
+      - invalid
+      - empty
+      - total
+      - updatedAt
+      properties:
+        empty:
+          type: integer
+          format: int64
+          description: Number of empty sample cells.
+        total:
+          type: integer
+          format: int64
+          description: Total number of cells in the sample.
+        valid:
+          type: integer
+          format: int64
+          description: Number of valid sample cells.
+        invalid:
+          type: integer
+          format: int64
+          description: Number of invalid sample cells.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+          description: Timestamp of the most recent data quality computation for this dataset and connection.
+    ComputedInformation:
+      type: object
+      required:
+      - at
+      - by
+      properties:
+        at:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+          description: When the computation occurred.
+        by:
+          $ref: '#/components/schemas/ComputedUserInformation'
+      description: Metadata about the computation.
+    SchemaRuleQuality:
+      type: object
+      required:
+      - valid
+      - invalid
+      - notApplicable
+      - notExecutable
+      - total
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: Total number of cells evaluated by the rule.
+        valid:
+          type: integer
+          format: int64
+          description: Number of cells that passed the rule.
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - DISABLED_SEMANTIC_TYPE
+          description: List of error identifiers encountered during rule execution.
+        invalid:
+          type: integer
+          format: int64
+          description: Number of cells that failed the rule.
+        notApplicable:
+          type: integer
+          format: int64
+          description: Number of cells where the rule does not apply.
+        notExecutable:
+          type: integer
+          format: int64
+          description: Number of cells where the rule could not be executed.
+      description: Detailed quality counts for a single rule.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code identifying the type of error.
+        title:
+          type: string
+          description: A short summary of the error.
+        detail:
+          type: string
+          description: A human-readable explanation of the error.
+      description: An individual error detail.
+    QualitiesGlobalResultsResponse:
+      type: object
+      required:
+      - connectionId
+      properties:
+        quality:
+          $ref: '#/components/schemas/QualityGlobalResultsResponse'
+        connectionId:
+          type: string
+          description: The unique identifier of the connection.
+    ErrorResponse_2:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error_2'
+        traceId:
+          type: string
+    QualityGlobalResultsResponse_2:
+      type: object
+      required:
+      - valid
+      - invalid
+      - empty
+      - total
+      - updatedAt
+      properties:
+        empty:
+          type: integer
+          format: int64
+          description: Number of empty sample cells.
+        total:
+          type: integer
+          format: int64
+          description: Total number of cells in the sample.
+        valid:
+          type: integer
+          format: int64
+          description: Number of valid sample cells.
+        invalid:
+          type: integer
+          format: int64
+          description: Number of invalid sample cells.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of the most recent data quality computation for this dataset and connection.
+    Error_2:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    ConnectionIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
+    DatasetIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
+    QualitiesGlobalResultsResponse_2:
+      type: object
+      required:
+      - connectionId
+      - quality
+      properties:
+        quality:
+          $ref: '#/components/schemas/QualityGlobalResultsResponse_2'
+        connectionId:
+          type: string
+          description: The unique identifier of the connection.
+  parameters:
+    DatasetIdInQuery:
+      in: query
+      name: datasetId
+      schema:
+        $ref: '#/components/schemas/DatasetIdType'
+      required: true
+      description: The unique identifier of the dataset.
+    OptionalConnectionIdInQuery:
+      in: query
+      name: connectionId
+      schema:
+        $ref: '#/components/schemas/ConnectionIdType'
+      required: false
+      description: The unique identifier of the connection.
+x-refined-from:
+- qliksense-data-governance-data-qualities.json
+- qliksense-data-qualities.json

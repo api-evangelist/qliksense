@@ -1,0 +1,367 @@
+openapi: 3.2.0
+info:
+  title: glossaries Links API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Links
+paths:
+  /api/v1/glossaries/{id}/terms/{termId}/links:
+    get:
+      tags:
+      - Links
+      summary: Returns a list of links assigned to a term
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/linksResult'
+          description: Successful Operation.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      - in: query
+        name: countTotal
+        schema:
+          type: boolean
+        description: Optional parameter to request total count for query
+      - in: query
+        name: filter
+        schema:
+          type: string
+        description: Optional SCIM filter to be used to filter terms
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+          minimum: 1
+        description: The number of terms to get.
+      - in: query
+        name: next
+        schema:
+          type: string
+        description: Optional parameter to request the next page.
+      - in: query
+        name: prev
+        schema:
+          type: string
+        description: Optional parameter to request the previous page.
+      - in: query
+        name: sort
+        schema:
+          enum:
+          - type
+          - +type
+          - -type
+          - subtype
+          - +subtype
+          - -subtype
+          - created
+          - +created
+          - -created
+          type: string
+        description: Optional resource field name to sort on, eg. name. Can be prefixed with +/- to determine order, defaults to (+) ascending.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+      operationId: getApiV1GlossariesByIdTermsByTermIdLinks
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Links
+      summary: Creates a new link to a term
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/termLinksTo'
+          headers:
+            Etag:
+              schema:
+                type: string
+              description: Term version
+            Last-Modified:
+              schema:
+                type: string
+              description: Last modified date and time of the glossary
+          description: Successfully created the link.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The request is in incorrect format
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The operation failed due to insufficient permissions.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: The record is not found
+        '412':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Conditional update failed. Trying to modify an old version.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The glossary id.
+      - in: path
+        name: termId
+        schema:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        description: The term id.
+      - in: header
+        name: if-match
+        schema:
+          type: string
+          example: 'if-match: B323333'
+        description: Optional header to do conditional updates. Using the Etag value that was returned the last time the term was fetched.
+      description: Links to resources are not considered term properties but external relations. Links can be created for terms in any status. Permissions on term and resource determine if the link can be created.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/termCreateLinksTo'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+      operationId: postApiV1GlossariesByIdTermsByTermIdLinks
+      x-operation-id-source: derived
+components:
+  schemas:
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
+    linksResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/termLinksTo'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    termCreateLinksTo:
+      type: object
+      required:
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+          description: 'The type of relationship between the term and the linked resource:
+
+            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
+
+            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
+
+            '
+        resourceId:
+          type: string
+          description: The unique identifier of the resource (app or dataset) to link to the term.
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          description: The type of resource being linked to the term.
+        subResourceId:
+          type: string
+          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
+        subResourceName:
+          type: string
+          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
+      description: 'Describes links to other data assets such as analytics applications or dataset.
+
+
+        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
+
+        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
+
+        If any one subresource field is specified, all three are required.
+
+        '
+    termLinksTo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          x-qlik-filterable: true
+        name:
+          type: string
+          example: Sales App
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+        title:
+          type: string
+          description: Describes reason for item status during batch operation. E.g. why an error occurs during creation.
+        status:
+          type: number
+          example: 201
+          description: Http status code for item during batch operation.
+        openUrl:
+          type: string
+          example: https://tenant.qlik.com/sense/app/52bc4307-f9f2-4ce6-b521-67ca87018759
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          x-qlik-filterable: true
+        resourceId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Different formats based on resource type. Could be e.g. OID or UUID.
+          x-qlik-filterable: true
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          x-qlik-filterable: true
+        subResourceId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Different formats based on subresource type. Could be e.g. OID or UUID.
+          x-qlik-filterable: true
+        resourceSpaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        subResourceName:
+          type: string
+          example: Sales YTD
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          x-qlik-filterable: true
+        subResourceInvalid:
+          type: boolean
+          description: Populated and true if no matching subresource is found on parent resource. E.g. if a dataset field no longer exist but a link to that field exists.
+      description: Describes links to other entities such as qlik charts, dataset columns etc.

@@ -1,0 +1,1586 @@
+openapi: 3.2.0
+info:
+  title: ml Predictions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Predictions
+paths:
+  /api/v1/ml/deployments/{deploymentId}/aliases/{aliasName}/realtime-predictions/actions/run:
+    post:
+      tags:
+      - Predictions
+      summary: Generate predictions in a synchronous request/response
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimePrediction'
+          description: Stream of combined prediction output returned successfully.
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '409':
+          $ref: '#/components/responses/409Conflict'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - in: query
+        name: includeNotPredictedReason
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, reason why a prediction was not produced included response
+
+          '
+      - in: query
+        name: includeShap
+        schema:
+          type: boolean
+        required: false
+        description: If true, shap values included in response
+      - in: query
+        name: includeSource
+        schema:
+          type: boolean
+        required: false
+        description: If true, source data included in response
+      - in: query
+        name: index
+        schema:
+          type: string
+        required: false
+        description: 'The name of the feature in the source data to use as an index in the
+
+          response data. The column will be included with its original name
+
+          and values. This is intended to allow the caller to join results
+
+          with source data.
+
+          '
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/aliasName'
+      operationId: predictRealtimeWithAlias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RealtimePredictionInput'
+        description: 'Request payload containing the dataset for predictions. Date features
+
+          must be in ISO 8601 format.
+
+          '
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/batch-predictions:
+    get:
+      tags:
+      - Predictions
+      summary: List batch prediction configurations
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionFindResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionsFilter'
+      - $ref: '#/components/parameters/batchPredictionsSort'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      operationId: getBatchPredictions
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Predictions
+      summary: Create a prediction configuration
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionPostResponse'
+          description: '`Created`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: postBatchPrediction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchPredictionInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/batch-predictions/{batchPredictionId}:
+    get:
+      tags:
+      - Predictions
+      summary: Retrieve a batch prediction
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionGetResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      operationId: getBatchPrediction
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Predictions
+      summary: Updates a batch prediction
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      operationId: patchBatchPrediction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchPredictionPatch'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Predictions
+      summary: Delete a batch prediction
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      operationId: deleteBatchPrediction
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/batch-predictions/{batchPredictionId}/actions/predict:
+    post:
+      tags:
+      - Predictions
+      summary: Run a batch prediction
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionActionResponse'
+          headers:
+            Content-Location:
+              schema:
+                type: string
+                format: uri
+              required: true
+              description: URL to poll for the status of this resource
+          description: '`Accepted`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      operationId: predictBatchPrediction
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/batch-predictions/{batchPredictionId}/schedule:
+    get:
+      tags:
+      - Predictions
+      summary: Get a batch prediction schedule
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionScheduleGetResponse'
+          description: '`OK`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      description: Retrieves the schedule for a batch prediction.
+      operationId: getBatchPredictionSchedule
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Predictions
+      summary: Update a batch prediction schedule
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      description: Updates the schedule for a batch prediction.
+      operationId: patchBatchPredictionSchedule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchPredictionSchedulePatch'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    put:
+      tags:
+      - Predictions
+      summary: Add a batch prediction schedule
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionSchedulePutResponse'
+          description: '`Created`'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      description: Adds a schedule to a batch prediction.
+      operationId: putBatchPredictionSchedule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchPredictionScheduleInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Predictions
+      summary: Delete a batch prediction schedule
+      responses:
+        '204':
+          $ref: '#/components/responses/204NoContent'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+        '502':
+          $ref: '#/components/responses/502BadGateway'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - $ref: '#/components/parameters/batchPredictionId'
+      description: Deletes the schedule from a batch prediction.
+      operationId: deleteBatchPredictionSchedule
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/ml/deployments/{deploymentId}/realtime-predictions/actions/run:
+    post:
+      tags:
+      - Predictions
+      summary: Generate predictions in a synchronous request/response
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimePrediction'
+          description: Stream of combined prediction output returned successfully.
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '409':
+          $ref: '#/components/responses/409Conflict'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/FailureDefault'
+      parameters:
+      - in: query
+        name: includeNotPredictedReason
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, reason why a prediction was not produced included response
+
+          '
+      - in: query
+        name: includeShap
+        schema:
+          type: boolean
+        required: false
+        description: If true, shapley values included in response
+      - in: query
+        name: includeSource
+        schema:
+          type: boolean
+        required: false
+        description: If true, source data included in response
+      - in: query
+        name: index
+        schema:
+          type: string
+        required: false
+        description: 'The name of the feature in the source data to use as an index in the
+
+          response data. The column will be included with its original name
+
+          and values. This is intended to allow the caller to join results
+
+          with source data.
+
+          '
+      - $ref: '#/components/parameters/deploymentId'
+      operationId: predictRealtime
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RealtimePredictionInput'
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    BatchPredictionInput:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              enum:
+              - batch-prediction
+              type: string
+              default: batch-prediction
+            attributes:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/EntityName'
+                aliasId:
+                  $ref: '#/components/schemas/AliasId'
+                schedule:
+                  $ref: '#/components/schemas/BatchPredictionScheduleInputAttributes'
+                dataSetId:
+                  $ref: '#/components/schemas/DataSetId'
+                writeback:
+                  $ref: '#/components/schemas/BatchPredictionWriteback'
+                description:
+                  type: string
+                indexColumn:
+                  $ref: '#/components/schemas/IndexColumn'
+                deploymentId:
+                  $ref: '#/components/schemas/DeploymentId'
+              additionalProperties: false
+          additionalProperties: false
+      description: Input values for creating a batch prediction configuration
+      additionalProperties: false
+    BatchPredictionWriteback:
+      type: object
+      required:
+      - spaceId
+      - format
+      - dstName
+      properties:
+        format:
+          enum:
+          - qvd
+          - parquet
+          - csv
+          type: string
+          default: parquet
+          description: File format for write back files (this applies to all)
+        dstName:
+          type: string
+        spaceId:
+          type: string
+          description: 'Space ID where you want to save batch prediction writebacks or
+
+            empty string ('''') save them to your personal space.
+
+            '
+        dstShapName:
+          type: string
+        dstSourceName:
+          type: string
+        dstCoordShapName:
+          type: string
+        dstNotPredictedName:
+          type: string
+      description: 'Sets which files, file names, and spaces are used to write results of
+
+        batch predictions (output files) to the catalog.
+
+
+        Note that for predictions based on time series models, `dstShapName`
+
+        and `dstCoordShapName` do not apply and will be ignored if set.
+
+        '
+    DeploymentId:
+      type: string
+      format: uuid
+      description: ID of a model deployment
+      x-qlik-fiterable: true
+    BatchPredictionScheduleGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - batch-prediction-schedule
+              type: string
+            attributes:
+              $ref: '#/components/schemas/BatchPredictionSchedule'
+          additionalProperties: false
+      additionalProperties: false
+    TenantId:
+      type: string
+      format: uuid
+      description: Tenant ID for this entity
+      x-qlik-filterable: true
+    ResponseLinks:
+      type: object
+      required:
+      - first
+      - prev
+      - self
+      - next
+      - last
+      properties:
+        last:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the last set of responses from `limit` minus `offset` to
+
+                `limit`
+
+                '
+        next:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the next set of responses
+
+                '
+        prev:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the previous set of responses
+
+                '
+        self:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the current set of responses
+
+                '
+        first:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+              description: 'Link to the first set of responses from `offset` 0 to count `limit``
+
+                '
+      description: Resource links included in paginated responses
+      additionalProperties: false
+    BatchPredictionStatus:
+      enum:
+      - modified
+      - ready
+      - error
+      - cancelled
+      - pending
+      type: string
+      description: Status of this batch prediction
+    RealtimePrediction:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              enum:
+              - realtime-prediction
+              type: string
+              default: realtime-prediction
+            attributes:
+              type: object
+              properties:
+                rows:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: string
+                  description: 'Rows of the dataset from which to produce predictions
+
+                    '
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RealTimePredictionSchema'
+                  description: List of features in the dataset
+              additionalProperties: false
+          additionalProperties: false
+      description: Input values for creating realtime predictions
+      additionalProperties: false
+    RealtimePredictionInput:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          description: 'Rows of the dataset from which to produce predictions.
+
+            Date features must be in ISO 8601 format.
+
+            '
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/RealTimePredictionInputSchema'
+          description: List of features in the dataset.
+      description: Input values for creating realtime predictions
+      additionalProperties: false
+    UpdatedAt:
+      type: string
+      description: Timestamp when this was updated
+    BatchPredictionSchedulePatch:
+      type: array
+      items:
+        type: object
+        example:
+          op: replace
+          path: /startDateTime
+          value: '2022-09-14T12:00:00'
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: All patch requests use the replace operation
+          path:
+            enum:
+            - /startDateTime
+            - /endDateTime
+            - /timezone
+            - /recurrence
+            - /applyDatasetChangeOnly
+            type: string
+            description: Path for the property you want to update
+          value:
+            $ref: '#/components/schemas/AnyType'
+        description: 'Values that can be patched.
+
+          - startDateTime: When the batch starts, if scheduled
+
+          - endDateTime: When batch ends, if scheduled
+
+          - timezone: Timezone used for scheduling
+
+          - recurrence: Array of strings to indicate when this batch recurs
+
+          - applyDatasetChangeOnly: Only run prediction if dataset has changed?
+
+          '
+        additionalProperties: false
+    CorrType:
+      enum:
+      - batch-prediction
+      - experiment-version
+      type: string
+      description: 'Types names of correlated resources (batch ''prediction'' and
+
+        experiment_version)
+
+        '
+    BatchPredictionFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - batch-prediction
+                type: string
+              attributes:
+                $ref: '#/components/schemas/BatchPrediction'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
+    CreatedAt:
+      type: string
+      description: Timestamp when this was created
+    AnyType:
+      description: Use for fields that can be `any` type (string, number, etc.)
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/APIError'
+      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
+
+        '
+      description: JSON string with list of error objects
+    OutputFile:
+      type: object
+      required:
+      - key
+      - fileName
+      - fileType
+      - spaceId
+      - path
+      properties:
+        key:
+          type: string
+        path:
+          type: string
+        spaceId:
+          $ref: '#/components/schemas/SpaceId'
+        fileName:
+          type: string
+        fileType:
+          $ref: '#/components/schemas/FileType'
+    BatchPrediction:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          $ref: '#/components/schemas/EntityName'
+        errors:
+          $ref: '#/components/schemas/Errors'
+        status:
+          $ref: '#/components/schemas/BatchPredictionStatus'
+        aliasId:
+          $ref: '#/components/schemas/AliasId'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        schedule:
+          $ref: '#/components/schemas/BatchPredictionSchedule'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        createdBy:
+          type: string
+          description: ID of the owner/user that ran this prediction batch
+        dataSetId:
+          $ref: '#/components/schemas/DataSetId'
+        datasetId:
+          type: string
+          description: 'ID of the dataset with the prediction results
+
+            '
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        writeback:
+          $ref: '#/components/schemas/BatchPredictionWriteback'
+        indexColumn:
+          $ref: '#/components/schemas/IndexColumn'
+        deploymentId:
+          $ref: '#/components/schemas/DeploymentId'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorMessage'
+        outputDataset:
+          type: string
+          description: Where to output dataset
+      description: A batch prediction job configuration
+      additionalProperties: false
+    AliasId:
+      type: string
+      format: uuid
+      description: ID of an alias
+    BatchPredictionGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - batch-prediction
+              type: string
+            attributes:
+              $ref: '#/components/schemas/BatchPrediction'
+          additionalProperties: false
+      additionalProperties: false
+    PredictionJobResponse:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - deletedAt
+      - tenantId
+      - createdBy
+      - jobType
+      - parentJobId
+      - corrType
+      - corrId
+      - status
+      - name
+      - parentName
+      - experimentVersionNumber
+      - details
+      - deploymentId
+      - trigger
+      - success
+      - rowsPredicted
+      - modelId
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          type: string
+        corrId:
+          $ref: '#/components/schemas/CorrId'
+        status:
+          enum:
+          - pending
+          - completed
+          - cancelled
+          - error
+          - deleted_resource
+          type: string
+          description: Status of this job
+        details:
+          type: object
+          required:
+          - lineageSchemaUpdated
+          - outputFiles
+          - isScheduled
+          properties:
+            isScheduled:
+              type: boolean
+            outputFiles:
+              type: array
+              items:
+                $ref: '#/components/schemas/OutputFile'
+            lineageSchemaUpdated:
+              type: boolean
+        jobType:
+          $ref: '#/components/schemas/JobType'
+        modelId:
+          $ref: '#/components/schemas/ModelId'
+        success:
+          type: boolean
+        trigger:
+          type: string
+        corrType:
+          $ref: '#/components/schemas/CorrType'
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        createdBy:
+          type: string
+          description: ID of the owner/user that created this entity
+        deletedAt:
+          $ref: '#/components/schemas/DeletedAt'
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        parentName:
+          type: string
+        parentJobId:
+          $ref: '#/components/schemas/ParentJobId'
+        deploymentId:
+          $ref: '#/components/schemas/DeploymentId'
+        rowsPredicted:
+          type: number
+        experimentVersionNumber:
+          type: string
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
+    ErrorMessage:
+      type: string
+      description: JSON string of error object
+    BatchPredictionSchedulePutResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - batch-prediction-schedule
+              type: string
+            attributes:
+              $ref: '#/components/schemas/BatchPredictionSchedule'
+          additionalProperties: false
+      additionalProperties: false
+    FindResponseMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+      description: Meta for FIND operations
+      additionalProperties: false
+    OwnerId:
+      type: string
+      description: ID of owner/user for this entity
+      x-qlik-filterable: true
+    EntityName:
+      type: string
+      description: Name of this entity
+      x-qlik-filterable: true
+    ParentJobId:
+      type: string
+      description: ID of the current job's parent
+    FileType:
+      type: string
+      example: qvd, parquet, csv
+      description: Dataset file type
+    CorrId:
+      type: string
+      description: The ID of a correlated resource of corrType
+    RealTimePredictionSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of a feature in the dataset
+      additionalProperties: false
+    EntityId:
+      type: string
+      format: uuid
+      description: ID of this entity
+      x-qlik-filterable: true
+    BatchPredictionScheduleInput:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              enum:
+              - batch-prediction-schedule
+              type: string
+              default: batch-prediction-schedule
+            attributes:
+              $ref: '#/components/schemas/BatchPredictionScheduleInputAttributes'
+          additionalProperties: false
+      description: Input values for a batch prediction schedule
+      additionalProperties: false
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    ModelId:
+      type: string
+      format: uuid
+      description: ID of the model
+      x-qlik-filterable: true
+    SpaceId:
+      type: string
+      description: Space ID for this entity (empty string for personal space)
+      x-qlik-filterable: true
+    EnumSortBatchPredictions:
+      enum:
+      - createdAt
+      - +createdAt
+      - -createdAt
+      - description
+      - +description
+      - -description
+      - name
+      - +name
+      - -name
+      - updatedAt
+      - +updatedAt
+      - -updatedAt
+      type: string
+    RealTimePredictionInputSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of a feature in the dataset
+      additionalProperties: false
+    BatchPredictionActionResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - job
+              type: string
+            attributes:
+              $ref: '#/components/schemas/PredictionJobResponse'
+      description: Response for batch prediction predict action that indicates job and status
+    BatchPredictionPatch:
+      type: array
+      items:
+        type: object
+        example:
+          op: replace
+          path: /name
+          value: New Name
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: All patch requests use the replace operation
+          path:
+            enum:
+            - /name
+            - /description
+            - /dataSetId
+            - /indexColumn
+            - /applyDatasetChangeOnly
+            - /ownerId
+            - /writeback/spaceId
+            - /writeback/format
+            - /writeback/dstName
+            - /writeback/dstShapName
+            - /writeback/dstCoordShapName
+            - /writeback/dstNotPredictedName
+            - /writeback/dstSourceName
+            type: string
+            description: Path for the property you want to update
+          value:
+            $ref: '#/components/schemas/AnyType'
+        description: 'Values that can be patched.
+
+          - name: Name of this entity
+
+          - description: Description of this entity
+
+          - dataSetId
+
+          - outputDataset
+
+          - indexColumn: Column name upon which to create an index (empty string or undefined will default to automl-generated index)
+
+          - applyDatasetChangeOnly
+
+          - ownerId: ID of batch owner/user
+
+          - writeback: Where to write prediction results
+
+          '
+        additionalProperties: false
+    BatchPredictionScheduleInputAttributes:
+      type: object
+      required:
+      - startDateTime
+      - timezone
+      - recurrence
+      - applyDatasetChangeOnly
+      properties:
+        timezone:
+          type: string
+          example: America/Toronto
+          description: Timezone used for the date-time fields
+        recurrence:
+          type: array
+          items:
+            type: string
+            description: A recurrence rule
+          example:
+          - RRULE:FREQ=DAILY;INTERVAL=1;BYHOUR=16;BYMINUTE=30;BYSECOND=0
+          description: 'Recurrence rules. Maximum is DAILY but you can specify the
+
+            hour, minute, and second it runs each day.
+
+            One string per rule.
+
+            '
+        endDateTime:
+          type: string
+          example: '2035-12-31T23:59:00'
+          description: When the job is scheduled to finish, date needs to be now or in future
+        startDateTime:
+          type: string
+          example: '2035-12-25T00:00:00'
+          description: When the job is scheduled to start, date needs to be now or in future
+        applyDatasetChangeOnly:
+          type: boolean
+          default: true
+          description: 'If true, only run prediction if dataset has changed to avoid
+
+            duplicates. If set to false, re-runs predictions on unchanged
+
+            datasets.
+
+            '
+      description: Configuration to schedule a batch prediction
+      additionalProperties: false
+    IndexColumn:
+      type: string
+      description: 'A optional column name upon which to create an index. Must be unique for
+
+        every row. If not included, Qlik will create a unique index column.
+
+        '
+    BatchPredictionSchedule:
+      type: object
+      properties:
+        status:
+          enum:
+          - pending
+          - active
+          - error
+          - error_scheduler_unreachable
+          - error_scheduler_callback_error
+          - licence_advanced_features_required
+          - failing_schedule_permission
+          type: string
+          description: The status of the schedule
+        timezone:
+          type: string
+          example: America/Toronto
+          description: Timezone used for the date-time fields
+        recurrence:
+          type: array
+          items:
+            type: string
+            example:
+            - Daily at 11:10:00 AM ["RRULE:FREQ=DAILY;BYHOUR=11;BYMINUTE=10;BYSECOND=0"]
+            - Weekly on Mondays at 11:10:00 AM ["RRULE:FREQ=WEEKLY;INTERVAL:1;BYDAY=MO;BYHOUR=11;BYMINUTE=10;BYSECOND=0"]
+            description: A recurrence rule
+          description: 'Recurrence rules. Maximum is DAILY but you can specify the
+
+            hour, minute, and second it runs each day.
+
+            One string per rule.
+
+            '
+        endDateTime:
+          type: string
+          description: When the job finished
+        chronosJobId:
+          type: string
+          description: The ID of the chronos job
+        startDateTime:
+          type: string
+          description: When the job is scheduled to start
+        failureAttempts:
+          type: number
+          description: Number of times a scheduled prediction job has failed
+        applyDatasetChangeOnly:
+          type: boolean
+          description: 'If true, only run prediction if dataset has changed to avoid
+
+            duplicates. If set to false, re-runs predictions on unchanged
+
+            datasets.
+
+            '
+        lastSuccessfulDateTime:
+          type: string
+          description: When the last successful job happened
+      description: Batch prediction job schedule
+      additionalProperties: false
+    DataSetId:
+      type: string
+      example: 672e55cfcadfb8a18281523e
+      description: The Qlik catalog dataset ID
+    BatchPredictionPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - batch-prediction
+              type: string
+            attributes:
+              $ref: '#/components/schemas/BatchPrediction'
+          additionalProperties: false
+      additionalProperties: false
+    DeletedAt:
+      type: string
+      description: Timestamp when this is deleted
+    JobType:
+      enum:
+      - prediction
+      type: string
+      description: The type for this job
+  responses:
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    401Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unauthorized`'
+    404NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Not Found`'
+    409Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Conflict`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'
+    204NoContent:
+      description: '`No Content`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+  parameters:
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 32
+        maximum: 100
+      example: 10
+      required: false
+      description: Number of results per page. Default is 32.
+    batchPredictionsFilter:
+      in: query
+      name: filter
+      style: deepObject
+      schema:
+        type: string
+      example: '`filter=modelId eq "UUID" and ownerId eq "string"`'
+      required: false
+      description: 'Batch prediction fields by which you can filter responses.<br><br>
+
+        - `aliasId` UUID string - ID of an alias within the batch prediction
+
+        - `createdBy` ID string
+
+        - `deploymentId` UUID string - ID of a deployment of a model associated with the experiment
+
+        - `experimentId` UUID string - ID of experiment in which model(s) exist
+
+        - `experimentVersionId` UUID string - ID of experiment version in which model(s) exist
+
+        - `modelId` UUID string - By model ID
+
+        - `ownerId` ID string of batch prediction owner
+
+        '
+    batchPredictionsSort:
+      in: query
+      name: sort
+      style: form
+      schema:
+        $ref: '#/components/schemas/EnumSortBatchPredictions'
+      example: sort=field1,+field2,-field3,...
+      required: false
+      description: 'Field(s) by which to sort response
+
+        '
+    deploymentId:
+      in: path
+      name: deploymentId
+      schema:
+        type: string
+      required: true
+      description: ID of the deployment
+    offset:
+      in: query
+      name: offset
+      schema:
+        type: integer
+      example: 32
+      required: false
+      description: Number of rows to skip before getting page[size]
+    aliasName:
+      in: path
+      name: aliasName
+      schema:
+        type: string
+      required: true
+      description: The name of the ML Deployment Alias that will be used to determine which model should be used to produce predictions
+    batchPredictionId:
+      in: path
+      name: batchPredictionId
+      schema:
+        type: string
+      required: true
+      description: ID of the batch prediction

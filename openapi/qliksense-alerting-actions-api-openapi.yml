@@ -1,0 +1,505 @@
+openapi: 3.2.0
+info:
+  title: data-alerts alerting actions API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: alerting actions
+paths:
+  /api/v1/data-alerts/actions/trigger:
+    post:
+      tags:
+      - alerting actions
+      summary: Create data alert task trigger
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertingActionsTriggerCreateResponse'
+          description: Action has been successfully done. Request to eventing was successfully triggered.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request, malformed syntax or errors in parameters.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      description: Creates a new data alerting task trigger action.
+      operationId: alertingActionsTriggerCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertingActionsTriggerCreateRequest'
+        required: true
+        description: The alerting trigger action create request definition.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/data-alerts/actions/validate:
+    post:
+      tags:
+      - alerting actions
+      summary: Validate data alert task
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertingTaskValidationResponse'
+          description: Alerting task has been validated successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request, malformed syntax or errors in parameters.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Error response.
+      description: Validates a new data alerting task. Current support includes validation for recipients only.
+      operationId: alertingTaskActionsValidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertingTaskCreateRequest'
+        required: true
+        description: The alerting validate action validates a new alerting task.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+components:
+  schemas:
+    AlertingTaskGroupRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on alerting task
+    ThrottlingResource:
+      type: object
+      properties:
+        capacity:
+          type: integer
+          example: 10
+          description: the maximum number of tokens that the bucket can contain
+        timezone:
+          type: string
+          default: Etc/UTC
+          description: the timezone for time calculations in this throttlingresource, for current time and time reference.
+        replenishRate:
+          type: integer
+          example: 1
+          description: the amount of tokens to insert into the bucket on the specified interval. (tokens exceeding capacity are discarded)
+        recurrenceRule:
+          type: string
+          example: RRULE:FREQ=DAILY
+          description: A string that supports a subset of RFC5545 recurrence rule directives.
+        initialTokenCount:
+          type: integer
+          example: 10
+          description: the initial amount of tokens in the bucket upon creation. cannot exceed capacity.
+        referenceTimestamp:
+          type: string
+          example: '2021-07-14T10:00:00Z'
+          description: a date and time reference specified in RFC3339 format
+      description: The rules and setup for throttling
+    AlertingTaskValidationResponse:
+      type: object
+      properties:
+        status:
+          enum:
+          - FAILURE
+          - SUCCESS
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskValidation'
+    AlertingTaskRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_ALERT
+          - CONDITION_EVAL_ERROR
+          - USER_DISABLED_IN_ALERT_BY_OWNER
+          - MAX_ALERTS_LIMIT_REACHED
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on alerting task
+    TaskRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_SHARING
+          - USER_DISABLED_IN_SHARING_BY_OWNER
+          - CHART_NOT_FOUND
+          - APP_NOT_FOUND
+          - SHEET_NOT_FOUND
+          - ENGINE_POD_NOT_AVAILABLE
+          - CHART_TYPE_NOT_ALLOWED
+          - GENERIC_EXECUTION_FAILURE
+          - USER_NOT_FOUND_DL
+          - USER_DISABLED_IN_DL
+          - FILTER_NOT_FOUND
+          - BOOKMARK_NOT_FOUND
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on sharing task specific for recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    AlertingActionsTriggerCreateResponse:
+      type: object
+      properties:
+        workflowID:
+          type: string
+          example: a1b2c3d4f5
+          description: the workflow id created for the manual triggering of alert
+    AlertingTaskCreateRequest:
+      type: object
+      required:
+      - appId
+      - conditionId
+      - name
+      - recipients
+      - triggerType
+      properties:
+        name:
+          type: string
+          example: Sales threshold alert
+          maxLength: 78
+          description: name associated to alerting task
+        appId:
+          type: string
+          example: e0e3187e-4f8c-4c1f-9d2a-1234567890ab
+          description: appId associated to this alert definition
+        enabled:
+          type: boolean
+          default: true
+          description: if the alerting task is enabled
+        sheetId:
+          type: string
+          example: abcABC1
+          description: sheetId associated to this alert definition
+        bookmarkId:
+          type: string
+          example: def-456
+          description: bookmarkId associated to this alert definition
+        recipients:
+          $ref: '#/components/schemas/Recipients'
+        throttling:
+          $ref: '#/components/schemas/ThrottlingResource'
+        conditionId:
+          type: string
+          example: cond-789
+          description: the id of the condition that determines if this data alert should be triggered
+        description:
+          type: string
+          example: Notifies when sales drop below target.
+          maxLength: 255
+          description: description associated to alerting task
+        triggerType:
+          enum:
+          - RELOAD
+          - SCHEDULED
+          type: string
+          example: SCHEDULED
+          description: Type of job that triggered the task
+        scheduleOptions:
+          $ref: '#/components/schemas/ScheduleOptions'
+      description: a alerting task (a definition on an alert)
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
+    UserIDRecipient:
+      type: object
+      properties:
+        value:
+          type: string
+          example: 1b263bs8m0mm_s21s3f
+          description: User ID of recipient (internal user).
+        groups:
+          type: array
+          items:
+            type: string
+            example: sales
+            description: Name of a group that the user is a member of.
+          example:
+          - addedIndividually
+          - group1
+          - group2
+          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        subscribed:
+          type: boolean
+          example: true
+          description: Whether this recipient is subscribed to alerts of a task
+        taskRecipientErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaskRecipientError'
+        alertingTaskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskRecipientError'
+      description: an internal recipient based on its user id.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    TaskGroupRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          - GROUP_NOT_FOUND_DL
+          - GROUP_DISABLED_IN_DL
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on sharing task specific for group recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    AlertingTaskValidation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifies for user id or condition id
+        type:
+          enum:
+          - RECIPIENT
+          - CONDITION
+          - RECIPIENT_GROUP
+          type: string
+          description: Identifier for type of a validation error occurring on alerting task
+        error:
+          enum:
+          - NO_ACCESS
+          - USER_IS_DISABLED
+          - INVALID_CONDITION
+          - GROUP_IS_DISABLED
+          - GROUP_SIZE_EXCEEDED
+          type: string
+          description: Identifier for a validation error occurring on alerting task
+          x-qlik-deprecated: true
+        description:
+          type: string
+          description: Description of the error
+        validationErrors:
+          type: array
+          items:
+            enum:
+            - NO_ACCESS
+            - USER_IS_DISABLED
+            - INVALID_CONDITION
+            - MAX_ALERTS_LIMIT_REACHED
+            - MAX_ALERT_RECIPIENTS_LIMIT_REACHED
+            - GROUP_IS_DISABLED
+            - GROUP_SIZE_EXCEEDED
+            type: string
+    GroupIDRecipient:
+      type: object
+      properties:
+        value:
+          type: string
+          example: group1
+          description: Group ID of recipient.
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        taskGroupRecipientErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaskGroupRecipientError'
+        alertingTaskGroupRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
+      description: an internal recipient based on its group id.
+    ScheduleOptions:
+      type: object
+      properties:
+        timezone:
+          type:
+          - string
+          - 'null'
+          example: Canada/Pacific
+          description: The timezone for time calculations in SCHEDULED triggers, optional.
+        recurrence:
+          type: array
+          items:
+            type: string
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1
+            description: A recurrence rule (RRULE) describing the schedule.
+          example:
+          - RRULE:FREQ=HOURLY;INTERVAL=2
+          description: List of RRULEs for SCHEDULED triggers, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. It is mandatory if the trigger type is SCHEDULED. At least 1 rule must be set and maximum 5 rules are allowed.
+        endDateTime:
+          type:
+          - string
+          - 'null'
+          default: ''
+          example: '2026-01-02T16:04:05'
+          description: EndDateTime is a local date time with respect to the above timezone parameter. If the timezone parameter is missing, then the timezone used is the one retrieved from user infos. Therefore ISO8601 time offsets are not allowed (e.g. "2026-01-02T16:04:05Z" or "2026-01-02T16:04:05+01"), if passed an error will be returned. EndDateTime is an optional parameter, when not set or when it's an empty string, the recurrence is intended to be never ending.
+        chronosJobID:
+          type: string
+          example: chronos-job-123
+          readOnly: true
+          description: The chronos job identifier. It is set once the related chronos job is created.
+        startDateTime:
+          type:
+          - string
+          - 'null'
+          example: '2006-01-02T16:04:05'
+          description: StartDateTime is a local date time with respect to the above timezone parameter. If the timezone parameter is missing, then the timezone used is the one retrieved from user infos. Therefore ISO8601 time offsets are not allowed (e.g. "2026-01-02T16:04:05Z" or "2026-01-02T16:04:05+01"), if passed an error will be returned. StartDateTime should not be older than 1 year from current date. StartDateTime is an optional parameter, when not set or when it's an empty string, its value is set to the current local date time.
+        lastExecutionTime:
+          type:
+          - string
+          - 'null'
+          example: '2020-11-20T12:00:55.000Z'
+          readOnly: true
+          description: lastExecutionTime is the time of the chronos job last execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if job has not run yet.
+        nextExecutionTime:
+          type:
+          - string
+          - 'null'
+          example: '2020-11-20T12:00:55.000Z'
+          readOnly: true
+          description: nextExecutionTime is the time of the chronos job next execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if the job is completed.
+    AlertingActionsTriggerCreateRequest:
+      type: object
+      required:
+      - alertingTaskID
+      properties:
+        alertingTaskID:
+          type: string
+          example: a1b2c3d4f5
+          description: Identifier of the alerting task to trigger.
+    Recipients:
+      type: object
+      required:
+      - userIds
+      properties:
+        DLUsers:
+          type: array
+        userIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIDRecipient'
+        DLGroups:
+          type: array
+        DLListId:
+          type: string
+          example: dl-12345
+          description: Identifier of the distribution list the recipients belong to.
+        groupIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupIDRecipient'
+      description: List of recipients. An internal recipient is represented by either their user id or group id.

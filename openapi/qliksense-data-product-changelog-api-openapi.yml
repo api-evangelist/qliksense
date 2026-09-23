@@ -1,0 +1,255 @@
+openapi: 3.2.0
+info:
+  title: data-governance/data-products Data Product Changelog API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: data-product-changelog
+paths:
+  /api/data-governance/data-products/{dataProductId}/changelogs:
+    get:
+      tags:
+      - data-product-changelog
+      summary: Get data product changelogs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataProductChangelogResponse'
+          description: OK response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request is in incorrect format.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have valid authentication credentials.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: User does not have access to the resource.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Resource does not exist.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The input request conflicts with the current state of the resource.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error.
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Service temporarily unavailable. Retry the request.
+      parameters:
+      - $ref: '#/components/parameters/DataProductIdPath'
+      - $ref: '#/components/parameters/PageOptionalInQuery'
+      - $ref: '#/components/parameters/LimitOptionalInQuery'
+      - $ref: '#/components/parameters/SortOptionalInQuery'
+      description: 'Retrieves a paginated history of all notable changes made to a data product.
+
+        Each changelog entry captures the operation type, affected property, and timestamp.
+
+        Use this endpoint to track the history of changes or data product evolution over time.'
+      operationId: getDataProductChangelog
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  parameters:
+    LimitOptionalInQuery:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        maximum: 100
+        minimum: 1
+      required: false
+      description: Maximum number of items to return per page.
+    PageOptionalInQuery:
+      in: query
+      name: page
+      schema:
+        type: integer
+        format: int32
+        default: 1
+        minimum: 1
+      required: false
+      description: Page number.
+    SortOptionalInQuery:
+      in: query
+      name: sort
+      schema:
+        enum:
+        - +createdAt
+        - -createdAt
+        type: string
+        default: -createdAt
+      description: 'Sort order for changelog entries. Use `+createdAt` for oldest first or `-createdAt` for newest first.
+
+        Prefix with `+` for ascending or `-` for descending order. Default: -createdAt.
+
+        '
+    DataProductIdPath:
+      in: path
+      name: dataProductId
+      schema:
+        type: string
+      required: true
+      description: Unique identifier of the data product. Must be a valid GUID assigned when the data product was created.
+  schemas:
+    DataProductChangelog:
+      type: object
+      properties:
+        id:
+          type: string
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangelogOperation'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          description: Timestamp when this changelog entry was created in ISO 8601 format.
+        createdBy:
+          type: string
+          description: Identifier of the user who made these changes.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    DataProductChangelogResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataProductChangelog'
+          required:
+          - id
+          - changes
+        page:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        links:
+          $ref: '#/components/schemas/Links'
+        pages:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+    Links:
+      type: object
+      properties:
+        last:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        first:
+          $ref: '#/components/schemas/Link'
+    ChangelogOperation:
+      type: object
+      properties:
+        path:
+          enum:
+          - /name
+          - /description
+          - /spaceId
+          - /datasetIds
+          - /glossaryIds
+          - /readMe
+          - /keyContacts
+          - /tags
+          - /activatedOn
+          - /apiConsumableDatasetIds
+          - /semanticModel
+          type: string
+        value:
+          oneOf:
+          - type:
+            - string
+            - 'null'
+            description: Value is expected to be null or a string if the path is either /name, /description, /readMe or /spaceId.
+          - $ref: '#/components/schemas/ArrayOfUniqueStrings'
+          - type:
+            - array
+            - 'null'
+            items:
+              type: object
+            description: value is expected to be null or an array of object if the path is /keyContacts.
+          - description: Value is always null if the path is /semanticModel.
+        operator:
+          enum:
+          - replace
+          - add
+          - remove
+          type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+    ArrayOfUniqueStrings:
+      type:
+      - array
+      - 'null'
+      items:
+        type: string
+        uniqueItems: true
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string

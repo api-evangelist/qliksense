@@ -1,0 +1,759 @@
+openapi: 3.2.0
+info:
+  title: Spaces API
+  version: ''
+servers:
+- url: https://{tenant}.{region}.qlikcloud.com
+  variables:
+    region:
+      default: us
+      description: The region the tenant is hosted in
+    tenant:
+      default: your-tenant
+      description: Name of the tenant that will be called
+tags:
+- name: Spaces
+paths:
+  /api/v1/spaces:
+    get:
+      tags:
+      - Spaces
+      summary: List spaces
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spaces'
+          description: Spaces retrieved.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+        required: false
+        description: Action on space. Supports only "?action=publish".
+      - in: query
+        name: environment.name
+        schema:
+          type: string
+        required: false
+        description: Environment name to filter by. For example, "?environment.name=Development". Use an empty value to return spaces with no environment.
+      - in: query
+        name: environmentId
+        schema:
+          type: string
+        required: false
+        description: Environment ID to filter by. For example, "?environmentId=67f4fba37f7cbb2f04ce727a". Use an empty value to return spaces with no environment.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: 10
+        required: false
+        description: Maximum number of spaces to return.
+      - in: query
+        name: name
+        schema:
+          type: string
+        required: false
+        description: Space name to search and filter for. Case-insensitive open search with wildcards both as prefix and suffix. For example, "?name=fin" will get "finance", "Final" and "Griffin".
+      - in: query
+        name: next
+        schema:
+          type: string
+        required: false
+        description: The next page cursor. Next links make use of this.
+      - in: query
+        name: ownerId
+        schema:
+          type: string
+        required: false
+        description: Space ownerId to filter by. For example, "?ownerId=123".
+      - in: query
+        name: prev
+        schema:
+          type: string
+        required: false
+        description: The previous page cursor. Previous links make use of this.
+      - in: query
+        name: roles
+        style: form
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleType'
+        explode: false
+        required: false
+        description: Comma-separated list of roles to filter spaces by the caller's assignment role. For example, "?roles=publisher,facilitator" returns spaces where the caller has the publisher or facilitator role.
+      - in: query
+        name: sort
+        schema:
+          type: string
+        required: false
+        description: Field to sort by. Prefix with +/- to indicate asc/desc. For example, "?sort=+name" to sort ascending on Name. Supported fields are "type", "name" and "createdAt".
+      - in: query
+        name: type
+        schema:
+          type: string
+        required: false
+        description: Type(s) of space to filter. For example, "?type=managed,shared".
+      description: Retrieves spaces that the current user has access to and match the query.
+      operationId: getSpaces
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    post:
+      tags:
+      - Spaces
+      summary: Create a space
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+          description: Space created.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space create operation denied.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space already exists. `name` must be unique.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      description: Creates a space. Spaces names must be unique. Spaces of type `data` should only be used for Qlik Talend Data Integration projects.
+      operationId: createSpace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceCreate'
+        required: true
+        description: Attributes that the user wants to set for a new space.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/spaces/{spaceId}:
+    get:
+      tags:
+      - Spaces
+      summary: Retrieve a space
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+          description: Space retrieved.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Too many repetetive requests.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to retrieve.
+      description: Retrieves a single space by ID.
+      operationId: getSpaceById
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+    patch:
+      tags:
+      - Spaces
+      summary: Update a space's properties
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+          description: Space patched (updated).
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space patch (update) operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to update.
+      description: Updates one or more properties of a space. To update all properties at once, use `PUT /spaces/{spaceId}`.
+      operationId: patchSpaceById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpacePatch'
+        required: true
+        description: Attribute that the user wants to patch (update) for the specified space.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    put:
+      tags:
+      - Spaces
+      summary: Update a space
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+          description: Space updated.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space update operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to update.
+      description: Updates a space. To update specific properties, use `PATCH /spaces/{spaceId}`.
+      operationId: updateSpaceById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceUpdate'
+        required: true
+        description: Attributes that the user wants to update for the specified space.
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+    delete:
+      tags:
+      - Spaces
+      summary: Delete a space
+      responses:
+        '204':
+          description: Space deleted.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space delete operation denied.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space not found or access denied.
+        '412':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Space delete precondition (space not empty) failed.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      parameters:
+      - in: path
+        name: spaceId
+        schema:
+          type: string
+          format: uid
+        required: true
+        description: The ID of the space to delete.
+      description: Deletes a space. Ensure that you first delete all resources from the space to avoid orphaning content.
+      operationId: deleteSpaceById
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '2'
+        limit: 100
+  /api/v1/spaces/types:
+    get:
+      tags:
+      - Spaces
+      summary: List space types
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceTypes'
+          description: Space types retrieved.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Unauthorized, JWT invalid or not provided.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+          description: Internal server error.
+      description: Gets a list of distinct space types available for use in the tenant.
+      operationId: getTypes
+      x-qlik-visibility: public
+      x-qlik-stability: stable
+      x-qlik-deprecated: false
+      x-qlik-tier:
+        tier: '1'
+        limit: 1000
+components:
+  schemas:
+    SpaceCreate:
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          example: Finance (dev)
+          pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
+          maxLength: 256
+          description: The name of the space. Personal spaces do not have a name.
+        type:
+          enum:
+          - shared
+          - managed
+          - data
+          type: string
+          example: shared
+          description: The type of space such as shared, managed, and so on.
+        description:
+          type: string
+          example: Development space for users building apps for the Finance team.
+          description: The description of the space. Personal spaces do not have a description.
+    SpaceTypes:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpaceType'
+          example:
+          - data
+          - shared
+          - managed
+          readOnly: true
+      description: The distinct types of spaces (shared, managed, and so on).
+    SpacePatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed.
+          path:
+            enum:
+            - /name
+            - /ownerId
+            - /description
+            type: string
+            description: Field of space to be patched (updated).
+          value:
+            type: string
+            description: 'The value to be used within the operations.
+
+              - name: The name (string) of space of maxLength 256 of pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
+
+              - description: The description (string) of the space. Personal spaces do not have a description.
+
+              - ownerId: The user ID in uid format (string) of the space owner.
+
+              '
+        description: A JSONPatch document as defined by RFC 6902.
+    Spaces:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - count
+          properties:
+            count:
+              type: integer
+              description: The total number of spaces matching the current filter.
+            personalSpace:
+              type: object
+              readOnly: true
+              required:
+              - resourceType
+              - actions
+              properties:
+                actions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ActionName'
+                  description: The list of actions allowed by the current user in this space.
+                resourceType:
+                  type: string
+                  description: resource type
+              description: The meta related to personal space when applicable.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    SpaceUpdate:
+      properties:
+        name:
+          type: string
+          pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
+          maxLength: 256
+          description: The name of the space.
+        ownerId:
+          type: string
+          format: uid
+          description: The user ID of the space owner.
+        description:
+          type: string
+          description: The description of the space. Personal spaces do not have a description.
+    Space:
+      required:
+      - id
+      - name
+      - tenantId
+      - links
+      properties:
+        id:
+          type: string
+          format: uid
+          readOnly: true
+          description: A unique identifier for the space, for example, 62716f4b39b865ece543cd45.
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - actions
+          - roles
+          - assignableRoles
+          properties:
+            roles:
+              type: array
+              items:
+                $ref: '#/components/schemas/RoleType'
+              description: The list of roles assigned to the current user in this space.
+            actions:
+              type: array
+              items:
+                $ref: '#/components/schemas/ActionName'
+              description: The list of actions allowed by the current user in this space.
+            assignableRoles:
+              type: array
+              items:
+                $ref: '#/components/schemas/RoleType'
+              description: The list of roles that could be assigned in this space.
+          description: Information about the space settings.
+        name:
+          type: string
+          description: The name of the space. Personal spaces do not have a name.
+        type:
+          enum:
+          - shared
+          - managed
+          - data
+          type: string
+          readOnly: true
+          description: The type of space such as shared, managed, and so on.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          - assignments
+          properties:
+            self:
+              $ref: '#/components/schemas/Link'
+            assignments:
+              $ref: '#/components/schemas/Link'
+        ownerId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID for the space owner.
+        tenantId:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID for the tenant, for example, xqGQ0k66vSR8f9G7J-vYtHZQkiYrCpct.
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date and time when the space was created.
+        createdBy:
+          type: string
+          format: uid
+          readOnly: true
+          description: The ID of the user who created the space.
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The date and time when the space was updated.
+        description:
+          type: string
+          description: The description of the space. Personal spaces do not have a description.
+      description: A space is a security context simplifying the management of access control by allowing users to control it on the containers instead of on the resources themselves.
+    Error:
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.
+    Errors:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code.
+          x-qlik-deprecated: true
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+          x-qlik-deprecated: true
+        title:
+          type: string
+          description: Summary of the problem.
+          x-qlik-deprecated: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+          x-qlik-deprecated: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+          x-qlik-deprecated: true
+        traceId:
+          type: string
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL that defines the resource.
+    SpaceType:
+      enum:
+      - shared
+      - managed
+      - data
+      type: string
+      readOnly: true
+      description: The name of the type.
+    ActionName:
+      enum:
+      - change_owner
+      - create
+      - read
+      - update
+      - delete
+      - publish
+      - link_environment
+      - restrict
+      type: string
+      description: The supported actions for user-created spaces.
+    RoleType:
+      enum:
+      - consumer
+      - contributor
+      - dataconsumer
+      - datapreview
+      - facilitator
+      - operator
+      - producer
+      - publisher
+      - basicconsumer
+      - codeveloper
+      type: string
+      description: 'Supported roles by space type:
+
+        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
+
+        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
+
+        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
+
+        '
