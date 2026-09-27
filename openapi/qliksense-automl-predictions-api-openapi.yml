@@ -387,6 +387,13 @@ components:
       required: true
       description: The ID of the prediction configuration object that provides parameters to be applied when the prediction is produced.
   schemas:
+    appErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'
     error:
       type: object
       required:
@@ -431,10 +438,3 @@ components:
         resourceId:
           type: string
           description: The resource id that the error occurred on
-    appErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error'

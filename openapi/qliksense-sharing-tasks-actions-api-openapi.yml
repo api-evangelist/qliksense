@@ -110,6 +110,15 @@ paths:
         limit: 100
 components:
   schemas:
+    SharingActionsTriggerCreateRequest:
+      type: object
+      required:
+      - sharingTaskID
+      properties:
+        sharingTaskID:
+          type: string
+          example: a1b2c3d4f5
+          description: Identifier of the sharing task to trigger.
     Error_meta:
       type: object
       properties:
@@ -117,6 +126,21 @@ components:
           type: integer
           readOnly: true
           description: HTTP error code.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     Error:
       type: object
       properties:
@@ -134,27 +158,3 @@ components:
           type: string
           readOnly: true
           description: Error cause.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    SharingActionsTriggerCreateRequest:
-      type: object
-      required:
-      - sharingTaskID
-      properties:
-        sharingTaskID:
-          type: string
-          example: a1b2c3d4f5
-          description: Identifier of the sharing task to trigger.

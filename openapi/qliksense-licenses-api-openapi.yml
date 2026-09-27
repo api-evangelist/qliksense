@@ -508,6 +508,214 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    licenseStatus:
+      type: object
+      example:
+        type: Signed
+        trial: false
+        valid: 2018-01-01/2018-12-31
+        origin: Internal
+        status: Ok
+        product: Qlik Sense Business
+        extensionStatus: Unavailable
+      required:
+      - origin
+      - product
+      - status
+      - trial
+      - type
+      - valid
+      - extensionStatus
+      - deactivated
+      properties:
+        type:
+          enum:
+          - Signed
+          - Plain
+          - '2.0'
+          type: string
+          description: Type of license key.
+        trial:
+          type: boolean
+          description: Boolean indicating if it is a trial license.
+        valid:
+          type: string
+          description: Period that the license is currently set to be active. Represented as an ISO 8601 time interval with start and end.
+        origin:
+          enum:
+          - Internal
+          - External
+          type: string
+          description: Origin of license key.
+        status:
+          enum:
+          - Ok
+          - Blacklisted
+          - Expired
+          - Missing
+          type: string
+          description: Enum with status of license. Only status Ok grants license. access.
+        product:
+          type: string
+          description: The product the license is valid for.
+        deactivated:
+          type: boolean
+          description: Boolean indicating if the license is deactivated.
+        extensionStatus:
+          enum:
+          - Unavailable
+          - Pending
+          - Available
+          type: string
+          description: Enum with extension status of license. access.
+    assignmentsActionsDeleteRequest:
+      type: object
+      example:
+        delete:
+        - type: analyzer
+          subject: qlik\malik
+      required:
+      - delete
+      properties:
+        delete:
+          type: array
+          items:
+            type: object
+            required:
+            - subject
+            - type
+            properties:
+              type:
+                type: string
+                description: Allotment type
+              subject:
+                type: string
+                description: User subject
+    assignmentsResponse:
+      type: object
+      example:
+        data:
+        - type: analyzer
+          excess: false
+          created: '2020-12-03T09:24:48.114Z'
+          subject: qlik\kalle
+        - type: false
+          created: '2020-12-03T09:24:48.114Z'
+          subject: qlik\nalle
+        links:
+          next:
+            href: http://license/v1/licenses/assignments?limit=4&page=bmV4dDpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZrQUE%3D
+          prev:
+            href: http://license/v1/licenses/assignments?limit=4&page=cHJldjpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZ0QUE%3D
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            required:
+            - type
+            - subject
+            - excess
+            - created
+            properties:
+              type:
+                type: string
+                description: Allotment type
+              excess:
+                type: boolean
+                description: Assignment excess status.
+              created:
+                type: string
+                description: Assignment created date.
+              subject:
+                type: string
+                description: Subject
+        links:
+          type: object
+          properties:
+            next:
+              $ref: '#/components/schemas/href'
+            prev:
+              $ref: '#/components/schemas/href'
+    consumptionEventsResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+                description: ID
+              appId:
+                type: string
+                description: App ID
+              userId:
+                type: string
+                description: User ID
+              endTime:
+                type: string
+                description: Engine session end time.
+                x-qlik-filterable: true
+              duration:
+                type: string
+                description: Engine session duration.
+              sessionId:
+                type: string
+                description: Engine session ID.
+              allotmentId:
+                type: string
+                description: Allotment ID
+              minutesUsed:
+                type: integer
+                description: Analyzer capacity minutes consumed.
+              capacityUsed:
+                type: integer
+                description: Analyzer capacity chunks consumed.
+              licenseUsage:
+                type: string
+                description: License usage
+        links:
+          type: object
+          properties:
+            next:
+              $ref: '#/components/schemas/href'
+            prev:
+              $ref: '#/components/schemas/href'
+    assignmentsActionsUpdateRequest:
+      type: object
+      example:
+        update:
+        - type: professional
+          subject: qlik\malik
+          sourceType: analyzer
+      required:
+      - update
+      properties:
+        update:
+          type: array
+          items:
+            type: object
+            required:
+            - subject
+            properties:
+              type:
+                type: string
+                description: Target assignment type.
+              subject:
+                type: string
+                description: User subject, the current or the desired after the patch.
+              sourceType:
+                type: string
+                description: Current assignment type.
+              sourceSubject:
+                type: string
+                description: The current user subject, in case that should be patched.
     licenseOverview:
       type: object
       example:
@@ -648,99 +856,6 @@ components:
         parentLicenseNumber:
           type: string
           description: the parent number of the license. can be shared by multiple license numbers
-    licenseStatus:
-      type: object
-      example:
-        type: Signed
-        trial: false
-        valid: 2018-01-01/2018-12-31
-        origin: Internal
-        status: Ok
-        product: Qlik Sense Business
-        extensionStatus: Unavailable
-      required:
-      - origin
-      - product
-      - status
-      - trial
-      - type
-      - valid
-      - extensionStatus
-      - deactivated
-      properties:
-        type:
-          enum:
-          - Signed
-          - Plain
-          - '2.0'
-          type: string
-          description: Type of license key.
-        trial:
-          type: boolean
-          description: Boolean indicating if it is a trial license.
-        valid:
-          type: string
-          description: Period that the license is currently set to be active. Represented as an ISO 8601 time interval with start and end.
-        origin:
-          enum:
-          - Internal
-          - External
-          type: string
-          description: Origin of license key.
-        status:
-          enum:
-          - Ok
-          - Blacklisted
-          - Expired
-          - Missing
-          type: string
-          description: Enum with status of license. Only status Ok grants license. access.
-        product:
-          type: string
-          description: The product the license is valid for.
-        deactivated:
-          type: boolean
-          description: Boolean indicating if the license is deactivated.
-        extensionStatus:
-          enum:
-          - Unavailable
-          - Pending
-          - Available
-          type: string
-          description: Enum with extension status of license. access.
-    assignmentsActionsAddRequest:
-      type: object
-      example:
-        add:
-        - type: professional
-          subject: qlik\kalle
-        - type: analyzer
-          subject: qlik\nalle
-      required:
-      - add
-      properties:
-        add:
-          type: array
-          items:
-            type: object
-            required:
-            - subject
-            - type
-            properties:
-              name:
-                type: string
-                description: User name
-                x-qlik-deprecated: true
-              type:
-                type: string
-                description: Allotment type
-              userId:
-                type: string
-                description: User ID
-                x-qlik-deprecated: true
-              subject:
-                type: string
-                description: User subject
     assignmentsActionsUpdateResponse:
       type: object
       example:
@@ -784,91 +899,45 @@ components:
               sourceSubject:
                 type: string
                 description: Current subject.
-    assignmentsResponse:
+    assignmentsActionsAddRequest:
       type: object
       example:
-        data:
-        - type: analyzer
-          excess: false
-          created: '2020-12-03T09:24:48.114Z'
-          subject: qlik\kalle
-        - type: false
-          created: '2020-12-03T09:24:48.114Z'
-          subject: qlik\nalle
-        links:
-          next:
-            href: http://license/v1/licenses/assignments?limit=4&page=bmV4dDpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZrQUE%3D
-          prev:
-            href: http://license/v1/licenses/assignments?limit=4&page=cHJldjpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZ0QUE%3D
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            required:
-            - type
-            - subject
-            - excess
-            - created
-            properties:
-              type:
-                type: string
-                description: Allotment type
-              excess:
-                type: boolean
-                description: Assignment excess status.
-              created:
-                type: string
-                description: Assignment created date.
-              subject:
-                type: string
-                description: Subject
-        links:
-          type: object
-          properties:
-            next:
-              $ref: '#/components/schemas/href'
-            prev:
-              $ref: '#/components/schemas/href'
-    assignmentsActionsAddResponse:
-      type: object
-      example:
-        data:
+        add:
         - type: professional
-          status: 201
           subject: qlik\kalle
-        - code: LICENSES-011
-          type: analyzer
-          title: No available allotment error, No available allotment.
-          status: 403
+        - type: analyzer
           subject: qlik\nalle
       required:
-      - data
+      - add
       properties:
-        data:
+        add:
           type: array
           items:
+            type: object
             required:
             - subject
-            - status
+            - type
             properties:
-              code:
+              name:
                 type: string
-                description: Error code
+                description: User name
+                x-qlik-deprecated: true
               type:
                 type: string
                 description: Allotment type
-              title:
+              userId:
                 type: string
-                description: Error title
-              status:
-                type: integer
-                description: Response status
+                description: User ID
+                x-qlik-deprecated: true
               subject:
                 type: string
-                description: Subject
+                description: User subject
+    href:
+      type: object
+      properties:
+        href:
+          type: string
+          description: link
     errorResponse:
       type: object
       example:
@@ -907,77 +976,55 @@ components:
           type: string
           description: Error message
           x-qlik-deprecated: true
-    assignmentsActionsDeleteRequest:
+    settingsBody:
       type: object
       example:
-        delete:
-        - type: analyzer
-          subject: qlik\malik
-      required:
-      - delete
+        autoAssignAnalyzer: true
+        autoAssignProfessional: false
       properties:
-        delete:
-          type: array
-          items:
-            type: object
-            required:
-            - subject
-            - type
-            properties:
-              type:
-                type: string
-                description: Allotment type
-              subject:
-                type: string
-                description: User subject
-    consumptionEventsResponse:
+        autoAssignAnalyzer:
+          type: boolean
+          description: If analyzer users are available, they will be automatically assigned. Otherwise, analyzer capacity will be assigned, if available.
+        autoAssignProfessional:
+          type: boolean
+          description: If professional users are available, they will be automatically assigned. Otherwise, analyzer capacity will be assigned, if available.
+    assignmentsActionsAddResponse:
       type: object
+      example:
+        data:
+        - type: professional
+          status: 201
+          subject: qlik\kalle
+        - code: LICENSES-011
+          type: analyzer
+          title: No available allotment error, No available allotment.
+          status: 403
+          subject: qlik\nalle
       required:
       - data
-      - links
       properties:
         data:
           type: array
           items:
+            required:
+            - subject
+            - status
             properties:
-              id:
+              code:
                 type: string
-                description: ID
-              appId:
+                description: Error code
+              type:
                 type: string
-                description: App ID
-              userId:
+                description: Allotment type
+              title:
                 type: string
-                description: User ID
-              endTime:
-                type: string
-                description: Engine session end time.
-                x-qlik-filterable: true
-              duration:
-                type: string
-                description: Engine session duration.
-              sessionId:
-                type: string
-                description: Engine session ID.
-              allotmentId:
-                type: string
-                description: Allotment ID
-              minutesUsed:
+                description: Error title
+              status:
                 type: integer
-                description: Analyzer capacity minutes consumed.
-              capacityUsed:
-                type: integer
-                description: Analyzer capacity chunks consumed.
-              licenseUsage:
+                description: Response status
+              subject:
                 type: string
-                description: License usage
-        links:
-          type: object
-          properties:
-            next:
-              $ref: '#/components/schemas/href'
-            prev:
-              $ref: '#/components/schemas/href'
+                description: Subject
     assignmentsActionsDeleteResponse:
       type: object
       example:
@@ -1014,50 +1061,3 @@ components:
               subject:
                 type: string
                 description: Subject
-    settingsBody:
-      type: object
-      example:
-        autoAssignAnalyzer: true
-        autoAssignProfessional: false
-      properties:
-        autoAssignAnalyzer:
-          type: boolean
-          description: If analyzer users are available, they will be automatically assigned. Otherwise, analyzer capacity will be assigned, if available.
-        autoAssignProfessional:
-          type: boolean
-          description: If professional users are available, they will be automatically assigned. Otherwise, analyzer capacity will be assigned, if available.
-    href:
-      type: object
-      properties:
-        href:
-          type: string
-          description: link
-    assignmentsActionsUpdateRequest:
-      type: object
-      example:
-        update:
-        - type: professional
-          subject: qlik\malik
-          sourceType: analyzer
-      required:
-      - update
-      properties:
-        update:
-          type: array
-          items:
-            type: object
-            required:
-            - subject
-            properties:
-              type:
-                type: string
-                description: Target assignment type.
-              subject:
-                type: string
-                description: User subject, the current or the desired after the patch.
-              sourceType:
-                type: string
-                description: Current assignment type.
-              sourceSubject:
-                type: string
-                description: The current user subject, in case that should be patched.

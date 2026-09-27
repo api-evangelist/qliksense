@@ -236,6 +236,28 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    KeyProviders:
+      type: object
+      example:
+      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
+        name: test name
+        current: true
+        description: test description
+        drCompliant: true
+        keyprovider: AWS-KMS
+        multiRegion: true
+        replicaKeys:
+        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
+          region: eu-west-3
+        complianceError:
+          code: ''
+          region: ''
+          message: ''
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyProvider'
     KeyProvider:
       type: object
       example:
@@ -314,6 +336,13 @@ components:
           format: date-time
           readOnly: true
           description: When the key was demoted from being current to non active.
+    ResetMigrationNotNeeded:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Tenant is already using Qlik KMS, no migration is required.
+          description: Tenant is already using Qlik KMS, no migration is required.
     StandardError:
       type: object
       required:
@@ -323,6 +352,63 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StandardErrorItem'
+    StandardErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional error object metadata.
+        title:
+          type: string
+          description: Description of the error.
+        detail:
+          type: string
+          description: Extra information about the error.
+    MigrationInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uid
+          description: Migration operation ID.
+        state:
+          enum:
+          - New
+          - InProgress
+          - Completed
+          type: string
+          description: Migration operation state.
+        progress:
+          type: number
+          description: Progress in percentage.
+        tenantId:
+          type: string
+          format: uid
+          description: Tenant ID.
+        completedAt:
+          type: string
+          format: date-time
+        initiatedAt:
+          type: string
+          format: date-time
+        migratingTo:
+          type: string
+          description: The new key ARN that keys should be migrated to.
+        migratingFrom:
+          type: string
+          description: The key ARN being migrated from (in case of QlikVault, could be a short name only).
+        migratingToPrefix:
+          type: string
+          description: The new key prefix (to help services know which prefix should NOT be migrated).
+        migratingToFingerprint:
+          type: string
+          description: The new key ARN fingerprint.
     ListKeyProviders:
       type: object
       example:
@@ -371,92 +457,6 @@ components:
           message: The policy of the provided key does not allow the required action [eu-west-3] [GenerateDataKey].
         promotedToCurrentAt: '2023-06-21T18:59:18Z'
         demotedFromCurrentAt: '0001-01-01T00:00:00Z'
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyProvider'
-    MigrationInformation:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uid
-          description: Migration operation ID.
-        state:
-          enum:
-          - New
-          - InProgress
-          - Completed
-          type: string
-          description: Migration operation state.
-        progress:
-          type: number
-          description: Progress in percentage.
-        tenantId:
-          type: string
-          format: uid
-          description: Tenant ID.
-        completedAt:
-          type: string
-          format: date-time
-        initiatedAt:
-          type: string
-          format: date-time
-        migratingTo:
-          type: string
-          description: The new key ARN that keys should be migrated to.
-        migratingFrom:
-          type: string
-          description: The key ARN being migrated from (in case of QlikVault, could be a short name only).
-        migratingToPrefix:
-          type: string
-          description: The new key prefix (to help services know which prefix should NOT be migrated).
-        migratingToFingerprint:
-          type: string
-          description: The new key ARN fingerprint.
-    ResetMigrationNotNeeded:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Tenant is already using Qlik KMS, no migration is required.
-          description: Tenant is already using Qlik KMS, no migration is required.
-    StandardErrorItem:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional error object metadata.
-        title:
-          type: string
-          description: Description of the error.
-        detail:
-          type: string
-          description: Extra information about the error.
-    KeyProviders:
-      type: object
-      example:
-      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
-        name: test name
-        current: true
-        description: test description
-        drCompliant: true
-        keyprovider: AWS-KMS
-        multiRegion: true
-        replicaKeys:
-        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
-          region: eu-west-3
-        complianceError:
-          code: ''
-          region: ''
-          message: ''
       properties:
         errors:
           type: array

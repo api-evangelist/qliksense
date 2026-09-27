@@ -151,22 +151,6 @@ components:
             type: boolean
             example: true
             x-omitempty: false
-    ListLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
-    Self:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
     StandardListResponseProps:
       type: object
       required:
@@ -182,67 +166,6 @@ components:
           example: 1
           description: count of entries on the currently shown page
       description: properties that should be added to every list response
-    Page:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items?limit=12
-          description: URL to particular set of elements
-        type:
-          enum:
-          - prev
-          - next
-          type: string
-          example: next
-          description: Page type, can be next or prev
-        token:
-          type: string
-          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
-          description: Page unique token
-    ErrorResponse:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/SingleErrorResponse'
-        traceId:
-          type: string
-    SingleErrorResponse:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to usage-tracker.
-        meta:
-          type: object
-          properties: {}
-          description: meta properties for an error.
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    Enforcement:
-      type: object
-      properties:
-        resourceType:
-          type: string
-          description: Resource type to be blocked
-        actionToBlock:
-          type: string
-          description: Resource action type to be blocked
     ExecutionResponse:
       type: object
       properties:
@@ -436,3 +359,80 @@ components:
           description: The id of the consumption report
           x-omitempty: false
           x-qlik-filterable: true
+    Self:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    ListLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'
+    SingleErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to usage-tracker.
+        meta:
+          type: object
+          properties: {}
+          description: meta properties for an error.
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Page:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items?limit=12
+          description: URL to particular set of elements
+        type:
+          enum:
+          - prev
+          - next
+          type: string
+          example: next
+          description: Page type, can be next or prev
+        token:
+          type: string
+          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
+          description: Page unique token
+    Enforcement:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          description: Resource type to be blocked
+        actionToBlock:
+          type: string
+          description: Resource action type to be blocked
+    ErrorResponse:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleErrorResponse'
+        traceId:
+          type: string

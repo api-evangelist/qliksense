@@ -100,38 +100,6 @@ paths:
         limit: 100
 components:
   schemas:
-    APISettings:
-      type: object
-      required:
-      - enable-conditions
-      properties:
-        tenantId:
-          type: string
-          example: cgdsAumGmQ6l0Bi7CUKt9V8P_Y9GL0sC
-          readOnly: true
-          description: These persisted api settings are only available for this tenant. Extracted from request JWT.
-        enable-conditions:
-          type: boolean
-          example: true
-          description: Whether API endpoints for condition manager are enabled
-    ErrorResponse:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/SingleErrorResponse'
-          description: Array of errors
-        traceId:
-          type: string
-          example: d6dba97c917e3f3d77c82f40f37c9d85
-          description: trace id
     SingleErrorResponse:
       type: object
       properties:
@@ -151,6 +119,38 @@ components:
           type: string
           readOnly: true
           description: Error cause.
+    ErrorResponse:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleErrorResponse'
+          description: Array of errors
+        traceId:
+          type: string
+          example: d6dba97c917e3f3d77c82f40f37c9d85
+          description: trace id
+    APISettings:
+      type: object
+      required:
+      - enable-conditions
+      properties:
+        tenantId:
+          type: string
+          example: cgdsAumGmQ6l0Bi7CUKt9V8P_Y9GL0sC
+          readOnly: true
+          description: These persisted api settings are only available for this tenant. Extracted from request JWT.
+        enable-conditions:
+          type: boolean
+          example: true
+          description: Whether API endpoints for condition manager are enabled
     APISettingsUpload:
       type: object
       required:

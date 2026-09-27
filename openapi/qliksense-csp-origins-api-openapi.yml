@@ -475,6 +475,44 @@ paths:
         limit: 1000
 components:
   schemas:
+    CSPEntryList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CSPEntry'
+        links:
+          type: object
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    Link:
+      type: object
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL to a resource request.
+    CSPEntry:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CSPEntryContent'
+      properties:
+        id:
+          type: string
+          description: The CSP entry's unique identifier.
+    CSPHeader:
+      type: object
+      properties:
+        Content-Security-Policy:
+          type: string
+          description: The compiled CSP header.
     CSPEntryContent:
       type: object
       required:
@@ -541,29 +579,6 @@ components:
         frameAncestors:
           type: boolean
           description: Specifies valid sources for embedding the resource using frame, iFrame, object, embed and applet.
-    CSPEntry:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/CSPEntryContent'
-      properties:
-        id:
-          type: string
-          description: The CSP entry's unique identifier.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    Link:
-      type: object
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL to a resource request.
     Error:
       type: object
       required:
@@ -579,25 +594,10 @@ components:
         detail:
           type: string
           description: May be used to provide additional details.
-    CSPHeader:
+    ErrorResponse:
       type: object
       properties:
-        Content-Security-Policy:
-          type: string
-          description: The compiled CSP header.
-    CSPEntryList:
-      type: object
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/CSPEntry'
-        links:
-          type: object
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/Error'

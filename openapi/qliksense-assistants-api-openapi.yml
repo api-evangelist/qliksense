@@ -447,6 +447,104 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ChunksRefs:
+      type: object
+      example:
+        chunkIds:
+        - c2ef42d9-7164-4fb0-bdbb-6534ae37263e
+        - 486ada2c-f895-4961-8ba5-7995f1026d26
+      required:
+      - chunkIds
+      properties:
+        chunkIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            description: Unique identifier of the Chunk.
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    createAssistant:
+      type: object
+      required:
+      - name
+      - title
+      - description
+      - tags
+      - spaceId
+      - knowledgeBases
+      - welcomeMessage
+      - customProperties
+      properties:
+        name:
+          type: string
+          example: Organization-wide assistant
+          description: The name of the assistant.
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: The list of tags for the assistant.
+        title:
+          type: string
+          example: Assistant for Sales activities
+          description: The title of the assistant.
+        spaceId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the space to contain the assistant.
+        description:
+          type: string
+          example: This assistant is used for...
+          description: The description of the assistant.
+        systemMessage:
+          type: string
+          example: You are helpful Sales assistant. Provide concise and actionable insights.
+          description: System prompt setting up conversation context.
+          x-qlik-deprecated: true
+        knowledgeBases:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          description: List of knowledgebases the assistant is using.
+        welcomeMessage:
+          type: string
+          example: Welcome to Sales process support Assistant.
+          description: Initial message in the chat conversation.
+        customProperties:
+          type: object
+          example:
+            customErrors:
+              outsideScopeError: Outside of scope error
+              complexQuestionError: Complex question error
+              promptInjectionError: Prompt injection error
+          description: freeform JSON to allow custom customization options.
+        defaultPromptType:
+          enum:
+          - thread
+          - oneshot
+          type: string
+          example: thread
+          description: Default prompt type for the assistant.
+        orderedStarterIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          - 787f191e810c19729de860er
+          description: List of starter IDs in the order they will be sorted.
     JSONPatchArray:
       type: array
       items:
@@ -470,6 +568,30 @@ components:
         path: /avatar
         value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
       description: An array of JSON Patch documents.
+    assistantsResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assistant'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    errorResponseCopy:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
     Assistant:
       type: object
       required:
@@ -598,30 +720,11 @@ components:
           - 507f191e810c19729de860ea
           - 787f191e810c19729de860er
           description: List of starter IDs in the order they will be sorted.
-    assistantsResult:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Assistant'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
-    errorResponseCopy:
+    resultMeta:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCodeCopy'
-            x-qlik-merge-conflict: true
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
+        countTotal:
+          type: integer
     pageLinks:
       type: object
       properties:
@@ -631,21 +734,6 @@ components:
           $ref: '#/components/schemas/pageLink'
         self:
           $ref: '#/components/schemas/pageLink'
-    ChunksRefs:
-      type: object
-      example:
-        chunkIds:
-        - c2ef42d9-7164-4fb0-bdbb-6534ae37263e
-        - 486ada2c-f895-4961-8ba5-7995f1026d26
-      required:
-      - chunkIds
-      properties:
-        chunkIds:
-          type: array
-          items:
-            type: string
-            format: uuid
-            description: Unique identifier of the Chunk.
     sourcesPlaintext:
       type: object
       properties:
@@ -664,132 +752,6 @@ components:
           type: string
         detail:
           type: string
-    pageLink:
-      type: object
-      properties:
-        href:
-          type: string
-    createAssistant:
-      type: object
-      required:
-      - name
-      - title
-      - description
-      - tags
-      - spaceId
-      - knowledgeBases
-      - welcomeMessage
-      - customProperties
-      properties:
-        name:
-          type: string
-          example: Organization-wide assistant
-          description: The name of the assistant.
-        tags:
-          type: array
-          items:
-            type: string
-          example:
-          - Red
-          - Sales
-          description: The list of tags for the assistant.
-        title:
-          type: string
-          example: Assistant for Sales activities
-          description: The title of the assistant.
-        spaceId:
-          type: string
-          format: uuid
-          example: 507f191e810c19729de860ea
-          description: Unique identifier of the space to contain the assistant.
-        description:
-          type: string
-          example: This assistant is used for...
-          description: The description of the assistant.
-        systemMessage:
-          type: string
-          example: You are helpful Sales assistant. Provide concise and actionable insights.
-          description: System prompt setting up conversation context.
-          x-qlik-deprecated: true
-        knowledgeBases:
-          type: array
-          items:
-            type: string
-            format: uuid
-          example:
-          - 507f191e810c19729de860ea
-          description: List of knowledgebases the assistant is using.
-        welcomeMessage:
-          type: string
-          example: Welcome to Sales process support Assistant.
-          description: Initial message in the chat conversation.
-        customProperties:
-          type: object
-          example:
-            customErrors:
-              outsideScopeError: Outside of scope error
-              complexQuestionError: Complex question error
-              promptInjectionError: Prompt injection error
-          description: freeform JSON to allow custom customization options.
-        defaultPromptType:
-          enum:
-          - thread
-          - oneshot
-          type: string
-          example: thread
-          description: Default prompt type for the assistant.
-        orderedStarterIds:
-          type: array
-          items:
-            type: string
-            format: uuid
-          example:
-          - 507f191e810c19729de860ea
-          - 787f191e810c19729de860er
-          description: List of starter IDs in the order they will be sorted.
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
-    feedbackSummary:
-      type: object
-      required:
-      - likes
-      - dislikes
-      - interactions
-      - reviews
-      properties:
-        likes:
-          type: integer
-          description: Amount of likes for a thread or an assistant.
-        other:
-          type: integer
-          description: Count of answers which users disliked and gave "other" as reason.
-        reviews:
-          type: integer
-          description: Amount of reviews for a thread or an assistant.
-        dislikes:
-          type: integer
-          description: Amount of dislikes for a thread or an assistant.
-        unhelpful:
-          type: integer
-          description: Count of answers which users marked as "unhelpful".
-        inaccurate:
-          type: integer
-          description: Count of answers which users marked as "inaccurate".
-        irrelevant:
-          type: integer
-          description: Count of answers which users marked as "irrelevant".
-        repetitive:
-          type: integer
-          description: Count of answers which users marked as "repetitive".
-        unanswered:
-          type: integer
-          description: Count of questions for which the assistant provided no answer.
-        interactions:
-          type: integer
-          description: Amount of interactions for a thread or an assistant.
     JSONPatch:
       type: object
       required:
@@ -886,3 +848,41 @@ components:
           type: string
           example: thread
           description: Default prompt type for the assistant.
+    feedbackSummary:
+      type: object
+      required:
+      - likes
+      - dislikes
+      - interactions
+      - reviews
+      properties:
+        likes:
+          type: integer
+          description: Amount of likes for a thread or an assistant.
+        other:
+          type: integer
+          description: Count of answers which users disliked and gave "other" as reason.
+        reviews:
+          type: integer
+          description: Amount of reviews for a thread or an assistant.
+        dislikes:
+          type: integer
+          description: Amount of dislikes for a thread or an assistant.
+        unhelpful:
+          type: integer
+          description: Count of answers which users marked as "unhelpful".
+        inaccurate:
+          type: integer
+          description: Count of answers which users marked as "inaccurate".
+        irrelevant:
+          type: integer
+          description: Count of answers which users marked as "irrelevant".
+        repetitive:
+          type: integer
+          description: Count of answers which users marked as "repetitive".
+        unanswered:
+          type: integer
+          description: Count of questions for which the assistant provided no answer.
+        interactions:
+          type: integer
+          description: Amount of interactions for a thread or an assistant.

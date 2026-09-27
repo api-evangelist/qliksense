@@ -405,6 +405,33 @@ paths:
         limit: 100
 components:
   schemas:
+    ErrorResponseItem:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          example: REPTPL-400001
+          description: The error code.
+        meta:
+          type:
+          - object
+          - 'null'
+          description: Additional error metadata.
+        title:
+          type:
+          - string
+          - 'null'
+          example: Cursor not formatted correctly.
+          description: Summary of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          example: Invalid encoding of cursor.
+          description: A human-readable explanation specific to this occurrence of the problem.
+      additionalProperties: false
     ReportTemplateResponse:
       type: object
       properties:
@@ -520,22 +547,18 @@ components:
           minLength: 1
           description: The ID of a previously uploaded temporary content file
       additionalProperties: false
-    ErrorResult:
+    GetTemplatesResponse:
       type: object
       properties:
-        errors:
+        data:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/ErrorResponseItem'
-          description: List of errors and their properties.
-        statusCode:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          readOnly: true
+            $ref: '#/components/schemas/ReportTemplateResponse'
+          description: The current page data.
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
       additionalProperties: false
     CreateTemplateRequest:
       type: object
@@ -576,19 +599,6 @@ components:
           minLength: 1
           description: The ID of a previously uploaded temporary content file
       additionalProperties: false
-    GetTemplatesResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ReportTemplateResponse'
-          description: The current page data.
-        links:
-          $ref: '#/components/schemas/PaginationLinks'
-      additionalProperties: false
     PaginationLinks:
       type: object
       properties:
@@ -598,43 +608,6 @@ components:
           $ref: '#/components/schemas/PaginationLink'
         self:
           $ref: '#/components/schemas/PaginationLink'
-      additionalProperties: false
-    ErrorResponseItem:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          example: REPTPL-400001
-          description: The error code.
-        meta:
-          type:
-          - object
-          - 'null'
-          description: Additional error metadata.
-        title:
-          type:
-          - string
-          - 'null'
-          example: Cursor not formatted correctly.
-          description: Summary of the problem.
-        detail:
-          type:
-          - string
-          - 'null'
-          example: Invalid encoding of cursor.
-          description: A human-readable explanation specific to this occurrence of the problem.
-      additionalProperties: false
-    PaginationLink:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: The URL for the pagination link.
       additionalProperties: false
     Operation:
       type: object
@@ -655,4 +628,31 @@ components:
           type:
           - object
           - 'null'
+      additionalProperties: false
+    ErrorResult:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorResponseItem'
+          description: List of errors and their properties.
+        statusCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    PaginationLink:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: The URL for the pagination link.
       additionalProperties: false

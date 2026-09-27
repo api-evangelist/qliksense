@@ -416,82 +416,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Href:
-      type: object
-      example:
-        href: http://example.com
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          format: uri
-          example: http://example.com
-    PostTaskBody:
-      allOf:
-      - $ref: '#/components/schemas/TaskBase'
-      - required:
-        - appId
-        - timeZone
-        properties:
-          type:
-            enum:
-            - scheduled_reload
-            type: string
-            example: scheduled_reload
-            description: Type of task being created - only contains the "scheduled_reload" value. Type value is not used for creating a schedule reload. It has been deprecated since 2022-04-05.
-            x-qlik-deprecated: true
-    TaskBase:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: 116dbfae-7fb9-4983-8e23-5ccd8c508722
-          description: The ID of the app.
-        partial:
-          type: boolean
-          default: false
-          description: The task is partial reload or not
-        timeZone:
-          type: string
-          example: America/Toronto
-          description: The time zone in which the time is specified. (Formatted as an IANA Time Zone Database name, e.g. Europe/Zurich.) This field specifies the time zone in which the event start/end are expanded. If missing the start/end fields must specify a UTC offset in RFC3339 format.
-        autoReload:
-          type: boolean
-          default: false
-          description: A flag that indicates whether a reload is triggered when data of the app is changed
-        recurrence:
-          type: array
-          items:
-            type: string
-          example:
-          - RRULE:FREQ=DAILY;INTERVAL=1;BYHOUR=11;BYMINUTE=18;BYSECOND=0
-          - RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,TU;BYHOUR=13;BYMINUTE=17;BYSECOND=0
-          description: List of RECUR lines for a recurring event, as specified in RFC5545. Note that DTSTART and DTEND lines are not allowed in this field; event start and end times are specified in the start and end fields. This field is omitted for single events or instances of recurring events
-        endDateTime:
-          type: string
-          example: '2022-10-12T23:59:00'
-          description: The time that the task will stop recurring. If the time zone is missing, this is a combined date-time value expressing a time with a fixed UTC offset (formatted according to RFC3339). If a time zone is given, the zone offset must be omitted.
-        startDateTime:
-          type: string
-          example: '2022-09-19T11:18:00'
-          description: The time that the task execution start recurring. If the time zone is missing, this is a combined date-time value expressing a time with a fixed UTC offset (formatted according to RFC3339). If a time zone is given, the zone offset must be omitted. Field startDateTime should not be before the Unix epoch 00:00:00 UTC on 1 January 1970. Note that the empty string value with the empty recurrence array indicates the scheduled job is not set.
-        autoReloadPartial:
-          type: boolean
-          default: false
-          description: A flag that indicates whether it is a partial reload or not for the auto reload
-    PutTaskBody:
-      allOf:
-      - $ref: '#/components/schemas/TaskBase'
-      - properties:
-          state:
-            enum:
-            - Enabled
-            - Disabled
-            - Completed
-            type: string
-            example: Disabled
-            description: Toggle for enabling and disabling the reload task
     SelfLink:
       type: object
       required:
@@ -511,33 +435,20 @@ components:
             $ref: '#/components/schemas/Task'
         links:
           $ref: '#/components/schemas/PaginationLinks'
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: TASKS-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
+    PostTaskBody:
+      allOf:
+      - $ref: '#/components/schemas/TaskBase'
+      - required:
+        - appId
+        - timeZone
+        properties:
+          type:
+            enum:
+            - scheduled_reload
+            type: string
+            example: scheduled_reload
+            description: Type of task being created - only contains the "scheduled_reload" value. Type value is not used for creating a schedule reload. It has been deprecated since 2022-04-05.
+            x-qlik-deprecated: true
     Task:
       allOf:
       - $ref: '#/components/schemas/TaskBase'
@@ -608,6 +519,72 @@ components:
             type: string
             example: '2022-09-20T17:17:00Z'
             description: The next time the task will execute.
+    TaskBase:
+      type: object
+      properties:
+        appId:
+          type: string
+          example: 116dbfae-7fb9-4983-8e23-5ccd8c508722
+          description: The ID of the app.
+        partial:
+          type: boolean
+          default: false
+          description: The task is partial reload or not
+        timeZone:
+          type: string
+          example: America/Toronto
+          description: The time zone in which the time is specified. (Formatted as an IANA Time Zone Database name, e.g. Europe/Zurich.) This field specifies the time zone in which the event start/end are expanded. If missing the start/end fields must specify a UTC offset in RFC3339 format.
+        autoReload:
+          type: boolean
+          default: false
+          description: A flag that indicates whether a reload is triggered when data of the app is changed
+        recurrence:
+          type: array
+          items:
+            type: string
+          example:
+          - RRULE:FREQ=DAILY;INTERVAL=1;BYHOUR=11;BYMINUTE=18;BYSECOND=0
+          - RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,TU;BYHOUR=13;BYMINUTE=17;BYSECOND=0
+          description: List of RECUR lines for a recurring event, as specified in RFC5545. Note that DTSTART and DTEND lines are not allowed in this field; event start and end times are specified in the start and end fields. This field is omitted for single events or instances of recurring events
+        endDateTime:
+          type: string
+          example: '2022-10-12T23:59:00'
+          description: The time that the task will stop recurring. If the time zone is missing, this is a combined date-time value expressing a time with a fixed UTC offset (formatted according to RFC3339). If a time zone is given, the zone offset must be omitted.
+        startDateTime:
+          type: string
+          example: '2022-09-19T11:18:00'
+          description: The time that the task execution start recurring. If the time zone is missing, this is a combined date-time value expressing a time with a fixed UTC offset (formatted according to RFC3339). If a time zone is given, the zone offset must be omitted. Field startDateTime should not be before the Unix epoch 00:00:00 UTC on 1 January 1970. Note that the empty string value with the empty recurrence array indicates the scheduled job is not set.
+        autoReloadPartial:
+          type: boolean
+          default: false
+          description: A flag that indicates whether it is a partial reload or not for the auto reload
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: TASKS-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
     PaginationLinks:
       allOf:
       - $ref: '#/components/schemas/SelfLink'
@@ -616,3 +593,26 @@ components:
             $ref: '#/components/schemas/Href'
           prev:
             $ref: '#/components/schemas/Href'
+    Href:
+      type: object
+      example:
+        href: http://example.com
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          format: uri
+          example: http://example.com
+    PutTaskBody:
+      allOf:
+      - $ref: '#/components/schemas/TaskBase'
+      - properties:
+          state:
+            enum:
+            - Enabled
+            - Disabled
+            - Completed
+            type: string
+            example: Disabled
+            description: Toggle for enabling and disabling the reload task

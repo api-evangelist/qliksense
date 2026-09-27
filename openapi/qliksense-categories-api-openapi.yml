@@ -444,6 +444,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    categoriesResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/category'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
     JSONPatchArray:
       type: array
       items:
@@ -456,6 +469,11 @@ components:
         path: /description
         value: new description
       description: An array of JSON Patch documents
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
     pageLinks:
       type: object
       properties:
@@ -466,11 +484,27 @@ components:
         self:
           $ref: '#/components/schemas/pageLink'
       description: URLs to a resource request
-    pageLink:
+    JSONPatch:
       type: object
+      required:
+      - op
+      - path
+      - value
       properties:
-        href:
+        op:
+          enum:
+          - replace
           type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
     category:
       type: object
       required:
@@ -530,64 +564,6 @@ components:
           example: 123e4567-e89b-12d3-a456-426614174000
         description:
           type: string
-    errorResponseCode:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    errorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 795dedf8cf38b60088a6e4feb6eace75
-    categoriesResult:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/category'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
     createCategory:
       type: object
       properties:
@@ -610,4 +586,28 @@ components:
           - 63075b341a1d504df06e2abc
           description: This list contains the UIDs of the stewards of the category.
         description:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    pageLink:
+      type: object
+      properties:
+        href:
           type: string

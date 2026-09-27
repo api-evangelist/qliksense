@@ -135,20 +135,6 @@ components:
           type: integer
           readOnly: true
           description: HTTP error code.
-    APISettingsUpload:
-      type: object
-      required:
-      - enable-sharing
-      properties:
-        maxRecipients:
-          type: number
-          example: 200
-          readOnly: true
-          description: Maximum number of recipients when creating a sharing task
-        enable-sharing:
-          type: boolean
-          example: true
-          description: Whether API endpoints for sharing are enabled
     SharingSettings:
       type: object
       properties:
@@ -196,38 +182,6 @@ components:
           example: '2020-09-02T13:44:33Z'
           readOnly: true
           description: UTC timestamp of the most recent change of reportSubscriptionStatus. If there has not been any such change, this is the timestamp of the initial creation of the record.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     SharingSettingsPatchCompliant:
       type: object
       required:
@@ -267,3 +221,49 @@ components:
         path: /enable-report-subscription
         value: false
       description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    APISettingsUpload:
+      type: object
+      required:
+      - enable-sharing
+      properties:
+        maxRecipients:
+          type: number
+          example: 200
+          readOnly: true
+          description: Maximum number of recipients when creating a sharing task
+        enable-sharing:
+          type: boolean
+          example: true
+          description: Whether API endpoints for sharing are enabled

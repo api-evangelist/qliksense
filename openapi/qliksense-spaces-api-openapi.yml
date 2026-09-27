@@ -430,29 +430,14 @@ paths:
         limit: 1000
 components:
   schemas:
-    SpaceCreate:
-      required:
-      - name
-      - type
-      properties:
-        name:
-          type: string
-          example: Finance (dev)
-          pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
-          maxLength: 256
-          description: The name of the space. Personal spaces do not have a name.
-        type:
-          enum:
-          - shared
-          - managed
-          - data
-          type: string
-          example: shared
-          description: The type of space such as shared, managed, and so on.
-        description:
-          type: string
-          example: Development space for users building apps for the Finance team.
-          description: The description of the space. Personal spaces do not have a description.
+    SpaceType:
+      enum:
+      - shared
+      - managed
+      - data
+      type: string
+      readOnly: true
+      description: The name of the type.
     SpaceTypes:
       properties:
         data:
@@ -465,39 +450,32 @@ components:
           - managed
           readOnly: true
       description: The distinct types of spaces (shared, managed, and so on).
-    SpacePatch:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-            description: The operation to be performed.
-          path:
-            enum:
-            - /name
-            - /ownerId
-            - /description
-            type: string
-            description: Field of space to be patched (updated).
-          value:
-            type: string
-            description: 'The value to be used within the operations.
-
-              - name: The name (string) of space of maxLength 256 of pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
-
-              - description: The description (string) of the space. Personal spaces do not have a description.
-
-              - ownerId: The user ID in uid format (string) of the space owner.
-
-              '
-        description: A JSONPatch document as defined by RFC 6902.
+    SpaceUpdate:
+      properties:
+        name:
+          type: string
+          pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
+          maxLength: 256
+          description: The name of the space.
+        ownerId:
+          type: string
+          format: uid
+          description: The user ID of the space owner.
+        description:
+          type: string
+          description: The description of the space. Personal spaces do not have a description.
+    ActionName:
+      enum:
+      - change_owner
+      - create
+      - read
+      - update
+      - delete
+      - publish
+      - link_environment
+      - restrict
+      type: string
+      description: The supported actions for user-created spaces.
     Spaces:
       type: object
       properties:
@@ -542,20 +520,6 @@ components:
               $ref: '#/components/schemas/Link'
             self:
               $ref: '#/components/schemas/Link'
-    SpaceUpdate:
-      properties:
-        name:
-          type: string
-          pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
-          maxLength: 256
-          description: The name of the space.
-        ownerId:
-          type: string
-          format: uid
-          description: The user ID of the space owner.
-        description:
-          type: string
-          description: The description of the space. Personal spaces do not have a description.
     Space:
       required:
       - id
@@ -643,35 +607,58 @@ components:
           type: string
           description: The description of the space. Personal spaces do not have a description.
       description: A space is a security context simplifying the management of access control by allowing users to control it on the containers instead of on the resources themselves.
-    Error:
+    Link:
       required:
-      - code
-      - title
+      - href
       properties:
-        code:
+        href:
           type: string
-          description: The error code.
-        meta:
-          type: object
-          properties:
-            source:
-              type: object
-              properties:
-                pointer:
-                  type: string
-                  description: A JSON pointer to the property that caused the error.
-                parameter:
-                  type: string
-                  description: The URI query parameter that caused the error.
-              description: References to the source of the error.
-          description: Additional properties relating to the error.
-        title:
+          description: URL that defines the resource.
+    RoleType:
+      enum:
+      - consumer
+      - contributor
+      - dataconsumer
+      - datapreview
+      - facilitator
+      - operator
+      - producer
+      - publisher
+      - basicconsumer
+      - codeveloper
+      type: string
+      description: 'Supported roles by space type:
+
+        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
+
+        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
+
+        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
+
+        '
+    SpaceCreate:
+      required:
+      - name
+      - type
+      properties:
+        name:
           type: string
-          description: Summary of the problem.
-        detail:
+          example: Finance (dev)
+          pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
+          maxLength: 256
+          description: The name of the space. Personal spaces do not have a name.
+        type:
+          enum:
+          - shared
+          - managed
+          - data
           type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-      description: An error object.
+          example: shared
+          description: The type of space such as shared, managed, and so on.
+        description:
+          type: string
+          example: Development space for users building apps for the Finance team.
+          description: The description of the space. Personal spaces do not have a description.
     Errors:
       type: object
       properties:
@@ -708,52 +695,65 @@ components:
           x-qlik-deprecated: true
         traceId:
           type: string
-    Link:
+    Error:
       required:
-      - href
+      - code
+      - title
       properties:
-        href:
+        code:
           type: string
-          description: URL that defines the resource.
-    SpaceType:
-      enum:
-      - shared
-      - managed
-      - data
-      type: string
-      readOnly: true
-      description: The name of the type.
-    ActionName:
-      enum:
-      - change_owner
-      - create
-      - read
-      - update
-      - delete
-      - publish
-      - link_environment
-      - restrict
-      type: string
-      description: The supported actions for user-created spaces.
-    RoleType:
-      enum:
-      - consumer
-      - contributor
-      - dataconsumer
-      - datapreview
-      - facilitator
-      - operator
-      - producer
-      - publisher
-      - basicconsumer
-      - codeveloper
-      type: string
-      description: 'Supported roles by space type:
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.
+    SpacePatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed.
+          path:
+            enum:
+            - /name
+            - /ownerId
+            - /description
+            type: string
+            description: Field of space to be patched (updated).
+          value:
+            type: string
+            description: 'The value to be used within the operations.
 
-        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
+              - name: The name (string) of space of maxLength 256 of pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
 
-        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
+              - description: The description (string) of the space. Personal spaces do not have a description.
 
-        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
+              - ownerId: The user ID in uid format (string) of the space owner.
 
-        '
+              '
+        description: A JSONPatch document as defined by RFC 6902.

@@ -94,6 +94,13 @@ components:
       required: true
       description: Unique identifier of the data product. Must be a valid GUID assigned when the data product was created.
   schemas:
+    ExecutionStatus:
+      enum:
+      - REQUESTED
+      - FAILED
+      type: string
+      example: REQUESTED
+      description: Current execution status of the computation (REQUESTED or FAILED).
     DatasetsComputationResponse:
       type: object
       required:
@@ -109,15 +116,6 @@ components:
           type: string
           description: Unique identifier for the data quality batch computation job.
       description: Response containing the batch computation identifier and per-dataset quality computation results.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     Error:
       type: object
       properties:
@@ -134,13 +132,15 @@ components:
       example: 669144f5aa2d642638ef1dd0
       pattern: ^[0-9a-zA-Z-]{1,36}$
       description: The ID of the dataset
-    ExecutionStatus:
-      enum:
-      - REQUESTED
-      - FAILED
-      type: string
-      example: REQUESTED
-      description: Current execution status of the computation (REQUESTED or FAILED).
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     ComputationResponse:
       type: object
       required:

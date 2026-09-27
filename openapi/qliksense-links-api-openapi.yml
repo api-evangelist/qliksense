@@ -195,16 +195,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-      description: URLs to a resource request
     linksResult:
       type: object
       properties:
@@ -216,20 +206,21 @@ components:
           $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
-    pageLink:
+    resultMeta:
       type: object
       properties:
-        href:
-          type: string
-    errorResponseCode:
+        countTotal:
+          type: integer
+    pageLinks:
       type: object
       properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
     errorResponse:
       type: object
       properties:
@@ -240,11 +231,15 @@ components:
         traceId:
           type: string
           example: 795dedf8cf38b60088a6e4feb6eace75
-    resultMeta:
+    errorResponseCode:
       type: object
       properties:
-        countTotal:
-          type: integer
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
     termCreateLinksTo:
       type: object
       required:
@@ -295,6 +290,11 @@ components:
         If any one subresource field is specified, all three are required.
 
         '
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
     termLinksTo:
       type: object
       properties:

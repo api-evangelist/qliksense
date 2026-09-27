@@ -189,6 +189,53 @@ paths:
         limit: 100
 components:
   schemas:
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The unique code for the error.
+        title:
+          type: string
+          description: A summary of what went wrong.
+        detail:
+          type: string
+          description: May be used to provide additional details.
+    DeliveryList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delivery'
+        links:
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL to a resource request.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
     Delivery:
       type: object
       readOnly: true
@@ -257,87 +304,40 @@ components:
         statusMessage:
           type: string
           description: The status message of the delivery.
-    DeliveryList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Delivery'
-        links:
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The unique code for the error.
-        title:
-          type: string
-          description: A summary of what went wrong.
-        detail:
-          type: string
-          description: May be used to provide additional details.
-    Link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL to a resource request.
   responses:
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Internal Server Error
     Unauthorized:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Unauthorized
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
-    ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Service Unavailable
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Forbidden
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Bad Request
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Service Unavailable

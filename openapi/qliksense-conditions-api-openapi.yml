@@ -171,56 +171,39 @@ paths:
         limit: 100
 components:
   schemas:
-    ConditionPatch_inner:
+    ConditionDimensions_inner:
       type: object
-      required:
-      - op
-      - path
       properties:
-        op:
-          enum:
-          - replace
-          - remove
-          - add
+        field:
           type: string
-          description: The operation to be performed.
-        path:
+          example: Neighborhood
+          description: Field referred to the dimension where the selection is made. This may be used to generate deep links.
+        title:
           type: string
-          description: The path for the given resource field to patch.
-        value:
+          example: Neighborhood
+          description: Dimension title
+        qLibraryId:
+          type: string
+          example: PgQKNQ
+          description: Refers to a dimension stored in the library
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to condition manager.
+        meta:
           type: object
           properties: {}
-          description: The value to be used for this operation.
-    ConditionMeasures:
-      type: array
-      items:
-        $ref: '#/components/schemas/ConditionMeasures_inner'
-      description: List of returned measures
-    Selections:
-      type: array
-      items:
-        $ref: '#/components/schemas/Selections_inner'
-      description: List of fields according to the bookmark definition
-    CompoundCondition_data:
-      type: object
-      properties:
-        history:
-          $ref: '#/components/schemas/HistoryProperties'
-        conditions:
-          type: array
-          items:
-            type: string
-          example:
-          - rDDAcMEI1V0qzauEWepEVY8oSLJ9fvA2
-          - qFPF1dAtPK4vfPTmKyyuKaqA6iERCwLi
-          - 4gnz8E6ZruG0lkSKwkau66P24CtORyLr
-          - ATs--Z0b_NGyuHajcbQkxu7RrajgPaEQ
-          description: Array of condition ids
-        expression:
+        title:
           type: string
-          example: ($0 OR $1) AND ($2 OR $3)
-          description: Boolean expression made up of variable names defined from the conditions section
-      description: Condition data
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
     ConditionBase:
       type: object
       properties:
@@ -286,87 +269,23 @@ components:
           readOnly: true
           description: The time of the last reload, if the scan is triggered by a reload. If exists and value does not match app's last reload time, the evaluation will fail.
       description: A base condition
-    SingleErrorResponse:
+    Selections_inner:
       type: object
       properties:
-        code:
+        count:
+          type: number
+          example: 2
+          description: The count
+        field:
           type: string
-          readOnly: true
-          description: Error code specific to condition manager.
-        meta:
-          type: object
-          properties: {}
-          description: meta properties for an error.
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    ConditionResponse:
-      type: object
-      properties:
-        errors:
-          $ref: '#/components/schemas/Errors'
-        condition:
-          $ref: '#/components/schemas/Condition'
-    ErrorResponse:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
+          example: SalesTerritoryCountry
+          description: Field name
+        selectedSummary:
           type: array
           items:
-            $ref: '#/components/schemas/SingleErrorResponse'
-          description: Array of errors
-        traceId:
-          type: string
-          example: d6dba97c917e3f3d77c82f40f37c9d85
-          description: trace id
-    ConditionDimensions:
-      type: array
-      items:
-        $ref: '#/components/schemas/ConditionDimensions_inner'
-      description: List of returned dimensions
-    ConditionPatch:
-      type: array
-      items:
-        $ref: '#/components/schemas/ConditionPatch_inner'
-      example:
-      - op: replace
-        path: /compoundCondition/conditionBase/ownerId
-        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitbX
-      - op: replace
-        path: /dataCondition/conditionBase/description
-        value: My description
-      - op: remove
-        path: /compoundCondition/data/conditions/0
-      - op: replace
-        path: /compoundCondition//data/expression
-        value: $0 AND $1
-      - op: replace
-        path: /dataCondition/conditionData/measure
-        value: revenue
-      description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
-    Errors:
-      type: array
-      items:
-        $ref: '#/components/schemas/Error'
-    HistoryProperties:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          example: true
-          description: Is history enabled
-      description: History properties
+            type: string
+          example: '[ Germany, Australia ]'
+          description: Array of selected
     Condition:
       type: object
       required:
@@ -394,45 +313,56 @@ components:
         compoundCondition:
           $ref: '#/components/schemas/CompoundCondition'
       description: only one of compoundCondition or dataCondition should be set
-    ConditionDimensions_inner:
+    SingleErrorResponse:
       type: object
       properties:
-        field:
+        code:
           type: string
-          example: Neighborhood
-          description: Field referred to the dimension where the selection is made. This may be used to generate deep links.
+          readOnly: true
+          description: Error code specific to condition manager.
+        meta:
+          type: object
+          properties: {}
+          description: meta properties for an error.
         title:
           type: string
-          example: Neighborhood
-          description: Dimension title
-        qLibraryId:
+          readOnly: true
+          description: Error title.
+        detail:
           type: string
-          example: PgQKNQ
-          description: Refers to a dimension stored in the library
-    ConditionHeaders:
+          readOnly: true
+          description: Error cause.
+    HistoryProperties:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: true
+          description: Is history enabled
+      description: History properties
+    ErrorResponse:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleErrorResponse'
+          description: Array of errors
+        traceId:
+          type: string
+          example: d6dba97c917e3f3d77c82f40f37c9d85
+          description: trace id
+    Selections:
       type: array
       items:
-        type: string
-      example:
-      - sumnum
-      description: List of header labels
-    ConditionCreateRequest:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          enum:
-          - compound
-          - data
-          type: string
-          example: compound
-          description: Indicates the condition type
-        dataCondition:
-          $ref: '#/components/schemas/DataConditionCreateRequest'
-        compoundCondition:
-          $ref: '#/components/schemas/CompoundCondition'
-      description: only one of compoundCondition or dataCondition should be set
+        $ref: '#/components/schemas/Selections_inner'
+      description: List of fields according to the bookmark definition
     ConditionMeasures_inner:
       type: object
       properties:
@@ -454,56 +384,106 @@ components:
             qUseThou: 1
           properties: {}
           description: Format of the field
-    CompoundCondition:
+    ConditionHeaders:
+      type: array
+      items:
+        type: string
+      example:
+      - sumnum
+      description: List of header labels
+    CompoundCondition_data:
       type: object
       properties:
-        data:
-          $ref: '#/components/schemas/CompoundCondition_data'
-        conditionBase:
-          $ref: '#/components/schemas/ConditionBase'
-      description: A condition made up of other conditions
-      x-discriminator-value: compound
-      x-ms-discriminator-value: compound
-    Selections_inner:
-      type: object
-      properties:
-        count:
-          type: number
-          example: 2
-          description: The count
-        field:
-          type: string
-          example: SalesTerritoryCountry
-          description: Field name
-        selectedSummary:
+        history:
+          $ref: '#/components/schemas/HistoryProperties'
+        conditions:
           type: array
           items:
             type: string
-          example: '[ Germany, Australia ]'
-          description: Array of selected
-    DataCondition:
+          example:
+          - rDDAcMEI1V0qzauEWepEVY8oSLJ9fvA2
+          - qFPF1dAtPK4vfPTmKyyuKaqA6iERCwLi
+          - 4gnz8E6ZruG0lkSKwkau66P24CtORyLr
+          - ATs--Z0b_NGyuHajcbQkxu7RrajgPaEQ
+          description: Array of condition ids
+        expression:
+          type: string
+          example: ($0 OR $1) AND ($2 OR $3)
+          description: Boolean expression made up of variable names defined from the conditions section
+      description: Condition data
+    ConditionPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConditionPatch_inner'
+      example:
+      - op: replace
+        path: /compoundCondition/conditionBase/ownerId
+        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitbX
+      - op: replace
+        path: /dataCondition/conditionBase/description
+        value: My description
+      - op: remove
+        path: /compoundCondition/data/conditions/0
+      - op: replace
+        path: /compoundCondition//data/expression
+        value: $0 AND $1
+      - op: replace
+        path: /dataCondition/conditionData/measure
+        value: revenue
+      description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    ConditionCreateRequest:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          enum:
+          - compound
+          - data
+          type: string
+          example: compound
+          description: Indicates the condition type
+        dataCondition:
+          $ref: '#/components/schemas/DataConditionCreateRequest'
+        compoundCondition:
+          $ref: '#/components/schemas/CompoundCondition'
+      description: only one of compoundCondition or dataCondition should be set
+    ConditionResponse:
       type: object
       properties:
-        headers:
-          $ref: '#/components/schemas/ConditionHeaders'
-        history:
-          $ref: '#/components/schemas/HistoryProperties'
-        measures:
-          $ref: '#/components/schemas/ConditionMeasures'
-        dimensions:
-          $ref: '#/components/schemas/ConditionDimensions'
-        selections:
-          $ref: '#/components/schemas/Selections'
-        conditionBase:
-          $ref: '#/components/schemas/ConditionBase'
-        conditionData:
+        errors:
+          $ref: '#/components/schemas/Errors'
+        condition:
+          $ref: '#/components/schemas/Condition'
+    ConditionDimensions:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConditionDimensions_inner'
+      description: List of returned dimensions
+    ConditionPatch_inner:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - replace
+          - remove
+          - add
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: The path for the given resource field to patch.
+        value:
           type: object
-          example: {}
           properties: {}
-          description: List of parameters specific to data condition are available in DCE and will be passed as is to DCE as per the API docs of data-condition-evaluator
-      description: A condition based on data within an app
-      x-discriminator-value: data
-      x-ms-discriminator-value: data
+          description: The value to be used for this operation.
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Error'
     DataConditionCreateRequest:
       type: object
       properties:
@@ -527,21 +507,41 @@ components:
       description: A condition based on data within an app
       x-discriminator-value: data
       x-ms-discriminator-value: data
-    Error:
+    ConditionMeasures:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConditionMeasures_inner'
+      description: List of returned measures
+    CompoundCondition:
       type: object
       properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to condition manager.
-        meta:
+        data:
+          $ref: '#/components/schemas/CompoundCondition_data'
+        conditionBase:
+          $ref: '#/components/schemas/ConditionBase'
+      description: A condition made up of other conditions
+      x-discriminator-value: compound
+      x-ms-discriminator-value: compound
+    DataCondition:
+      type: object
+      properties:
+        headers:
+          $ref: '#/components/schemas/ConditionHeaders'
+        history:
+          $ref: '#/components/schemas/HistoryProperties'
+        measures:
+          $ref: '#/components/schemas/ConditionMeasures'
+        dimensions:
+          $ref: '#/components/schemas/ConditionDimensions'
+        selections:
+          $ref: '#/components/schemas/Selections'
+        conditionBase:
+          $ref: '#/components/schemas/ConditionBase'
+        conditionData:
           type: object
+          example: {}
           properties: {}
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
+          description: List of parameters specific to data condition are available in DCE and will be passed as is to DCE as per the API docs of data-condition-evaluator
+      description: A condition based on data within an app
+      x-discriminator-value: data
+      x-ms-discriminator-value: data

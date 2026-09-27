@@ -119,89 +119,19 @@ paths:
         limit: 100
 components:
   schemas:
-    TenantAdminError:
+    ErrorPublic:
       type: object
+      required:
+      - code
+      - title
       properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - code
-            - title
-            properties:
-              code:
-                type: string
-                example: ROLECHECK-1
-                description: The error code.
-              title:
-                type: string
-                example: Must be a tenant admin
-                description: Summary of the problem
-            description: An error object
-    VerifyConnectionConfigNotFoundError:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - code
-            - title
-            properties:
-              code:
-                type: string
-                example: VERIFYCONNECTION-1
-                description: The error code.
-              title:
-                type: string
-                example: No email config for tenant
-                description: Summary of the problem
-            description: An error object
-    email:
-      properties:
-        body:
+        code:
           type: string
-          description: email body
-        subject:
+          description: The error code.
+        title:
           type: string
-          description: email subject
-        recipient:
-          type: string
-          description: email recipient (email address)
-    smtpResult:
-      type: object
-      properties:
-        message:
-          type: string
-          description: error message from SMTP middleware .. a bit technical but could be useful to administrator
-        success:
-          type: boolean
-          description: was SMTP operation successful or not. Other fields herein provide more detail
-        connectionFailed:
-          type: boolean
-          description: could not resolve domain name, connection refused, connection timed out, SSL mismatch
-        smtpResponseCode:
-          type: integer
-          description: smtp result code string from the SMTP server. eg. "250 2.6.0"
-    ErrorsPublic:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorPublic'
-    smtpCheck:
-      type: object
-      properties:
-        isValid:
-          type: boolean
-          description: true if smtp config is correct and complete. Will return false if smtp-config does not exist at all
-        errorCode:
-          type: string
-          example: INVALID_CREDENTIALS
-          description: Indicates error with this email configuration. OK means that no error is indicated. Possible values are OK, CONFIG_NOT_SET, INCOMPLETE_CONFIG, INVALID_CREDENTIALS, PROVIDER_ERROR
+          description: Summary of the problem.
+      description: An error object.
     SendTestMailConfigNotFoundError:
       type: object
       properties:
@@ -222,16 +152,86 @@ components:
                 example: No email config for tenant
                 description: Summary of the problem
             description: An error object
-    ErrorPublic:
+    smtpCheck:
       type: object
-      required:
-      - code
-      - title
       properties:
-        code:
+        isValid:
+          type: boolean
+          description: true if smtp config is correct and complete. Will return false if smtp-config does not exist at all
+        errorCode:
           type: string
-          description: The error code.
-        title:
+          example: INVALID_CREDENTIALS
+          description: Indicates error with this email configuration. OK means that no error is indicated. Possible values are OK, CONFIG_NOT_SET, INCOMPLETE_CONFIG, INVALID_CREDENTIALS, PROVIDER_ERROR
+    email:
+      properties:
+        body:
           type: string
-          description: Summary of the problem.
-      description: An error object.
+          description: email body
+        subject:
+          type: string
+          description: email subject
+        recipient:
+          type: string
+          description: email recipient (email address)
+    VerifyConnectionConfigNotFoundError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - code
+            - title
+            properties:
+              code:
+                type: string
+                example: VERIFYCONNECTION-1
+                description: The error code.
+              title:
+                type: string
+                example: No email config for tenant
+                description: Summary of the problem
+            description: An error object
+    ErrorsPublic:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorPublic'
+    TenantAdminError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - code
+            - title
+            properties:
+              code:
+                type: string
+                example: ROLECHECK-1
+                description: The error code.
+              title:
+                type: string
+                example: Must be a tenant admin
+                description: Summary of the problem
+            description: An error object
+    smtpResult:
+      type: object
+      properties:
+        message:
+          type: string
+          description: error message from SMTP middleware .. a bit technical but could be useful to administrator
+        success:
+          type: boolean
+          description: was SMTP operation successful or not. Other fields herein provide more detail
+        connectionFailed:
+          type: boolean
+          description: could not resolve domain name, connection refused, connection timed out, SSL mismatch
+        smtpResponseCode:
+          type: integer
+          description: smtp result code string from the SMTP server. eg. "250 2.6.0"

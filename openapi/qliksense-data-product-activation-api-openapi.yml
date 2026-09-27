@@ -150,6 +150,25 @@ paths:
         limit: 100
 components:
   schemas:
+    TrustScore:
+      type: object
+      required:
+      - score
+      - applicableDatasets
+      properties:
+        score:
+          type: number
+          format: float
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrustScoreDimension'
+        previousScore:
+          type: number
+          format: float
+        applicableDatasets:
+          type: number
+          format: int32
     ActivateDataProductRequest:
       type: object
       required:
@@ -194,28 +213,17 @@ components:
       description: 'Represents a designated contact person for a data product, optionally with their role.
 
         '
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    TrustScore:
+    TrustScoreDimension:
       type: object
       required:
-      - score
+      - id
       - applicableDatasets
       properties:
+        id:
+          type: string
         score:
           type: number
           format: float
-        dimensions:
-          type: array
-          items:
-            $ref: '#/components/schemas/TrustScoreDimension'
         previousScore:
           type: number
           format: float
@@ -245,23 +253,6 @@ components:
           type: string
         status:
           type: string
-    TrustScoreDimension:
-      type: object
-      required:
-      - id
-      - applicableDatasets
-      properties:
-        id:
-          type: string
-        score:
-          type: number
-          format: float
-        previousScore:
-          type: number
-          format: float
-        applicableDatasets:
-          type: number
-          format: int32
     DataProductResponse:
       type: object
       required:
@@ -362,6 +353,15 @@ components:
             type: string
             description: List of dataset IDs for which API consumption is enabled
           uniqueItems: true
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
   parameters:
     DataProductIdPath:
       in: path

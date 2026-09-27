@@ -204,7 +204,7 @@ components:
           format: uuid
           example: 10d347c4-f28a-4faf-93f0-48e781aaf303
           description: reference to KnowledgeBase used for "AI" generated messages
-    promptOutputInvoke:
+    promptOutput:
       type: object
       properties:
         output:
@@ -216,10 +216,16 @@ components:
           items:
             $ref: '#/components/schemas/source'
           description: List of sources used to generate AI messages
-        question:
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
           type: string
-          example: What was the primary goal of the Apollo program?
-          description: Question asked by the user for assistant to answer
+          example: 507f191e810c19729de860ea
     errorResponseCode:
       type: object
       properties:
@@ -246,17 +252,7 @@ components:
           type: string
         detail:
           type: string
-    errorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    promptOutput:
+    promptOutputInvoke:
       type: object
       properties:
         output:
@@ -268,6 +264,10 @@ components:
           items:
             $ref: '#/components/schemas/source'
           description: List of sources used to generate AI messages
+        question:
+          type: string
+          example: What was the primary goal of the Apollo program?
+          description: Question asked by the user for assistant to answer
     promptInput:
       type: object
       properties:

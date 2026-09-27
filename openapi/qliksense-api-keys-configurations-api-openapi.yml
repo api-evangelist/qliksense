@@ -119,12 +119,47 @@ paths:
         limit: 100
 components:
   schemas:
+    ApiKeysConfig:
+      type: object
+      properties:
+        max_keys_per_user:
+          type: number
+          default: 5
+          maximum: 1000
+          minimum: 0
+          description: The maximum number of active API keys that any user can create for the specified tenant.
+        max_api_key_expiry:
+          type: string
+          default: PT24H
+          example: PT24H
+          description: The maximum lifetime, in ISO8601 duration format, for which an API key can be issued for the specified tenant, e.g. `P7D` for 7 days.
+        scim_externalClient_expiry:
+          type: string
+          default: P365D
+          example: P365D
+          description: The expiry of the scim `externalClient` token in ISO8601 duration format, e.g. `P365D` for 365 days. Used during the creation of an `externalClient` API key for configuring a SCIM compatible Identity Provider.
+    ApiKeysConfigPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiKeyConfigPatch'
+      example:
+      - op: replace
+        path: /max_keys_per_user
+        value: 10
     RetryAfterHeader:
       type: object
       properties:
         retry-after:
           type: integer
           description: The amount of seconds to wait before retrying the request.
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors and their properties.
     Error:
       type: object
       required:
@@ -157,41 +192,6 @@ components:
           type: integer
           description: The HTTP status code.
       description: An error object.
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors and their properties.
-    ApiKeysConfig:
-      type: object
-      properties:
-        max_keys_per_user:
-          type: number
-          default: 5
-          maximum: 1000
-          minimum: 0
-          description: The maximum number of active API keys that any user can create for the specified tenant.
-        max_api_key_expiry:
-          type: string
-          default: PT24H
-          example: PT24H
-          description: The maximum lifetime, in ISO8601 duration format, for which an API key can be issued for the specified tenant, e.g. `P7D` for 7 days.
-        scim_externalClient_expiry:
-          type: string
-          default: P365D
-          example: P365D
-          description: The expiry of the scim `externalClient` token in ISO8601 duration format, e.g. `P365D` for 365 days. Used during the creation of an `externalClient` API key for configuring a SCIM compatible Identity Provider.
-    ApiKeysConfigPatchSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/ApiKeyConfigPatch'
-      example:
-      - op: replace
-        path: /max_keys_per_user
-        value: 10
     ApiKeyConfigPatch:
       type: object
       required:

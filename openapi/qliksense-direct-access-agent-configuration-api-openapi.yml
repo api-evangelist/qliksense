@@ -390,13 +390,15 @@ paths:
         required: true
         description: The agent ID
       description: Retrieves the allowed paths settings for the File Connector. Requestor must be assigned the `TenantAdmin` role. Available in Direct Access Gateway V1.7.6+.
-      operationId: getConnectorFileListAsync
+      operationId: getApiV1DirectAccessAgentsByAgentIdConnectorsFileConnectorFilesAllowedPaths
       x-qlik-stability: stable
       x-qlik-visibility: public
       x-qlik-deprecated: false
       x-qlik-tier:
         tier: '1'
         limit: 1000
+      x-operation-id-source: normalized
+      x-operation-id-original: getConnectorFileListAsync
     put:
       tags:
       - direct-access-agent-configuration
@@ -430,7 +432,7 @@ paths:
         required: true
         description: The agent id
       description: Completely replaces the contents of the allowed paths configuration file for the File Connector. Partial updates are not supported. Requestor must be assigned the `TenantAdmin` role. Available in Direct Access Gateway V1.7.6+.
-      operationId: putConnectorFlatFileConfigurationAsync
+      operationId: putApiV1DirectAccessAgentsByAgentIdConnectorsFileConnectorFilesAllowedPaths
       requestBody:
         content:
           application/json:
@@ -443,6 +445,8 @@ paths:
       x-qlik-tier:
         tier: '2'
         limit: 100
+      x-operation-id-source: normalized
+      x-operation-id-original: putConnectorFlatFileConfigurationAsync
   /api/v1/direct-access-agents/{agentId}/connectors/odbc-connector/files/custom-data-type-mappings:
     get:
       tags:
@@ -609,135 +613,21 @@ paths:
         limit: 100
 components:
   schemas:
-    ConfigurationLineNumeric:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-        value:
-          type:
-          - string
-          - 'null'
-        connector:
-          type:
-          - string
-          - 'null'
-        uiActions:
-          type:
-          - array
-          - 'null'
-          items:
-            enum:
-            - Read
-            - Write
-            type: string
-        apiActions:
-          type:
-          - array
-          - 'null'
-          items:
-            enum:
-            - Read
-            - Write
-            type: string
-        description:
-          type:
-          - string
-          - 'null'
-        displayName:
-          type:
-          - string
-          - 'null'
-        defaultValue:
-          type:
-          - string
-          - 'null'
-        pendingValue:
-          type:
-          - string
-          - 'null'
-        permittedRangeEnd:
-          type: integer
-          format: int32
-        pendingApplication:
-          type: boolean
-        allowMultipleValues:
-          type: boolean
-        applyWithoutRestart:
-          type: boolean
-        permittedRangeStart:
-          type: integer
-          format: int32
-      additionalProperties: false
-    UpdateMetricsCollectorSettingsRequest:
+    MetricsCollectorIndividualConnectorConfigurationRequest:
       type: object
       required:
-      - connectorConfigurations
-      - metricsCollectorSettings
+      - metricsCollectionEnabled
+      - scrapeIntervalSeconds
       properties:
-        connectorConfigurations:
-          $ref: '#/components/schemas/UpdateMetricsCollectorConnectorConfigurationsRequest'
-        metricsCollectorSettings:
-          $ref: '#/components/schemas/UpdateMetricsCollectorSettings'
-      additionalProperties: false
-    MetricsCollectorSettingsApiResponseConnectorConfigurationResponse:
-      type: object
-      properties:
-        result:
-          $ref: '#/components/schemas/MetricsCollectorSettingsApiResponse'
-        errorMessage:
-          $ref: '#/components/schemas/ErrorResponse'
-      additionalProperties: false
-    MetricsCollectorSettings:
-      type: object
-      required:
-      - baseScrapeIntervalSeconds
-      - dataRetentionCheckIntervalMinutes
-      - enabled
-      - localDataRetentionDays
-      - port
-      properties:
-        port:
-          type: integer
-          format: int32
-          default: 5052
-          description: 'The port number that the metrics collector API will run on.
-
-            This must match the port that the SYSTEM connector runs on to enable network metrics collection.'
-        enabled:
-          type: boolean
-          default: false
-          description: Indicates whether the metrics collector is enabled.
-        localDataRetentionDays:
+        scrapeIntervalSeconds:
           type: integer
           format: int32
           default: 30
-          description: The number of days to retain local data.
-        baseScrapeIntervalSeconds:
-          type: integer
-          format: int32
-          default: 1
-          description: 'The base interval in seconds for the metrics collection loop.
-
-            This defines how frequently the collector checks whether to scrape each connector, not the interval at which each connector is scraped. Must be equal to or less than the lowest individual connector scrape interval.'
-        localDatabaseFileLocation:
-          type:
-          - string
-          - 'null'
-          default: ''
-          description: The file location for the local metrics database. If not specified, defaults to `C:\ProgramData\Qlik\Gateway\tmp`.
-        dataRetentionCheckIntervalMinutes:
-          type: integer
-          format: int32
-          default: 60
-          description: The interval in minutes the metrics collector checks for and deletes old data.
-        localDataRetentionDatabaseSizeInMb:
-          type: integer
-          format: int32
-          default: 500
-          description: The maximum size of the local database in megabytes.
+          description: Frequency in seconds at which metrics are collected from this connector.
+        metricsCollectionEnabled:
+          type: boolean
+          default: false
+          description: Indicates whether metrics collection is enabled for this connector.
       additionalProperties: false
     UpdateMetricsCollectorSettings:
       type: object
@@ -799,6 +689,260 @@ components:
           minimum: 1
           description: The maximum size of the local database in megabytes. Default is 500 MB.
       additionalProperties: false
+    MetricsCollectorSettings:
+      type: object
+      required:
+      - baseScrapeIntervalSeconds
+      - dataRetentionCheckIntervalMinutes
+      - enabled
+      - localDataRetentionDays
+      - port
+      properties:
+        port:
+          type: integer
+          format: int32
+          default: 5052
+          description: 'The port number that the metrics collector API will run on.
+
+            This must match the port that the SYSTEM connector runs on to enable network metrics collection.'
+        enabled:
+          type: boolean
+          default: false
+          description: Indicates whether the metrics collector is enabled.
+        localDataRetentionDays:
+          type: integer
+          format: int32
+          default: 30
+          description: The number of days to retain local data.
+        baseScrapeIntervalSeconds:
+          type: integer
+          format: int32
+          default: 1
+          description: 'The base interval in seconds for the metrics collection loop.
+
+            This defines how frequently the collector checks whether to scrape each connector, not the interval at which each connector is scraped. Must be equal to or less than the lowest individual connector scrape interval.'
+        localDatabaseFileLocation:
+          type:
+          - string
+          - 'null'
+          default: ''
+          description: The file location for the local metrics database. If not specified, defaults to `C:\ProgramData\Qlik\Gateway\tmp`.
+        dataRetentionCheckIntervalMinutes:
+          type: integer
+          format: int32
+          default: 60
+          description: The interval in minutes the metrics collector checks for and deletes old data.
+        localDataRetentionDatabaseSizeInMb:
+          type: integer
+          format: int32
+          default: 500
+          description: The maximum size of the local database in megabytes.
+      additionalProperties: false
+    OdbcCustomDataTypeResponse:
+      type: object
+      properties:
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OdbcCustomDataType'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorResponse'
+      additionalProperties: false
+    UpdateFileConnectorAllowedPathsRequest:
+      type: object
+      properties:
+        fileConnectorAllowedPaths:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FileConnectorAllowedPath'
+      description: The request to update file connector allowed paths configuration
+      additionalProperties: false
+    UpdateMetricsCollectorSettingsRequest:
+      type: object
+      required:
+      - connectorConfigurations
+      - metricsCollectorSettings
+      properties:
+        connectorConfigurations:
+          $ref: '#/components/schemas/UpdateMetricsCollectorConnectorConfigurationsRequest'
+        metricsCollectorSettings:
+          $ref: '#/components/schemas/UpdateMetricsCollectorSettings'
+      additionalProperties: false
+    FileConnectorAllowedPath:
+      type: object
+      required:
+      - path
+      properties:
+        path:
+          type: string
+          example: \\\\Server\\Share\\example
+          minLength: 1
+          description: The Path property in the File connector allowed paths file.
+        spaces:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            default: ''
+            description: Space identifier that has access to this path
+          example:
+          - Foo
+          - Bar
+          description: The Spaces property in the Odbc custom type mappings file.
+      additionalProperties: false
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        detail:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorMessage'
+        traceId:
+          type:
+          - string
+          - 'null'
+        hasErrors:
+          type: boolean
+          readOnly: true
+      additionalProperties: false
+    OdbcCustomDataType:
+      type: object
+      required:
+      - id
+      - nativeDataType
+      - qlikDataType
+      properties:
+        id:
+          type: string
+          example: Amazon Athena ODBC (x64)
+          minLength: 1
+          description: The Identifier property in the ODBC custom data type mapping file.
+        bit:
+          type: boolean
+          example: true
+          description: The IsBit property in the ODBC custom data type mapping file.
+        size:
+          type: integer
+          format: int32
+          default: 0
+          description: The Size property in the ODBC custom data type mapping file.
+        qlikDataType:
+          type: string
+          example: String
+          minLength: 1
+          description: The QlikDataType property in the ODBC custom data type mapping file.
+        nativeDataType:
+          type: string
+          example: varchar
+          minLength: 1
+          description: The NativeDataType property in the ODBC custom data type mapping file.
+      additionalProperties: false
+    PatchOperationValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        operation:
+          $ref: '#/components/schemas/Operation'
+        validationResult:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    MetricsCollectorSettingsApiResponseConnectorConfigurationResponse:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/MetricsCollectorSettingsApiResponse'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorResponse'
+      additionalProperties: false
+    UpdateConfigurationFlatFileRequest:
+      type: object
+      properties:
+        contentsToSave:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            example: C:\\filepath
+            description: Individual lines of the file. Must be escaped when sending as json.
+      description: The request to update a connector flat file
+      additionalProperties: false
+    MetricsCollectorConnectorConfigurationsApiResponse:
+      type: object
+      properties:
+        fileConnector:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        odbcConnector:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        restConnector:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        systemMetrics:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        connectorAgent:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        sapBwConnector:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        sapSqlConnector:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+        sapPackageConnector:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
+      additionalProperties: false
+    ConfigurationLineBase:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/ConfigurationLineNumeric'
+      - $ref: '#/components/schemas/ConfigurationLineString'
+      additionalProperties: false
+    UpdateOdbcCustomTypeMappingsRequest:
+      type: object
+      properties:
+        odbcCustomDataTypes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OdbcCustomDataType'
+      additionalProperties: false
+    ConnectorSettings:
+      type: object
+      properties:
+        settings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConfigurationLineBase'
+        connectorName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     Operation:
       type: object
       required:
@@ -858,23 +1002,15 @@ components:
           type: string
         value:
           type: string
-    MetricsCollectorConnectorConfigurationApiResponse:
+    MetricsCollectorSettingsApiResponse:
       type: object
-      required:
-      - metricsCollectionEnabled
-      - scrapeIntervalSeconds
       properties:
-        scrapeIntervalSeconds:
-          type: integer
-          format: int32
-          default: 30
-          description: Frequency in seconds at which metrics are collected from this connector.
-        metricsCollectionEnabled:
-          type: boolean
-          default: false
-          description: Indicates whether metrics collection is enabled for this connector.
+        connectorConfigurations:
+          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationsApiResponse'
+        metricsCollectorSettings:
+          $ref: '#/components/schemas/MetricsCollectorSettings'
       additionalProperties: false
-    FileConnectorAllowedPathsResponse:
+    ConnectorFlatFileConfigurationResponse:
       type: object
       properties:
         result:
@@ -882,23 +1018,9 @@ components:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/FileConnectorAllowedPath'
+            type: string
         errorMessage:
           $ref: '#/components/schemas/ErrorResponse'
-      additionalProperties: false
-    ConnectorSettings:
-      type: object
-      properties:
-        settings:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ConfigurationLineBase'
-        connectorName:
-          type:
-          - string
-          - 'null'
       additionalProperties: false
     UpdateMetricsCollectorConnectorConfigurationsRequest:
       type: object
@@ -929,254 +1051,17 @@ components:
         sapPackageConnector:
           $ref: '#/components/schemas/MetricsCollectorIndividualConnectorConfigurationRequest'
       additionalProperties: false
-    ErrorResponse:
+    FileConnectorAllowedPathsResponse:
       type: object
       properties:
-        errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErrorMessage'
-        traceId:
-          type:
-          - string
-          - 'null'
-        hasErrors:
-          type: boolean
-          readOnly: true
-      additionalProperties: false
-    ConfigurationLineBase:
-      type: object
-      oneOf:
-      - $ref: '#/components/schemas/ConfigurationLineNumeric'
-      - $ref: '#/components/schemas/ConfigurationLineString'
-      additionalProperties: false
-    UpdateConfigurationFlatFileRequest:
-      type: object
-      properties:
-        contentsToSave:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            example: C:\\filepath
-            description: Individual lines of the file. Must be escaped when sending as json.
-      description: The request to update a connector flat file
-      additionalProperties: false
-    MetricsCollectorSettingsApiResponse:
-      type: object
-      properties:
-        connectorConfigurations:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationsApiResponse'
-        metricsCollectorSettings:
-          $ref: '#/components/schemas/MetricsCollectorSettings'
-      additionalProperties: false
-    PatchOperationValidationResult:
-      type: object
-      properties:
-        valid:
-          type: boolean
-        operation:
-          $ref: '#/components/schemas/Operation'
-        validationResult:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateFileConnectorAllowedPathsRequest:
-      type: object
-      properties:
-        fileConnectorAllowedPaths:
+        result:
           type:
           - array
           - 'null'
           items:
             $ref: '#/components/schemas/FileConnectorAllowedPath'
-      description: The request to update file connector allowed paths configuration
-      additionalProperties: false
-    MetricsCollectorConnectorConfigurationsApiResponse:
-      type: object
-      properties:
-        fileConnector:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        odbcConnector:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        restConnector:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        systemMetrics:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        connectorAgent:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        sapBwConnector:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        sapSqlConnector:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-        sapPackageConnector:
-          $ref: '#/components/schemas/MetricsCollectorConnectorConfigurationApiResponse'
-      additionalProperties: false
-    ConnectorFlatFileConfigurationResponse:
-      type: object
-      properties:
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
         errorMessage:
           $ref: '#/components/schemas/ErrorResponse'
-      additionalProperties: false
-    ErrorMessage:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        detail:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateOdbcCustomTypeMappingsRequest:
-      type: object
-      properties:
-        odbcCustomDataTypes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/OdbcCustomDataType'
-      additionalProperties: false
-    MetricsCollectorIndividualConnectorConfigurationRequest:
-      type: object
-      required:
-      - metricsCollectionEnabled
-      - scrapeIntervalSeconds
-      properties:
-        scrapeIntervalSeconds:
-          type: integer
-          format: int32
-          default: 30
-          description: Frequency in seconds at which metrics are collected from this connector.
-        metricsCollectionEnabled:
-          type: boolean
-          default: false
-          description: Indicates whether metrics collection is enabled for this connector.
-      additionalProperties: false
-    OdbcCustomDataType:
-      type: object
-      required:
-      - id
-      - nativeDataType
-      - qlikDataType
-      properties:
-        id:
-          type: string
-          example: Amazon Athena ODBC (x64)
-          minLength: 1
-          description: The Identifier property in the ODBC custom data type mapping file.
-        bit:
-          type: boolean
-          example: true
-          description: The IsBit property in the ODBC custom data type mapping file.
-        size:
-          type: integer
-          format: int32
-          default: 0
-          description: The Size property in the ODBC custom data type mapping file.
-        qlikDataType:
-          type: string
-          example: String
-          minLength: 1
-          description: The QlikDataType property in the ODBC custom data type mapping file.
-        nativeDataType:
-          type: string
-          example: varchar
-          minLength: 1
-          description: The NativeDataType property in the ODBC custom data type mapping file.
-      additionalProperties: false
-    FileConnectorAllowedPath:
-      type: object
-      required:
-      - path
-      properties:
-        path:
-          type: string
-          example: \\\\Server\\Share\\example
-          minLength: 1
-          description: The Path property in the File connector allowed paths file.
-        spaces:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            default: ''
-            description: Space identifier that has access to this path
-          example:
-          - Foo
-          - Bar
-          description: The Spaces property in the Odbc custom type mappings file.
-      additionalProperties: false
-    PatchOperationResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PatchOperationValidationResult'
-        errorMessage:
-          type:
-          - string
-          - 'null'
-        httpStatusCode:
-          type: integer
-          format: int32
-        failedPatchError:
-          $ref: '#/components/schemas/ErrorResponse'
-      additionalProperties: false
-    OdbcCustomDataTypeResponse:
-      type: object
-      properties:
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/OdbcCustomDataType'
-        errorMessage:
-          $ref: '#/components/schemas/ErrorResponse'
-      additionalProperties: false
-    ConfigurationResponse:
-      type: object
-      properties:
-        connectors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ConnectorSettings'
-        dcaasSettings:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ConfigurationLineBase'
-        connectorAgentSettings:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ConfigurationLineBase'
       additionalProperties: false
     ConfigurationLineString:
       type: object
@@ -1239,4 +1124,123 @@ components:
           type: boolean
         applyWithoutRestart:
           type: boolean
+      additionalProperties: false
+    ConfigurationLineNumeric:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - string
+          - 'null'
+        connector:
+          type:
+          - string
+          - 'null'
+        uiActions:
+          type:
+          - array
+          - 'null'
+          items:
+            enum:
+            - Read
+            - Write
+            type: string
+        apiActions:
+          type:
+          - array
+          - 'null'
+          items:
+            enum:
+            - Read
+            - Write
+            type: string
+        description:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        pendingValue:
+          type:
+          - string
+          - 'null'
+        permittedRangeEnd:
+          type: integer
+          format: int32
+        pendingApplication:
+          type: boolean
+        allowMultipleValues:
+          type: boolean
+        applyWithoutRestart:
+          type: boolean
+        permittedRangeStart:
+          type: integer
+          format: int32
+      additionalProperties: false
+    MetricsCollectorConnectorConfigurationApiResponse:
+      type: object
+      required:
+      - metricsCollectionEnabled
+      - scrapeIntervalSeconds
+      properties:
+        scrapeIntervalSeconds:
+          type: integer
+          format: int32
+          default: 30
+          description: Frequency in seconds at which metrics are collected from this connector.
+        metricsCollectionEnabled:
+          type: boolean
+          default: false
+          description: Indicates whether metrics collection is enabled for this connector.
+      additionalProperties: false
+    ConfigurationResponse:
+      type: object
+      properties:
+        connectors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConnectorSettings'
+        dcaasSettings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConfigurationLineBase'
+        connectorAgentSettings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConfigurationLineBase'
+      additionalProperties: false
+    PatchOperationResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PatchOperationValidationResult'
+        errorMessage:
+          type:
+          - string
+          - 'null'
+        httpStatusCode:
+          type: integer
+          format: int32
+        failedPatchError:
+          $ref: '#/components/schemas/ErrorResponse'
       additionalProperties: false

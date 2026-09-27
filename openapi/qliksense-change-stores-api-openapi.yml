@@ -102,6 +102,15 @@ components:
           summary: Filter by usedBy.appId being present
       required: false
       description: "A SCIM filter expression used to filter the result.\nThe filter parameter allows complex logical expressions using comparison operators and grouping.\n- **Supported attributes:** `storeName`, `storeId`, `referenceId`, `usedBy.appId`, `primaryKey`, `isUsedByEmpty`\n- **Supported operators:** `eq`, `ne`, `co`, `sw`, `ew`, `pr`, `gt`, `ge`, `lt`, `le`  \n- **Logical operators:** `and`, `or`, `not`\n"
+    LimitParam:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        maximum: 100
+      example: 100
+      required: false
+      description: Defines the size of each paged result (maximum 100).
     SpaceIdParam:
       in: query
       name: spaceId
@@ -116,14 +125,6 @@ components:
         For shared spaces, use the actual space ID, e.g. "690b584c5a8011de9079828e".
 
         '
-    StoreId:
-      in: path
-      name: storeId
-      schema:
-        type: string
-      example: 507f1f77bcf86cd799439011
-      required: true
-      description: The id of the change store.
     PageParam:
       in: query
       name: page
@@ -147,15 +148,14 @@ components:
         pattern: ^[+-]?(storeName)$
       example: +storeName
       description: Sort results by a field, with optional + (asc) or - (desc) prefix
-    LimitParam:
-      in: query
-      name: limit
+    StoreId:
+      in: path
+      name: storeId
       schema:
-        type: integer
-        maximum: 100
-      example: 100
-      required: false
-      description: Defines the size of each paged result (maximum 100).
+        type: string
+      example: 507f1f77bcf86cd799439011
+      required: true
+      description: The id of the change store.
   responses:
     GetChangeStoreByIdResponse:
       content:
@@ -179,6 +179,18 @@ components:
               data:
                 $ref: '#/components/schemas/ChangeStore'
       description: Returns a specific change store.
+    ForbiddenResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    NotFoundResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
     GetChangeStoresResponse:
       content:
         application/json:
@@ -226,113 +238,44 @@ components:
               totalCount: 10
               currentPageCount: 2
       description: Returns a list of change stores.
-    ForbiddenResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Forbidden
     UnauthorizedResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Unauthorized
-    BadRequestResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Bad Request
     InternalServerErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Internal Server Error
-    NotFoundResponse:
+    BadRequestResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
+      description: Bad Request
   schemas:
-    UsedBy:
+    Error:
       type: object
       required:
-      - appId
-      - chartId
+      - code
+      - title
       properties:
-        appId:
+        code:
           type: string
-          example: af604296-14f6-48c2-8bac-12ce49ba83cc
-          description: The id of the app.
-        chartId:
+          example: FOO-123
+          description: The error code.
+        title:
           type: string
-          example: chartId
-          description: The id of the chart.
-    ListDefaultData:
-      type: object
-      properties:
-        totalCount:
-          type: integer
-          example: 10
-        currentPageCount:
-          type: integer
-          example: 2
-    UsedByArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/UsedBy'
-      description: List of chart/app references.
-    PrimaryKey:
-      type: array
-      items:
-        type: string
-        example: product
-        description: The name of a primary key column.
-      example:
-      - product
-      - region
-      description: The list of primary key columns for the change store.
-    ReferenceId:
-      type: string
-      example: 6835b0135cf7147c01979e5d
-      description: The reference id used to identify related editable-columns or change stores.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: list of errors
-        traceId:
+          example: You don't have permission to view this resource.
+          description: Description of the error.
+        detail:
           type: string
-    Pagination:
-      type: object
-      properties:
-        links:
-          type: object
-          properties:
-            next:
-              type: object
-              properties:
-                href:
-                  type: string
-                  example: https://example.org/api/analytics/change-stores?page=<next-cursor>
-            prev:
-              type: object
-              properties:
-                href:
-                  type: string
-                  example: https://example.org/api/analytics/change-stores?page=<previous-cursor>
-            self:
-              type: object
-              properties:
-                href:
-                  type: string
-                  example: https://example.org/api/analytics/change-stores?page=<self-cursor>
+          example: This resource requires app read privileges.
+          description: Extra information about the error.
+      description: An error object.
     ChangeStore:
       type: object
       properties:
@@ -376,22 +319,79 @@ components:
           type: string
           example: 6835b0135cf7147c01979e5d
           description: The publish reference id used to map stores across published apps/spaces.
-    Error:
+    Pagination:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<next-cursor>
+            prev:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<previous-cursor>
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: https://example.org/api/analytics/change-stores?page=<self-cursor>
+    UsedBy:
       type: object
       required:
-      - code
-      - title
+      - appId
+      - chartId
       properties:
-        code:
+        appId:
           type: string
-          example: FOO-123
-          description: The error code.
-        title:
+          example: af604296-14f6-48c2-8bac-12ce49ba83cc
+          description: The id of the app.
+        chartId:
           type: string
-          example: You don't have permission to view this resource.
-          description: Description of the error.
-        detail:
+          example: chartId
+          description: The id of the chart.
+    ListDefaultData:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 10
+        currentPageCount:
+          type: integer
+          example: 2
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: list of errors
+        traceId:
           type: string
-          example: This resource requires app read privileges.
-          description: Extra information about the error.
-      description: An error object.
+    ReferenceId:
+      type: string
+      example: 6835b0135cf7147c01979e5d
+      description: The reference id used to identify related editable-columns or change stores.
+    UsedByArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/UsedBy'
+      description: List of chart/app references.
+    PrimaryKey:
+      type: array
+      items:
+        type: string
+        example: product
+        description: The name of a primary key column.
+      example:
+      - product
+      - region
+      description: The list of primary key columns for the change store.

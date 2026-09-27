@@ -112,17 +112,30 @@ paths:
         limit: 1000
 components:
   schemas:
-    ErrorV2:
+    MetaV2:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorDetailsV2'
-        traceId:
-          type: string
-          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
-      description: A standard error response containing a list of one or more errors.
+        statusCode:
+          type: integer
+          format: int32
+          description: 'The HTTP status code for the error. Generally speaking, the following codes have these meanings: `200` - Success, `201` - Success (object created), `400` - Error with user input, `403` - Authorization error (user lacks permission), `404` - Object not found, `409` - Attempt to change an object using an obsolete last ModifiedDate.'
+      description: Additional metadata associated with an error.
+    OdagSettingsV2:
+      type: object
+      properties:
+        odagEnabled:
+          type: boolean
+          description: Whether the ODAG feature is enabled.
+        dynamicViewEnabled:
+          type: boolean
+          description: Whether the dynamic view feature is enabled.
+      description: The state of the ODAG settings available for users assigned the `TenantAdmin` role to view and configure.
+    CanUpdateSettings:
+      type: object
+      properties:
+        canUpdateSettings:
+          type: boolean
+      description: An object used to inform the caller whether the current user has privilege to update ODAG settings.
     ErrorDetailsV2:
       type: object
       properties:
@@ -137,16 +150,17 @@ components:
           type: string
           description: The message describing the error.
       description: A single error entry within an error response.
-    OdagSettingsV2:
+    ErrorV2:
       type: object
       properties:
-        odagEnabled:
-          type: boolean
-          description: Whether the ODAG feature is enabled.
-        dynamicViewEnabled:
-          type: boolean
-          description: Whether the dynamic view feature is enabled.
-      description: The state of the ODAG settings available for users assigned the `TenantAdmin` role to view and configure.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetailsV2'
+        traceId:
+          type: string
+          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
+      description: A standard error response containing a list of one or more errors.
     SettingsPutPayload:
       type: object
       properties:
@@ -155,17 +169,3 @@ components:
         dynamicViewEnabled:
           type: boolean
       description: An object that defines the properties of ODAG settings to be modified.
-    CanUpdateSettings:
-      type: object
-      properties:
-        canUpdateSettings:
-          type: boolean
-      description: An object used to inform the caller whether the current user has privilege to update ODAG settings.
-    MetaV2:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          format: int32
-          description: 'The HTTP status code for the error. Generally speaking, the following codes have these meanings: `200` - Success, `201` - Success (object created), `400` - Error with user input, `403` - Authorization error (user lacks permission), `404` - Object not found, `409` - Attempt to change an object using an obsolete last ModifiedDate.'
-      description: Additional metadata associated with an error.

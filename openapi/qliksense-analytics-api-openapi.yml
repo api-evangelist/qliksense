@@ -82,6 +82,21 @@ components:
       - type: string
         title: DISTRIBUTED
         x-qlik-const: 2
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: A unique code for the error.
+        title:
+          type: string
+          description: A human-readable description of the error.
+        detail:
+          type: string
+          description: Additional information about the error.
     NxAttributes_V2:
       type: object
       properties:
@@ -163,55 +178,6 @@ components:
           type: boolean
           description: If set to true, the app has section access configured.
       description: App attributes.
-    UsageEnum:
-      oneOf:
-      - type: string
-        title: ANALYTICS
-        x-qlik-const: 0
-      - type: string
-        title: DATA_PREPARATION
-        x-qlik-const: 1
-      - type: string
-        title: DATAFLOW_PREP
-        x-qlik-const: 2
-      - type: string
-        title: SINGLE_TABLE_PREP
-        x-qlik-const: 3
-      - type: string
-        title: DIRECT_QUERY_MODE
-        x-qlik-const: 4
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-          description: Array of all errors that occurred during the request.
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: A unique code for the error.
-        title:
-          type: string
-          description: A human-readable description of the error.
-        detail:
-          type: string
-          description: Additional information about the error.
-    NxAppCreatePrivileges:
-      type: object
-      properties:
-        resource:
-          type: string
-          description: Type of resource. For example, sheet, story, bookmark, etc.
-        canCreate:
-          type: boolean
-          description: Is set to true if the user has privileges to create the resource.
     NxApp_V2:
       type: object
       properties:
@@ -259,3 +225,37 @@ components:
 
             * change_space'
       description: Application attributes and user privileges.
+    NxAppCreatePrivileges:
+      type: object
+      properties:
+        resource:
+          type: string
+          description: Type of resource. For example, sheet, story, bookmark, etc.
+        canCreate:
+          type: boolean
+          description: Is set to true if the user has privileges to create the resource.
+    UsageEnum:
+      oneOf:
+      - type: string
+        title: ANALYTICS
+        x-qlik-const: 0
+      - type: string
+        title: DATA_PREPARATION
+        x-qlik-const: 1
+      - type: string
+        title: DATAFLOW_PREP
+        x-qlik-const: 2
+      - type: string
+        title: SINGLE_TABLE_PREP
+        x-qlik-const: 3
+      - type: string
+        title: DIRECT_QUERY_MODE
+        x-qlik-const: 4
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+          description: Array of all errors that occurred during the request.

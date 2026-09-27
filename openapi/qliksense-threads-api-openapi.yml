@@ -907,140 +907,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Interaction:
+    createFeedback:
       type: object
       required:
-      - id
-      - request
-      - response
-      - createdAt
-      - updatedAt
-      - sources
-      - ownerId
-      - threadId
+      - vote
+      - reason
       properties:
-        id:
+        vote:
+          type: integer
+          example: 1
+          description: Integer representation of feedback given (-1 = negative, 1 = positive).
+        reason:
           type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-        ownerId:
+          example: inaccurate | irrelevant | repetitive | unhelpful | other
+          description: Reason for feedback.
+        comment:
           type: string
-          example: 65e310c43fb1cf46654e0878
-          description: Unique identifier of user which created the interaction.
-        request:
-          type: string
-          example: Where was Genghis Khan buried?
-          description: Interaction request content.
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageSource'
-          description: List of sources used to generate AI messages (interactions).
-        feedback:
-          $ref: '#/components/schemas/Feedback'
-        rejected:
-          type: boolean
-          example: true
-          description: Indicator the system marked request as suspicious.
-        response:
-          type: string
-          example: Somewhere in an unmarked grave
-          description: Interaction response content.
-        threadId:
-          type: string
-          format: uuid
-          example: 125c24c4-668c-4c97-bef8-30d910169913
-          description: ID of the thread to which the interaction belongs.
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the interaction was created.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:55.52Z'
-          readOnly: true
-          description: Datetime when the interaction was updated.
-    MessageSourceChunk:
-      type: object
-      required:
-      - chunkId
-      properties:
-        text:
-          type: string
-          description: Chunk text for "AI" generated message source.
-        chunkId:
-          type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-          description: Chunk unique identifier for "AI" generated message source.
-    pageLink:
-      type: object
-      properties:
-        href:
-          type: string
-    errorResponseCodeCopy:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    feedbackPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /reason
-        value: irrelevant
-      description: An array of JSON Patch documents.
-    createReview:
-      type: object
-      required:
-      - reviewStatus
-      properties:
-        reviewStatus:
-          type: string
-          example: reviewed | unreviewed
-          description: Review status.
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-    interactionsResult:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Interaction'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
-    errorResponseCopy:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCodeCopy'
-            x-qlik-merge-conflict: true
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
+          description: Optional comment for feedback.
     Message:
       type: object
       required:
@@ -1073,7 +956,7 @@ components:
           example: '2021-10-02T14:20:50.52Z'
           readOnly: true
           description: Datetime when the interaction was created.
-    threadsResult:
+    interactionsResult:
       type: object
       required:
       - data
@@ -1081,51 +964,11 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Thread'
+            $ref: '#/components/schemas/Interaction'
         meta:
           $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          - add
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    createFeedback:
-      type: object
-      required:
-      - vote
-      - reason
-      properties:
-        vote:
-          type: integer
-          example: 1
-          description: Integer representation of feedback given (-1 = negative, 1 = positive).
-        reason:
-          type: string
-          example: inaccurate | irrelevant | repetitive | unhelpful | other
-          description: Reason for feedback.
-        comment:
-          type: string
-          description: Optional comment for feedback.
     Feedback:
       type: object
       required:
@@ -1177,101 +1020,31 @@ components:
         path: /name
         value: new name
       description: An array of JSON Patch documents.
-    Thread:
+    createThread:
       type: object
       required:
-      - id
       - name
-      - ownerId
-      - createdAt
-      - updatedAt
-      - hasFeedback
-      - favorite
-      - useUserPreferredLanguage
-      - summaryStats
       properties:
-        id:
-          type: string
-          format: uuid
-          example: 507f191e810c19729de860ea
-          description: Unique identifier of the thread.
         name:
           type: string
           example: Initial conversation
           description: The name of the thread.
-        ownerId:
-          type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-        favorite:
-          type: boolean
-          default: false
-          example: false
-          description: If thread is marked as favorite.
         createdAt:
           type: string
           format: date-time
           example: '2021-10-02T14:20:50.52Z'
           readOnly: true
           description: Datetime when the thread was created.
-        deletedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the thread was deleted.
         updatedAt:
           type: string
           format: date-time
           example: '2021-10-02T14:20:50.52Z'
           readOnly: true
           description: Datetime when the thread was updated.
-        hasFeedback:
-          type: boolean
-          default: false
-          example: false
-          description: If feedback was provided for a thread interaction.
-        summaryStats:
-          $ref: '#/components/schemas/feedbackSummary'
         useUserPreferredLanguage:
           type: boolean
-          default: false
           example: false
-          description: If the thread should respond in the user's preferred language.
-    createInteraction:
-      type: object
-      required:
-      - request
-      - response
-      - sources
-      properties:
-        request:
-          type: string
-          example: Where was Genghis Khan buried?
-          description: Interaction request content.
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageSource'
-          description: List of sources used to generate AI messages (interactions).
-        rejected:
-          type: boolean
-          example: true
-          description: Indicator the system marked request as suspicious.
-        response:
-          type: string
-          example: Somewhere in an unmarked grave
-          description: Interaction response content.
-        rejectionReason:
-          $ref: '#/components/schemas/rejectionReason'
-    rejectionReason:
-      enum:
-      - 1
-      - 2
-      - 3
-      type: integer
-      example: 1
-      description: "Rejection reason for a question:\n  * 1 - PROMPT_INJECTION\n  * 2 - OUT_OF_CONTEXT\n  * 3 - TOO_COMPLEX\n"
+          description: Whether the thread should use the user's preferred language.
     ThreadWithMessages:
       type: object
       required:
@@ -1339,11 +1112,6 @@ components:
           default: false
           example: false
           description: If the thread should respond in the user's preferred language.
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
     feedbackSummary:
       type: object
       required:
@@ -1382,6 +1150,19 @@ components:
         interactions:
           type: integer
           description: Amount of interactions for a thread or an assistant.
+    MessageSourceChunk:
+      type: object
+      required:
+      - chunkId
+      properties:
+        text:
+          type: string
+          description: Chunk text for "AI" generated message source.
+        chunkId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: Chunk unique identifier for "AI" generated message source.
     MessageSource:
       type: object
       required:
@@ -1419,28 +1200,247 @@ components:
           format: uuid
           example: 10d347c4-f28a-4faf-93f0-48e781aaf303
           description: Reference to KnowledgeBase used for "AI" generated messages.
-    createThread:
+    errorResponseCopy:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    errorResponseCodeCopy:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    JSONPatch:
       type: object
       required:
-      - name
+      - op
+      - path
+      - value
       properties:
+        op:
+          enum:
+          - replace
+          - add
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    Thread:
+      type: object
+      required:
+      - id
+      - name
+      - ownerId
+      - createdAt
+      - updatedAt
+      - hasFeedback
+      - favorite
+      - useUserPreferredLanguage
+      - summaryStats
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the thread.
         name:
           type: string
           example: Initial conversation
           description: The name of the thread.
+        ownerId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+        favorite:
+          type: boolean
+          default: false
+          example: false
+          description: If thread is marked as favorite.
         createdAt:
           type: string
           format: date-time
           example: '2021-10-02T14:20:50.52Z'
           readOnly: true
           description: Datetime when the thread was created.
+        deletedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the thread was deleted.
         updatedAt:
           type: string
           format: date-time
           example: '2021-10-02T14:20:50.52Z'
           readOnly: true
           description: Datetime when the thread was updated.
+        hasFeedback:
+          type: boolean
+          default: false
+          example: false
+          description: If feedback was provided for a thread interaction.
+        summaryStats:
+          $ref: '#/components/schemas/feedbackSummary'
         useUserPreferredLanguage:
           type: boolean
+          default: false
           example: false
-          description: Whether the thread should use the user's preferred language.
+          description: If the thread should respond in the user's preferred language.
+    createReview:
+      type: object
+      required:
+      - reviewStatus
+      properties:
+        reviewStatus:
+          type: string
+          example: reviewed | unreviewed
+          description: Review status.
+    threadsResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thread'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    feedbackPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /reason
+        value: irrelevant
+      description: An array of JSON Patch documents.
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+    rejectionReason:
+      enum:
+      - 1
+      - 2
+      - 3
+      type: integer
+      example: 1
+      description: "Rejection reason for a question:\n  * 1 - PROMPT_INJECTION\n  * 2 - OUT_OF_CONTEXT\n  * 3 - TOO_COMPLEX\n"
+    Interaction:
+      type: object
+      required:
+      - id
+      - request
+      - response
+      - createdAt
+      - updatedAt
+      - sources
+      - ownerId
+      - threadId
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+        ownerId:
+          type: string
+          example: 65e310c43fb1cf46654e0878
+          description: Unique identifier of user which created the interaction.
+        request:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Interaction request content.
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageSource'
+          description: List of sources used to generate AI messages (interactions).
+        feedback:
+          $ref: '#/components/schemas/Feedback'
+        rejected:
+          type: boolean
+          example: true
+          description: Indicator the system marked request as suspicious.
+        response:
+          type: string
+          example: Somewhere in an unmarked grave
+          description: Interaction response content.
+        threadId:
+          type: string
+          format: uuid
+          example: 125c24c4-668c-4c97-bef8-30d910169913
+          description: ID of the thread to which the interaction belongs.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the interaction was created.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:55.52Z'
+          readOnly: true
+          description: Datetime when the interaction was updated.
+    createInteraction:
+      type: object
+      required:
+      - request
+      - response
+      - sources
+      properties:
+        request:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Interaction request content.
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageSource'
+          description: List of sources used to generate AI messages (interactions).
+        rejected:
+          type: boolean
+          example: true
+          description: Indicator the system marked request as suspicious.
+        response:
+          type: string
+          example: Somewhere in an unmarked grave
+          description: Interaction response content.
+        rejectionReason:
+          $ref: '#/components/schemas/rejectionReason'
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string

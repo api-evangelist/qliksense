@@ -58,6 +58,14 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: A representation of the errors encountered from the HTTP request.
     Error:
       type: object
       required:
@@ -80,11 +88,3 @@ components:
           type: string
           description: The http status code.
       description: An error object.
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-      description: A representation of the errors encountered from the HTTP request.

@@ -79,24 +79,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StandardErrorItem'
-    StandardErrorItem:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional error object metadata.
-        title:
-          type: string
-          description: Description of the error.
-        detail:
-          type: string
-          description: Extra information about the error.
     MigrationInformation:
       type: object
       properties:
@@ -136,3 +118,21 @@ components:
         migratingToFingerprint:
           type: string
           description: The new key ARN fingerprint.
+    StandardErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional error object metadata.
+        title:
+          type: string
+          description: Description of the error.
+        detail:
+          type: string
+          description: Extra information about the error.

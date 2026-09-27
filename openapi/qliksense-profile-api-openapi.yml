@@ -129,14 +129,13 @@ paths:
         limit: 1000
 components:
   schemas:
-    Frequency:
+    TableRecord:
       type: object
       properties:
-        value:
-          type: string
-        frequency:
-          type: integer
-          format: int64
+        values:
+          type: array
+          items:
+            type: string
     Tag:
       type: object
       properties:
@@ -145,65 +144,6 @@ components:
         score:
           type: number
           format: double
-    BinnedFrequency:
-      type: object
-      properties:
-        binEdge:
-          type: number
-          format: double
-        frequency:
-          type: integer
-          format: int64
-    Classification:
-      type: object
-      properties:
-        pii:
-          type: boolean
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-        sensitive:
-          type: boolean
-        obfuscation:
-          type: string
-    TableSample:
-      type: object
-      title: Table Sample
-      properties:
-        name:
-          type: string
-          readOnly: true
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/TableRecord'
-          readOnly: true
-        fieldNames:
-          type: array
-          items:
-            type: string
-          readOnly: true
-    TableProfile:
-      type: object
-      title: Table Profile
-      properties:
-        name:
-          type: string
-          readOnly: true
-        sizeInBytes:
-          type: integer
-          format: int64
-          readOnly: true
-        numberOfRows:
-          type: integer
-          format: int64
-          readOnly: true
-        fieldProfiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldProfile'
-          readOnly: true
     PageDataSetProfile:
       type: object
       properties:
@@ -225,15 +165,112 @@ components:
         total:
           type: integer
           format: int64
-    ErrorResponse:
+    DataSetProfile:
       type: object
+      title: Data Set Profile
       properties:
-        errors:
+        meta:
+          $ref: '#/components/schemas/ProfileMetadata'
+        samples:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+            $ref: '#/components/schemas/TableSample'
+          readOnly: true
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableProfile'
+          readOnly: true
+    Links:
+      type: object
+      properties:
+        last:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        first:
+          $ref: '#/components/schemas/Link'
+    Link:
+      type: object
+      properties:
+        href:
           type: string
+    Frequency:
+      type: object
+      properties:
+        value:
+          type: string
+        frequency:
+          type: integer
+          format: int64
+    BinnedFrequency:
+      type: object
+      properties:
+        binEdge:
+          type: number
+          format: double
+        frequency:
+          type: integer
+          format: int64
+    TableSample:
+      type: object
+      title: Table Sample
+      properties:
+        name:
+          type: string
+          readOnly: true
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableRecord'
+          readOnly: true
+        fieldNames:
+          type: array
+          items:
+            type: string
+          readOnly: true
+    ProfileMetadata:
+      type: object
+      title: Profile Metadata
+      properties:
+        status:
+          enum:
+          - QUEUED
+          - RUNNING
+          - FINISHED
+          - FAILED
+          - INCOMPLETE
+          - CANCELLED
+          - STALE
+          - PARTIAL
+          - DEFERRED
+          type: string
+        messages:
+          type: array
+          items:
+            type: string
+        dataSetId:
+          type: string
+        resultType:
+          enum:
+          - NORMAL
+          - BASIC
+          type: string
+        connectionId:
+          type: string
+        lastLoadTime:
+          type: string
+          format: date-time
+        computationEndTime:
+          type: string
+          format: date-time
+        computationStartTime:
+          type: string
+          format: date-time
     FieldProfile:
       type: object
       title: Field Profile
@@ -352,31 +389,6 @@ components:
         sumSquaredNumericValues:
           type: number
           format: double
-    TableRecord:
-      type: object
-      properties:
-        values:
-          type: array
-          items:
-            type: string
-    Links:
-      type: object
-      properties:
-        last:
-          $ref: '#/components/schemas/Link'
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        first:
-          $ref: '#/components/schemas/Link'
-    Link:
-      type: object
-      properties:
-        href:
-          type: string
     Error:
       type: object
       properties:
@@ -388,57 +400,45 @@ components:
           type: string
         status:
           type: string
-    ProfileMetadata:
+    TableProfile:
       type: object
-      title: Profile Metadata
+      title: Table Profile
       properties:
-        status:
-          enum:
-          - QUEUED
-          - RUNNING
-          - FINISHED
-          - FAILED
-          - INCOMPLETE
-          - CANCELLED
-          - STALE
-          - PARTIAL
-          - DEFERRED
+        name:
           type: string
-        messages:
+          readOnly: true
+        sizeInBytes:
+          type: integer
+          format: int64
+          readOnly: true
+        numberOfRows:
+          type: integer
+          format: int64
+          readOnly: true
+        fieldProfiles:
           type: array
           items:
-            type: string
-        dataSetId:
-          type: string
-        resultType:
-          enum:
-          - NORMAL
-          - BASIC
-          type: string
-        connectionId:
-          type: string
-        lastLoadTime:
-          type: string
-          format: date-time
-        computationEndTime:
-          type: string
-          format: date-time
-        computationStartTime:
-          type: string
-          format: date-time
-    DataSetProfile:
+            $ref: '#/components/schemas/FieldProfile'
+          readOnly: true
+    Classification:
       type: object
-      title: Data Set Profile
       properties:
-        meta:
-          $ref: '#/components/schemas/ProfileMetadata'
-        samples:
+        pii:
+          type: boolean
+        tags:
           type: array
           items:
-            $ref: '#/components/schemas/TableSample'
-          readOnly: true
-        profiles:
+            $ref: '#/components/schemas/Tag'
+        sensitive:
+          type: boolean
+        obfuscation:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/TableProfile'
-          readOnly: true
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string

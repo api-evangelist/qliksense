@@ -512,20 +512,6 @@ components:
           description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
         recommendedAnswer:
           $ref: '#/components/schemas/recommendedAnswer'
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-    pageLink:
-      type: object
-      properties:
-        href:
-          type: string
     errorResponseCopy:
       type: object
       properties:
@@ -537,6 +523,20 @@ components:
         traceId:
           type: string
           example: 507f191e810c19729de860ea
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
     errorResponseCodeCopy:
       type: object
       properties:
@@ -546,37 +546,6 @@ components:
           type: string
         detail:
           type: string
-    startersResult:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Starter'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
-    recommendedAnswer:
-      type: object
-      required:
-      - content
-      - contentType
-      properties:
-        content:
-          type: string
-          description: Starter answer content.
-        contentType:
-          type: string
-          example: text | markdown | html
-          description: Answer type of content.
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
     createStarter:
       type: object
       required:
@@ -597,6 +566,19 @@ components:
           description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
         recommendedAnswer:
           $ref: '#/components/schemas/recommendedAnswer'
+    recommendedAnswer:
+      type: object
+      required:
+      - content
+      - contentType
+      properties:
+        content:
+          type: string
+          description: Starter answer content.
+        contentType:
+          type: string
+          example: text | markdown | html
+          description: Answer type of content.
     Starter:
       type: object
       required:
@@ -638,3 +620,21 @@ components:
           description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
         recommendedAnswer:
           $ref: '#/components/schemas/recommendedAnswer'
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    startersResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Starter'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'

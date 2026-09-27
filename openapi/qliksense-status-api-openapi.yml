@@ -120,47 +120,11 @@ paths:
         limit: 1000
 components:
   schemas:
-    MetaExportError:
-      properties:
-        appErrors:
-          $ref: '#/components/schemas/AppErrors'
-        selectionErrors:
-          $ref: '#/components/schemas/SelectionErrors'
-      description: Define the export error metadata. Each property is filled if it is related to the export error type.
-    AppError:
-      properties:
-        appId:
-          type: string
-          example: 11ecf638-0be4-4b94-a9e6-91218f34e175
-          description: app id
-        method:
-          type: string
-          example: GetObject
-          description: The method that is failing.
-        parameters:
-          type: object
-          description: Parameters of method that fails.
-          additionalProperties:
-            type: string
-      description: Error in resource handling
-    SelectionErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/SelectionError'
-      description: Errors occurring in selections.
     ExportErrors:
       type: array
       items:
         $ref: '#/components/schemas/ExportError'
       description: Errors occured during report generation.
-    Float64:
-      type: number
-      format: float64
-      x-go-type:
-        type: Float64
-        import:
-          alias: cModels
-          package: github.com/qlik-trial/reporting-service/v10/pkg/models
     SelectionError:
       properties:
         detail:
@@ -192,6 +156,59 @@ components:
           description: Deprecated, use errorType instead. True if the fieldName is missing. The missingValues array is empty in this case
           x-qlik-deprecated: true
       description: Selection error related to a fieldName. The field name is missing or some of his selection values are missing or a state is missing
+    AppError:
+      properties:
+        appId:
+          type: string
+          example: 11ecf638-0be4-4b94-a9e6-91218f34e175
+          description: app id
+        method:
+          type: string
+          example: GetObject
+          description: The method that is failing.
+        parameters:
+          type: object
+          description: Parameters of method that fails.
+          additionalProperties:
+            type: string
+      description: Error in resource handling
+    Reason:
+      properties:
+        traceId:
+          type: string
+          example: '00000000000000000000000000000000'
+        outputId:
+          type: string
+          example: output1
+          description: The output identifier which uniquely identifies an output (PDF, image etc.) within the same request.
+        exportErrors:
+          $ref: '#/components/schemas/ExportErrors'
+    Float64:
+      type: number
+      format: float64
+      x-go-type:
+        type: Float64
+        import:
+          alias: cModels
+          package: github.com/qlik-trial/reporting-service/v10/pkg/models
+    Result:
+      type: object
+      required:
+      - outputId
+      - location
+      properties:
+        location:
+          type: string
+          format: uri
+          example: https://t.eu.qlikcloud.com:443/api/v1/temp-contents/619b77be498fea00018de0e1?inline=1
+          description: Location to download the generated report.
+        outputId:
+          type: string
+          example: output1
+          description: The output identifier which uniquely identifies an output (PDF, image etc.) within the same request.
+        exportErrors:
+          $ref: '#/components/schemas/ExportErrors'
+      description: Result and info about the generated report.
     ReportStatus:
       type: object
       example:
@@ -242,11 +259,18 @@ components:
           format: int32
           example: 2
           description: Count how many times the resolution of this report was attempted.
-    Error:
-      type: object
+    MetaExportError:
       properties:
-        errors:
-          $ref: '#/components/schemas/ExportErrors'
+        appErrors:
+          $ref: '#/components/schemas/AppErrors'
+        selectionErrors:
+          $ref: '#/components/schemas/SelectionErrors'
+      description: Define the export error metadata. Each property is filled if it is related to the export error type.
+    SelectionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/SelectionError'
+      description: Errors occurring in selections.
     ExportError:
       type: object
       required:
@@ -265,24 +289,11 @@ components:
           type: string
           description: Optional. MAY be used to provide more concrete details.
       description: Error occured during report generation.
-    Result:
-      type: object
-      required:
-      - outputId
-      - location
-      properties:
-        location:
-          type: string
-          format: uri
-          example: https://t.eu.qlikcloud.com:443/api/v1/temp-contents/619b77be498fea00018de0e1?inline=1
-          description: Location to download the generated report.
-        outputId:
-          type: string
-          example: output1
-          description: The output identifier which uniquely identifies an output (PDF, image etc.) within the same request.
-        exportErrors:
-          $ref: '#/components/schemas/ExportErrors'
-      description: Result and info about the generated report.
+    AppErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/AppError'
+      description: Errors occurring when dealing with the app.
     QFieldValue:
       properties:
         text:
@@ -297,19 +308,8 @@ components:
           x-nullable: true
           description: IsNumeric tells whether the field value is text or number. Default value is equal to defaultIsNumeric property in QSelection.
       description: In order to apply a selection just one of text/number needs to be set, this must be associated with the correct isNumeric bool. In some scenarios both text and number may be set.
-    Reason:
+    Error:
+      type: object
       properties:
-        traceId:
-          type: string
-          example: '00000000000000000000000000000000'
-        outputId:
-          type: string
-          example: output1
-          description: The output identifier which uniquely identifies an output (PDF, image etc.) within the same request.
-        exportErrors:
+        errors:
           $ref: '#/components/schemas/ExportErrors'
-    AppErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/AppError'
-      description: Errors occurring when dealing with the app.

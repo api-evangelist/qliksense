@@ -59,51 +59,6 @@ paths:
         limit: 100
 components:
   schemas:
-    InviteItem:
-      type: object
-      required:
-      - email
-      properties:
-        name:
-          type: string
-          description: Optional display name for this invitee. Example - "Elvis Presley".
-        email:
-          type: string
-          description: Email address for this invitee. Example - "foo@qlik.com".
-        resend:
-          type: boolean
-          description: Flag - when true invite message is sent to inactive or invited users. Typically used to force email resend to users who are not yet active.
-        language:
-          type: string
-          description: Optional ISO 639-1 2 letter code for invite language. Defaults to 'en' when missing or not found.
-    ErrorsResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-    InviteErrorItem:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ErrorItem'
-      - type: object
-        required:
-        - status
-        - email
-        properties:
-          code:
-            type: string
-            description: Error code - | HTTP Status code | 1001 - Active User | 1002 - Disabled User | 1003 - Default External Dependency Error |
-          email:
-            type: string
-            description: Invitee email
-          status:
-            enum:
-            - error
-            type: string
-            description: Result status = "error"
-      description: Error object.
     ErrorItem:
       type: object
       required:
@@ -120,16 +75,6 @@ components:
           type: string
           description: A human-readable explanation specific to this occurrence of the problem (if applicable)
       description: Error object.
-    InviteRequest:
-      type: object
-      properties:
-        invitees:
-          type: array
-          items:
-            $ref: '#/components/schemas/InviteItem'
-          required:
-          - items
-          description: List of invitees who should receive an invite email.
     ResultItem:
       type: object
       required:
@@ -156,6 +101,40 @@ components:
           format: uuid
           description: IdP generated UUID for this invitee
       description: Invitee result item
+    InviteRequest:
+      type: object
+      properties:
+        invitees:
+          type: array
+          items:
+            $ref: '#/components/schemas/InviteItem'
+          required:
+          - items
+          description: List of invitees who should receive an invite email.
+    InviteItem:
+      type: object
+      required:
+      - email
+      properties:
+        name:
+          type: string
+          description: Optional display name for this invitee. Example - "Elvis Presley".
+        email:
+          type: string
+          description: Email address for this invitee. Example - "foo@qlik.com".
+        resend:
+          type: boolean
+          description: Flag - when true invite message is sent to inactive or invited users. Typically used to force email resend to users who are not yet active.
+        language:
+          type: string
+          description: Optional ISO 639-1 2 letter code for invite language. Defaults to 'en' when missing or not found.
+    ErrorsResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
     InviteDataResponse:
       type: object
       properties:
@@ -166,3 +145,24 @@ components:
             - $ref: '#/components/schemas/ResultItem'
             - $ref: '#/components/schemas/InviteErrorItem'
       description: Data list - ResultItem or ErrorItem for each InviteeItem.
+    InviteErrorItem:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ErrorItem'
+      - type: object
+        required:
+        - status
+        - email
+        properties:
+          code:
+            type: string
+            description: Error code - | HTTP Status code | 1001 - Active User | 1002 - Disabled User | 1003 - Default External Dependency Error |
+          email:
+            type: string
+            description: Invitee email
+          status:
+            enum:
+            - error
+            type: string
+            description: Result status = "error"
+      description: Error object.

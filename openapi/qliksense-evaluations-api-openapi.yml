@@ -155,68 +155,64 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CreateEvaluationRequest:
+    CreateEvaluationResponse:
       type: object
-      required:
-      - causalEvent
-      - contextId
       properties:
-        alertId:
-          type: string
-          example: 5f64885b2e11d23982c09e03
-          description: The id of the alerting task the condition and evaluation is part of
+        errors:
+          $ref: '#/components/schemas/Errors'
         contextId:
           type: string
           example: 795c75ba-7812-4c8f-9ced-551b6b006183
           description: Extra context information to carry through to the result if any
-        causalEvent:
-          $ref: '#/components/schemas/CausalEvent'
-    Selections:
-      type: array
-      items:
-        $ref: '#/components/schemas/Selections_inner'
-      description: List of fields according to the bookmark definition
-    ConditionMeasures:
-      type: array
-      items:
-        $ref: '#/components/schemas/ConditionMeasures_inner'
-      description: List of returned measures
-    CompoundCondition_data:
+        evaluationId:
+          type: string
+          example: 795c75ba-7812-4c8f-9ced-551b6b006183
+          description: Extra context information to carry through to the result if any
+    GetEvaluationResponse:
       type: object
       properties:
-        history:
-          $ref: '#/components/schemas/HistoryProperties'
-        conditions:
-          type: array
-          items:
-            type: string
-          example:
-          - rDDAcMEI1V0qzauEWepEVY8oSLJ9fvA2
-          - qFPF1dAtPK4vfPTmKyyuKaqA6iERCwLi
-          - 4gnz8E6ZruG0lkSKwkau66P24CtORyLr
-          - ATs--Z0b_NGyuHajcbQkxu7RrajgPaEQ
-          description: Array of condition ids
-        expression:
+        condition:
+          $ref: '#/components/schemas/Condition'
+        evaluation:
+          $ref: '#/components/schemas/Evaluation'
+      description: Get response returns the evaluation and condition associated
+    ConditionDimensions_inner:
+      type: object
+      properties:
+        field:
           type: string
-          example: ($0 OR $1) AND ($2 OR $3)
-          description: Boolean expression made up of variable names defined from the conditions section
-      description: Condition data
-    EvaluationError:
+          example: Neighborhood
+          description: Field referred to the dimension where the selection is made. This may be used to generate deep links.
+        title:
+          type: string
+          example: Neighborhood
+          description: Dimension title
+        qLibraryId:
+          type: string
+          example: PgQKNQ
+          description: Refers to a dimension stored in the library
+    EvaluationErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/EvaluationError'
+    Error:
       type: object
       properties:
         code:
           type: string
           readOnly: true
-          description: Error code specific to condition smanager.
+          description: Error code specific to condition manager.
         meta:
-          $ref: '#/components/schemas/EvaluationError_meta'
+          type: object
+          properties: {}
         title:
           type: string
           readOnly: true
           description: Error title.
-        status:
+        detail:
+          type: string
           readOnly: true
-          description: Error status.
+          description: Error cause.
     ConditionBase:
       type: object
       properties:
@@ -282,25 +278,71 @@ components:
           readOnly: true
           description: The time of the last reload, if the scan is triggered by a reload. If exists and value does not match app's last reload time, the evaluation will fail.
       description: A base condition
-    SingleErrorResponse:
+    CausalEvent:
       type: object
       properties:
-        code:
+        data:
+          $ref: '#/components/schemas/CausalEventData'
+        eventID:
           type: string
-          readOnly: true
-          description: Error code specific to condition manager.
-        meta:
-          type: object
-          properties: {}
-          description: meta properties for an error.
-        title:
+          description: the event id from eventing
+        extensions:
+          $ref: '#/components/schemas/CausalEventExtensions'
+        manualTrigger:
+          type: boolean
+        manualTriggerID:
           type: string
-          readOnly: true
-          description: Error title.
-        detail:
+          description: the manual trigger id from eventing if present
+    Selections_inner:
+      type: object
+      properties:
+        count:
+          type: number
+          example: 2
+          description: The count
+        field:
           type: string
-          readOnly: true
-          description: Error cause.
+          example: SalesTerritoryCountry
+          description: Field name
+        selectedSummary:
+          type: array
+          items:
+            type: string
+          example: '[ Germany, Australia ]'
+          description: Array of selected
+    EvaluationError_meta:
+      type: object
+      properties:
+        fatal:
+          type: boolean
+          description: defines whether an error is recoverable or not
+    Condition:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          enum:
+          - compound
+          - data
+          type: string
+          example: compound
+          description: Indicates the condition type
+        ownerId:
+          type: string
+          format: uid
+          example: EIwSIgqjmbHGwQJI0ShQoS3ORdz5nCpA
+          description: UserID of the condition owner
+        tenantId:
+          type: string
+          format: uid
+          example: 5GI7yWoJk9lvNtuEc66SXCypXVfhbVeH
+          description: The tenant id
+        dataCondition:
+          $ref: '#/components/schemas/DataCondition'
+        compoundCondition:
+          $ref: '#/components/schemas/CompoundCondition'
+      description: only one of compoundCondition or dataCondition should be set
     Evaluation:
       type: object
       properties:
@@ -396,36 +438,33 @@ components:
           readOnly: true
           description: The unique id for the resource given from Data Condition Evaluator.
           x-qlik-deprecated: true
-    CausalEventExtensions:
+    SingleErrorResponse:
       type: object
       properties:
-        userID:
+        code:
           type: string
-        tenantID:
+          readOnly: true
+          description: Error code specific to condition manager.
+        meta:
+          type: object
+          properties: {}
+          description: meta properties for an error.
+        title:
           type: string
-        sessionID:
+          readOnly: true
+          description: Error title.
+        detail:
           type: string
-    CreateEvaluationResponse:
+          readOnly: true
+          description: Error cause.
+    HistoryProperties:
       type: object
       properties:
-        errors:
-          $ref: '#/components/schemas/Errors'
-        contextId:
-          type: string
-          example: 795c75ba-7812-4c8f-9ced-551b6b006183
-          description: Extra context information to carry through to the result if any
-        evaluationId:
-          type: string
-          example: 795c75ba-7812-4c8f-9ced-551b6b006183
-          description: Extra context information to carry through to the result if any
-    GetEvaluationResponse:
-      type: object
-      properties:
-        condition:
-          $ref: '#/components/schemas/Condition'
-        evaluation:
-          $ref: '#/components/schemas/Evaluation'
-      description: Get response returns the evaluation and condition associated
+        enabled:
+          type: boolean
+          example: true
+          description: Is history enabled
+      description: History properties
     ErrorResponse:
       type: object
       example:
@@ -444,98 +483,11 @@ components:
           type: string
           example: d6dba97c917e3f3d77c82f40f37c9d85
           description: trace id
-    ConditionDimensions:
+    Selections:
       type: array
       items:
-        $ref: '#/components/schemas/ConditionDimensions_inner'
-      description: List of returned dimensions
-    Errors:
-      type: array
-      items:
-        $ref: '#/components/schemas/Error'
-    CausalEvent:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/CausalEventData'
-        eventID:
-          type: string
-          description: the event id from eventing
-        extensions:
-          $ref: '#/components/schemas/CausalEventExtensions'
-        manualTrigger:
-          type: boolean
-        manualTriggerID:
-          type: string
-          description: the manual trigger id from eventing if present
-    HistoryProperties:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          example: true
-          description: Is history enabled
-      description: History properties
-    Condition:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          enum:
-          - compound
-          - data
-          type: string
-          example: compound
-          description: Indicates the condition type
-        ownerId:
-          type: string
-          format: uid
-          example: EIwSIgqjmbHGwQJI0ShQoS3ORdz5nCpA
-          description: UserID of the condition owner
-        tenantId:
-          type: string
-          format: uid
-          example: 5GI7yWoJk9lvNtuEc66SXCypXVfhbVeH
-          description: The tenant id
-        dataCondition:
-          $ref: '#/components/schemas/DataCondition'
-        compoundCondition:
-          $ref: '#/components/schemas/CompoundCondition'
-      description: only one of compoundCondition or dataCondition should be set
-    ConditionDimensions_inner:
-      type: object
-      properties:
-        field:
-          type: string
-          example: Neighborhood
-          description: Field referred to the dimension where the selection is made. This may be used to generate deep links.
-        title:
-          type: string
-          example: Neighborhood
-          description: Dimension title
-        qLibraryId:
-          type: string
-          example: PgQKNQ
-          description: Refers to a dimension stored in the library
-    CausalEventData:
-      type: object
-      properties:
-        eventID:
-          type: string
-          description: the event id from eventing service.
-        lastReloadTime:
-          type: string
-          format: RFC3339
-          example: 2006-01-02T15:04:05Z07:00
-          description: The time of the last reload
-    ConditionHeaders:
-      type: array
-      items:
-        type: string
-      example:
-      - sumnum
-      description: List of header labels
+        $ref: '#/components/schemas/Selections_inner'
+      description: List of fields according to the bookmark definition
     ConditionMeasures_inner:
       type: object
       properties:
@@ -557,6 +509,99 @@ components:
             qUseThou: 1
           properties: {}
           description: Format of the field
+    ConditionHeaders:
+      type: array
+      items:
+        type: string
+      example:
+      - sumnum
+      description: List of header labels
+    CausalEventData:
+      type: object
+      properties:
+        eventID:
+          type: string
+          description: the event id from eventing service.
+        lastReloadTime:
+          type: string
+          format: RFC3339
+          example: 2006-01-02T15:04:05Z07:00
+          description: The time of the last reload
+    CompoundCondition_data:
+      type: object
+      properties:
+        history:
+          $ref: '#/components/schemas/HistoryProperties'
+        conditions:
+          type: array
+          items:
+            type: string
+          example:
+          - rDDAcMEI1V0qzauEWepEVY8oSLJ9fvA2
+          - qFPF1dAtPK4vfPTmKyyuKaqA6iERCwLi
+          - 4gnz8E6ZruG0lkSKwkau66P24CtORyLr
+          - ATs--Z0b_NGyuHajcbQkxu7RrajgPaEQ
+          description: Array of condition ids
+        expression:
+          type: string
+          example: ($0 OR $1) AND ($2 OR $3)
+          description: Boolean expression made up of variable names defined from the conditions section
+      description: Condition data
+    CreateEvaluationRequest:
+      type: object
+      required:
+      - causalEvent
+      - contextId
+      properties:
+        alertId:
+          type: string
+          example: 5f64885b2e11d23982c09e03
+          description: The id of the alerting task the condition and evaluation is part of
+        contextId:
+          type: string
+          example: 795c75ba-7812-4c8f-9ced-551b6b006183
+          description: Extra context information to carry through to the result if any
+        causalEvent:
+          $ref: '#/components/schemas/CausalEvent'
+    ConditionDimensions:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConditionDimensions_inner'
+      description: List of returned dimensions
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Error'
+    CausalEventExtensions:
+      type: object
+      properties:
+        userID:
+          type: string
+        tenantID:
+          type: string
+        sessionID:
+          type: string
+    EvaluationError:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to condition smanager.
+        meta:
+          $ref: '#/components/schemas/EvaluationError_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        status:
+          readOnly: true
+          description: Error status.
+    ConditionMeasures:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConditionMeasures_inner'
+      description: List of returned measures
     CompoundCondition:
       type: object
       properties:
@@ -567,27 +612,6 @@ components:
       description: A condition made up of other conditions
       x-discriminator-value: compound
       x-ms-discriminator-value: compound
-    Selections_inner:
-      type: object
-      properties:
-        count:
-          type: number
-          example: 2
-          description: The count
-        field:
-          type: string
-          example: SalesTerritoryCountry
-          description: Field name
-        selectedSummary:
-          type: array
-          items:
-            type: string
-          example: '[ Germany, Australia ]'
-          description: Array of selected
-    EvaluationErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/EvaluationError'
     DataCondition:
       type: object
       properties:
@@ -611,27 +635,3 @@ components:
       description: A condition based on data within an app
       x-discriminator-value: data
       x-ms-discriminator-value: data
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to condition manager.
-        meta:
-          type: object
-          properties: {}
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    EvaluationError_meta:
-      type: object
-      properties:
-        fatal:
-          type: boolean
-          description: defines whether an error is recoverable or not

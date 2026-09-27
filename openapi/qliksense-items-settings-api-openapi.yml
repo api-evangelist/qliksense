@@ -159,6 +159,15 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
+    ItemsSettingsResponseBody:
+      type: object
+      required:
+      - usageMetricsEnabled
+      properties:
+        usageMetricsEnabled:
+          type: boolean
+          default: true
+          description: Decides if the usage metrics will be shown in the hub UI.
     ItemsSettingsPatch:
       type: array
       items:
@@ -191,15 +200,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ServiceError'
-    ItemsSettingsResponseBody:
-      type: object
-      required:
-      - usageMetricsEnabled
-      properties:
-        usageMetricsEnabled:
-          type: boolean
-          default: true
-          description: Decides if the usage metrics will be shown in the hub UI.
   headers:
     X-B3-Traceid:
       schema:

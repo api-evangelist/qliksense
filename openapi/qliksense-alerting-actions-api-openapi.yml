@@ -106,108 +106,6 @@ paths:
         limit: 100
 components:
   schemas:
-    AlertingTaskGroupRecipientError:
-      type: object
-      properties:
-        added:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
-          type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on alerting task
-    ThrottlingResource:
-      type: object
-      properties:
-        capacity:
-          type: integer
-          example: 10
-          description: the maximum number of tokens that the bucket can contain
-        timezone:
-          type: string
-          default: Etc/UTC
-          description: the timezone for time calculations in this throttlingresource, for current time and time reference.
-        replenishRate:
-          type: integer
-          example: 1
-          description: the amount of tokens to insert into the bucket on the specified interval. (tokens exceeding capacity are discarded)
-        recurrenceRule:
-          type: string
-          example: RRULE:FREQ=DAILY
-          description: A string that supports a subset of RFC5545 recurrence rule directives.
-        initialTokenCount:
-          type: integer
-          example: 10
-          description: the initial amount of tokens in the bucket upon creation. cannot exceed capacity.
-        referenceTimestamp:
-          type: string
-          example: '2021-07-14T10:00:00Z'
-          description: a date and time reference specified in RFC3339 format
-      description: The rules and setup for throttling
-    AlertingTaskValidationResponse:
-      type: object
-      properties:
-        status:
-          enum:
-          - FAILURE
-          - SUCCESS
-          type: string
-        validations:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskValidation'
-    AlertingTaskRecipientError:
-      type: object
-      properties:
-        added:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-        value:
-          enum:
-          - USER_IS_DELETED
-          - USER_DISABLED_IN_QCS
-          - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_ALERT
-          - CONDITION_EVAL_ERROR
-          - USER_DISABLED_IN_ALERT_BY_OWNER
-          - MAX_ALERTS_LIMIT_REACHED
-          type: string
-          example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on alerting task
-    TaskRecipientError:
-      type: object
-      properties:
-        value:
-          enum:
-          - USER_IS_DELETED
-          - USER_DISABLED_IN_QCS
-          - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_SHARING
-          - USER_DISABLED_IN_SHARING_BY_OWNER
-          - CHART_NOT_FOUND
-          - APP_NOT_FOUND
-          - SHEET_NOT_FOUND
-          - ENGINE_POD_NOT_AVAILABLE
-          - CHART_TYPE_NOT_ALLOWED
-          - GENERIC_EXECUTION_FAILURE
-          - USER_NOT_FOUND_DL
-          - USER_DISABLED_IN_DL
-          - FILTER_NOT_FOUND
-          - BOOKMARK_NOT_FOUND
-          type: string
-          example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on sharing task specific for recipient
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
     AlertingActionsTriggerCreateResponse:
       type: object
       properties:
@@ -312,116 +210,34 @@ components:
           items:
             $ref: '#/components/schemas/AlertingTaskRecipientError'
       description: an internal recipient based on its user id.
-    Error:
+    ThrottlingResource:
       type: object
       properties:
-        code:
+        capacity:
+          type: integer
+          example: 10
+          description: the maximum number of tokens that the bucket can contain
+        timezone:
           type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
+          default: Etc/UTC
+          description: the timezone for time calculations in this throttlingresource, for current time and time reference.
+        replenishRate:
+          type: integer
+          example: 1
+          description: the amount of tokens to insert into the bucket on the specified interval. (tokens exceeding capacity are discarded)
+        recurrenceRule:
           type: string
-          readOnly: true
-          description: Error title.
-        detail:
+          example: RRULE:FREQ=DAILY
+          description: A string that supports a subset of RFC5545 recurrence rule directives.
+        initialTokenCount:
+          type: integer
+          example: 10
+          description: the initial amount of tokens in the bucket upon creation. cannot exceed capacity.
+        referenceTimestamp:
           type: string
-          readOnly: true
-          description: Error cause.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    TaskGroupRecipientError:
-      type: object
-      properties:
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
-          - GROUP_NOT_FOUND_DL
-          - GROUP_DISABLED_IN_DL
-          type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on sharing task specific for group recipient
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-    AlertingTaskValidation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Identifies for user id or condition id
-        type:
-          enum:
-          - RECIPIENT
-          - CONDITION
-          - RECIPIENT_GROUP
-          type: string
-          description: Identifier for type of a validation error occurring on alerting task
-        error:
-          enum:
-          - NO_ACCESS
-          - USER_IS_DISABLED
-          - INVALID_CONDITION
-          - GROUP_IS_DISABLED
-          - GROUP_SIZE_EXCEEDED
-          type: string
-          description: Identifier for a validation error occurring on alerting task
-          x-qlik-deprecated: true
-        description:
-          type: string
-          description: Description of the error
-        validationErrors:
-          type: array
-          items:
-            enum:
-            - NO_ACCESS
-            - USER_IS_DISABLED
-            - INVALID_CONDITION
-            - MAX_ALERTS_LIMIT_REACHED
-            - MAX_ALERT_RECIPIENTS_LIMIT_REACHED
-            - GROUP_IS_DISABLED
-            - GROUP_SIZE_EXCEEDED
-            type: string
-    GroupIDRecipient:
-      type: object
-      properties:
-        value:
-          type: string
-          example: group1
-          description: Group ID of recipient.
-        enabled:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts.
-        taskGroupRecipientErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TaskGroupRecipientError'
-        alertingTaskGroupRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
-      description: an internal recipient based on its group id.
+          example: '2021-07-14T10:00:00Z'
+          description: a date and time reference specified in RFC3339 format
+      description: The rules and setup for throttling
     ScheduleOptions:
       type: object
       properties:
@@ -472,15 +288,55 @@ components:
           example: '2020-11-20T12:00:55.000Z'
           readOnly: true
           description: nextExecutionTime is the time of the chronos job next execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if the job is completed.
-    AlertingActionsTriggerCreateRequest:
+    AlertingTaskValidationResponse:
       type: object
-      required:
-      - alertingTaskID
       properties:
-        alertingTaskID:
+        status:
+          enum:
+          - FAILURE
+          - SUCCESS
           type: string
-          example: a1b2c3d4f5
-          description: Identifier of the alerting task to trigger.
+        validations:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskValidation'
+    TaskGroupRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          - GROUP_NOT_FOUND_DL
+          - GROUP_DISABLED_IN_DL
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on sharing task specific for group recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    AlertingTaskRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_ALERT
+          - CONDITION_EVAL_ERROR
+          - USER_DISABLED_IN_ALERT_BY_OWNER
+          - MAX_ALERTS_LIMIT_REACHED
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on alerting task
     Recipients:
       type: object
       required:
@@ -503,3 +359,147 @@ components:
           items:
             $ref: '#/components/schemas/GroupIDRecipient'
       description: List of recipients. An internal recipient is represented by either their user id or group id.
+    AlertingTaskValidation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifies for user id or condition id
+        type:
+          enum:
+          - RECIPIENT
+          - CONDITION
+          - RECIPIENT_GROUP
+          type: string
+          description: Identifier for type of a validation error occurring on alerting task
+        error:
+          enum:
+          - NO_ACCESS
+          - USER_IS_DISABLED
+          - INVALID_CONDITION
+          - GROUP_IS_DISABLED
+          - GROUP_SIZE_EXCEEDED
+          type: string
+          description: Identifier for a validation error occurring on alerting task
+          x-qlik-deprecated: true
+        description:
+          type: string
+          description: Description of the error
+        validationErrors:
+          type: array
+          items:
+            enum:
+            - NO_ACCESS
+            - USER_IS_DISABLED
+            - INVALID_CONDITION
+            - MAX_ALERTS_LIMIT_REACHED
+            - MAX_ALERT_RECIPIENTS_LIMIT_REACHED
+            - GROUP_IS_DISABLED
+            - GROUP_SIZE_EXCEEDED
+            type: string
+    AlertingActionsTriggerCreateRequest:
+      type: object
+      required:
+      - alertingTaskID
+      properties:
+        alertingTaskID:
+          type: string
+          example: a1b2c3d4f5
+          description: Identifier of the alerting task to trigger.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    GroupIDRecipient:
+      type: object
+      properties:
+        value:
+          type: string
+          example: group1
+          description: Group ID of recipient.
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        taskGroupRecipientErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaskGroupRecipientError'
+        alertingTaskGroupRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
+      description: an internal recipient based on its group id.
+    TaskRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_SHARING
+          - USER_DISABLED_IN_SHARING_BY_OWNER
+          - CHART_NOT_FOUND
+          - APP_NOT_FOUND
+          - SHEET_NOT_FOUND
+          - ENGINE_POD_NOT_AVAILABLE
+          - CHART_TYPE_NOT_ALLOWED
+          - GENERIC_EXECUTION_FAILURE
+          - USER_NOT_FOUND_DL
+          - USER_DISABLED_IN_DL
+          - FILTER_NOT_FOUND
+          - BOOKMARK_NOT_FOUND
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on sharing task specific for recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    AlertingTaskGroupRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on alerting task

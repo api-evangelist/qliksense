@@ -382,40 +382,85 @@ paths:
         limit: 1000
 components:
   schemas:
-    OrchMeta:
+    eventstate:
       type: object
-      required:
-      - type
-      - id
       properties:
-        id:
+        end:
+          $ref: '#/components/schemas/end'
+        name:
           type: string
-          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
-          description: The unique identifier of the orchestration instance associated with this task in the scheduling service.
+          example: App.Reload
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          maxLength: 100
+          minLength: 1
+          description: The name of this state, unique within the workflow.
         type:
           enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          type: integer
-          example: 3
-          description: The type identifier of the orchestration system handling this task.
-          x-enum-varnames:
-          - AUTOMATION
-          - DI_PIPELINE
-          - TEMPORAL
-          - MINIBUS
-        attrs:
+          - EVENT
+          type: string
+          example: event
+          description: The state type. Must be `EVENT` for event-driven states.
+        onEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/onevents'
+          description: The events to consume and the optional actions to perform when they are received.
+        timeouts:
           type: object
-          example:
-            last_run_status: SUCCEEDED
-            last_run_worker_type: reloads
-          description: Additional attributes of the orchestration instance associated with this task in the scheduling service.
-          additionalProperties:
+          properties:
+            eventTimeout:
+              $ref: '#/components/schemas/eventTimeout'
+            stateExecTimeout:
+              $ref: '#/components/schemas/stateExecTimeout'
+            actionExecTimeout:
+              $ref: '#/components/schemas/actionExecTimeout'
+          description: State-specific timeout durations.
+        exclusive:
+          type: boolean
+          default: true
+          description: When `true`, consuming any one of the defined events causes its associated actions to execute. When `false`, all defined events must be consumed before actions are performed.
+        compensatedBy:
+          type: string
+          example: reload
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          minLength: 1
+          description: The unique name of a workflow state responsible for compensating this state if it fails.
+      description: A workflow state that waits for one or more CloudEvents, then consumes them and invokes one or more actions sequentially or in parallel.
+      additionalProperties: false
+    schedule:
+      oneOf:
+      - type: string
+        example: PT15M
+        minLength: 1
+        description: A repeating time interval in ISO 8601 format that defines when workflow instances are automatically created. UTC timezone is assumed.
+      - type: object
+        properties:
+          cron:
+            $ref: '#/components/schemas/crondef'
+          interval:
             type: string
-        lastRun:
-          $ref: '#/components/schemas/OrchRunBase'
+            example: PT15M
+            minLength: 1
+            description: A repeating time interval in ISO 8601 format that defines when workflow instances are automatically created.
+          timezone:
+            type: string
+            default: UTC
+            example: Australia/Sydney
+            description: The timezone name used to evaluate the interval and cron expression. Defaults to `UTC`.
+          recurrence:
+            type: string
+            example: RRULE:FREQ=DAILY;INTERVAL=1
+            description: An RRULE recurrence rule string defining when the workflow recurs.
+          endDateTime:
+            type: string
+            example: '2024-09-30T23:59:59Z'
+            description: The date and time (ISO 8601 format) when the workflow schedule ends.
+          startDateTime:
+            type: string
+            example: '2024-08-13T09:45:00Z'
+            description: The date and time (ISO 8601 format) when the workflow schedule begins.
+        description: A structured schedule definition with optional recurrence, date range, and timezone.
+        additionalProperties: false
     TaskGraphVertex:
       type: object
       example:
@@ -450,11 +495,191 @@ components:
         taskId:
           type: string
           example: 11111111-1111-1111-1111-111111111111
+    action:
+      type: object
+      properties:
+        name:
+          type: string
+          example: app.reload
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          maxLength: 100
+          minLength: 1
+          description: A unique name for this action within the workflow.
+        retryRef:
+          type: string
+          example: default-retry
+          description: A reference to a defined workflow retry policy. If absent, the default retry policy applies.
+        condition:
+          type: string
+          example: ${ .resourceId != null }
+          minLength: 1
+          description: An expression that must evaluate to `true` for this action to be performed. When `false`, the action is skipped.
+        functionRef:
+          $ref: '#/components/schemas/functionref'
+        retryableErrors:
+          type: array
+          items:
+            type: string
+            example: io.qlik.error.temporary-failure
+            description: A unique reference to a defined workflow error.
+          minItems: 1
+          description: Workflow error references for which this action must be retried. Used only when `autoRetries` is `false`.
+        nonRetryableErrors:
+          type: array
+          items:
+            type: string
+            example: io.qlik.error.invalid-state
+            description: A unique reference to a defined workflow error.
+          minItems: 1
+          description: Workflow error references for which this action must not be retried. Used only when `autoRetries` is `true`.
+      additionalProperties: false
+    end:
+      type: boolean
+      default: true
+      description: Marks this state as a terminal state in the workflow.
     eventTimeout:
       type: string
       example: 3S
       minLength: 1
       description: The maximum duration to wait for the defined events to be received, expressed as an ISO 8601 duration string or an expression that evaluates to one.
+    TriggerMeta:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        id:
+          type: string
+          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
+          description: The unique identifier of the trigger associated with this task.
+        type:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          example: 1
+          description: The type identifier of the trigger associated with this task.
+          x-enum-varnames:
+          - TIME_SCHEDULE
+          - SINGLE_EVENT
+          - MULTI_EVENT
+          - MIXED
+          - AAO_DATA_UPDATED
+    taskTopology:
+      type: object
+      properties:
+        isChild:
+          type: boolean
+          example: false
+          description: When `true`, this task is triggered by one or more parent tasks.
+        isParent:
+          type: boolean
+          example: true
+          description: When `true`, this task has one or more downstream dependent tasks.
+      description: Indicates the task's position in a dependency graph.
+      additionalProperties: false
+    taskMetadata:
+      type: object
+      properties:
+        usage:
+          enum:
+          - ANALYTICS
+          - DATA_PREPARATION
+          - DATAFLOW_PREP
+          - SINGLE_TABLE_PREP
+          type: string
+          example: ANALYTICS
+          description: The product domain in which the resource is used. Defaults to `ANALYTICS` when not present.
+        ownerId:
+          type: string
+          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
+          description: The user ID of the task owner.
+          x-qlik-filterable: true
+        spaceId:
+          type: string
+          example: 434f9f7c-4eeb-43f0-8f08-88b91f357c07
+          description: The unique identifier of the space the task operates in.
+        trigger:
+          $ref: '#/components/schemas/TriggerMeta'
+        tenantId:
+          type: string
+          example: rpxzti_ptV0RS4eGPSsaI0SCKl-6h2a
+          description: The unique identifier of the tenant the task operates in.
+        topology:
+          $ref: '#/components/schemas/taskTopology'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          readOnly: true
+          description: The UTC timestamp when the task was created.
+        createdBy:
+          type: string
+          example: LP_LlaXYhUUWMr5csy8pFfTHecXePH5Z
+          description: The user ID of the user who created the task.
+          x-qlik-filterable: true
+        deletedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          readOnly: true
+          description: The UTC timestamp when the task was deleted.
+        spaceType:
+          enum:
+          - personal
+          - shared
+          - managed
+          type: string
+          example: shared
+          description: The type of space the task operates in.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2018-03-20T09:12:28Z'
+          description: The UTC timestamp when the task was last updated.
+        disabledCode:
+          enum:
+          - MANUALLY
+          - CONSECUTIVE-FAILURES
+          - APP-SCRIPT-UPDATED
+          - OWNER-DELETED
+          - OWNER-DISABLED
+          - APP-MOVED-SPACE
+          - OWNER-MOVED
+          type: string
+          example: MANUALLY
+          description: The reason the task is currently disabled.
+        migratedFrom:
+          type: string
+          example: c7dba73-dd5a-4725-9dd2-8bd9c8d126d7
+          description: The unique identifier of the legacy reload task this task was migrated from, if applicable.
+        resourceName:
+          type: string
+          example: sample app
+          description: The name of the resource on which the task was created.
+        resourceType:
+          type: string
+          example: app
+          description: The type of resource on which the task was created.
+        orchestration:
+          $ref: '#/components/schemas/OrchMeta'
+        scriptOwnerId:
+          type: string
+          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
+          description: The user ID of the owner whose script context is used when running the task.
+        resourceSubType:
+          type: string
+          example: script
+          description: The subtype of resource on which the task was created.
+      additionalProperties: false
+    actionExecTimeout:
+      type: string
+      example: 3S
+      minLength: 1
+      description: The maximum duration for executing a single action, expressed as an ISO 8601 duration string or an expression that evaluates to one.
     functionref:
       type: object
       oneOf:
@@ -500,79 +725,16 @@ components:
           appId: 80c6f35f-c9d7-4488-bb5a-ad973b13ec00
           partial: false
       description: A reference to a function to invoke, either as a name string or a structured object.
-    action:
+    ErrorResponse:
       type: object
       properties:
-        name:
-          type: string
-          example: app.reload
-          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
-          maxLength: 100
-          minLength: 1
-          description: A unique name for this action within the workflow.
-        retryRef:
-          type: string
-          example: default-retry
-          description: A reference to a defined workflow retry policy. If absent, the default retry policy applies.
-        condition:
-          type: string
-          example: ${ .resourceId != null }
-          minLength: 1
-          description: An expression that must evaluate to `true` for this action to be performed. When `false`, the action is skipped.
-        functionRef:
-          $ref: '#/components/schemas/functionref'
-        retryableErrors:
+        errors:
           type: array
           items:
-            type: string
-            example: io.qlik.error.temporary-failure
-            description: A unique reference to a defined workflow error.
-          minItems: 1
-          description: Workflow error references for which this action must be retried. Used only when `autoRetries` is `false`.
-        nonRetryableErrors:
-          type: array
-          items:
-            type: string
-            example: io.qlik.error.invalid-state
-            description: A unique reference to a defined workflow error.
-          minItems: 1
-          description: Workflow error references for which this action must not be retried. Used only when `autoRetries` is `true`.
-      additionalProperties: false
-    eventdef:
-      type: object
-      properties:
-        name:
+            $ref: '#/components/schemas/HttpResult'
+        traceId:
           type: string
-          example: task1-succeeded
-          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
-          maxLength: 100
-          minLength: 1
-          description: A unique name identifying this event definition within the workflow.
-        type:
-          enum:
-          - com.qlik.v1.task.run.finished
-          - com.qlik/active-analytics-orch
-          type: string
-          example: com.qlik.v1.task.run.finished
-          description: The CloudEvents type attribute identifying the kind of event.
-        source:
-          enum:
-          - system-events.task
-          - dataset.updated
-          type: string
-          example: system-events.task
-          description: The CloudEvents source attribute identifying the origin of the event.
-        dataOnly:
-          type: boolean
-          default: true
-          description: When `true`, only the event payload is accessible to consuming workflow states. When `false`, both the payload and context attributes are accessible.
-        correlation:
-          type: array
-          items:
-            $ref: '#/components/schemas/correlationDef'
-          minItems: 1
-          description: Correlation definitions used to match incoming CloudEvents to this workflow instance.
-      additionalProperties: false
+          description: A trace identifier for correlating the error to a specific service request.
     onevents:
       type: object
       required:
@@ -602,76 +764,30 @@ components:
           default: SEQUENTIAL
           description: Specifies whether actions are performed sequentially or in parallel.
       additionalProperties: false
-    schedule:
-      oneOf:
-      - type: string
-        example: PT15M
-        minLength: 1
-        description: A repeating time interval in ISO 8601 format that defines when workflow instances are automatically created. UTC timezone is assumed.
-      - type: object
-        properties:
-          cron:
-            $ref: '#/components/schemas/crondef'
-          interval:
-            type: string
-            example: PT15M
-            minLength: 1
-            description: A repeating time interval in ISO 8601 format that defines when workflow instances are automatically created.
-          timezone:
-            type: string
-            default: UTC
-            example: Australia/Sydney
-            description: The timezone name used to evaluate the interval and cron expression. Defaults to `UTC`.
-          recurrence:
-            type: string
-            example: RRULE:FREQ=DAILY;INTERVAL=1
-            description: An RRULE recurrence rule string defining when the workflow recurs.
-          endDateTime:
-            type: string
-            example: '2024-09-30T23:59:59Z'
-            description: The date and time (ISO 8601 format) when the workflow schedule ends.
-          startDateTime:
-            type: string
-            example: '2024-08-13T09:45:00Z'
-            description: The date and time (ISO 8601 format) when the workflow schedule begins.
-        description: A structured schedule definition with optional recurrence, date range, and timezone.
-        additionalProperties: false
-    ErrorResponse:
+    stateExecTimeout:
+      type: string
+      example: 3S
+      minLength: 1
+      description: The maximum duration for executing this state, expressed as an ISO 8601 duration string or an expression that evaluates to one.
+    TaskGraphEdge:
       type: object
+      example:
+        attrs:
+          depth: 1
+        source: 22222222-2222-2222-2222-222222222222
+        target: 11111111-1111-1111-1111-111111111111
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/HttpResult'
-        traceId:
+        attrs:
+          type: object
+          example:
+            depth: 1
+          additionalProperties: true
+        source:
           type: string
-          description: A trace identifier for correlating the error to a specific service request.
-    TriggerMeta:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        id:
+          example: 22222222-2222-2222-2222-222222222222
+        target:
           type: string
-          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
-          description: The unique identifier of the trigger associated with this task.
-        type:
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-          type: integer
-          example: 1
-          description: The type identifier of the trigger associated with this task.
-          x-enum-varnames:
-          - TIME_SCHEDULE
-          - SINGLE_EVENT
-          - MULTI_EVENT
-          - MIXED
-          - AAO_DATA_UPDATED
+          example: 11111111-1111-1111-1111-111111111111
     Link:
       required:
       - href
@@ -748,165 +864,6 @@ components:
           type: string
           example: manual
           description: The identity or event that triggered the task run.
-    actionExecTimeout:
-      type: string
-      example: 3S
-      minLength: 1
-      description: The maximum duration for executing a single action, expressed as an ISO 8601 duration string or an expression that evaluates to one.
-    TaskGraphEdge:
-      type: object
-      example:
-        attrs:
-          depth: 1
-        source: 22222222-2222-2222-2222-222222222222
-        target: 11111111-1111-1111-1111-111111111111
-      properties:
-        attrs:
-          type: object
-          example:
-            depth: 1
-          additionalProperties: true
-        source:
-          type: string
-          example: 22222222-2222-2222-2222-222222222222
-        target:
-          type: string
-          example: 11111111-1111-1111-1111-111111111111
-    Events:
-      type: array
-      items:
-        $ref: '#/components/schemas/eventdef'
-      minItems: 1
-      description: CloudEvent definitions for the workflow. Defines the events that can be consumed or produced by the workflow.
-    stateExecTimeout:
-      type: string
-      example: 3S
-      minLength: 1
-      description: The maximum duration for executing this state, expressed as an ISO 8601 duration string or an expression that evaluates to one.
-    TaskList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        links:
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-    startdef:
-      type: object
-      oneOf:
-      - type: object
-        required:
-        - schedule
-        properties:
-          schedule:
-            $ref: '#/components/schemas/schedule'
-          stateName:
-            type: string
-            example: init_state
-            pattern: ^[a-z0-9](-?[a-z0-9])*$
-            minLength: 1
-            description: The name of the starting workflow state.
-        description: A scheduled workflow start definition.
-        additionalProperties: false
-      example:
-        schedule:
-          recurrence: RRULE:FREQ=DAILY;INTERVAL=1
-          startDateTime: '2025-08-31T23:22:27Z'
-      description: The start definition for a workflow, including optional schedule configuration.
-    correlationDef:
-      type: object
-      required:
-      - contextAttributeName
-      properties:
-        contextAttributeName:
-          enum:
-          - id
-          - status
-          - appId
-          - spaceId
-          - datasetId
-          type: string
-          example: id
-          description: The name of the CloudEvent extension context attribute to match on.
-        contextAttributeValue:
-          type: string
-          example: task-1
-          minLength: 1
-          description: The expected value of the CloudEvent extension context attribute.
-      description: A correlation definition used to match a CloudEvent to a specific workflow instance.
-      additionalProperties: false
-    end:
-      type: boolean
-      default: true
-      description: Marks this state as a terminal state in the workflow.
-    taskTopology:
-      type: object
-      properties:
-        isChild:
-          type: boolean
-          example: false
-          description: When `true`, this task is triggered by one or more parent tasks.
-        isParent:
-          type: boolean
-          example: true
-          description: When `true`, this task has one or more downstream dependent tasks.
-      description: Indicates the task's position in a dependency graph.
-      additionalProperties: false
-    TaskGraph:
-      type: object
-      example:
-        edges:
-        - attrs:
-            depth: 1
-          source: 22222222-2222-2222-2222-222222222222
-          target: 11111111-1111-1111-1111-111111111111
-        taskId: 11111111-1111-1111-1111-111111111111
-        vertices:
-        - attrs:
-            depth: 0
-            isChild: false
-            isParent: true
-          taskId: 11111111-1111-1111-1111-111111111111
-        - attrs:
-            depth: 1
-            isChild: true
-            isParent: false
-          taskId: 22222222-2222-2222-2222-222222222222
-      properties:
-        edges:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskGraphEdge'
-          example:
-          - attrs:
-              depth: 1
-            source: 22222222-2222-2222-2222-222222222222
-            target: 11111111-1111-1111-1111-111111111111
-        taskId:
-          type: string
-          example: 11111111-1111-1111-1111-111111111111
-        vertices:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskGraphVertex'
-          example:
-          - attrs:
-              depth: 0
-              isChild: false
-              isParent: true
-            taskId: 11111111-1111-1111-1111-111111111111
-          - attrs:
-              depth: 1
-              isChild: true
-              isParent: false
-            taskId: 22222222-2222-2222-2222-222222222222
     Task:
       type: object
       example:
@@ -1028,145 +985,147 @@ components:
           minLength: 1
           description: The Serverless Workflow specification version used by this task.
       additionalProperties: false
-    eventstate:
+    TaskList:
       type: object
       properties:
-        end:
-          $ref: '#/components/schemas/end'
-        name:
-          type: string
-          example: App.Reload
-          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
-          maxLength: 100
-          minLength: 1
-          description: The name of this state, unique within the workflow.
-        type:
-          enum:
-          - EVENT
-          type: string
-          example: event
-          description: The state type. Must be `EVENT` for event-driven states.
-        onEvents:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/onevents'
-          description: The events to consume and the optional actions to perform when they are received.
-        timeouts:
-          type: object
+            $ref: '#/components/schemas/Task'
+        links:
           properties:
-            eventTimeout:
-              $ref: '#/components/schemas/eventTimeout'
-            stateExecTimeout:
-              $ref: '#/components/schemas/stateExecTimeout'
-            actionExecTimeout:
-              $ref: '#/components/schemas/actionExecTimeout'
-          description: State-specific timeout durations.
-        exclusive:
-          type: boolean
-          default: true
-          description: When `true`, consuming any one of the defined events causes its associated actions to execute. When `false`, all defined events must be consumed before actions are performed.
-        compensatedBy:
-          type: string
-          example: reload
-          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
-          minLength: 1
-          description: The unique name of a workflow state responsible for compensating this state if it fails.
-      description: A workflow state that waits for one or more CloudEvents, then consumes them and invokes one or more actions sequentially or in parallel.
-      additionalProperties: false
-    taskMetadata:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    correlationDef:
       type: object
+      required:
+      - contextAttributeName
       properties:
-        usage:
+        contextAttributeName:
           enum:
-          - ANALYTICS
-          - DATA_PREPARATION
-          - DATAFLOW_PREP
-          - SINGLE_TABLE_PREP
+          - id
+          - status
+          - appId
+          - spaceId
+          - datasetId
           type: string
-          example: ANALYTICS
-          description: The product domain in which the resource is used. Defaults to `ANALYTICS` when not present.
-        ownerId:
+          example: id
+          description: The name of the CloudEvent extension context attribute to match on.
+        contextAttributeValue:
           type: string
-          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
-          description: The user ID of the task owner.
-          x-qlik-filterable: true
-        spaceId:
-          type: string
-          example: 434f9f7c-4eeb-43f0-8f08-88b91f357c07
-          description: The unique identifier of the space the task operates in.
-        trigger:
-          $ref: '#/components/schemas/TriggerMeta'
-        tenantId:
-          type: string
-          example: rpxzti_ptV0RS4eGPSsaI0SCKl-6h2a
-          description: The unique identifier of the tenant the task operates in.
-        topology:
-          $ref: '#/components/schemas/taskTopology'
-        createdAt:
-          type: string
-          format: date-time
-          example: '2018-03-20T09:12:28Z'
-          readOnly: true
-          description: The UTC timestamp when the task was created.
-        createdBy:
-          type: string
-          example: LP_LlaXYhUUWMr5csy8pFfTHecXePH5Z
-          description: The user ID of the user who created the task.
-          x-qlik-filterable: true
-        deletedAt:
-          type: string
-          format: date-time
-          example: '2018-03-20T09:12:28Z'
-          readOnly: true
-          description: The UTC timestamp when the task was deleted.
-        spaceType:
-          enum:
-          - personal
-          - shared
-          - managed
-          type: string
-          example: shared
-          description: The type of space the task operates in.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2018-03-20T09:12:28Z'
-          description: The UTC timestamp when the task was last updated.
-        disabledCode:
-          enum:
-          - MANUALLY
-          - CONSECUTIVE-FAILURES
-          - APP-SCRIPT-UPDATED
-          - OWNER-DELETED
-          - OWNER-DISABLED
-          - APP-MOVED-SPACE
-          - OWNER-MOVED
-          type: string
-          example: MANUALLY
-          description: The reason the task is currently disabled.
-        migratedFrom:
-          type: string
-          example: c7dba73-dd5a-4725-9dd2-8bd9c8d126d7
-          description: The unique identifier of the legacy reload task this task was migrated from, if applicable.
-        resourceName:
-          type: string
-          example: sample app
-          description: The name of the resource on which the task was created.
-        resourceType:
-          type: string
-          example: app
-          description: The type of resource on which the task was created.
-        orchestration:
-          $ref: '#/components/schemas/OrchMeta'
-        scriptOwnerId:
-          type: string
-          example: z1w_5hWRq-wIxXON_slIRrsF0YxpYjA
-          description: The user ID of the owner whose script context is used when running the task.
-        resourceSubType:
-          type: string
-          example: script
-          description: The subtype of resource on which the task was created.
+          example: task-1
+          minLength: 1
+          description: The expected value of the CloudEvent extension context attribute.
+      description: A correlation definition used to match a CloudEvent to a specific workflow instance.
       additionalProperties: false
+    OrchMeta:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        id:
+          type: string
+          example: 0c42b269-51d4-453a-a8ea-55734d209aa9
+          description: The unique identifier of the orchestration instance associated with this task in the scheduling service.
+        type:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          type: integer
+          example: 3
+          description: The type identifier of the orchestration system handling this task.
+          x-enum-varnames:
+          - AUTOMATION
+          - DI_PIPELINE
+          - TEMPORAL
+          - MINIBUS
+        attrs:
+          type: object
+          example:
+            last_run_status: SUCCEEDED
+            last_run_worker_type: reloads
+          description: Additional attributes of the orchestration instance associated with this task in the scheduling service.
+          additionalProperties:
+            type: string
+        lastRun:
+          $ref: '#/components/schemas/OrchRunBase'
+    TaskGraph:
+      type: object
+      example:
+        edges:
+        - attrs:
+            depth: 1
+          source: 22222222-2222-2222-2222-222222222222
+          target: 11111111-1111-1111-1111-111111111111
+        taskId: 11111111-1111-1111-1111-111111111111
+        vertices:
+        - attrs:
+            depth: 0
+            isChild: false
+            isParent: true
+          taskId: 11111111-1111-1111-1111-111111111111
+        - attrs:
+            depth: 1
+            isChild: true
+            isParent: false
+          taskId: 22222222-2222-2222-2222-222222222222
+      properties:
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskGraphEdge'
+          example:
+          - attrs:
+              depth: 1
+            source: 22222222-2222-2222-2222-222222222222
+            target: 11111111-1111-1111-1111-111111111111
+        taskId:
+          type: string
+          example: 11111111-1111-1111-1111-111111111111
+        vertices:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskGraphVertex'
+          example:
+          - attrs:
+              depth: 0
+              isChild: false
+              isParent: true
+            taskId: 11111111-1111-1111-1111-111111111111
+          - attrs:
+              depth: 1
+              isChild: true
+              isParent: false
+            taskId: 22222222-2222-2222-2222-222222222222
+    startdef:
+      type: object
+      oneOf:
+      - type: object
+        required:
+        - schedule
+        properties:
+          schedule:
+            $ref: '#/components/schemas/schedule'
+          stateName:
+            type: string
+            example: init_state
+            pattern: ^[a-z0-9](-?[a-z0-9])*$
+            minLength: 1
+            description: The name of the starting workflow state.
+        description: A scheduled workflow start definition.
+        additionalProperties: false
+      example:
+        schedule:
+          recurrence: RRULE:FREQ=DAILY;INTERVAL=1
+          startDateTime: '2025-08-31T23:22:27Z'
+      description: The start definition for a workflow, including optional schedule configuration.
     HttpResult:
       type: object
       properties:
@@ -1181,7 +1140,66 @@ components:
           type: string
         timestamp:
           type: string
+    eventdef:
+      type: object
+      properties:
+        name:
+          type: string
+          example: task1-succeeded
+          pattern: ^[A-Za-z0-9 ./_\\()\-]{1,100}$
+          maxLength: 100
+          minLength: 1
+          description: A unique name identifying this event definition within the workflow.
+        type:
+          enum:
+          - com.qlik.v1.task.run.finished
+          - com.qlik/active-analytics-orch
+          type: string
+          example: com.qlik.v1.task.run.finished
+          description: The CloudEvents type attribute identifying the kind of event.
+        source:
+          enum:
+          - system-events.task
+          - dataset.updated
+          type: string
+          example: system-events.task
+          description: The CloudEvents source attribute identifying the origin of the event.
+        dataOnly:
+          type: boolean
+          default: true
+          description: When `true`, only the event payload is accessible to consuming workflow states. When `false`, both the payload and context attributes are accessible.
+        correlation:
+          type: array
+          items:
+            $ref: '#/components/schemas/correlationDef'
+          minItems: 1
+          description: Correlation definitions used to match incoming CloudEvents to this workflow instance.
+      additionalProperties: false
+    Events:
+      type: array
+      items:
+        $ref: '#/components/schemas/eventdef'
+      minItems: 1
+      description: CloudEvent definitions for the workflow. Defines the events that can be consumed or produced by the workflow.
   responses:
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The requested resource was not found.
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Access denied. You lack permission to perform this operation.
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Authentication credentials are missing or invalid.
     BadRequest:
       content:
         application/json:
@@ -1205,24 +1223,6 @@ components:
                 traceId: abc123
               summary: Invalid sort field
       description: The request is malformed or contains invalid parameters.
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Authentication credentials are missing or invalid.
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: The requested resource was not found.
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Access denied. You lack permission to perform this operation.
     InternalServerError:
       content:
         application/json:

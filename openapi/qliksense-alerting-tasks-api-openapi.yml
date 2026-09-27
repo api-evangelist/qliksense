@@ -495,119 +495,6 @@ paths:
         limit: 1000
 components:
   schemas:
-    AlertingRecipientStats:
-      type: object
-      required:
-      - enabled
-      properties:
-        type:
-          enum:
-          - userid
-          type: string
-        value:
-          type: string
-        errors:
-          $ref: '#/components/schemas/AlertingRecipientStatsErrors'
-        groups:
-          type: array
-          items:
-            type: string
-          example:
-          - addedIndividually
-          - group1
-          - group2
-          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
-        enabled:
-          type: boolean
-          description: Whether the recipient is enabled.
-        lastScan:
-          type: string
-          description: last time a trigger was detected, but not sure if executed
-        subscribed:
-          type: boolean
-          description: Whether the recipient is subscribed.
-        lastTrigger:
-          type: string
-          description: last time an execution had been created
-        conditionStatus:
-          enum:
-          - OK
-          - FAILED
-          type: string
-    AlertingTaskRecipientPatch_inner:
-      type: object
-      required:
-      - op
-      - recipientType
-      - value
-      properties:
-        op:
-          enum:
-          - remove
-          - add
-          - replace
-          - enable
-          - disable
-          - subscribe
-          - unsubscribe
-          type: string
-          description: The operation to be performed.
-        value:
-          type: object
-          properties: {}
-          description: The value to be used for this operation.
-        recipientType:
-          enum:
-          - userid
-          - groupid
-          type: string
-          description: Defines the path for the given resource field to patch.
-    AlertingTaskRecipientError:
-      type: object
-      properties:
-        added:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-        value:
-          enum:
-          - USER_IS_DELETED
-          - USER_DISABLED_IN_QCS
-          - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_ALERT
-          - CONDITION_EVAL_ERROR
-          - USER_DISABLED_IN_ALERT_BY_OWNER
-          - MAX_ALERTS_LIMIT_REACHED
-          type: string
-          example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on alerting task
-    AlertingTaskRecipientPatch:
-      type: array
-      items:
-        $ref: '#/components/schemas/AlertingTaskRecipientPatch_inner'
-      example:
-      - op: add
-        value:
-          value: recipient-1
-          enabled: true
-        recipientType: userid
-      - op: remove
-        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitb
-        recipientType: userid
-      - op: enable
-        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitb
-        recipientType: userid
-      - op: disable
-        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitb
-        recipientType: userid
-      - op: replace
-        value:
-        - value: recipient-1
-          enabled: true
-        - value: recipient-2
-          enabled: false
-        recipientType: userid
-      description: A custom custom JSON Patch document, as an array of objects with operation, recipient type and value. Original defined in https://datatracker.ietf.org/doc/html/rfc6902.
     Error_meta:
       type: object
       properties:
@@ -615,266 +502,6 @@ components:
           type: integer
           readOnly: true
           description: HTTP error code.
-    AlertingTaskTriggerStats:
-      type: object
-      required:
-      - last100Scans
-      - last10Scans
-      - totalScans
-      properties:
-        totalScans:
-          type: integer
-          maximum: 100
-          description: The number of scans for the current condition.
-        last10Scans:
-          type: integer
-          maximum: 10
-          description: The number of triggers out of the last 10 scans for the current condition.
-        last100Scans:
-          type: integer
-          maximum: 100
-          description: The number of triggers out of the last 100 scans for the current condition.
-    AlertingTaskError:
-      type: object
-      properties:
-        added:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-        value:
-          enum:
-          - OWNER_DISABLED
-          - OWNER_ACCESS
-          - OWNER_LICENSE
-          - APP_DELETED
-          - NO_RECIPIENTS
-          - PARTIAL_ACCESS
-          - EVAL_ERROR
-          - ORPHAN
-          - CONVERSION_DENIED
-          - EXPIRED
-          - PARTIAL_SENT
-          - QUOTA_REACHED
-          - OWNER_HAS_NO_VALID_USER_ENTITLEMENT
-          type: string
-          description: Identifier for type of error occurring on alerting task
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    GroupIDRecipient:
-      type: object
-      properties:
-        value:
-          type: string
-          example: group1
-          description: Group ID of recipient.
-        enabled:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts.
-        taskGroupRecipientErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TaskGroupRecipientError'
-        alertingTaskGroupRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
-      description: an internal recipient based on its group id.
-    Recipients:
-      type: object
-      required:
-      - userIds
-      properties:
-        DLUsers:
-          type: array
-        userIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserIDRecipient'
-        DLGroups:
-          type: array
-        DLListId:
-          type: string
-          example: dl-12345
-          description: Identifier of the distribution list the recipients belong to.
-        groupIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupIDRecipient'
-      description: List of recipients. An internal recipient is represented by either their user id or group id.
-    ListLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
-    AlertingTaskGroupRecipientError:
-      type: object
-      properties:
-        added:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
-          type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on alerting task
-    Self:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
-    AlertingTaskPatchRequestCompliant:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed
-        path:
-          enum:
-          - /ownerName
-          - /ownerId
-          - /conditionId
-          - /enabledAction
-          - /bookmarkId
-          - /name
-          - /description
-          - /throttling
-          - /triggerType
-          - /scheduleOptions
-          type: string
-          description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902
-        value:
-          type: object
-          properties: {}
-          description: The value to be used for this operation.
-    ThrottlingResource:
-      type: object
-      properties:
-        capacity:
-          type: integer
-          example: 10
-          description: the maximum number of tokens that the bucket can contain
-        timezone:
-          type: string
-          default: Etc/UTC
-          description: the timezone for time calculations in this throttlingresource, for current time and time reference.
-        replenishRate:
-          type: integer
-          example: 1
-          description: the amount of tokens to insert into the bucket on the specified interval. (tokens exceeding capacity are discarded)
-        recurrenceRule:
-          type: string
-          example: RRULE:FREQ=DAILY
-          description: A string that supports a subset of RFC5545 recurrence rule directives.
-        initialTokenCount:
-          type: integer
-          example: 10
-          description: the initial amount of tokens in the bucket upon creation. cannot exceed capacity.
-        referenceTimestamp:
-          type: string
-          example: '2021-07-14T10:00:00Z'
-          description: a date and time reference specified in RFC3339 format
-      description: The rules and setup for throttling
-    AlertingRecipientStatsError:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    TaskRecipientError:
-      type: object
-      properties:
-        value:
-          enum:
-          - USER_IS_DELETED
-          - USER_DISABLED_IN_QCS
-          - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_SHARING
-          - USER_DISABLED_IN_SHARING_BY_OWNER
-          - CHART_NOT_FOUND
-          - APP_NOT_FOUND
-          - SHEET_NOT_FOUND
-          - ENGINE_POD_NOT_AVAILABLE
-          - CHART_TYPE_NOT_ALLOWED
-          - GENERIC_EXECUTION_FAILURE
-          - USER_NOT_FOUND_DL
-          - USER_DISABLED_IN_DL
-          - FILTER_NOT_FOUND
-          - BOOKMARK_NOT_FOUND
-          type: string
-          example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on sharing task specific for recipient
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-    RecipientsChange:
-      type: object
-      properties:
-        dateTime:
-          type: string
-          description: time of recipient state change
-        patchAction:
-          $ref: '#/components/schemas/AlertingTaskRecipientPatch'
-      description: Change in a recipient for an alerting task
-    TaskGroupRecipientError:
-      type: object
-      properties:
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
-          - GROUP_NOT_FOUND_DL
-          - GROUP_DISABLED_IN_DL
-          type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on sharing task specific for group recipient
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
     AlertingTaskResponse:
       type: object
       required:
@@ -1005,10 +632,184 @@ components:
         lastEvaluationCountUpdate:
           type: string
           description: the date when the evaluation count was updated
-    AlertingRecipientStatsErrors:
+    AlertingTaskRecipientPatch_inner:
+      type: object
+      required:
+      - op
+      - recipientType
+      - value
+      properties:
+        op:
+          enum:
+          - remove
+          - add
+          - replace
+          - enable
+          - disable
+          - subscribe
+          - unsubscribe
+          type: string
+          description: The operation to be performed.
+        value:
+          type: object
+          properties: {}
+          description: The value to be used for this operation.
+        recipientType:
+          enum:
+          - userid
+          - groupid
+          type: string
+          description: Defines the path for the given resource field to patch.
+    AlertingTaskListResponse:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          tasks:
+            type: array
+            items:
+              $ref: '#/components/schemas/AlertingTaskResponse'
+            description: Gets a list of alerting tasks.
+    AlertingTaskPatchRequestCompliantList:
       type: array
       items:
-        $ref: '#/components/schemas/AlertingRecipientStatsError'
+        $ref: '#/components/schemas/AlertingTaskPatchRequestCompliant'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    TaskRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_SHARING
+          - USER_DISABLED_IN_SHARING_BY_OWNER
+          - CHART_NOT_FOUND
+          - APP_NOT_FOUND
+          - SHEET_NOT_FOUND
+          - ENGINE_POD_NOT_AVAILABLE
+          - CHART_TYPE_NOT_ALLOWED
+          - GENERIC_EXECUTION_FAILURE
+          - USER_NOT_FOUND_DL
+          - USER_DISABLED_IN_DL
+          - FILTER_NOT_FOUND
+          - BOOKMARK_NOT_FOUND
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on sharing task specific for recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    AlertingTaskRecipientPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/AlertingTaskRecipientPatch_inner'
+      example:
+      - op: add
+        value:
+          value: recipient-1
+          enabled: true
+        recipientType: userid
+      - op: remove
+        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitb
+        recipientType: userid
+      - op: enable
+        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitb
+        recipientType: userid
+      - op: disable
+        value: I6mWVd60wRWIbOXZr1ZKV8QTnxhnitb
+        recipientType: userid
+      - op: replace
+        value:
+        - value: recipient-1
+          enabled: true
+        - value: recipient-2
+          enabled: false
+        recipientType: userid
+      description: A custom custom JSON Patch document, as an array of objects with operation, recipient type and value. Original defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    Links:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+    AlertingRecipientStats:
+      type: object
+      required:
+      - enabled
+      properties:
+        type:
+          enum:
+          - userid
+          type: string
+        value:
+          type: string
+        errors:
+          $ref: '#/components/schemas/AlertingRecipientStatsErrors'
+        groups:
+          type: array
+          items:
+            type: string
+          example:
+          - addedIndividually
+          - group1
+          - group2
+          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
+        enabled:
+          type: boolean
+          description: Whether the recipient is enabled.
+        lastScan:
+          type: string
+          description: last time a trigger was detected, but not sure if executed
+        subscribed:
+          type: boolean
+          description: Whether the recipient is subscribed.
+        lastTrigger:
+          type: string
+          description: last time an execution had been created
+        conditionStatus:
+          enum:
+          - OK
+          - FAILED
+          type: string
+    AlertingTaskRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_ALERT
+          - CONDITION_EVAL_ERROR
+          - USER_DISABLED_IN_ALERT_BY_OWNER
+          - MAX_ALERTS_LIMIT_REACHED
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on alerting task
     AlertingRecipientStatsResponse:
       type: object
       properties:
@@ -1016,19 +817,104 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlertingRecipientStats'
-    StandardListResponseProps:
+    AlertingRecipientStatsErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/AlertingRecipientStatsError'
+    AlertingTaskGroupRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on alerting task
+    AlertingRecipientStatsError:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    TaskGroupRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          - GROUP_NOT_FOUND_DL
+          - GROUP_DISABLED_IN_DL
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on sharing task specific for group recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    ListLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'
+    Self:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    AlertingTaskPatchRequestCompliant:
       type: object
       required:
-      - currentPageCount
-      - totalCount
+      - op
+      - path
       properties:
-        totalCount:
-          type: integer
-          description: total count of entries in the collection as a whole
-        currentPageCount:
-          type: integer
-          description: count of entries on the currently shown page
-      description: properties that should be added to every list response
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed
+        path:
+          enum:
+          - /ownerName
+          - /ownerId
+          - /conditionId
+          - /enabledAction
+          - /bookmarkId
+          - /name
+          - /description
+          - /throttling
+          - /triggerType
+          - /scheduleOptions
+          type: string
+          description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902
+        value:
+          type: object
+          properties: {}
+          description: The value to be used for this operation.
     Page:
       type: object
       properties:
@@ -1047,6 +933,62 @@ components:
           type: string
           example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
           description: Page unique token
+    AlertingTaskTriggerStats:
+      type: object
+      required:
+      - last100Scans
+      - last10Scans
+      - totalScans
+      properties:
+        totalScans:
+          type: integer
+          maximum: 100
+          description: The number of scans for the current condition.
+        last10Scans:
+          type: integer
+          maximum: 10
+          description: The number of triggers out of the last 10 scans for the current condition.
+        last100Scans:
+          type: integer
+          maximum: 100
+          description: The number of triggers out of the last 100 scans for the current condition.
+    AlertingConditionResponse:
+      type: object
+      properties:
+        hideSelections:
+          type: boolean
+        conditionResponse:
+          type: object
+          properties: {}
+          description: Should reference ConditionResponse type in condition-manager api docs
+    StandardListResponseProps:
+      type: object
+      required:
+      - currentPageCount
+      - totalCount
+      properties:
+        totalCount:
+          type: integer
+          description: total count of entries in the collection as a whole
+        currentPageCount:
+          type: integer
+          description: count of entries on the currently shown page
+      description: properties that should be added to every list response
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     AlertingTaskCreateRequest:
       type: object
       required:
@@ -1100,11 +1042,6 @@ components:
         scheduleOptions:
           $ref: '#/components/schemas/ScheduleOptions'
       description: a alerting task (a definition on an alert)
-    Links:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Self'
     UserIDRecipient:
       type: object
       properties:
@@ -1142,48 +1079,34 @@ components:
           items:
             $ref: '#/components/schemas/AlertingTaskRecipientError'
       description: an internal recipient based on its user id.
-    Error:
+    ThrottlingResource:
       type: object
       properties:
-        code:
+        capacity:
+          type: integer
+          example: 10
+          description: the maximum number of tokens that the bucket can contain
+        timezone:
           type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
+          default: Etc/UTC
+          description: the timezone for time calculations in this throttlingresource, for current time and time reference.
+        replenishRate:
+          type: integer
+          example: 1
+          description: the amount of tokens to insert into the bucket on the specified interval. (tokens exceeding capacity are discarded)
+        recurrenceRule:
           type: string
-          readOnly: true
-          description: Error title.
-        detail:
+          example: RRULE:FREQ=DAILY
+          description: A string that supports a subset of RFC5545 recurrence rule directives.
+        initialTokenCount:
+          type: integer
+          example: 10
+          description: the initial amount of tokens in the bucket upon creation. cannot exceed capacity.
+        referenceTimestamp:
           type: string
-          readOnly: true
-          description: Error cause.
-    AlertingTaskListResponse:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          tasks:
-            type: array
-            items:
-              $ref: '#/components/schemas/AlertingTaskResponse'
-            description: Gets a list of alerting tasks.
-    AlertingConditionResponse:
-      type: object
-      properties:
-        hideSelections:
-          type: boolean
-        conditionResponse:
-          type: object
-          properties: {}
-          description: Should reference ConditionResponse type in condition-manager api docs
-    AlertingTaskPatchRequestCompliantList:
-      type: array
-      items:
-        $ref: '#/components/schemas/AlertingTaskPatchRequestCompliant'
+          example: '2021-07-14T10:00:00Z'
+          description: a date and time reference specified in RFC3339 format
+      description: The rules and setup for throttling
     ScheduleOptions:
       type: object
       properties:
@@ -1234,3 +1157,80 @@ components:
           example: '2020-11-20T12:00:55.000Z'
           readOnly: true
           description: nextExecutionTime is the time of the chronos job next execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if the job is completed.
+    RecipientsChange:
+      type: object
+      properties:
+        dateTime:
+          type: string
+          description: time of recipient state change
+        patchAction:
+          $ref: '#/components/schemas/AlertingTaskRecipientPatch'
+      description: Change in a recipient for an alerting task
+    Recipients:
+      type: object
+      required:
+      - userIds
+      properties:
+        DLUsers:
+          type: array
+        userIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIDRecipient'
+        DLGroups:
+          type: array
+        DLListId:
+          type: string
+          example: dl-12345
+          description: Identifier of the distribution list the recipients belong to.
+        groupIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupIDRecipient'
+      description: List of recipients. An internal recipient is represented by either their user id or group id.
+    GroupIDRecipient:
+      type: object
+      properties:
+        value:
+          type: string
+          example: group1
+          description: Group ID of recipient.
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        taskGroupRecipientErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaskGroupRecipientError'
+        alertingTaskGroupRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
+      description: an internal recipient based on its group id.
+    AlertingTaskError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - OWNER_DISABLED
+          - OWNER_ACCESS
+          - OWNER_LICENSE
+          - APP_DELETED
+          - NO_RECIPIENTS
+          - PARTIAL_ACCESS
+          - EVAL_ERROR
+          - ORPHAN
+          - CONVERSION_DENIED
+          - EXPIRED
+          - PARTIAL_SENT
+          - QUOTA_REACHED
+          - OWNER_HAS_NO_VALID_USER_ENTITLEMENT
+          type: string
+          description: Identifier for type of error occurring on alerting task

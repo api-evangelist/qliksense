@@ -350,35 +350,6 @@ paths:
         limit: 1000
 components:
   schemas:
-    themes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/theme'
-    error:
-      required:
-      - code
-      - title
-      properties:
-        meta:
-          $ref: '#/components/schemas/meta'
-        title:
-          type: string
-          description: Title of the HTTP status code.
-        source:
-          type: object
-          description: Optional JSON patch object pointing to an invalid property.
-        status:
-          type: number
-          description: The HTTP status code.
-        traceId:
-          type: string
-          description: The active traceId.
-      description: An error object.
     theme:
       type: object
       properties:
@@ -466,3 +437,32 @@ components:
           type: string
           description: Name of the resource related to the error. If there is a conflict, it is the name of the model attempting to be created.
       description: Object containing meta data regarding an error. It does not necessarily contain all the properties.
+    error:
+      required:
+      - code
+      - title
+      properties:
+        meta:
+          $ref: '#/components/schemas/meta'
+        title:
+          type: string
+          description: Title of the HTTP status code.
+        source:
+          type: object
+          description: Optional JSON patch object pointing to an invalid property.
+        status:
+          type: number
+          description: The HTTP status code.
+        traceId:
+          type: string
+          description: The active traceId.
+      description: An error object.
+    themes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/theme'

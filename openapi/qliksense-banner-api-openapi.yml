@@ -80,8 +80,39 @@ paths:
         tier: '2'
         limit: 100
 components:
+  responses:
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse401'
+      description: Unauthorized
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse400'
+      description: Bad Request
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse404'
+      description: Not found
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse403'
+      description: Forbidden
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse500'
+      description: Internal Server Error
   schemas:
-    ErrorResponse500:
+    ErrorResponse404:
       type: object
       properties:
         errors:
@@ -91,60 +122,16 @@ components:
             properties:
               code:
                 type: string
-                example: HTTP-500
+                example: HTTP-404
               title:
                 type: string
-                example: Internal Server Error
+                example: Not found
               detail:
                 type: string
-                example: Something went wrong in the server.
+                example: The resource was not found.
               status:
                 type: integer
-                example: 500
-        traceId:
-          type: string
-    ErrorResponse400:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-400
-              title:
-                type: string
-                example: Bad request
-              detail:
-                type: string
-                example: The request is incorrect.
-              status:
-                type: integer
-                example: 400
-        traceId:
-          type: string
-    ErrorResponse403:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-403
-              title:
-                type: string
-                example: Forbidden
-              detail:
-                type: string
-                example: You don't have sufficient permissions to access this resource.
-              status:
-                type: integer
-                example: 403
+                example: 404
         traceId:
           type: string
     BannerResponse:
@@ -215,6 +202,28 @@ components:
           description: userId of the user who last modified the banner
         linkEnabled:
           type: boolean
+    ErrorResponse500:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-500
+              title:
+                type: string
+                example: Internal Server Error
+              detail:
+                type: string
+                example: Something went wrong in the server.
+              status:
+                type: integer
+                example: 500
+        traceId:
+          type: string
     BannerUpsertDefinition:
       type: object
       required:
@@ -275,7 +284,7 @@ components:
                 example: 401
         traceId:
           type: string
-    ErrorResponse404:
+    ErrorResponse403:
       type: object
       properties:
         errors:
@@ -285,46 +294,37 @@ components:
             properties:
               code:
                 type: string
-                example: HTTP-404
+                example: HTTP-403
               title:
                 type: string
-                example: Not found
+                example: Forbidden
               detail:
                 type: string
-                example: The resource was not found.
+                example: You don't have sufficient permissions to access this resource.
               status:
                 type: integer
-                example: 404
+                example: 403
         traceId:
           type: string
-  responses:
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse500'
-      description: Internal Server Error
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse401'
-      description: Unauthorized
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse404'
-      description: Not found
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse403'
-      description: Forbidden
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse400'
-      description: Bad Request
+    ErrorResponse400:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-400
+              title:
+                type: string
+                example: Bad request
+              detail:
+                type: string
+                example: The request is incorrect.
+              status:
+                type: integer
+                example: 400
+        traceId:
+          type: string

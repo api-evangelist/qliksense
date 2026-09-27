@@ -395,15 +395,6 @@ components:
         type:
           type: string
           readOnly: true
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     JsonPatch:
       type: object
       required:
@@ -439,6 +430,15 @@ components:
         detail:
           type: string
         status:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
           type: string
     DataAsset:
       type: object

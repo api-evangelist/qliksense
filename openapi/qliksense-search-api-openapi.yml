@@ -164,6 +164,26 @@ paths:
           description: Name of the tenant that will be called
 components:
   schemas:
+    searchResponse:
+      type: object
+      required:
+      - chunks
+      properties:
+        chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/chunk'
+          description: Retrieved document chunks
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
     chunk:
       type: object
       required:
@@ -187,6 +207,28 @@ components:
           type: number
           example: 0.63
           description: Similarity score from embedding match
+    searchRequest:
+      type: object
+      required:
+      - prompt
+      properties:
+        topN:
+          type: integer
+          example: 20
+          description: Number of chunks to return in results.
+        prompt:
+          type: string
+          example: What is LLM?
+          description: Query text or question to search.
+        searchMode:
+          enum:
+          - SIMPLE
+          - FULL
+          type: string
+          example: SIMPLE
+          description: 'Search mode to use.   Allowed values: `SIMPLE` and `FULL`.   Default: `SIMPLE`.
+
+            '
     errorResponseCode:
       type: object
       properties:
@@ -213,26 +255,6 @@ components:
           type: string
         detail:
           type: string
-    errorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    searchResponse:
-      type: object
-      required:
-      - chunks
-      properties:
-        chunks:
-          type: array
-          items:
-            $ref: '#/components/schemas/chunk'
-          description: Retrieved document chunks
     kbChunkMeta:
       type: object
       required:
@@ -258,28 +280,6 @@ components:
           type: string
           description: knowledgeBaseId of chunk
       description: Metadata about the chunk
-    searchRequest:
-      type: object
-      required:
-      - prompt
-      properties:
-        topN:
-          type: integer
-          example: 20
-          description: Number of chunks to return in results.
-        prompt:
-          type: string
-          example: What is LLM?
-          description: Query text or question to search.
-        searchMode:
-          enum:
-          - SIMPLE
-          - FULL
-          type: string
-          example: SIMPLE
-          description: 'Search mode to use.   Allowed values: `SIMPLE` and `FULL`.   Default: `SIMPLE`.
-
-            '
 x-refined-from:
 - qliksense-assistants.json
 - qliksense-knowledgebases.json

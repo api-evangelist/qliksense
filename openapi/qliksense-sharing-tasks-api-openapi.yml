@@ -389,52 +389,13 @@ paths:
         limit: 100
 components:
   schemas:
-    SharingTaskRecurringPersist_encryptedEmailContent:
+    Error_meta:
       type: object
       properties:
-        body:
-          $ref: '#/components/schemas/EncryptedProperty'
-        subject:
-          $ref: '#/components/schemas/EncryptedProperty'
-      description: the subject and body content for the email to send on report subscriptions
-    TaskError:
-      type: object
-      properties:
-        value:
-          enum:
-          - OWNER_DISABLED
-          - OWNER_ACCESS
-          - OWNER_LICENSE
-          - APP_DELETED
-          - NO_RECIPIENTS
-          - PARTIAL_ACCESS
-          - ORPHAN
-          - PARTIAL_SENT
-          - FATAL_SENT_ERROR
-          - SECTION_ACCESS_MODIFIED
-          - INVALID_DISTRIBUTION_LIST
-          - MAX_DL_RECIPIENTS_LIMIT_REACHED
-          - TEMPLATE_NOT_FOUND
-          - REPORTING_BOOKMARK_NOT_FOUND
-          - DATA_CONNECTION_NOT_FOUND
-          - INVALID_SHAREPOINT_DIRECTORY
-          - GENERIC_FILE_UPLOAD_ERROR
-          - DISABLED_DUE_TO_OWNERSHIP_CHANGE
-          - REPORTING_CONSUMPTION_EXCEEDED
-          - REPORTING_CAPABILITY_NOT_FOUND
-          - EXECUTION_TIME_OUT
-          - OWNER_INSUFFICIENT_PERMISSIONS
-          - MAX_UNIQUE_REPORTS_LIMIT_REACHED
-          - MISSING_DISTRIBUTION_LIST
-          - SECTION_ACCESS_NOT_SUPPORTED
-          - REPORTING_DAILY_QUOTA_EXCEEDED
-          - EMAIL_DELIVERY_FAILURE
-          type: string
-          description: Identifier for type of error occurring on sharing task
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
     CleanupStrategy:
       enum:
       - noCleanup
@@ -444,237 +405,108 @@ components:
       description: A bookmark is considered old if its modification date is older than the app creation date.
       x-qlik-stability: stable
       x-qlik-visibility: public
-    AlertingTaskRecipientError:
+    SharingTaskRecurringListResponse:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          recipients:
+            $ref: '#/components/schemas/SharingTaskRecurringRecipients'
+          sharingTasks:
+            type: array
+            items:
+              $ref: '#/components/schemas/SharingTaskRecurringResponse'
+            description: Gets a list of recurring sharing tasks.
+    SharingTaskRecurringPersist_encryptedEmailContent:
       type: object
       properties:
-        added:
+        body:
+          $ref: '#/components/schemas/EncryptedProperty'
+        subject:
+          $ref: '#/components/schemas/EncryptedProperty'
+      description: the subject and body content for the email to send on report subscriptions
+    Error:
+      type: object
+      properties:
+        code:
           type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    TaskRecipientError:
+      type: object
+      properties:
         value:
           enum:
           - USER_IS_DELETED
           - USER_DISABLED_IN_QCS
           - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_ALERT
-          - CONDITION_EVAL_ERROR
-          - USER_DISABLED_IN_ALERT_BY_OWNER
-          - MAX_ALERTS_LIMIT_REACHED
+          - UNSUBSCRIBED_FROM_SHARING
+          - USER_DISABLED_IN_SHARING_BY_OWNER
+          - CHART_NOT_FOUND
+          - APP_NOT_FOUND
+          - SHEET_NOT_FOUND
+          - ENGINE_POD_NOT_AVAILABLE
+          - CHART_TYPE_NOT_ALLOWED
+          - GENERIC_EXECUTION_FAILURE
+          - USER_NOT_FOUND_DL
+          - USER_DISABLED_IN_DL
+          - FILTER_NOT_FOUND
+          - BOOKMARK_NOT_FOUND
           type: string
           example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on alerting task
-    ChartTemplate:
-      type: object
-      properties:
-        appId:
+          description: Identifier for type of error occurring on sharing task specific for recipient
+        timestamp:
           type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        jsOpts:
-          type: object
-          properties: {}
-          description: Visualization state from client as a string json value. Can include language, theme, viewState etc.
-        outDpi:
-          type: integer
-          example: 96
-          description: outDpi of chart
-        outZoom:
-          type: number
-          example: 1
-          description: outZoom of chart
-        patches:
-          type: array
-          items:
-            type: object
-            properties: {}
-          description: Soft property changes on chart
-        sheetId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-asdfasdfasdf
-          description: sheetId of app
-        widthPx:
-          type: integer
-          example: 1584
-          description: widthPx of chart
-        heightPx:
-          type: integer
-          example: 587
-          description: heightPx of chart
-        objectId:
-          type: string
-          example: 167f3e67-ff3b-4ead-a09e-e8cc81d8ad78
-          description: ID of object
-        objectDef:
-          type: object
-          properties: {}
-          description: Session chart object definition
-        persistentBookmarkIncludeVariables:
-          type: boolean
-          example: true
-          description: Flag to configure the persistent bookmark to use variables.
-          x-qlik-stability: stable
-          x-qlik-visibility: public
-      description: 'If the template type is not "chart", this can be null. Otherwise, the following properties are required: appId, sheetId, objectId, widthPx, heightPx, language. The following properties are optional: outZoom, outDpi'
-    UserIDRecipientPersist:
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    EncryptedProperty:
       type: object
       properties:
         value:
+          x-go-type:
+            type: '[]byte'
+            hints:
+              kind: primitive
+            embedded: true
+        cipher:
           type: string
-          example: 1b263bs8m0mm_s21s3f
-          description: User ID of recipient (internal user).
-        groups:
-          type: array
-          items:
+      description: Encrypted property in DB
+    SharingTaskRecurringResponse:
+      allOf:
+      - $ref: '#/components/schemas/SharingTaskRecurringPersist'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/Links'
+          enabled:
+            type: boolean
+            description: true if the sharing task is enabled
+          latestExecutionURL:
             type: string
-          example:
-          - addedIndividually
-          - group1
-          - group2
-          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
-        subscribed:
-          type: boolean
-          description: Whether this user is subscribed to alerts in this task
-        enabledByUser:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by api calls.
-        enabledBySystem:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by external settings.
-        taskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskRecipientError'
-        alertingTaskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskRecipientError'
-      description: recipient object model that is directly persisted in the DB
-    Selection:
-      type: object
-      required:
-      - isNumeric
-      - name
-      - stateName
-      - values
-      properties:
-        name:
-          type: string
-          example: Country
-          description: Name of the field the selection applies to.
-        values:
-          type: array
-          items:
-            type: string
-            example: Germany
-            description: A selected value for the field.
-        isNumeric:
-          type: boolean
-          example: false
-          description: Whether the selected values are numeric.
-        stateName:
-          type: string
-          example: $
-          description: Name of the selection state the values belong to.
-        displayName:
-          type: string
-          example: Country
-          description: Human-readable name of the field the selection applies to.
-        displayValues:
-          type: array
-          items:
-            type: string
-            example: Germany
-            description: A human-readable selected value for the field.
-    SharingTaskRecurringPatchRequestCompliant:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - replace
-          - remove
-          type: string
-          description: The operation to be performed
-        path:
-          enum:
-          - /name
-          - /tags
-          - /ownerId
-          - /enabled
-          - /description
-          - /scheduleOptions
-          - /templates
-          - /recipients
-          - /recipient
-          - /sharePointFolder
-          - /dataConnectionID
-          - /transportChannels
-          - /bookmarkId
-          type: string
-          description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
-        value:
-          type: object
-          properties: {}
-          description: The value to be used for this operation.
-    Error_meta:
+            description: URL to querying the latest execution tied to this sharing task
+          latestExecutionFilesURL:
+            type: array
+            items:
+              type: string
+            description: URL to querying the files of the latest execution tied to this sharing task
+      description: Whatever is persisted in the db + links
+    Links:
       type: object
       properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
-    RetentionPolicy:
-      type: object
-      properties:
-        historySize:
-          type: integer
-          example: 10
-          description: Number indicating the size of the window which stores the history. For Chart monitoring, the size should be 10.
-        overrideInterval:
-          type: string
-          default: FREQ=DAILY;INTERVAL=1
-          example: FREQ=DAILY;INTERVAL=1
-          description: Using RFC-5545 provide the time interval in which the previous generated can be overridden with the newly generated report. For Chart monitoring, interval should be FREQ=DAILY;INTERVAL=1
-    EmailComposition:
-      type: object
-      properties:
-        body:
-          type: string
-          example: report body string
-          description: Body content of the email sent to recipients.
-        subject:
-          type: string
-          example: report subject
-          description: Subject line of the email sent to recipients.
-      x-omitempty: false
-    GroupIDRecipientPersist:
-      type: object
-      properties:
-        value:
-          type: string
-          example: group1
-          description: Group ID of recipient.
-        enabledByUser:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by api calls.
-        enabledBySystem:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by external settings.
-        taskGroupRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskGroupRecipientError'
-        alertingTaskGroupRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
-      description: recipient object model that is directly persisted in the DB
+        self:
+          $ref: '#/components/schemas/Self'
     SharingTaskRecurringPersist:
       type: object
       properties:
@@ -909,21 +741,225 @@ components:
           description: 'Flag to configure the persistent bookmark to use variables. it is valid for subscriptions with type chart-sharing or sheet-sharing. Deprecated: please use the same field defined in the template instead.'
           x-qlik-deprecated: true
       description: Type of object stored in the database. Required fields mean that property cannot be null
-    Errors:
+    AlertingTaskRecipientError:
       type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
       properties:
-        errors:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_ALERT
+          - CONDITION_EVAL_ERROR
+          - USER_DISABLED_IN_ALERT_BY_OWNER
+          - MAX_ALERTS_LIMIT_REACHED
+          type: string
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on alerting task
+    TemplatePersist:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          enum:
+          - file
+          - chart
+          - story
+          - sheet
+          - multi-sheet
+          - excel
+          - pixel-perfect
+          - html
+          - powerpoint
+          - word
+          type: string
+          example: file
+          description: The type of template used to generate the report output.
+        subType:
+          enum:
+          - image
+          - snapshot
+          - pdf
+          - pptx
+          - xlsx
+          - qpxp
+          - qhtml
+          - docx
+          type: string
+          default: image
+          description: The output sub-type produced for the template.
+        fileName:
+          type: string
+          example: sales-report
+          description: fileName to be used when generating the report
+        chartData:
+          $ref: '#/components/schemas/ChartTemplate'
+        fileAlias:
+          type: string
+          example: file1
+          description: fileAlias provide an opaqueId for the client which can be used to filter and select the report generated
+        sheetData:
+          $ref: '#/components/schemas/SheetTemplate'
+        storyData:
+          $ref: '#/components/schemas/StoryTemplate'
+        templateId:
+          type: string
+          example: da5825325dc9a0dd0260af9
+          readOnly: true
+          description: ID of unique template
+          x-qlik-deprecated: true
+        fileTimeStamp:
+          enum:
+          - yyyy-MM-dd
+          - yyyy-MM-dd_HH-mm
+          - yyyyMMdd
+          - yyyyMMdd_HH-mm
+          type: string
+          example: yyyy-MM-dd
+          description: file name timestamp to be used when generating the report
+        multiSheetData:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+            $ref: '#/components/schemas/MultiSheetTemplate'
+          description: array of sheet data for multi-sheet type template
+      description: Depending on the value of type, sharing service will internally validate a specific property regarding its data. Type "file" validates property "fileData", type "chart" validates property "chartData", type "story" validates property "storyData". Check description of each of the models for their required properties.
+    Trigger:
+      type: object
+      required:
+      - recurrence
+      properties:
+        recurrence:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1
+            description: A recurrence rule (RRULE) describing when the task is triggered.
+          description: List of RRULE lines for a recurring event, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; event start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. This field is omitted for single events.
+        chronosJobID:
           type: string
+          example: chronos-job-123
+          readOnly: true
+          description: The chronosJobId which triggers the sharing task
+          x-omitempty: false
+        executeOnAppReload:
+          type: boolean
+          default: true
+          description: Toggle for executing sharing task on app reload.
+        executionHistoryInterval:
+          enum:
+          - minutely
+          - hourly
+          - daily
+          - weekly
+          - monthly
+          - quarterly
+          - yearly
+          type: string
+          example: daily
+          description: To prevent overflow in the history, setting this to daily store the chart of a previous day in the history and maintain the live version with the tag latest.
+    UserIDRecipientPersist:
+      type: object
+      properties:
+        value:
+          type: string
+          example: 1b263bs8m0mm_s21s3f
+          description: User ID of recipient (internal user).
+        groups:
+          type: array
+          items:
+            type: string
+          example:
+          - addedIndividually
+          - group1
+          - group2
+          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
+        subscribed:
+          type: boolean
+          description: Whether this user is subscribed to alerts in this task
+        enabledByUser:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by api calls.
+        enabledBySystem:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by external settings.
+        taskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRecipientError'
+        alertingTaskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskRecipientError'
+      description: recipient object model that is directly persisted in the DB
+    AlertingTaskGroupRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on alerting task
+    RecipientsPersist:
+      type: object
+      properties:
+        DLUsers:
+          type: array
+        userIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIDRecipientPersist'
+        DLGroups:
+          type: array
+        groupIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupIDRecipientPersist'
+        emailAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddressRecipientPersist'
+        netRecipientCount:
+          type: integer
+          example: 10
+          description: Net count of recipients in DLGroups and DLUsers.
+      description: List of persisted recipients.
+    State:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            type: object
+            properties: {}
+          description: Selected fields that led to discovery of monitored Insight Advisor chart
+        queryItems:
+          type: array
+          items:
+            type: object
+            properties: {}
+          description: Query that led to discovery of monitored Insight Advisor chart
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Selection'
+      description: State of the selections and jsOpts
     SharingTaskRecurringRecipients:
       type: object
       properties:
@@ -943,214 +979,6 @@ components:
             example: abc@xyz.com
             description: Email of recipient (external user).
       description: List of recipients. An internal recipient is represented by their user id.
-    SheetTemplate:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        jsOpts:
-          type: object
-          properties: {}
-          description: Sheet state from client as a string json value. Can include language, theme, viewState etc.
-        sheetId:
-          type: string
-          example: 39a671a-5f58-468c-bb49-dff933294774
-          description: ID of sheet
-        widthPx:
-          type: integer
-          example: 1584
-          description: widthPx of chart
-        heightPx:
-          type: integer
-          example: 587
-          description: heightPx of chart
-        isPrivate:
-          type: boolean
-          example: false
-          description: optional value to indicate that this sheet is private (used in multi-sheet sharing)
-          x-omitempty: true
-          x-qlik-deprecated: true
-        sheetName:
-          type: string
-          example: My new sheet
-          description: an optional name for the sheet (used in multi-sheet sharing)
-          x-omitempty: true
-          x-qlik-deprecated: true
-        jsOptsById:
-          type: object
-          example: {}
-          description: Map of Qlik Sense object id to rendering options applied when generating the report.
-          additionalProperties:
-            type: object
-            properties: {}
-            description: Visualizations state from client as a string json value. Can include language, theme, viewState etc.
-        patchesById:
-          type: object
-          example: {}
-          description: Map of Qlik Sense object id to patches applied when generating the report.
-          additionalProperties:
-            type: array
-            items:
-              type: object
-              properties: {}
-            description: Soft property changes on charts
-      x-qlik-deprecated: true
-    Self:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
-    AlertingTaskGroupRecipientError:
-      type: object
-      properties:
-        added:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
-          type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on alerting task
-    ListLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
-    StoryTemplate:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        storyId:
-          type: string
-          example: 39a671a-5f58-468c-bb49-dff933294774
-          description: ID of story
-    MultiSheetTemplate:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        jsOpts:
-          type: object
-          properties: {}
-          description: Sheet state from client as a string json value. Can include language, theme, viewState etc.
-        sheetId:
-          type: string
-          example: 39a671a-5f58-468c-bb49-dff933294774
-          description: ID of sheet
-        widthPx:
-          type: integer
-          example: 1584
-          description: widthPx of chart, must be 0 or omitted for autofit.
-        heightPx:
-          type: integer
-          example: 587
-          description: heightPx of chart, must be 0 or omitted for autofit.
-        isPrivate:
-          type: boolean
-          example: false
-          description: optional value to indicate that this sheet is private
-          x-omitempty: true
-        sheetName:
-          type: string
-          example: My new sheet
-          description: an optional name for the sheet
-          x-omitempty: true
-        jsOptsById:
-          type: object
-          example: {}
-          description: Map of Qlik Sense object id to rendering options applied when generating the report.
-          additionalProperties:
-            type: object
-            properties: {}
-            description: Visualizations state from client as a string json value. Can include language, theme, viewState etc.
-        resizeType:
-          enum:
-          - none
-          - fit
-          - autofit
-          type: string
-          example: none
-          description: "Currently only autofit is supported.\nIf omitted, autofit is the default.\nThe type of resize to be performed:\n  - none is used to export a visualization, sheet as is (e.g. normal size), regardless its size. This may result in cropping.\n  - autofit automatically fits the visualization, sheet into the output size (i.e. A4, A3 etc.). Any provided resizeData parameter will be ignored for this configuration.\n  - fit fits the visualization, sheet into the area specified in resizeData. The content will be rescaled to fit in that area.\n"
-        patchesById:
-          type: object
-          example: {}
-          description: Map of Qlik Sense object id to patches applied when generating the report.
-          additionalProperties:
-            type: array
-            items:
-              type: object
-              properties: {}
-            description: Soft property changes on charts
-        persistentBookmarkIncludeVariables:
-          type: boolean
-          example: true
-          description: Flag to configure the persistent bookmark to use variables
-          x-qlik-stability: stable
-          x-qlik-visibility: public
-    TaskRecipientError:
-      type: object
-      properties:
-        value:
-          enum:
-          - USER_IS_DELETED
-          - USER_DISABLED_IN_QCS
-          - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_SHARING
-          - USER_DISABLED_IN_SHARING_BY_OWNER
-          - CHART_NOT_FOUND
-          - APP_NOT_FOUND
-          - SHEET_NOT_FOUND
-          - ENGINE_POD_NOT_AVAILABLE
-          - CHART_TYPE_NOT_ALLOWED
-          - GENERIC_EXECUTION_FAILURE
-          - USER_NOT_FOUND_DL
-          - USER_DISABLED_IN_DL
-          - FILTER_NOT_FOUND
-          - BOOKMARK_NOT_FOUND
-          type: string
-          example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on sharing task specific for recipient
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-    SharingTaskRecurringResponse:
-      allOf:
-      - $ref: '#/components/schemas/SharingTaskRecurringPersist'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/Links'
-          enabled:
-            type: boolean
-            description: true if the sharing task is enabled
-          latestExecutionURL:
-            type: string
-            description: URL to querying the latest execution tied to this sharing task
-          latestExecutionFilesURL:
-            type: array
-            items:
-              type: string
-            description: URL to querying the files of the latest execution tied to this sharing task
-      description: Whatever is persisted in the db + links
     SharingTaskRecurringCreateRequest:
       type: object
       required:
@@ -1269,26 +1097,112 @@ components:
           type: string
           example: mpoXaH22_vLR1pStfI7oUdGya1nKK24
           description: the id of the distribution list associated to the app
-    State:
+    MultiSheetTemplate:
       type: object
       properties:
-        fields:
-          type: array
-          items:
+        appId:
+          type: string
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        jsOpts:
+          type: object
+          properties: {}
+          description: Sheet state from client as a string json value. Can include language, theme, viewState etc.
+        sheetId:
+          type: string
+          example: 39a671a-5f58-468c-bb49-dff933294774
+          description: ID of sheet
+        widthPx:
+          type: integer
+          example: 1584
+          description: widthPx of chart, must be 0 or omitted for autofit.
+        heightPx:
+          type: integer
+          example: 587
+          description: heightPx of chart, must be 0 or omitted for autofit.
+        isPrivate:
+          type: boolean
+          example: false
+          description: optional value to indicate that this sheet is private
+          x-omitempty: true
+        sheetName:
+          type: string
+          example: My new sheet
+          description: an optional name for the sheet
+          x-omitempty: true
+        jsOptsById:
+          type: object
+          example: {}
+          description: Map of Qlik Sense object id to rendering options applied when generating the report.
+          additionalProperties:
             type: object
             properties: {}
-          description: Selected fields that led to discovery of monitored Insight Advisor chart
-        queryItems:
+            description: Visualizations state from client as a string json value. Can include language, theme, viewState etc.
+        resizeType:
+          enum:
+          - none
+          - fit
+          - autofit
+          type: string
+          example: none
+          description: "Currently only autofit is supported.\nIf omitted, autofit is the default.\nThe type of resize to be performed:\n  - none is used to export a visualization, sheet as is (e.g. normal size), regardless its size. This may result in cropping.\n  - autofit automatically fits the visualization, sheet into the output size (i.e. A4, A3 etc.). Any provided resizeData parameter will be ignored for this configuration.\n  - fit fits the visualization, sheet into the area specified in resizeData. The content will be rescaled to fit in that area.\n"
+        patchesById:
+          type: object
+          example: {}
+          description: Map of Qlik Sense object id to patches applied when generating the report.
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              properties: {}
+            description: Soft property changes on charts
+        persistentBookmarkIncludeVariables:
+          type: boolean
+          example: true
+          description: Flag to configure the persistent bookmark to use variables
+          x-qlik-stability: stable
+          x-qlik-visibility: public
+    EmailAddressRecipientPersist:
+      type: object
+      properties:
+        value:
+          type: string
+          format: email
+          example: abc@xyz.com
+          description: Email of recipient (external user).
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        taskRecipientErrors:
           type: array
           items:
-            type: object
-            properties: {}
-          description: Query that led to discovery of monitored Insight Advisor chart
-        selections:
+            $ref: '#/components/schemas/TaskRecipientError'
+      description: recipient object model that is directly persisted in the DB
+    GroupIDRecipientPersist:
+      type: object
+      properties:
+        value:
+          type: string
+          example: group1
+          description: Group ID of recipient.
+        enabledByUser:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by api calls.
+        enabledBySystem:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by external settings.
+        taskGroupRecipientErrors:
           type: array
           items:
-            $ref: '#/components/schemas/Selection'
-      description: State of the selections and jsOpts
+            $ref: '#/components/schemas/TaskGroupRecipientError'
+        alertingTaskGroupRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
+      description: recipient object model that is directly persisted in the DB
     TaskGroupRecipientError:
       type: object
       properties:
@@ -1307,137 +1221,147 @@ components:
           type: string
           example: '2019-10-15T16:07:01.492Z'
           description: Timestamp for the creation of the error
-    SharingTaskRecurringListResponse:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          recipients:
-            $ref: '#/components/schemas/SharingTaskRecurringRecipients'
-          sharingTasks:
-            type: array
-            items:
-              $ref: '#/components/schemas/SharingTaskRecurringResponse'
-            description: Gets a list of recurring sharing tasks.
-    TemplatePersist:
+    ChartTemplate:
       type: object
-      required:
-      - type
       properties:
-        type:
-          enum:
-          - file
-          - chart
-          - story
-          - sheet
-          - multi-sheet
-          - excel
-          - pixel-perfect
-          - html
-          - powerpoint
-          - word
+        appId:
           type: string
-          example: file
-          description: The type of template used to generate the report output.
-        subType:
-          enum:
-          - image
-          - snapshot
-          - pdf
-          - pptx
-          - xlsx
-          - qpxp
-          - qhtml
-          - docx
-          type: string
-          default: image
-          description: The output sub-type produced for the template.
-        fileName:
-          type: string
-          example: sales-report
-          description: fileName to be used when generating the report
-        chartData:
-          $ref: '#/components/schemas/ChartTemplate'
-        fileAlias:
-          type: string
-          example: file1
-          description: fileAlias provide an opaqueId for the client which can be used to filter and select the report generated
-        sheetData:
-          $ref: '#/components/schemas/SheetTemplate'
-        storyData:
-          $ref: '#/components/schemas/StoryTemplate'
-        templateId:
-          type: string
-          example: da5825325dc9a0dd0260af9
-          readOnly: true
-          description: ID of unique template
-          x-qlik-deprecated: true
-        fileTimeStamp:
-          enum:
-          - yyyy-MM-dd
-          - yyyy-MM-dd_HH-mm
-          - yyyyMMdd
-          - yyyyMMdd_HH-mm
-          type: string
-          example: yyyy-MM-dd
-          description: file name timestamp to be used when generating the report
-        multiSheetData:
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        jsOpts:
+          type: object
+          properties: {}
+          description: Visualization state from client as a string json value. Can include language, theme, viewState etc.
+        outDpi:
+          type: integer
+          example: 96
+          description: outDpi of chart
+        outZoom:
+          type: number
+          example: 1
+          description: outZoom of chart
+        patches:
           type: array
           items:
-            $ref: '#/components/schemas/MultiSheetTemplate'
-          description: array of sheet data for multi-sheet type template
-      description: Depending on the value of type, sharing service will internally validate a specific property regarding its data. Type "file" validates property "fileData", type "chart" validates property "chartData", type "story" validates property "storyData". Check description of each of the models for their required properties.
-    StandardListResponseProps:
-      type: object
-      required:
-      - currentPageCount
-      - totalCount
-      properties:
-        totalCount:
-          type: integer
-          description: total count of entries in the collection as a whole
-        currentPageCount:
-          type: integer
-          description: count of entries on the currently shown page
-      description: properties that should be added to every list response
-    Trigger:
-      type: object
-      required:
-      - recurrence
-      properties:
-        recurrence:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            example: RRULE:FREQ=WEEKLY;INTERVAL=1
-            description: A recurrence rule (RRULE) describing when the task is triggered.
-          description: List of RRULE lines for a recurring event, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; event start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. This field is omitted for single events.
-        chronosJobID:
+            type: object
+            properties: {}
+          description: Soft property changes on chart
+        sheetId:
           type: string
-          example: chronos-job-123
-          readOnly: true
-          description: The chronosJobId which triggers the sharing task
-          x-omitempty: false
-        executeOnAppReload:
+          example: bdf2efee-815e-4eb7-9e1e-asdfasdfasdf
+          description: sheetId of app
+        widthPx:
+          type: integer
+          example: 1584
+          description: widthPx of chart
+        heightPx:
+          type: integer
+          example: 587
+          description: heightPx of chart
+        objectId:
+          type: string
+          example: 167f3e67-ff3b-4ead-a09e-e8cc81d8ad78
+          description: ID of object
+        objectDef:
+          type: object
+          properties: {}
+          description: Session chart object definition
+        persistentBookmarkIncludeVariables:
           type: boolean
-          default: true
-          description: Toggle for executing sharing task on app reload.
-        executionHistoryInterval:
-          enum:
-          - minutely
-          - hourly
-          - daily
-          - weekly
-          - monthly
-          - quarterly
-          - yearly
+          example: true
+          description: Flag to configure the persistent bookmark to use variables.
+          x-qlik-stability: stable
+          x-qlik-visibility: public
+      description: 'If the template type is not "chart", this can be null. Otherwise, the following properties are required: appId, sheetId, objectId, widthPx, heightPx, language. The following properties are optional: outZoom, outDpi'
+    ListLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'
+    Self:
+      type: object
+      properties:
+        href:
           type: string
-          example: daily
-          description: To prevent overflow in the history, setting this to daily store the chart of a previous day in the history and maintain the live version with the tag latest.
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    TaskError:
+      type: object
+      properties:
+        value:
+          enum:
+          - OWNER_DISABLED
+          - OWNER_ACCESS
+          - OWNER_LICENSE
+          - APP_DELETED
+          - NO_RECIPIENTS
+          - PARTIAL_ACCESS
+          - ORPHAN
+          - PARTIAL_SENT
+          - FATAL_SENT_ERROR
+          - SECTION_ACCESS_MODIFIED
+          - INVALID_DISTRIBUTION_LIST
+          - MAX_DL_RECIPIENTS_LIMIT_REACHED
+          - TEMPLATE_NOT_FOUND
+          - REPORTING_BOOKMARK_NOT_FOUND
+          - DATA_CONNECTION_NOT_FOUND
+          - INVALID_SHAREPOINT_DIRECTORY
+          - GENERIC_FILE_UPLOAD_ERROR
+          - DISABLED_DUE_TO_OWNERSHIP_CHANGE
+          - REPORTING_CONSUMPTION_EXCEEDED
+          - REPORTING_CAPABILITY_NOT_FOUND
+          - EXECUTION_TIME_OUT
+          - OWNER_INSUFFICIENT_PERMISSIONS
+          - MAX_UNIQUE_REPORTS_LIMIT_REACHED
+          - MISSING_DISTRIBUTION_LIST
+          - SECTION_ACCESS_NOT_SUPPORTED
+          - REPORTING_DAILY_QUOTA_EXCEEDED
+          - EMAIL_DELIVERY_FAILURE
+          type: string
+          description: Identifier for type of error occurring on sharing task
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    InsightURL:
+      type: object
+      properties:
+        status:
+          enum:
+          - successful
+          - failed
+          type: string
+          description: the status of the creation for this insight URL
+        directURL:
+          type: string
+        insightID:
+          type: string
+        resourceID:
+          type: string
+          description: an identifier for the object within the template that this insight link points to
+        templateID:
+          type: string
+          description: an identifier for the template that this insight link points to
+          x-qlik-deprecated: true
+        fallbackURL:
+          type: string
+      description: In case of multiple insight urls for multi-sheet sharing (or subsequent multi types) this defines those URLs and a mapping to the correct object.
+    EmailComposition:
+      type: object
+      properties:
+        body:
+          type: string
+          example: report body string
+          description: Body content of the email sent to recipients.
+        subject:
+          type: string
+          example: report subject
+          description: Subject line of the email sent to recipients.
+      x-omitempty: false
     Page:
       type: object
       properties:
@@ -1456,23 +1380,168 @@ components:
           type: string
           example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
           description: Page unique token
-    Links:
+    Selection:
       type: object
+      required:
+      - isNumeric
+      - name
+      - stateName
+      - values
       properties:
-        self:
-          $ref: '#/components/schemas/Self'
-    EncryptedProperty:
-      type: object
-      properties:
-        value:
-          x-go-type:
-            type: '[]byte'
-            hints:
-              kind: primitive
-            embedded: true
-        cipher:
+        name:
           type: string
-      description: Encrypted property in DB
+          example: Country
+          description: Name of the field the selection applies to.
+        values:
+          type: array
+          items:
+            type: string
+            example: Germany
+            description: A selected value for the field.
+        isNumeric:
+          type: boolean
+          example: false
+          description: Whether the selected values are numeric.
+        stateName:
+          type: string
+          example: $
+          description: Name of the selection state the values belong to.
+        displayName:
+          type: string
+          example: Country
+          description: Human-readable name of the field the selection applies to.
+        displayValues:
+          type: array
+          items:
+            type: string
+            example: Germany
+            description: A human-readable selected value for the field.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    StandardListResponseProps:
+      type: object
+      required:
+      - currentPageCount
+      - totalCount
+      properties:
+        totalCount:
+          type: integer
+          description: total count of entries in the collection as a whole
+        currentPageCount:
+          type: integer
+          description: count of entries on the currently shown page
+      description: properties that should be added to every list response
+    SharingTaskRecurringPatchRequestCompliant:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - replace
+          - remove
+          type: string
+          description: The operation to be performed
+        path:
+          enum:
+          - /name
+          - /tags
+          - /ownerId
+          - /enabled
+          - /description
+          - /scheduleOptions
+          - /templates
+          - /recipients
+          - /recipient
+          - /sharePointFolder
+          - /dataConnectionID
+          - /transportChannels
+          - /bookmarkId
+          type: string
+          description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
+        value:
+          type: object
+          properties: {}
+          description: The value to be used for this operation.
+    SheetTemplate:
+      type: object
+      properties:
+        appId:
+          type: string
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        jsOpts:
+          type: object
+          properties: {}
+          description: Sheet state from client as a string json value. Can include language, theme, viewState etc.
+        sheetId:
+          type: string
+          example: 39a671a-5f58-468c-bb49-dff933294774
+          description: ID of sheet
+        widthPx:
+          type: integer
+          example: 1584
+          description: widthPx of chart
+        heightPx:
+          type: integer
+          example: 587
+          description: heightPx of chart
+        isPrivate:
+          type: boolean
+          example: false
+          description: optional value to indicate that this sheet is private (used in multi-sheet sharing)
+          x-omitempty: true
+          x-qlik-deprecated: true
+        sheetName:
+          type: string
+          example: My new sheet
+          description: an optional name for the sheet (used in multi-sheet sharing)
+          x-omitempty: true
+          x-qlik-deprecated: true
+        jsOptsById:
+          type: object
+          example: {}
+          description: Map of Qlik Sense object id to rendering options applied when generating the report.
+          additionalProperties:
+            type: object
+            properties: {}
+            description: Visualizations state from client as a string json value. Can include language, theme, viewState etc.
+        patchesById:
+          type: object
+          example: {}
+          description: Map of Qlik Sense object id to patches applied when generating the report.
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              properties: {}
+            description: Soft property changes on charts
+      x-qlik-deprecated: true
+    StoryTemplate:
+      type: object
+      properties:
+        appId:
+          type: string
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        storyId:
+          type: string
+          example: 39a671a-5f58-468c-bb49-dff933294774
+          description: ID of story
     UserIDRecipient:
       type: object
       properties:
@@ -1510,28 +1579,6 @@ components:
           items:
             $ref: '#/components/schemas/AlertingTaskRecipientError'
       description: an internal recipient based on its user id.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    TemplateResult:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/TemplatePersist'
-      - {}
     ScheduleOptions:
       type: object
       properties:
@@ -1610,67 +1657,20 @@ components:
       - op: replace
         path: /description
         value: new-description
-    EmailAddressRecipientPersist:
+    TemplateResult:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/TemplatePersist'
+      - {}
+    RetentionPolicy:
       type: object
       properties:
-        value:
-          type: string
-          format: email
-          example: abc@xyz.com
-          description: Email of recipient (external user).
-        enabled:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts.
-        taskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskRecipientError'
-      description: recipient object model that is directly persisted in the DB
-    RecipientsPersist:
-      type: object
-      properties:
-        DLUsers:
-          type: array
-        userIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserIDRecipientPersist'
-        DLGroups:
-          type: array
-        groupIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupIDRecipientPersist'
-        emailAddresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailAddressRecipientPersist'
-        netRecipientCount:
+        historySize:
           type: integer
           example: 10
-          description: Net count of recipients in DLGroups and DLUsers.
-      description: List of persisted recipients.
-    InsightURL:
-      type: object
-      properties:
-        status:
-          enum:
-          - successful
-          - failed
+          description: Number indicating the size of the window which stores the history. For Chart monitoring, the size should be 10.
+        overrideInterval:
           type: string
-          description: the status of the creation for this insight URL
-        directURL:
-          type: string
-        insightID:
-          type: string
-        resourceID:
-          type: string
-          description: an identifier for the object within the template that this insight link points to
-        templateID:
-          type: string
-          description: an identifier for the template that this insight link points to
-          x-qlik-deprecated: true
-        fallbackURL:
-          type: string
-      description: In case of multiple insight urls for multi-sheet sharing (or subsequent multi types) this defines those URLs and a mapping to the correct object.
+          default: FREQ=DAILY;INTERVAL=1
+          example: FREQ=DAILY;INTERVAL=1
+          description: Using RFC-5545 provide the time interval in which the previous generated can be overridden with the newly generated report. For Chart monitoring, interval should be FREQ=DAILY;INTERVAL=1

@@ -379,24 +379,6 @@ paths:
         limit: 800
 components:
   headers:
-    TusResumable:
-      schema:
-        type: string
-      description: The version of the tus protocol used.
-    Location:
-      schema:
-        type: string
-      description: 'Standard HTTP `Location` header.
-
-        When used with tus POST (`creation`) requests, the server uses this to indicate location at which you can
-
-        do HEAD and PATCH requests.
-
-        '
-    ContentDisposition:
-      schema:
-        type: string
-      description: Standard HTTP `Content-Disposition` header.
     ContentLength:
       schema:
         type: integer
@@ -407,6 +389,24 @@ components:
       schema:
         type: string
       description: Standard HTTP `Accept-Ranges` header.
+    TusResumable:
+      schema:
+        type: string
+      description: The version of the tus protocol used.
+    ContentDisposition:
+      schema:
+        type: string
+      description: Standard HTTP `Content-Disposition` header.
+    Location:
+      schema:
+        type: string
+      description: 'Standard HTTP `Location` header.
+
+        When used with tus POST (`creation`) requests, the server uses this to indicate location at which you can
+
+        do HEAD and PATCH requests.
+
+        '
     TusVersion:
       schema:
         type: string
@@ -416,33 +416,16 @@ components:
         type: string
       description: Standard HTTP `Content-Range` header.
   schemas:
-    detailResponse:
-      type: object
+    Errors:
       properties:
-        ID:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
           type: string
-          description: Identifier
-        Name:
-          type: string
-          description: File name of the file uploaded by the user.
-        Size:
-          type: string
-          description: Size of resource (in bytes).
-        Expires:
-          type: string
-          description: Datetime-stamp when the resource expired (in UTC).
-        CreatedAt:
-          type: string
-          description: Datetime-stamp when the resource was created (in UTC).
-        CreatorID:
-          type: string
-          description: Identifier for the subject / resource creator.
-        UpdatedAt:
-          type: string
-          description: Datetime-stamp when the resource was updated (in UTC).
-        TTLSeconds:
-          type: integer
-          description: Time-to-live in seconds.
+          description: A way to trace the source of the error.
+      description: An array of Error objects.
     Error:
       type: object
       required:
@@ -472,13 +455,30 @@ components:
           type: string
           description: A human-readable problem description of the issue.
       description: An Error object.
-    Errors:
+    detailResponse:
+      type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+        ID:
           type: string
-          description: A way to trace the source of the error.
-      description: An array of Error objects.
+          description: Identifier
+        Name:
+          type: string
+          description: File name of the file uploaded by the user.
+        Size:
+          type: string
+          description: Size of resource (in bytes).
+        Expires:
+          type: string
+          description: Datetime-stamp when the resource expired (in UTC).
+        CreatedAt:
+          type: string
+          description: Datetime-stamp when the resource was created (in UTC).
+        CreatorID:
+          type: string
+          description: Identifier for the subject / resource creator.
+        UpdatedAt:
+          type: string
+          description: Datetime-stamp when the resource was updated (in UTC).
+        TTLSeconds:
+          type: integer
+          description: Time-to-live in seconds.

@@ -346,6 +346,14 @@ paths:
         limit: 100
 components:
   schemas:
+    ApiKeysPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiKeyPatch'
+      example:
+      - op: replace
+        path: /description
+        value: my new description
     ApiKeyPatch:
       type: object
       required:
@@ -367,12 +375,14 @@ components:
           type: string
           description: The value to be used for this operation.
       description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
-    RetryAfterHeader:
-      type: object
+    Link:
+      required:
+      - href
       properties:
-        retry-after:
-          type: integer
-          description: The amount of seconds to wait before retrying the request.
+        href:
+          type: string
+          format: uri
+          description: The URL for the link.
     ApiKey:
       type: object
       required:
@@ -431,14 +441,58 @@ components:
           type: string
           format: uid
           description: The ID of the user who created the key.
-    Link:
+    api-key-page:
+      type: object
       required:
-      - href
+      - data
+      - links
       properties:
-        href:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+          description: Properties of API keys in a given tenant.
+        links:
+          type: object
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+          description: Navigation links to page results.
+    ApiKeyBody:
+      type: object
+      required:
+      - description
+      properties:
+        sub:
           type: string
-          format: uri
-          description: The URL for the link.
+          example: SCIM\\215g5595380d646163cadbb9
+          description: The ID of the subject for the API key. For SCIM the format is `SCIM\\{{IDP-ID}}`, where `{{IDP-ID}}` is the ID of the IDP in Qlik. When creating an API key for a user, this is their user ID, e.g. `64ef645a3b7009d55dee5a2b`, and will default to the requesting user if not provided. User must be assigned the `Developer` role.
+        expiry:
+          type: string
+          example: P7D
+          description: The expiry of the API key, in ISO8601 duration format. For example, `P7D` sets expiry after 7 days. If not provided, defaults to the maximum API key or SCIM key expiry configured in the tenant.
+        subType:
+          enum:
+          - user
+          - externalClient
+          type: string
+          default: user
+          description: Type of the subject. For SCIM, it should be `externalClient`. If not specified, defaults to `user`.
+        description:
+          type: string
+          description: Text that describes the API key.
+    RetryAfterHeader:
+      type: object
+      properties:
+        retry-after:
+          type: integer
+          description: The amount of seconds to wait before retrying the request.
     Errors:
       type: object
       properties:
@@ -447,6 +501,38 @@ components:
           items:
             $ref: '#/components/schemas/Error'
           description: List of errors and their properties.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON Pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+        status:
+          type: integer
+          description: The HTTP status code.
+      description: An error object.
     ApiKeyWithToken:
       type: object
       required:
@@ -508,89 +594,3 @@ components:
           type: string
           format: uid
           description: The id of the user who created the key.
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem.
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON Pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-        status:
-          type: integer
-          description: The HTTP status code.
-      description: An error object.
-    ApiKeysPatchSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/ApiKeyPatch'
-      example:
-      - op: replace
-        path: /description
-        value: my new description
-    api-key-page:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiKey'
-          description: Properties of API keys in a given tenant.
-        links:
-          type: object
-          required:
-          - self
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-          description: Navigation links to page results.
-    ApiKeyBody:
-      type: object
-      required:
-      - description
-      properties:
-        sub:
-          type: string
-          example: SCIM\\215g5595380d646163cadbb9
-          description: The ID of the subject for the API key. For SCIM the format is `SCIM\\{{IDP-ID}}`, where `{{IDP-ID}}` is the ID of the IDP in Qlik. When creating an API key for a user, this is their user ID, e.g. `64ef645a3b7009d55dee5a2b`, and will default to the requesting user if not provided. User must be assigned the `Developer` role.
-        expiry:
-          type: string
-          example: P7D
-          description: The expiry of the API key, in ISO8601 duration format. For example, `P7D` sets expiry after 7 days. If not provided, defaults to the maximum API key or SCIM key expiry configured in the tenant.
-        subType:
-          enum:
-          - user
-          - externalClient
-          type: string
-          default: user
-          description: Type of the subject. For SCIM, it should be `externalClient`. If not specified, defaults to `user`.
-        description:
-          type: string
-          description: Text that describes the API key.

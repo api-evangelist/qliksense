@@ -389,6 +389,12 @@ components:
 
               '
         description: A JSONPatch document as defined by RFC 6902
+    ShareType:
+      enum:
+      - user
+      - group
+      - link
+      type: string
     Shares:
       type: object
       properties:
@@ -417,6 +423,26 @@ components:
               $ref: '#/components/schemas/Link'
             self:
               $ref: '#/components/schemas/Link'
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL that defines the resource.
+    ShareRoleType:
+      enum:
+      - consumer
+      - contributor
+      - basicconsumer
+      type: string
+      description: 'The roles for the space share. Supported roles by space type:
+
+        - Shared: consumer
+
+        - Managed: basicconsumer, consumer, contributor
+
+        '
     ShareCreate:
       required:
       - type
@@ -444,78 +470,6 @@ components:
           type: string
           format: uid
           description: The resource type for the shared item.
-    Link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL that defines the resource.
-    Errors:
-      type: object
-      properties:
-        code:
-          type: string
-          description: The error code.
-          x-qlik-deprecated: true
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-          x-qlik-deprecated: true
-        title:
-          type: string
-          description: Summary of the problem.
-          x-qlik-deprecated: true
-        detail:
-          type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-          x-qlik-deprecated: true
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-          x-qlik-deprecated: true
-        traceId:
-          type: string
-    Error:
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          properties:
-            source:
-              type: object
-              properties:
-                pointer:
-                  type: string
-                  description: A JSON pointer to the property that caused the error.
-                parameter:
-                  type: string
-                  description: The URI query parameter that caused the error.
-              description: References to the source of the error.
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-      description: An error object.
     Share:
       required:
       - id
@@ -593,22 +547,68 @@ components:
           enum:
           - app
           description: The type of the shared resource.
-    ShareRoleType:
-      enum:
-      - consumer
-      - contributor
-      - basicconsumer
-      type: string
-      description: 'The roles for the space share. Supported roles by space type:
-
-        - Shared: consumer
-
-        - Managed: basicconsumer, consumer, contributor
-
-        '
-    ShareType:
-      enum:
-      - user
-      - group
-      - link
-      type: string
+    Errors:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code.
+          x-qlik-deprecated: true
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+          x-qlik-deprecated: true
+        title:
+          type: string
+          description: Summary of the problem.
+          x-qlik-deprecated: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+          x-qlik-deprecated: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+          x-qlik-deprecated: true
+        traceId:
+          type: string
+    Error:
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.

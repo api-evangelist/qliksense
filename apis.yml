@@ -47,7 +47,7 @@ tags:
 - Data Visualization
 - Embedded Analytics
 - Enterprise
-- Machine-Learning
+- Machine Learning
 tags_raw:
 - Agents
 - Analytics
@@ -59,6 +59,7 @@ tags_raw:
 - Embedded Analytics
 - Enterprise
 - Machine Learning
+- Machine-Learning
 apis:
 - aid: qliksense:engine-api
   name: Qlik Engine API
@@ -91,7 +92,7 @@ apis:
   - Business Intelligence
   - Extensibility
   - gRPC
-  - Machine-Learning
+  - Machine Learning
   - Protobuf
   tags_raw:
   - Artificial Intelligence
@@ -100,6 +101,7 @@ apis:
   - gRPC
   - Machine Learning
   - Protobuf
+  - Machine-Learning
   properties:
   - type: Documentation
     url: https://github.com/qlik-oss/server-side-extension
@@ -33609,9 +33611,11 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Spaces
   - Space
   tags_raw:
   - spaces
+  - Space
   properties:
   - type: OpenAPI
     url: openapi/qliksense-spaces-api-openapi.yml
@@ -40483,8 +40487,6 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
-  - Datasets
-  tags_raw:
   - Dataset
   properties:
   - type: OpenAPI

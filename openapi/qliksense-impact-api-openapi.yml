@@ -356,7 +356,7 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errorResponse-503:
+    errorResponse-400:
       type: object
       properties:
         errors:
@@ -366,77 +366,13 @@ components:
             properties:
               code:
                 type: string
-                example: HTTP-503
+                example: HTTP-400
               title:
                 type: string
-                example: Service Unavailable
+                example: Bad Request
               detail:
                 type: string
-                example: The service is unavailable.
-        traceId:
-          type: string
-          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    dataAsset:
-      type: object
-      properties:
-        id:
-          type: string
-          example: qri:app:landing://65083739daf9b2658503f93c
-          description: The id (QRI) of the data asset
-        type:
-          type: string
-          example: DI_APP
-          description: The type of the data asset
-        label:
-          type: string
-          example: example.Landing.Asset
-          description: The lable of the data asset
-        subtype:
-          type: string
-          example: LANDING_SAAS_MANAGED
-          description: The subtype of the data asset
-      description: The data integration data asset where the node belongs to
-    errorResponse-500:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-500
-              meta:
-                type: object
-                example: '{"id":"e5c651d5-1198-45a2-be5d-f016cee0baf5"}'
-                description: The meta contains additional information when requests fail due to internal errors.
-              title:
-                type: string
-                example: Internal Server Error
-              detail:
-                type: string
-                example: Something went wrong in the server.
-        traceId:
-          type: string
-          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    errorResponse-404:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-404
-              title:
-                type: string
-                example: Not Found
-              detail:
-                type: string
-                example: The resource either never existed, or may have been deleted.
+                example: Something is not right in the request.
         traceId:
           type: string
           example: e5c651d5-1198-45a2-be5d-f016cee0baf5
@@ -489,6 +425,60 @@ components:
             dataAsset:
               $ref: '#/components/schemas/dataAsset'
           description: This contains additional node information such as node types, subtypes, queryExpressions, etc.
+    graphs:
+      type: object
+      title: Graphs
+      properties:
+        graphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/graph'
+      description: The list of lineage graphs.
+    graph:
+      type: object
+      properties:
+        type:
+          type: string
+          example: RESOURCE
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/edge'
+        label:
+          type: string
+          example: Sales Data
+          description: Label string for this graph.
+        nodes:
+          $ref: '#/components/schemas/nodes'
+        directed:
+          type: boolean
+          example: true
+          description: Returns true if the graph is directed.
+        metadata:
+          type: object
+          properties:
+            total:
+              type: integer
+              example: 1
+              description: The total number of nodes retrieved in this graph.
+            createdAt:
+              type: string
+              example: '2023-10-05T14:48:00.000Z'
+              description: The date and time when the graph is created.
+            producerId:
+              type: string
+              example: qri:db:oracle://LfxVj_3du3GYdWdNaa721lOWvbhENXEArBpl58h96YE#ZfH0lkXnTTGu7QGnIvKZpIxFNagQivBtnbC_cAoCPOs
+              description: The id (QRI) of the graph producer.
+            specVersion:
+              type: string
+              example: 1
+            producerType:
+              type: string
+              example:
+              - QDA
+              - EXTERNAL
+              description: The type of the graph producer.
+      description: The lineage graph containing the node.
     nodes:
       type: object
       example: '{"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2":{"label":"a","metadata":{"id":"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2","subtype":"PROCESSOR","type":"DA_APP","filePath":"example.qvd"}}}'
@@ -544,13 +534,33 @@ components:
           - STORE
           - READ
           - FROM
-    graphsResponse:
+    dataAsset:
       type: object
-      title: Response with all graphs
       properties:
-        graphs:
-          $ref: '#/components/schemas/graphs'
-    errorResponse-400:
+        id:
+          type: string
+          example: qri:app:landing://65083739daf9b2658503f93c
+          description: The id (QRI) of the data asset
+        type:
+          type: string
+          example: DI_APP
+          description: The type of the data asset
+        label:
+          type: string
+          example: example.Landing.Asset
+          description: The lable of the data asset
+        subtype:
+          type: string
+          example: LANDING_SAAS_MANAGED
+          description: The subtype of the data asset
+      description: The data integration data asset where the node belongs to
+    graphResponse:
+      type: object
+      title: Response with a single graph
+      properties:
+        graph:
+          $ref: '#/components/schemas/graph'
+    errorResponse-500:
       type: object
       properties:
         errors:
@@ -560,76 +570,66 @@ components:
             properties:
               code:
                 type: string
-                example: HTTP-400
+                example: HTTP-500
+              meta:
+                type: object
+                example: '{"id":"e5c651d5-1198-45a2-be5d-f016cee0baf5"}'
+                description: The meta contains additional information when requests fail due to internal errors.
               title:
                 type: string
-                example: Bad Request
+                example: Internal Server Error
               detail:
                 type: string
-                example: Something is not right in the request.
+                example: Something went wrong in the server.
         traceId:
           type: string
           example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    graphResponse:
+    graphsResponse:
       type: object
-      title: Response with a single graph
-      properties:
-        graph:
-          $ref: '#/components/schemas/graph'
-    graph:
-      type: object
-      properties:
-        type:
-          type: string
-          example: RESOURCE
-        edges:
-          type: array
-          items:
-            $ref: '#/components/schemas/edge'
-        label:
-          type: string
-          example: Sales Data
-          description: Label string for this graph.
-        nodes:
-          $ref: '#/components/schemas/nodes'
-        directed:
-          type: boolean
-          example: true
-          description: Returns true if the graph is directed.
-        metadata:
-          type: object
-          properties:
-            total:
-              type: integer
-              example: 1
-              description: The total number of nodes retrieved in this graph.
-            createdAt:
-              type: string
-              example: '2023-10-05T14:48:00.000Z'
-              description: The date and time when the graph is created.
-            producerId:
-              type: string
-              example: qri:db:oracle://LfxVj_3du3GYdWdNaa721lOWvbhENXEArBpl58h96YE#ZfH0lkXnTTGu7QGnIvKZpIxFNagQivBtnbC_cAoCPOs
-              description: The id (QRI) of the graph producer.
-            specVersion:
-              type: string
-              example: 1
-            producerType:
-              type: string
-              example:
-              - QDA
-              - EXTERNAL
-              description: The type of the graph producer.
-      description: The lineage graph containing the node.
-    graphs:
-      type: object
-      title: Graphs
+      title: Response with all graphs
       properties:
         graphs:
+          $ref: '#/components/schemas/graphs'
+    errorResponse-503:
+      type: object
+      properties:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/graph'
-      description: The list of lineage graphs.
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-503
+              title:
+                type: string
+                example: Service Unavailable
+              detail:
+                type: string
+                example: The service is unavailable.
+        traceId:
+          type: string
+          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
+    errorResponse-404:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-404
+              title:
+                type: string
+                example: Not Found
+              detail:
+                type: string
+                example: The resource either never existed, or may have been deleted.
+        traceId:
+          type: string
+          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
     errorResponse-429:
       type: object
       properties:

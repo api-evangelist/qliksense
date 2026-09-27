@@ -437,78 +437,6 @@ paths:
         limit: 100
 components:
   schemas:
-    PatchDataProductRequest:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-          path:
-            enum:
-            - /name
-            - /description
-            - /datasetIds
-            - /glossaryIds
-            - /readMe
-            - /keyContacts
-            - /tags
-            - /apiConsumableDatasetIds
-            type: string
-          value:
-            oneOf:
-            - type:
-              - string
-              - 'null'
-              description: Value is expected to be null or a string if the path is either /name, /description, or /readMe
-            - $ref: '#/components/schemas/ArrayOfUniqueStrings'
-            - type:
-              - array
-              - 'null'
-              items:
-                type: object
-              description: Value is expected to be null or an array of object if the path is /keyContacts
-      maxItems: 8
-    KeyContact:
-      type: object
-      required:
-      - userId
-      properties:
-        role:
-          type: string
-          example: Data Steward
-          maxLength: 200
-          description: Role of the key contact in the Data Product.
-        userId:
-          type: string
-          example: exampleUserId
-          description: Unique identifier of the user.
-      description: 'Represents a designated contact person for a data product, optionally with their role.
-
-        '
-    MoveDataProductRequest:
-      type: object
-      required:
-      - spaceId
-      properties:
-        spaceId:
-          type: string
-          example: exampleSpaceId
-          description: Unique identifier of the space.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     TrustScore:
       type: object
       required:
@@ -528,131 +456,6 @@ components:
         applicableDatasets:
           type: number
           format: int32
-    Quality:
-      type: object
-      required:
-      - validity
-      - completeness
-      properties:
-        validity:
-          type: number
-          format: float
-        completeness:
-          type: number
-          format: float
-    CreateDataProductRequest:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          example: ExampleDataProductName
-          pattern: ^(\S.*\S|\S)*$
-          maxLength: 200
-          minLength: 1
-          description: Display name of the data product.
-        tags:
-          type: array
-          items:
-            type: string
-            example: example
-            description: Individual tag for the data product.
-          example:
-          - exampleTag1
-          - exampleTag2
-          description: List of tags for the data product.
-          x-field-extra-annotation: '@jakarta.validation.constraints.Size(max = 50, message = "tags: must contain at most {max} items")'
-        readMe:
-          type: string
-          example: This is an example readme for the Data Product.
-          maxLength: 100000
-          description: A readme of the Data Product.
-          x-size-message: The readMe must be set with a maximal length of 100000 characters
-        spaceId:
-          type: string
-          example: ExampleSpaceId
-          description: Unique identifier of the space.
-        datasetIds:
-          type: array
-          items:
-            type: string
-            uniqueItems: true
-          maxItems: 100
-          description: List of dataset IDs associated with the Data Product. Maximum of 100 items.
-          uniqueItems: true
-        description:
-          type: string
-          example: This is an example Data Product.
-          maxLength: 1024
-          description: A description of the Data Product.
-          x-size-message: The description should be set with a maximal length of 1024 characters
-        glossaryIds:
-          type: array
-          items:
-            type: string
-            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
-            maxLength: 36
-            description: UUIDv4 format glossary identifier.
-          maxItems: 100
-          description: 'List of glossary IDs linked to the Data Product. Each entry must be a valid UUIDv4 (maximum 36 characters). Maximum of 100 items.
-
-            '
-        keyContacts:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyContact'
-          example:
-          - role: Data Steward
-            userId: exampleUserId
-          maxItems: 100
-          description: List of key contacts for the data product.
-        apiConsumableDatasetIds:
-          type: array
-          items:
-            type: string
-          description: 'List of dataset IDs for which API consumption is enabled. Must be a subset of datasetIds.
-
-            '
-          uniqueItems: true
-      description: 'Request payload for creating a data product.
-
-        '
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
-    TrustScoreDimension:
-      type: object
-      required:
-      - id
-      - applicableDatasets
-      properties:
-        id:
-          type: string
-        score:
-          type: number
-          format: float
-        previousScore:
-          type: number
-          format: float
-        applicableDatasets:
-          type: number
-          format: int32
-    ArrayOfUniqueStrings:
-      type:
-      - array
-      - 'null'
-      items:
-        type: string
-        uniqueItems: true
     DataProductResponse:
       type: object
       required:
@@ -753,6 +556,203 @@ components:
             type: string
             description: List of dataset IDs for which API consumption is enabled
           uniqueItems: true
+    KeyContact:
+      type: object
+      required:
+      - userId
+      properties:
+        role:
+          type: string
+          example: Data Steward
+          maxLength: 200
+          description: Role of the key contact in the Data Product.
+        userId:
+          type: string
+          example: exampleUserId
+          description: Unique identifier of the user.
+      description: 'Represents a designated contact person for a data product, optionally with their role.
+
+        '
+    TrustScoreDimension:
+      type: object
+      required:
+      - id
+      - applicableDatasets
+      properties:
+        id:
+          type: string
+        score:
+          type: number
+          format: float
+        previousScore:
+          type: number
+          format: float
+        applicableDatasets:
+          type: number
+          format: int32
+    MoveDataProductRequest:
+      type: object
+      required:
+      - spaceId
+      properties:
+        spaceId:
+          type: string
+          example: exampleSpaceId
+          description: Unique identifier of the space.
+    Quality:
+      type: object
+      required:
+      - validity
+      - completeness
+      properties:
+        validity:
+          type: number
+          format: float
+        completeness:
+          type: number
+          format: float
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    ArrayOfUniqueStrings:
+      type:
+      - array
+      - 'null'
+      items:
+        type: string
+        uniqueItems: true
+    CreateDataProductRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: ExampleDataProductName
+          pattern: ^(\S.*\S|\S)*$
+          maxLength: 200
+          minLength: 1
+          description: Display name of the data product.
+        tags:
+          type: array
+          items:
+            type: string
+            example: example
+            description: Individual tag for the data product.
+          example:
+          - exampleTag1
+          - exampleTag2
+          description: List of tags for the data product.
+          x-field-extra-annotation: '@jakarta.validation.constraints.Size(max = 50, message = "tags: must contain at most {max} items")'
+        readMe:
+          type: string
+          example: This is an example readme for the Data Product.
+          maxLength: 100000
+          description: A readme of the Data Product.
+          x-size-message: The readMe must be set with a maximal length of 100000 characters
+        spaceId:
+          type: string
+          example: ExampleSpaceId
+          description: Unique identifier of the space.
+        datasetIds:
+          type: array
+          items:
+            type: string
+            uniqueItems: true
+          maxItems: 100
+          description: List of dataset IDs associated with the Data Product. Maximum of 100 items.
+          uniqueItems: true
+        description:
+          type: string
+          example: This is an example Data Product.
+          maxLength: 1024
+          description: A description of the Data Product.
+          x-size-message: The description should be set with a maximal length of 1024 characters
+        glossaryIds:
+          type: array
+          items:
+            type: string
+            pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+            maxLength: 36
+            description: UUIDv4 format glossary identifier.
+          maxItems: 100
+          description: 'List of glossary IDs linked to the Data Product. Each entry must be a valid UUIDv4 (maximum 36 characters). Maximum of 100 items.
+
+            '
+        keyContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyContact'
+          example:
+          - role: Data Steward
+            userId: exampleUserId
+          maxItems: 100
+          description: List of key contacts for the data product.
+        apiConsumableDatasetIds:
+          type: array
+          items:
+            type: string
+          description: 'List of dataset IDs for which API consumption is enabled. Must be a subset of datasetIds.
+
+            '
+          uniqueItems: true
+      description: 'Request payload for creating a data product.
+
+        '
+    PatchDataProductRequest:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+          path:
+            enum:
+            - /name
+            - /description
+            - /datasetIds
+            - /glossaryIds
+            - /readMe
+            - /keyContacts
+            - /tags
+            - /apiConsumableDatasetIds
+            type: string
+          value:
+            oneOf:
+            - type:
+              - string
+              - 'null'
+              description: Value is expected to be null or a string if the path is either /name, /description, or /readMe
+            - $ref: '#/components/schemas/ArrayOfUniqueStrings'
+            - type:
+              - array
+              - 'null'
+              items:
+                type: object
+              description: Value is expected to be null or an array of object if the path is /keyContacts
+      maxItems: 8
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
   parameters:
     DataProductIdPath:
       in: path

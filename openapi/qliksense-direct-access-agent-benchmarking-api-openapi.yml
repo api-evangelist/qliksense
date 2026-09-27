@@ -205,6 +205,16 @@ paths:
         limit: 100
 components:
   schemas:
+    CancelBenchmarkResponse:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+        statusUrl:
+          $ref: '#/components/schemas/LinkResponseObject'
+      additionalProperties: false
     LinkResponseObject:
       type: object
       properties:
@@ -213,6 +223,73 @@ components:
           - string
           - 'null'
           description: The URL to the related resource
+      additionalProperties: false
+    GetBenchmarkStatusResults:
+      type: object
+      properties:
+        latency:
+          type: integer
+          format: int64
+          description: The latency in ms measured during data transmission
+        throughput:
+          type: integer
+          format: int64
+          description: The data throughput in KB/s measured during data transmission
+        totalBytesTransferred:
+          type: integer
+          format: int64
+          description: The total number of bytes successfully transferred during data transmission
+        dataTransmissionEndTime:
+          type:
+          - string
+          - 'null'
+          description: The ISO 8601 formatted timestamp when data transmission completed
+        dataTransmissionStartTime:
+          type:
+          - string
+          - 'null'
+          description: The ISO 8601 formatted timestamp when data transmission start
+      additionalProperties: false
+    RunBenchmarkResponse:
+      type: object
+      properties:
+        benchmarkId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        detail:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorMessage'
+        traceId:
+          type:
+          - string
+          - 'null'
+        hasErrors:
+          type: boolean
+          readOnly: true
       additionalProperties: false
     GetBenchmarkStatusResponse:
       type: object
@@ -248,81 +325,4 @@ components:
           type: integer
           format: int64
           description: The total bytes requested to be transferred during the benchmark
-      additionalProperties: false
-    ErrorMessage:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        detail:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErrorMessage'
-        traceId:
-          type:
-          - string
-          - 'null'
-        hasErrors:
-          type: boolean
-          readOnly: true
-      additionalProperties: false
-    RunBenchmarkResponse:
-      type: object
-      properties:
-        benchmarkId:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    CancelBenchmarkResponse:
-      type: object
-      properties:
-        message:
-          type:
-          - string
-          - 'null'
-        statusUrl:
-          $ref: '#/components/schemas/LinkResponseObject'
-      additionalProperties: false
-    GetBenchmarkStatusResults:
-      type: object
-      properties:
-        latency:
-          type: integer
-          format: int64
-          description: The latency in ms measured during data transmission
-        throughput:
-          type: integer
-          format: int64
-          description: The data throughput in KB/s measured during data transmission
-        totalBytesTransferred:
-          type: integer
-          format: int64
-          description: The total number of bytes successfully transferred during data transmission
-        dataTransmissionEndTime:
-          type:
-          - string
-          - 'null'
-          description: The ISO 8601 formatted timestamp when data transmission completed
-        dataTransmissionStartTime:
-          type:
-          - string
-          - 'null'
-          description: The ISO 8601 formatted timestamp when data transmission start
       additionalProperties: false

@@ -160,7 +160,7 @@ paths:
         required: false
         description: The field to sort by, with +- prefix indicating sort order. (`?sort=-name` => sort on the `name` field using descending order).
       description: Retrieves a list of automation connectors.
-      operationId: getAutomationConnectors
+      operationId: getApiWorkflowsAutomationConnectors
       x-qlik-visibility: public
       x-qlik-stability: stable
       x-qlik-deprecated: false
@@ -170,6 +170,8 @@ paths:
       x-qlik-tier:
         tier: '1'
         limit: 1000
+      x-operation-id-source: normalized
+      x-operation-id-original: getAutomationConnectors
     servers:
     - url: https://{tenant}.{region}.qlikcloud.com
       variables:
@@ -281,31 +283,6 @@ paths:
           description: Name of the tenant that will be called
 components:
   schemas:
-    AutomationConnectorsList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorsListObject'
-        links:
-          $ref: '#/components/schemas/Links'
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
-    Links:
-      properties:
-        next:
-          $ref: '#/components/schemas/PaginationLink'
-        prev:
-          $ref: '#/components/schemas/PaginationLink'
     Error:
       type: object
       required:
@@ -321,13 +298,21 @@ components:
         detail:
           type: string
           description: May be used to provide additional details
-    PaginationLink:
+    AutomationConnectorsList:
+      type: object
       properties:
-        href:
-          type:
-          - string
-          - 'null'
-          description: The URL to a resource request
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorsListObject'
+        links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      properties:
+        next:
+          $ref: '#/components/schemas/PaginationLink'
+        prev:
+          $ref: '#/components/schemas/PaginationLink'
     AutomationConnectorsListObject:
       type: object
       properties:
@@ -373,6 +358,147 @@ components:
           type: boolean
           example: 'true'
           description: Indicates if the connector supports webhooks.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
+    PaginationLink:
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          description: The URL to a resource request
+    AutomationConnectorWebhookEventParam:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
+          description: The unique identifier of the webhook event parameter.
+        name:
+          type: string
+          example: table_id
+          description: The name of the parameter.
+        type:
+          type: string
+          example: text
+          description: The type of the parameter.
+        options:
+          type: array
+          items:
+            type: string
+          description: The available options for this parameter.
+        required:
+          type: boolean
+          example: true
+          description: Indicates whether the parameter is required.
+    AutomationConnectorBlock:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 9d94bef0-b28c-11eb-8dba-01593c457362
+          description: The unique identifier of the block.
+        name:
+          type: string
+          example: List Records
+          description: The name of the block.
+        role:
+          type: string
+          example: list
+          description: The role of the block.
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorParam'
+          description: The input parameters for this block.
+        objectType:
+          type:
+          - string
+          - 'null'
+          example: Record
+          description: The object type this block operates on.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the block.
+        exampleOutput:
+          oneOf:
+          - type: object
+          - type: array
+            items:
+              oneOf:
+              - type: object
+              - type: string
+              - type: number
+              - type: boolean
+          - type: string
+          description: An example of the output this block produces.
+    AutomationConnectorWebhookConfiguration:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
+          description: The unique identifier of the webhook configuration.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorWebhookEvent'
+          description: The available webhook events for this connector.
+        automatic:
+          type: boolean
+          example: true
+          description: Indicates whether the webhook is set up automatically.
+    AutomationConnectorWebhookEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
+          description: The unique identifier of the webhook event.
+        name:
+          type: string
+          example: Record Created
+          description: The name of the webhook event.
+        role:
+          type: string
+          example: create
+          description: The role of the webhook event.
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorWebhookEventParam'
+          description: The parameters available for this webhook event.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the webhook event.
+        exampleOutput:
+          oneOf:
+          - type: object
+          - type: array
+            items:
+              oneOf:
+              - type: object
+              - type: string
+              - type: number
+              - type: boolean
+          - type: string
+          description: An example of the payload this event produces.
     AutomationConnectorSnippetInput:
       type: object
       properties:
@@ -404,31 +530,45 @@ components:
           - string
           - 'null'
           description: The help text for this input.
-    AutomationConnectorWebhookEventParam:
+    AutomationConnectorParam:
       type: object
       properties:
         id:
           type: string
           format: uuid
           example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the webhook event parameter.
+          description: The unique identifier of the parameter.
         name:
           type: string
-          example: table_id
+          example: API Key
           description: The name of the parameter.
-        type:
-          type: string
-          example: text
-          description: The type of the parameter.
         options:
           type: array
           items:
             type: string
-          description: The available options for this parameter.
-        required:
+          description: The available options for the parameter.
+        setting:
           type: boolean
-          example: true
-          description: Indicates whether the parameter is required.
+          example: false
+          description: Indicates whether the parameter is a setting.
+        optional:
+          type: boolean
+          example: false
+          description: Indicates whether the parameter is optional.
+        fieldType:
+          type: string
+          example: text
+          description: The field type of the parameter.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the parameter.
+        exampleValue:
+          type:
+          - string
+          - 'null'
+          description: An example value for the parameter.
     AutomationConnectorSnippet:
       type: object
       properties:
@@ -474,100 +614,6 @@ components:
               - type: boolean
           - type: string
           description: An example of the output this snippet produces.
-    AutomationConnectorWebhookConfiguration:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the webhook configuration.
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorWebhookEvent'
-          description: The available webhook events for this connector.
-        automatic:
-          type: boolean
-          example: true
-          description: Indicates whether the webhook is set up automatically.
-    AutomationConnectorParam:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the parameter.
-        name:
-          type: string
-          example: API Key
-          description: The name of the parameter.
-        options:
-          type: array
-          items:
-            type: string
-          description: The available options for the parameter.
-        setting:
-          type: boolean
-          example: false
-          description: Indicates whether the parameter is a setting.
-        optional:
-          type: boolean
-          example: false
-          description: Indicates whether the parameter is optional.
-        fieldType:
-          type: string
-          example: text
-          description: The field type of the parameter.
-        description:
-          type:
-          - string
-          - 'null'
-          description: The description of the parameter.
-        exampleValue:
-          type:
-          - string
-          - 'null'
-          description: An example value for the parameter.
-    AutomationConnectorWebhookEvent:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the webhook event.
-        name:
-          type: string
-          example: Record Created
-          description: The name of the webhook event.
-        role:
-          type: string
-          example: create
-          description: The role of the webhook event.
-        params:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorWebhookEventParam'
-          description: The parameters available for this webhook event.
-        description:
-          type:
-          - string
-          - 'null'
-          description: The description of the webhook event.
-        exampleOutput:
-          oneOf:
-          - type: object
-          - type: array
-            items:
-              oneOf:
-              - type: object
-              - type: string
-              - type: number
-              - type: boolean
-          - type: string
-          description: An example of the payload this event produces.
     AutomationConnectorDetail:
       type: object
       properties:
@@ -613,81 +659,37 @@ components:
           - string
           - 'null'
           description: Documentation for setting up a connection with this connector.
-    AutomationConnectorBlock:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 9d94bef0-b28c-11eb-8dba-01593c457362
-          description: The unique identifier of the block.
-        name:
-          type: string
-          example: List Records
-          description: The name of the block.
-        role:
-          type: string
-          example: list
-          description: The role of the block.
-        inputs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorParam'
-          description: The input parameters for this block.
-        objectType:
-          type:
-          - string
-          - 'null'
-          example: Record
-          description: The object type this block operates on.
-        description:
-          type:
-          - string
-          - 'null'
-          description: The description of the block.
-        exampleOutput:
-          oneOf:
-          - type: object
-          - type: array
-            items:
-              oneOf:
-              - type: object
-              - type: string
-              - type: number
-              - type: boolean
-          - type: string
-          description: An example of the output this block produces.
   responses:
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Internal Server Error
     Unauthorized:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Unauthorized
-    ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Service Unavailable
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Forbidden
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Bad Request
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Service Unavailable
     NotFound:
       content:
         application/json:

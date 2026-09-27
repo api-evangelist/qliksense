@@ -206,6 +206,184 @@ paths:
         limit: 100
 components:
   schemas:
+    FileStatistics:
+      type: object
+      properties:
+        volume:
+          type: string
+          description: Volume of data processed (e.g. '10.91 MiB').
+        processedCount:
+          type: number
+          description: Number of files processed.
+      description: Statistics for file-based tasks.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    DataTaskInstanceState:
+      type: object
+      properties:
+        state:
+          enum:
+          - STARTING
+          - RUNNING
+          - COMPLETED
+          - FAILED
+          - CANCELED
+          - STOPPING
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors encountered during the last run
+        endTime:
+          type: string
+          format: date-time
+          description: Timestamp indicating when the task instance ended
+        general:
+          type: object
+          properties:
+            gatewayId:
+              type: string
+              description: For tasks that run on a gateway, this is the id of the gateway
+            gatewayName:
+              type: string
+              description: For tasks that run on a gateway, this is the name of the gateway
+            datasetCount:
+              type: number
+              description: Total number of datasets produced by the task, including ones in error
+            gatewayTaskName:
+              type: string
+              description: For tasks that run on a gateway, this is the internal name of the task on the gateway
+            dataTaskUpdatedTo:
+              type: string
+              format: date-time
+              description: The latest point in time the data reflects, based on updates from the source system.
+            lakehouseClusterId:
+              type: string
+              description: For lakehouse storage tasks, this is the id of the cluster where the task runs
+            liveViewsUpdatedTo:
+              type: string
+              format: date-time
+              description: The latest point in time the live views reflect, based on updates from the source system.
+            datasetsInErrorCount:
+              type: number
+              description: Count of datasets that encountered errors
+            lakehouseClusterName:
+              type: string
+              description: For lakehouse storage tasks, this is the name of the cluster where the task runs
+          description: Overall task execution statistics including dataset counts, data freshness timestamps, and infrastructure details.
+        message:
+          type: string
+        traceId:
+          type: string
+          description: Trace identifier for the last run, useful for diagnostics and support
+        duration:
+          type: string
+          description: Duration in HH:MM:SS format (hours:minutes:seconds)
+        fullLoad:
+          type: object
+          properties:
+            errorCount:
+              type: number
+              description: Number of datasets that have failed full load in this task run
+            queuedCount:
+              type: number
+              description: Number of datasets that are queued for full load in this task run
+            loadingCount:
+              type: number
+              description: Number of datasets that are currently being loaded in this task run
+            completedCount:
+              type: number
+              description: Number of datasets that have completed full load in this task run
+          description: Statistics for the full load phase of the task run, tracking dataset processing progress.
+        cdcStatus:
+          type: object
+          properties:
+            latency:
+              type: string
+              example: 01:30:45
+              description: Duration in HH:MM:SS format (hours:minutes:seconds)
+            totalProcessedCount:
+              type: number
+            applyingChangesCount:
+              type: number
+            incomingChangesCount:
+              type: number
+              description: Number of incoming changes. Only relevant for 'Iceberg Storage' and 'Streaming Transform' tasks.
+            accumulatingChangesCount:
+              type: number
+            throughputInKilobytesPerSecond:
+              type: number
+              description: Throughput in kilobytes per second
+          description: Change Data Capture status information for tasks performing incremental updates, including latency and processing counts.
+        startTime:
+          type: string
+          format: date-time
+          description: Timestamp indicating when the task instance started
+        streaming:
+          type: object
+          properties:
+            latency:
+              type: string
+              description: Duration in HH:MM:SS format (hours:minutes:seconds)
+            errorCount:
+              type: number
+              description: Number of streaming datasets that have encountered errors
+            queuedCount:
+              type: number
+              description: Number of streaming datasets that are queued
+            runningCount:
+              type: number
+              description: Number of streaming datasets that are currently running
+            totalProcessedCount:
+              type: number
+              description: Total number of records processed
+          description: Real-time streaming statistics for tasks that continuously process data streams.
+        lastBatchOfChanges:
+          type: object
+          properties:
+            relatesToRecordsTo:
+              type: string
+              format: date-time
+              description: This batch ends with operational source changes from this time.
+            totalProcessedCount:
+              type: number
+            relatesToRecordsFrom:
+              type: string
+              format: date-time
+              description: This batch starts with operational source changes from this time.
+            throughputInRecordsPerSecond:
+              type: number
+              description: Throughput in records per second
+          description: Statistics for the most recent batch of changes processed during the task run, including timing and throughput metrics.
+      description: Represents the execution state of a task instance, including progress metrics, errors, and operation-specific statistics.
     DataTaskDatasetState:
       type: object
       properties:
@@ -357,6 +535,192 @@ components:
               type: number
               description: Throughput in records per second
       description: Represents the execution state of a single dataset within a task run, including full load, CDC, and streaming progress.
+    TaskRunSearchFilterOperator:
+      enum:
+      - IN
+      - NOT_IN
+      - BETWEEN
+      type: string
+      description: 'Filter operator.
+
+        - `IN` / `NOT_IN`: exact match against the values list (recommended for ID, STATUS, SUB_STATUS).
+
+        - `BETWEEN`: only valid with the `PERIOD` field. The `value` list must contain two ISO-8601 timestamps (start, end).
+
+        '
+    DataTaskRuntimeState:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data task
+        type:
+          $ref: '#/components/schemas/DataTaskType'
+        lastRun:
+          $ref: '#/components/schemas/DataTaskInstanceState'
+        runReadiness:
+          type: object
+          properties:
+            state:
+              enum:
+              - READY_TO_RUN
+              - ALREADY_RUNNING
+              - NOT_RUNNABLE
+              type: string
+            message:
+              type: string
+      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
+    OperationStatistics:
+      type: object
+      properties:
+        deleteCount:
+          type: number
+          description: Number of delete operations.
+        failedCount:
+          type: number
+          description: Number of failed operations.
+        insertCount:
+          type: number
+          description: Number of insert operations.
+        updateCount:
+          type: number
+          description: Number of update operations.
+      description: Breakdown of operations for record-oriented tasks.
+    TaskRunSearchFilterField:
+      enum:
+      - ID
+      - STATUS
+      - SUB_STATUS
+      - PERIOD
+      type: string
+      description: The run-history field to filter on.
+    DiSearchTaskRunHistoryRsp:
+      type: object
+      properties:
+        runs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunItemRsp'
+          description: List of task run instances matching the search.
+        lastId:
+          type: string
+          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
+          description: Identifier of the last run in this page. Pass this value back as `lastId` in the next request to fetch the following page.
+        nextPageExists:
+          type: boolean
+          example: true
+          description: True when more pages are available after this one; false when this is the last page.
+    TaskRunSearchFilter:
+      type: object
+      required:
+      - field
+      - operator
+      - value
+      properties:
+        field:
+          $ref: '#/components/schemas/TaskRunSearchFilterField'
+        value:
+          type: array
+          items:
+            type: string
+          description: Values to match. For `BETWEEN` on `PERIOD`, supply exactly two ISO-8601 timestamps.
+        operator:
+          $ref: '#/components/schemas/TaskRunSearchFilterOperator'
+      description: Specifies a single filter criterion to apply when searching task run history.
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    ListDataTaskDatasetsRsp:
+      type: object
+      properties:
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataTaskDatasetState'
+    TaskRunItemRsp:
+      type: object
+      properties:
+        runId:
+          type: string
+          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
+          description: Identifier of the run instance.
+        status:
+          $ref: '#/components/schemas/TaskRunStatus'
+        endTime:
+          type: string
+          format: date-time
+          example: '2024-03-01T09:30:00Z'
+          description: Timestamp indicating when the run ended.
+        duration:
+          type: string
+          example: 00:30:00
+          description: Duration of the run in HH:MM:SS format.
+        startTime:
+          type: string
+          format: date-time
+          example: '2024-03-01T09:00:00Z'
+          description: Timestamp indicating when the run started.
+        subStatus:
+          type: string
+          description: Sub-status of the run, when applicable.
+        errorMessage:
+          type: string
+          default: ''
+          description: Error message, if the run failed.
+        datasetsCount:
+          type: integer
+          format: int32
+          example: 10
+          description: Total number of datasets processed in this run.
+        originSubStatus:
+          type: string
+          description: Origin-specific sub-status of the run, when applicable.
+        datasetsErrorCount:
+          type: integer
+          format: int32
+          example: 0
+          description: Number of datasets that encountered errors in this run.
+      description: Represents a single historical task run instance with execution status, timing, and error information.
+    DiSearchTaskRunHistoryReq:
+      type: object
+      properties:
+        limit:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+          description: Maximum number of runs to return.
+        lastId:
+          type: string
+          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
+          description: Cursor for paging. Pass the `runId` of the last item from the previous response to fetch the next page; omit on the first request.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunSearchFilter'
+          example:
+          - field: STATUS
+            value:
+            - COMPLETED
+            - FAILED
+            operator: IN
+          - field: PERIOD
+            value:
+            - '2024-03-01T00:00:00Z'
+            - '2024-03-31T23:59:59Z'
+            operator: BETWEEN
+          description: Field filters to apply to the search.
+      description: Request parameters for searching task run history, including filter criteria and pagination options.
     DataTaskType:
       enum:
       - LANDING
@@ -402,367 +766,3 @@ components:
       - MISFIRED
       type: string
       description: Execution status of a task run instance.
-    TaskRunItemRsp:
-      type: object
-      properties:
-        runId:
-          type: string
-          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
-          description: Identifier of the run instance.
-        status:
-          $ref: '#/components/schemas/TaskRunStatus'
-        endTime:
-          type: string
-          format: date-time
-          example: '2024-03-01T09:30:00Z'
-          description: Timestamp indicating when the run ended.
-        duration:
-          type: string
-          example: 00:30:00
-          description: Duration of the run in HH:MM:SS format.
-        startTime:
-          type: string
-          format: date-time
-          example: '2024-03-01T09:00:00Z'
-          description: Timestamp indicating when the run started.
-        subStatus:
-          type: string
-          description: Sub-status of the run, when applicable.
-        errorMessage:
-          type: string
-          default: ''
-          description: Error message, if the run failed.
-        datasetsCount:
-          type: integer
-          format: int32
-          example: 10
-          description: Total number of datasets processed in this run.
-        originSubStatus:
-          type: string
-          description: Origin-specific sub-status of the run, when applicable.
-        datasetsErrorCount:
-          type: integer
-          format: int32
-          example: 0
-          description: Number of datasets that encountered errors in this run.
-      description: Represents a single historical task run instance with execution status, timing, and error information.
-    ListDataTaskDatasetsRsp:
-      type: object
-      properties:
-        datasets:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataTaskDatasetState'
-    DataTaskInstanceState:
-      type: object
-      properties:
-        state:
-          enum:
-          - STARTING
-          - RUNNING
-          - COMPLETED
-          - FAILED
-          - CANCELED
-          - STOPPING
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors encountered during the last run
-        endTime:
-          type: string
-          format: date-time
-          description: Timestamp indicating when the task instance ended
-        general:
-          type: object
-          properties:
-            gatewayId:
-              type: string
-              description: For tasks that run on a gateway, this is the id of the gateway
-            gatewayName:
-              type: string
-              description: For tasks that run on a gateway, this is the name of the gateway
-            datasetCount:
-              type: number
-              description: Total number of datasets produced by the task, including ones in error
-            gatewayTaskName:
-              type: string
-              description: For tasks that run on a gateway, this is the internal name of the task on the gateway
-            dataTaskUpdatedTo:
-              type: string
-              format: date-time
-              description: The latest point in time the data reflects, based on updates from the source system.
-            lakehouseClusterId:
-              type: string
-              description: For lakehouse storage tasks, this is the id of the cluster where the task runs
-            liveViewsUpdatedTo:
-              type: string
-              format: date-time
-              description: The latest point in time the live views reflect, based on updates from the source system.
-            datasetsInErrorCount:
-              type: number
-              description: Count of datasets that encountered errors
-            lakehouseClusterName:
-              type: string
-              description: For lakehouse storage tasks, this is the name of the cluster where the task runs
-          description: Overall task execution statistics including dataset counts, data freshness timestamps, and infrastructure details.
-        message:
-          type: string
-        traceId:
-          type: string
-          description: Trace identifier for the last run, useful for diagnostics and support
-        duration:
-          type: string
-          description: Duration in HH:MM:SS format (hours:minutes:seconds)
-        fullLoad:
-          type: object
-          properties:
-            errorCount:
-              type: number
-              description: Number of datasets that have failed full load in this task run
-            queuedCount:
-              type: number
-              description: Number of datasets that are queued for full load in this task run
-            loadingCount:
-              type: number
-              description: Number of datasets that are currently being loaded in this task run
-            completedCount:
-              type: number
-              description: Number of datasets that have completed full load in this task run
-          description: Statistics for the full load phase of the task run, tracking dataset processing progress.
-        cdcStatus:
-          type: object
-          properties:
-            latency:
-              type: string
-              example: 01:30:45
-              description: Duration in HH:MM:SS format (hours:minutes:seconds)
-            totalProcessedCount:
-              type: number
-            applyingChangesCount:
-              type: number
-            incomingChangesCount:
-              type: number
-              description: Number of incoming changes. Only relevant for 'Iceberg Storage' and 'Streaming Transform' tasks.
-            accumulatingChangesCount:
-              type: number
-            throughputInKilobytesPerSecond:
-              type: number
-              description: Throughput in kilobytes per second
-          description: Change Data Capture status information for tasks performing incremental updates, including latency and processing counts.
-        startTime:
-          type: string
-          format: date-time
-          description: Timestamp indicating when the task instance started
-        streaming:
-          type: object
-          properties:
-            latency:
-              type: string
-              description: Duration in HH:MM:SS format (hours:minutes:seconds)
-            errorCount:
-              type: number
-              description: Number of streaming datasets that have encountered errors
-            queuedCount:
-              type: number
-              description: Number of streaming datasets that are queued
-            runningCount:
-              type: number
-              description: Number of streaming datasets that are currently running
-            totalProcessedCount:
-              type: number
-              description: Total number of records processed
-          description: Real-time streaming statistics for tasks that continuously process data streams.
-        lastBatchOfChanges:
-          type: object
-          properties:
-            relatesToRecordsTo:
-              type: string
-              format: date-time
-              description: This batch ends with operational source changes from this time.
-            totalProcessedCount:
-              type: number
-            relatesToRecordsFrom:
-              type: string
-              format: date-time
-              description: This batch starts with operational source changes from this time.
-            throughputInRecordsPerSecond:
-              type: number
-              description: Throughput in records per second
-          description: Statistics for the most recent batch of changes processed during the task run, including timing and throughput metrics.
-      description: Represents the execution state of a task instance, including progress metrics, errors, and operation-specific statistics.
-    DiSearchTaskRunHistoryReq:
-      type: object
-      properties:
-        limit:
-          type: integer
-          format: int32
-          default: 50
-          maximum: 200
-          minimum: 1
-          description: Maximum number of runs to return.
-        lastId:
-          type: string
-          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
-          description: Cursor for paging. Pass the `runId` of the last item from the previous response to fetch the next page; omit on the first request.
-        filters:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskRunSearchFilter'
-          example:
-          - field: STATUS
-            value:
-            - COMPLETED
-            - FAILED
-            operator: IN
-          - field: PERIOD
-            value:
-            - '2024-03-01T00:00:00Z'
-            - '2024-03-31T23:59:59Z'
-            operator: BETWEEN
-          description: Field filters to apply to the search.
-      description: Request parameters for searching task run history, including filter criteria and pagination options.
-    TaskRunSearchFilterOperator:
-      enum:
-      - IN
-      - NOT_IN
-      - BETWEEN
-      type: string
-      description: 'Filter operator.
-
-        - `IN` / `NOT_IN`: exact match against the values list (recommended for ID, STATUS, SUB_STATUS).
-
-        - `BETWEEN`: only valid with the `PERIOD` field. The `value` list must contain two ISO-8601 timestamps (start, end).
-
-        '
-    TaskRunSearchFilterField:
-      enum:
-      - ID
-      - STATUS
-      - SUB_STATUS
-      - PERIOD
-      type: string
-      description: The run-history field to filter on.
-    DataTaskRuntimeState:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the data task
-        type:
-          $ref: '#/components/schemas/DataTaskType'
-        lastRun:
-          $ref: '#/components/schemas/DataTaskInstanceState'
-        runReadiness:
-          type: object
-          properties:
-            state:
-              enum:
-              - READY_TO_RUN
-              - ALREADY_RUNNING
-              - NOT_RUNNABLE
-              type: string
-            message:
-              type: string
-      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for programmatic handling.
-        title:
-          type: string
-          description: Brief human-readable summary of the error.
-        detail:
-          type: string
-          description: Detailed explanation of the error and suggested remediation steps.
-        source:
-          $ref: '#/components/schemas/ErrorSource'
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code associated with the error.
-      description: Represents a single error condition with details about what went wrong.
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
-          type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    FileStatistics:
-      type: object
-      properties:
-        volume:
-          type: string
-          description: Volume of data processed (e.g. '10.91 MiB').
-        processedCount:
-          type: number
-          description: Number of files processed.
-      description: Statistics for file-based tasks.
-    TaskRunSearchFilter:
-      type: object
-      required:
-      - field
-      - operator
-      - value
-      properties:
-        field:
-          $ref: '#/components/schemas/TaskRunSearchFilterField'
-        value:
-          type: array
-          items:
-            type: string
-          description: Values to match. For `BETWEEN` on `PERIOD`, supply exactly two ISO-8601 timestamps.
-        operator:
-          $ref: '#/components/schemas/TaskRunSearchFilterOperator'
-      description: Specifies a single filter criterion to apply when searching task run history.
-    OperationStatistics:
-      type: object
-      properties:
-        deleteCount:
-          type: number
-          description: Number of delete operations.
-        failedCount:
-          type: number
-          description: Number of failed operations.
-        insertCount:
-          type: number
-          description: Number of insert operations.
-        updateCount:
-          type: number
-          description: Number of update operations.
-      description: Breakdown of operations for record-oriented tasks.
-    DiSearchTaskRunHistoryRsp:
-      type: object
-      properties:
-        runs:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskRunItemRsp'
-          description: List of task run instances matching the search.
-        lastId:
-          type: string
-          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
-          description: Identifier of the last run in this page. Pass this value back as `lastId` in the next request to fetch the following page.
-        nextPageExists:
-          type: boolean
-          example: true
-          description: True when more pages are available after this one; false when this is the last page.

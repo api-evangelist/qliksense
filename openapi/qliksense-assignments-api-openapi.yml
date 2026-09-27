@@ -342,41 +342,6 @@ paths:
         limit: 100
 components:
   schemas:
-    AssignmentType:
-      enum:
-      - user
-      - group
-      - bot
-      type: string
-      description: The type of assignment such as user or group
-    Assignments:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Assignment'
-        meta:
-          type: object
-          readOnly: true
-          required:
-          - count
-          properties:
-            count:
-              type: integer
-              description: The total number of assignments matching the current filter.
-        links:
-          type: object
-          readOnly: true
-          required:
-          - self
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
     AssignmentCreate:
       required:
       - type
@@ -394,107 +359,6 @@ components:
           type: string
           format: uid
           description: The userId or groupId based on the type.
-    AssignmentUpdate:
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleType'
-          description: The roles assigned to the assigneeId. For the full list of roles assignable in this space type, call `GET /spaces/{spaceId}` and inspect the `meta.assignableRoles` object.
-    Link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL that defines the resource.
-    Errors:
-      type: object
-      properties:
-        code:
-          type: string
-          description: The error code.
-          x-qlik-deprecated: true
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-          x-qlik-deprecated: true
-        title:
-          type: string
-          description: Summary of the problem.
-          x-qlik-deprecated: true
-        detail:
-          type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-          x-qlik-deprecated: true
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-          x-qlik-deprecated: true
-        traceId:
-          type: string
-    Error:
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          properties:
-            source:
-              type: object
-              properties:
-                pointer:
-                  type: string
-                  description: A JSON pointer to the property that caused the error.
-                parameter:
-                  type: string
-                  description: The URI query parameter that caused the error.
-              description: References to the source of the error.
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-      description: An error object.
-    RoleType:
-      enum:
-      - consumer
-      - contributor
-      - dataconsumer
-      - datapreview
-      - facilitator
-      - operator
-      - producer
-      - publisher
-      - basicconsumer
-      - codeveloper
-      type: string
-      description: 'Supported roles by space type:
-
-        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
-
-        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
-
-        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
-
-        '
     Assignment:
       required:
       - id
@@ -560,3 +424,139 @@ components:
           type: string
           format: uid
           description: The userId or groupId based on the type.
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL that defines the resource.
+    RoleType:
+      enum:
+      - consumer
+      - contributor
+      - dataconsumer
+      - datapreview
+      - facilitator
+      - operator
+      - producer
+      - publisher
+      - basicconsumer
+      - codeveloper
+      type: string
+      description: 'Supported roles by space type:
+
+        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
+
+        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
+
+        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
+
+        '
+    Errors:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code.
+          x-qlik-deprecated: true
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+          x-qlik-deprecated: true
+        title:
+          type: string
+          description: Summary of the problem.
+          x-qlik-deprecated: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+          x-qlik-deprecated: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+          x-qlik-deprecated: true
+        traceId:
+          type: string
+    Error:
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.
+    AssignmentType:
+      enum:
+      - user
+      - group
+      - bot
+      type: string
+      description: The type of assignment such as user or group
+    AssignmentUpdate:
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleType'
+          description: The roles assigned to the assigneeId. For the full list of roles assignable in this space type, call `GET /spaces/{spaceId}` and inspect the `meta.assignableRoles` object.
+    Assignments:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - count
+          properties:
+            count:
+              type: integer
+              description: The total number of assignments matching the current filter.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'

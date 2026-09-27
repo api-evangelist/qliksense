@@ -400,30 +400,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errorResponse-500:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-500
-              meta:
-                type: object
-                example: '{"id":"e5c651d5-1198-45a2-be5d-f016cee0baf5"}'
-                description: The meta contains additional information when requests fail due to internal errors.
-              title:
-                type: string
-                example: Internal Server Error
-              detail:
-                type: string
-                example: Something went wrong in the server.
-        traceId:
-          type: string
-          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
     errorResponse-400:
       type: object
       properties:
@@ -444,16 +420,21 @@ components:
         traceId:
           type: string
           example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    graphLevelsResponse:
+    multiStatusResponseItem:
       type: object
-      title: Response with graphs for requested levels
       properties:
-        graph:
-          $ref: '#/components/schemas/graph'
-        graphs:
-          $ref: '#/components/schemas/graphs'
-      description: Populating graph property on single level request and graphs property on multi level requests.
-    errorResponse-404:
+        code:
+          type: string
+          example: HTTP-404
+        title:
+          type: string
+          example: Resource not found.
+        status:
+          type: integer
+          example: 404
+        resource:
+          $ref: '#/components/schemas/overviewItem'
+    errorResponse-403:
       type: object
       properties:
         errors:
@@ -463,65 +444,27 @@ components:
             properties:
               code:
                 type: string
-                example: HTTP-404
+                example: HTTP-403
               title:
                 type: string
-                example: Not Found
+                example: Forbidden
               detail:
                 type: string
-                example: The resource either never existed, or may have been deleted.
+                example: You don't have sufficient permissions to access this resource.
         traceId:
           type: string
           example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    emptyReturn:
-      type: object
-    nodes:
-      type: object
-      example: '{"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2":{"label":"a","metadata":{"id":"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2","subtype":"PROCESSOR","type":"DA_APP","filePath":"example.qvd"}}}'
-      description: All the nodes contained in a graph.
-      additionalProperties:
-        $ref: '#/components/schemas/node'
-    edge:
+    overviewItem:
       type: object
       properties:
-        id:
-          type:
-          - string
-          - 'null'
-          example: '1'
-          description: The index of edges. This is only used in the POST request.
-        source:
+        qri:
           type: string
           example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
-          description: The id (QRI) of the source node on this edge.
-        target:
-          type: string
-          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
-          description: The id (QRI) of the target node on this edge.
-        metadata:
-          type: object
-          properties:
-            type:
-              type: string
-        relation:
-          type: string
-          example:
-          - LOAD
-          - STORE
-          - READ
-          - FROM
-    graphsResponse:
-      type: object
-      title: Response with all graphs
-      properties:
-        graphs:
-          $ref: '#/components/schemas/graphs'
-    qris:
-      type: array
-      items:
-        type: string
-        example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
-        description: List of qri to find direct lineage for.
+          description: Input QRI that we are getting the overview for.
+        lineage:
+          type: array
+          items:
+            $ref: '#/components/schemas/lineageOverviewInfo'
     node:
       type: object
       example: '{"label":"a","metadata":{"id":"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2","subtype":"PROCESSOR","type":"DA_APP","filePath":"example.qvd"}}'
@@ -571,13 +514,6 @@ components:
             dataAsset:
               $ref: '#/components/schemas/dataAsset'
           description: This contains additional node information such as node types, subtypes, queryExpressions, etc.
-    overviewItems:
-      type: object
-      properties:
-        resources:
-          type: array
-          items:
-            $ref: '#/components/schemas/overviewItem'
     multiStatusResponse:
       type: object
       properties:
@@ -585,133 +521,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/multiStatusResponseItem'
-    graphResponse:
+    graphLevelsResponse:
       type: object
-      title: Response with a single graph
+      title: Response with graphs for requested levels
       properties:
         graph:
           $ref: '#/components/schemas/graph'
-    graphs:
-      type: object
-      title: Graphs
-      properties:
         graphs:
-          type: array
-          items:
-            $ref: '#/components/schemas/graph'
-      description: The list of lineage graphs.
-    errorResponse-503:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-503
-              title:
-                type: string
-                example: Service Unavailable
-              detail:
-                type: string
-                example: The service is unavailable.
-        traceId:
-          type: string
-          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    dataAsset:
-      type: object
-      properties:
-        id:
-          type: string
-          example: qri:app:landing://65083739daf9b2658503f93c
-          description: The id (QRI) of the data asset
-        type:
-          type: string
-          example: DI_APP
-          description: The type of the data asset
-        label:
-          type: string
-          example: example.Landing.Asset
-          description: The lable of the data asset
-        subtype:
-          type: string
-          example: LANDING_SAAS_MANAGED
-          description: The subtype of the data asset
-      description: The data integration data asset where the node belongs to
-    overviewItem:
-      type: object
-      properties:
-        qri:
-          type: string
-          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
-          description: Input QRI that we are getting the overview for.
-        lineage:
-          type: array
-          items:
-            $ref: '#/components/schemas/lineageOverviewInfo'
-    multiStatusResponseItem:
-      type: object
-      properties:
-        code:
-          type: string
-          example: HTTP-404
-        title:
-          type: string
-          example: Resource not found.
-        status:
-          type: integer
-          example: 404
-        resource:
-          $ref: '#/components/schemas/overviewItem'
-    errorResponse-403:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-403
-              title:
-                type: string
-                example: Forbidden
-              detail:
-                type: string
-                example: You don't have sufficient permissions to access this resource.
-        traceId:
-          type: string
-          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
-    lineageOverviewInfo:
-      type: object
-      properties:
-        tableQRI:
-          type:
-          - string
-          - 'null'
-          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
-          description: Table level QRI that the field belongs to.
-        tableLabel:
-          type:
-          - string
-          - 'null'
-          example: Sales Table
-          description: Table level label
-        resourceQRI:
-          type:
-          - string
-          - 'null'
-          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
-          description: Resource level QRI
-        resourceLabel:
-          type:
-          - string
-          - 'null'
-          example: Sales Data
-          description: Resource level label
+          $ref: '#/components/schemas/graphs'
+      description: Populating graph property on single level request and graphs property on multi level requests.
     graph:
       type: object
       properties:
@@ -757,6 +575,68 @@ components:
               - EXTERNAL
               description: The type of the graph producer.
       description: The lineage graph containing the node.
+    dataAsset:
+      type: object
+      properties:
+        id:
+          type: string
+          example: qri:app:landing://65083739daf9b2658503f93c
+          description: The id (QRI) of the data asset
+        type:
+          type: string
+          example: DI_APP
+          description: The type of the data asset
+        label:
+          type: string
+          example: example.Landing.Asset
+          description: The lable of the data asset
+        subtype:
+          type: string
+          example: LANDING_SAAS_MANAGED
+          description: The subtype of the data asset
+      description: The data integration data asset where the node belongs to
+    qris:
+      type: array
+      items:
+        type: string
+        example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
+        description: List of qri to find direct lineage for.
+    graphResponse:
+      type: object
+      title: Response with a single graph
+      properties:
+        graph:
+          $ref: '#/components/schemas/graph'
+    errorResponse-500:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-500
+              meta:
+                type: object
+                example: '{"id":"e5c651d5-1198-45a2-be5d-f016cee0baf5"}'
+                description: The meta contains additional information when requests fail due to internal errors.
+              title:
+                type: string
+                example: Internal Server Error
+              detail:
+                type: string
+                example: Something went wrong in the server.
+        traceId:
+          type: string
+          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
+    graphsResponse:
+      type: object
+      title: Response with all graphs
+      properties:
+        graphs:
+          $ref: '#/components/schemas/graphs'
     errorResponse-429:
       type: object
       properties:
@@ -780,3 +660,123 @@ components:
               detail:
                 type: string
                 example: User rate limited.
+    graphs:
+      type: object
+      title: Graphs
+      properties:
+        graphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/graph'
+      description: The list of lineage graphs.
+    nodes:
+      type: object
+      example: '{"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2":{"label":"a","metadata":{"id":"qri:app:sense://3634fc0d-273d-429e-8d0b-1b4b1b66a1f2","subtype":"PROCESSOR","type":"DA_APP","filePath":"example.qvd"}}}'
+      description: All the nodes contained in a graph.
+      additionalProperties:
+        $ref: '#/components/schemas/node'
+    overviewItems:
+      type: object
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/overviewItem'
+    lineageOverviewInfo:
+      type: object
+      properties:
+        tableQRI:
+          type:
+          - string
+          - 'null'
+          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
+          description: Table level QRI that the field belongs to.
+        tableLabel:
+          type:
+          - string
+          - 'null'
+          example: Sales Table
+          description: Table level label
+        resourceQRI:
+          type:
+          - string
+          - 'null'
+          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
+          description: Resource level QRI
+        resourceLabel:
+          type:
+          - string
+          - 'null'
+          example: Sales Data
+          description: Resource level label
+    edge:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          example: '1'
+          description: The index of edges. This is only used in the POST request.
+        source:
+          type: string
+          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
+          description: The id (QRI) of the source node on this edge.
+        target:
+          type: string
+          example: qri:app:sense://e5c651d5-1198-45a2-be5d-f016cee0baf5
+          description: The id (QRI) of the target node on this edge.
+        metadata:
+          type: object
+          properties:
+            type:
+              type: string
+        relation:
+          type: string
+          example:
+          - LOAD
+          - STORE
+          - READ
+          - FROM
+    emptyReturn:
+      type: object
+    errorResponse-503:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-503
+              title:
+                type: string
+                example: Service Unavailable
+              detail:
+                type: string
+                example: The service is unavailable.
+        traceId:
+          type: string
+          example: e5c651d5-1198-45a2-be5d-f016cee0baf5
+    errorResponse-404:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-404
+              title:
+                type: string
+                example: Not Found
+              detail:
+                type: string
+                example: The resource either never existed, or may have been deleted.
+        traceId:
+          type: string
+          example: e5c651d5-1198-45a2-be5d-f016cee0baf5

@@ -350,38 +350,15 @@ paths:
         limit: 1000
 components:
   schemas:
-    error:
+    extensions:
+      type: object
       required:
-      - code
-      - title
+      - data
       properties:
-        meta:
-          $ref: '#/components/schemas/meta'
-        title:
-          type: string
-          description: Title of the HTTP status code.
-        source:
-          type: object
-          description: Optional JSON patch object pointing to an invalid property.
-        status:
-          type: number
-          description: The HTTP status code.
-        traceId:
-          type: string
-          description: The active traceId.
-      description: An error object.
-    bundleMeta:
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the bundle.
-        name:
-          type: string
-          description: Name of the bundle.
-        description:
-          type: string
-          description: Description of the bundle.
-      description: Object containing meta data regarding the bundle the extension belongs to. If it does not belong to a bundle, this object is not defined.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/extension'
     extension:
       type: object
       properties:
@@ -478,6 +455,18 @@ components:
           readOnly: true
           description: The migration state of the extension. It can be either "READY_TO_MOVE", "IN_PROGRESS" or "COMPLETED".
       description: The extension model.
+    bundleMeta:
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the bundle.
+        name:
+          type: string
+          description: Name of the bundle.
+        description:
+          type: string
+          description: Description of the bundle.
+      description: Object containing meta data regarding the bundle the extension belongs to. If it does not belong to a bundle, this object is not defined.
     meta:
       properties:
         stack:
@@ -490,12 +479,23 @@ components:
           type: string
           description: Name of the resource related to the error. If there is a conflict, it is the name of the model attempting to be created.
       description: Object containing meta data regarding an error. It does not necessarily contain all the properties.
-    extensions:
-      type: object
+    error:
       required:
-      - data
+      - code
+      - title
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/extension'
+        meta:
+          $ref: '#/components/schemas/meta'
+        title:
+          type: string
+          description: Title of the HTTP status code.
+        source:
+          type: object
+          description: Optional JSON patch object pointing to an invalid property.
+        status:
+          type: number
+          description: The HTTP status code.
+        traceId:
+          type: string
+          description: The active traceId.
+      description: An error object.

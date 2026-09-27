@@ -282,6 +282,39 @@ paths:
         limit: 100
 components:
   schemas:
+    BulkCreatePinnedLinkItemPayload:
+      allOf:
+      - $ref: '#/components/schemas/CreatePinnedLinkConfigPayload'
+      - type: object
+        required:
+        - links
+        properties:
+          links:
+            type: array
+            items:
+              $ref: '#/components/schemas/CreatePinnedLinkPayload'
+    JSONPatchPinnedLinkPayload:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+          path:
+            enum:
+            - /name
+            - /link
+            type: string
+          value:
+            type: string
+            example: https://updatedlink.com
+            description: The value to be used for this operation.
     CreatePinnedLinkPayload:
       type: object
       required:
@@ -294,6 +327,52 @@ components:
         name:
           type: string
           description: The title of the link, which will be shown in the navigation bar. Max length 50 characters.
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          description: Error code.
+        message:
+          type: string
+          readOnly: true
+          description: Error cause.
+    CreatePinnedLinkConfigPayload:
+      type: object
+      required:
+      - scope
+      - type
+      properties:
+        type:
+          enum:
+          - custom-link
+          type: string
+          description: Specifies the type of the link. Only supports `custom-link`.
+        scope:
+          enum:
+          - tenant
+          type: string
+          description: Specifies the scope of the link. Only supports `tenant`.
+    ErrorResponse403:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-403
+              title:
+                type: string
+                example: Forbidden
+              detail:
+                type: string
+                example: You don't have sufficient permissions to access this resource.
+        traceId:
+          type: string
     PinnedLink:
       type: object
       required:
@@ -333,82 +412,3 @@ components:
           description: Date string
         updatedBy:
           type: string
-    ErrorResponse403:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-403
-              title:
-                type: string
-                example: Forbidden
-              detail:
-                type: string
-                example: You don't have sufficient permissions to access this resource.
-        traceId:
-          type: string
-    BulkCreatePinnedLinkItemPayload:
-      allOf:
-      - $ref: '#/components/schemas/CreatePinnedLinkConfigPayload'
-      - type: object
-        required:
-        - links
-        properties:
-          links:
-            type: array
-            items:
-              $ref: '#/components/schemas/CreatePinnedLinkPayload'
-    JSONPatchPinnedLinkPayload:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-          path:
-            enum:
-            - /name
-            - /link
-            type: string
-          value:
-            type: string
-            example: https://updatedlink.com
-            description: The value to be used for this operation.
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          readOnly: true
-          description: Error code.
-        message:
-          type: string
-          readOnly: true
-          description: Error cause.
-    CreatePinnedLinkConfigPayload:
-      type: object
-      required:
-      - scope
-      - type
-      properties:
-        type:
-          enum:
-          - custom-link
-          type: string
-          description: Specifies the type of the link. Only supports `custom-link`.
-        scope:
-          enum:
-          - tenant
-          type: string
-          description: Specifies the scope of the link. Only supports `tenant`.

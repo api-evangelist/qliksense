@@ -409,16 +409,31 @@ paths:
         limit: 1000
 components:
   schemas:
-    ListLinks:
+    GetResult:
       type: object
-      title: ListLinks are the HAL links for a list result.
+      title: GetResult is the result type of the audit service Get method.
       properties:
-        next:
-          $ref: '#/components/schemas/href'
-        prev:
-          $ref: '#/components/schemas/href'
-        self:
-          $ref: '#/components/schemas/href'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetByIDResult'
+          description: List of audit items.
+        links:
+          $ref: '#/components/schemas/ListLinks'
+    GetSettingsResult:
+      type: object
+      title: GetSettingsResult is the result type of a getSettings request.
+      properties:
+        data:
+          type: object
+          properties:
+            EventTTL:
+              type: integer
+              description: The events TTL in seconds.
+            ArchiveEnabled:
+              type: boolean
+              description: Is Long Term Storage archiving enabled?.
+          description: Server configuration options.
     GetByIDResult:
       type: object
       title: GetByIDResult is the result type of the audit service GetByID method.
@@ -484,12 +499,33 @@ components:
           type: string
           description: If the event originated from a sub resource the topLevelResourceId contains the id of the top level resource associated with the sub resource.
       description: The availability of the properties depends on the event and the context it was triggered in.
-    GetLinks:
+    ListLinks:
       type: object
-      title: GetLinks are the HAL links for a single result.
+      title: ListLinks are the HAL links for a list result.
       properties:
+        next:
+          $ref: '#/components/schemas/href'
+        prev:
+          $ref: '#/components/schemas/href'
         self:
           $ref: '#/components/schemas/href'
+    GetObjectsResult:
+      type: object
+      title: GetObjectsResult is the result type of audit service generic resources.
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+          description: List of requested resources.
+        links:
+          $ref: '#/components/schemas/ListLinks'
+    href:
+      type: object
+      title: href is a URL.
+      properties:
+        href:
+          type: string
     GetArchiveResult:
       type: object
       title: GetArchiveResult is the result type of the audit service GetArchive method.
@@ -499,6 +535,12 @@ components:
           items:
             $ref: '#/components/schemas/ArchiveItem'
           description: List of archived events. The structure of the events depend on their type and version.
+    GetLinks:
+      type: object
+      title: GetLinks are the HAL links for a single result.
+      properties:
+        self:
+          $ref: '#/components/schemas/href'
     ErrorResponse:
       type: object
       title: ErrorResponse indicates the error response.
@@ -554,45 +596,3 @@ components:
         eventTypeVersion:
           type: string
           description: The version of the event type.
-    GetSettingsResult:
-      type: object
-      title: GetSettingsResult is the result type of a getSettings request.
-      properties:
-        data:
-          type: object
-          properties:
-            EventTTL:
-              type: integer
-              description: The events TTL in seconds.
-            ArchiveEnabled:
-              type: boolean
-              description: Is Long Term Storage archiving enabled?.
-          description: Server configuration options.
-    GetObjectsResult:
-      type: object
-      title: GetObjectsResult is the result type of audit service generic resources.
-      properties:
-        data:
-          type: array
-          items:
-            type: string
-          description: List of requested resources.
-        links:
-          $ref: '#/components/schemas/ListLinks'
-    href:
-      type: object
-      title: href is a URL.
-      properties:
-        href:
-          type: string
-    GetResult:
-      type: object
-      title: GetResult is the result type of the audit service Get method.
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetByIDResult'
-          description: List of audit items.
-        links:
-          $ref: '#/components/schemas/ListLinks'

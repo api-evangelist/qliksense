@@ -94,15 +94,6 @@ paths:
         limit: 100
 components:
   schemas:
-    AlertingSettingsUpload:
-      type: object
-      required:
-      - enable-data-alerting
-      properties:
-        enable-data-alerting:
-          type: boolean
-          example: true
-          description: true if data-alerting feature is enabled. A status change could potentially result in a considerable amount of API operations to enable/disable triggers. Enabling this feature also requires that the license has this feature enabled.
     Error_meta:
       type: object
       properties:
@@ -110,6 +101,21 @@ components:
           type: integer
           readOnly: true
           description: HTTP error code.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     Error:
       type: object
       properties:
@@ -127,21 +133,15 @@ components:
           type: string
           readOnly: true
           description: Error cause.
-    Errors:
+    AlertingSettingsUpload:
       type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
+      required:
+      - enable-data-alerting
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
+        enable-data-alerting:
+          type: boolean
+          example: true
+          description: true if data-alerting feature is enabled. A status change could potentially result in a considerable amount of API operations to enable/disable triggers. Enabling this feature also requires that the license has this feature enabled.
     AlertingSettings:
       type: object
       required:

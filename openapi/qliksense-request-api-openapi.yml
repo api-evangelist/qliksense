@@ -455,180 +455,6 @@ paths:
           description: Name of the tenant that will be called
 components:
   schemas:
-    RequestArrayV2:
-      type: array
-      items:
-        $ref: '#/components/schemas/RequestObjectV2'
-      description: An array of Request Summary objects.
-    DataLoadStatus:
-      enum:
-      - pending
-      - success
-      - warnings
-      - failed
-      type: string
-      description: The completion status of a completed Request.
-    FieldSelectionStateV2:
-      type: object
-      required:
-      - selectionAppParamType
-      - selectionAppParamName
-      - values
-      properties:
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldValueV2'
-          description: The list of values in the selection state for this field.
-        selectedSize:
-          type: integer
-          description: The actual number of selected values. Not used for `bindSelectionState`.
-        selectionAppParamName:
-          type: string
-          description: The name of a variable or field that corresponds to one or more bindings having a matching `selectAppParamName` used to generate Analytics Applications.
-        selectionAppParamType:
-          $ref: '#/components/schemas/SelectAppParamTypeV2'
-      description: The set of values used by link bindings to generate an Analytics Application.
-    AppNameV2:
-      type: string
-      example: appname
-      minLength: 1
-      description: The name of an Analytics Application.
-    ErrorV2:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorDetailsV2'
-        traceId:
-          type: string
-          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
-      description: A standard error response containing a list of one or more errors.
-    LinkId:
-      type: string
-      pattern: ^[a-fA-F0-9]{24}$
-      description: The system-assigned ID for a link.
-    FieldValueV2:
-      type: object
-      required:
-      - strValue
-      - selStatus
-      properties:
-        numValue:
-          type: string
-        strValue:
-          type: string
-        selStatus:
-          $ref: '#/components/schemas/SelectStatusV2'
-      description: A single field value with its selection status.
-    AppIdV2:
-      type: string
-      minLength: 1
-      description: The system-assigned ID for an Analytics Application.
-    UserIdV2:
-      type: string
-      example: wcgIs6wGcDdyzep9QmyopWvNH1FJTOhh
-      description: The system-assigned ID for a user
-    SelectStatusV2:
-      enum:
-      - S
-      - O
-      - X
-      type: string
-      description: 'The valid set of selection states that a specific field value can be in. One of: `S` (selected), `O` (optional), or `X` (excluded).'
-    RequestIdV2:
-      type: string
-      pattern: ^[a-fA-F0-9]{24}$
-      description: The system-assigned ID for an ODAG request.
-    MetaV2:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          format: int32
-          description: 'The HTTP status code for the error. Generally speaking, the following codes have these meanings: `200` - Success, `201` - Success (object created), `400` - Error with user input, `403` - Authorization error (user lacks permission), `404` - Object not found, `409` - Attempt to change an object using an obsolete last ModifiedDate.'
-      description: Additional metadata associated with an error.
-    SelectionStateV2:
-      type: array
-      items:
-        $ref: '#/components/schemas/FieldSelectionStateV2'
-      description: A collection of FieldSelectionStateV2 objects.
-    UserStateCondensedV2:
-      type: object
-      required:
-      - id
-      - name
-      - subject
-      - tenantid
-      properties:
-        id:
-          $ref: '#/components/schemas/UserIdV2'
-        name:
-          type: string
-        subject:
-          type: string
-          description: Identity subject used for identity mapping.
-        tenantid:
-          type: string
-          description: Tenant identifier.
-      description: Condensed state of a user returned in state of ownable ODAG entities (for example, a link or request).
-    ErrorDetailsV2:
-      type: object
-      properties:
-        code:
-          type: string
-          description: A unique code used to identify the template form of the message in i18n tables (language independent).
-        meta:
-          $ref: '#/components/schemas/MetaV2'
-        title:
-          type: string
-        detail:
-          type: string
-          description: The message describing the error.
-      description: A single error entry within an error response.
-    SelectAppParamTypeV2:
-      enum:
-      - Field
-      - Variable
-      - Property
-      - Exclude
-      - BDI
-      type: string
-      description: The different kinds of selection Analytics Application parameters whose values can be bound to the script of template Analytics Applications when generating new Analytics Applications. Note that `Exclude` is used to specifically prevent fields defined as optional bind parameters in the template Analytics Application script from being bound (these must either not have the optional quantity constraint specifiers or have a minimum quantity of 0).
-    RequestStateV2:
-      enum:
-      - validating
-      - queued
-      - invalid
-      - hold
-      - loading
-      - canceled
-      - failed
-      - succeeded
-      - canceling
-      - canceledAck
-      - failedAck
-      type: string
-      description: The current state of an ODAG request.
-    RequestKindV2:
-      enum:
-      - single
-      - multiple
-      - singlesub
-      type: string
-      description: For links that do not use any partitioning fields, a `single` Analytics Application generation request is created. However, for selection Analytics Applications that designate a set of partitioning fields and the user selects multiple values for any of those partitioning fields, ODAG uses a separate `singlesub` request to generate a separate Analytics Application for each combination of selected partition field values, and tracks the queuing and data load phase of each of those sub-requests separately. Note that `singlesub` requests share the same link ID as their spawning `multiple` parent request.
-    AppStateCondensedV2:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          $ref: '#/components/schemas/AppIdV2'
-        name:
-          $ref: '#/components/schemas/AppNameV2'
-      description: Condensed state of an Analytics Application returned in `state` for Link, LinkUsage, Request, and ODAG Apps GET calls.
     RequestPostPayloadV2:
       type: object
       required:
@@ -671,6 +497,102 @@ components:
           format: date-time
           example: '2025-11-11T13:45:30Z'
       description: An object that describes the state of a generated Analytics Application's data load operation. In request objects that include this object as an optional property, the property will be missing for `multiple` generation requests (see their sub-requests for their data load information) or for `single` and `singlesub` requests that have not yet reached their `loading` phase.
+    FieldSelectionStateV2:
+      type: object
+      required:
+      - selectionAppParamType
+      - selectionAppParamName
+      - values
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldValueV2'
+          description: The list of values in the selection state for this field.
+        selectedSize:
+          type: integer
+          description: The actual number of selected values. Not used for `bindSelectionState`.
+        selectionAppParamName:
+          type: string
+          description: The name of a variable or field that corresponds to one or more bindings having a matching `selectAppParamName` used to generate Analytics Applications.
+        selectionAppParamType:
+          $ref: '#/components/schemas/SelectAppParamTypeV2'
+      description: The set of values used by link bindings to generate an Analytics Application.
+    UserStateCondensedV2:
+      type: object
+      required:
+      - id
+      - name
+      - subject
+      - tenantid
+      properties:
+        id:
+          $ref: '#/components/schemas/UserIdV2'
+        name:
+          type: string
+        subject:
+          type: string
+          description: Identity subject used for identity mapping.
+        tenantid:
+          type: string
+          description: Tenant identifier.
+      description: Condensed state of a user returned in state of ownable ODAG entities (for example, a link or request).
+    MetaV2:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+          description: 'The HTTP status code for the error. Generally speaking, the following codes have these meanings: `200` - Success, `201` - Success (object created), `400` - Error with user input, `403` - Authorization error (user lacks permission), `404` - Object not found, `409` - Attempt to change an object using an obsolete last ModifiedDate.'
+      description: Additional metadata associated with an error.
+    AppStateCondensedV2:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          $ref: '#/components/schemas/AppIdV2'
+        name:
+          $ref: '#/components/schemas/AppNameV2'
+      description: Condensed state of an Analytics Application returned in `state` for Link, LinkUsage, Request, and ODAG Apps GET calls.
+    SelectStatusV2:
+      enum:
+      - S
+      - O
+      - X
+      type: string
+      description: 'The valid set of selection states that a specific field value can be in. One of: `S` (selected), `O` (optional), or `X` (excluded).'
+    LinkId:
+      type: string
+      pattern: ^[a-fA-F0-9]{24}$
+      description: The system-assigned ID for a link.
+    SelectAppParamTypeV2:
+      enum:
+      - Field
+      - Variable
+      - Property
+      - Exclude
+      - BDI
+      type: string
+      description: The different kinds of selection Analytics Application parameters whose values can be bound to the script of template Analytics Applications when generating new Analytics Applications. Note that `Exclude` is used to specifically prevent fields defined as optional bind parameters in the template Analytics Application script from being bound (these must either not have the optional quantity constraint specifiers or have a minimum quantity of 0).
+    SelectionStateV2:
+      type: array
+      items:
+        $ref: '#/components/schemas/FieldSelectionStateV2'
+      description: A collection of FieldSelectionStateV2 objects.
+    DataLoadStatus:
+      enum:
+      - pending
+      - success
+      - warnings
+      - failed
+      type: string
+      description: The completion status of a completed Request.
+    RequestIdV2:
+      type: string
+      pattern: ^[a-fA-F0-9]{24}$
+      description: The system-assigned ID for an ODAG request.
     RequestObjectV2:
       type: object
       required:
@@ -767,6 +689,98 @@ components:
         If this is a `single` or `singlesub` request and the data load operation failed, the `generatedApp` property still contains the ID of the failed Analytics Application to allow viewing of the ODAG-bound script for diagnostic purposes. Generated Analytics Applications for failed requests are purged regularly, so the Analytics Application might no longer be available.
 
         If this is a `single` or `singlesub` request that was canceled before reaching the `loading` phase, the `generatedApp` property is missing because generated Analytics Applications for pre-load phase requests are deleted. If this is a `multiple` request, the `generatedApp` property is also missing.'
+    UserIdV2:
+      type: string
+      example: wcgIs6wGcDdyzep9QmyopWvNH1FJTOhh
+      description: The system-assigned ID for a user
+    ErrorDetailsV2:
+      type: object
+      properties:
+        code:
+          type: string
+          description: A unique code used to identify the template form of the message in i18n tables (language independent).
+        meta:
+          $ref: '#/components/schemas/MetaV2'
+        title:
+          type: string
+        detail:
+          type: string
+          description: The message describing the error.
+      description: A single error entry within an error response.
+    ErrorV2:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetailsV2'
+        traceId:
+          type: string
+          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
+      description: A standard error response containing a list of one or more errors.
+    AppIdV2:
+      type: string
+      minLength: 1
+      description: The system-assigned ID for an Analytics Application.
+    RequestStateV2:
+      enum:
+      - validating
+      - queued
+      - invalid
+      - hold
+      - loading
+      - canceled
+      - failed
+      - succeeded
+      - canceling
+      - canceledAck
+      - failedAck
+      type: string
+      description: The current state of an ODAG request.
+    RequestArrayV2:
+      type: array
+      items:
+        $ref: '#/components/schemas/RequestObjectV2'
+      description: An array of Request Summary objects.
+    AppNameV2:
+      type: string
+      example: appname
+      minLength: 1
+      description: The name of an Analytics Application.
+    RequestKindV2:
+      enum:
+      - single
+      - multiple
+      - singlesub
+      type: string
+      description: For links that do not use any partitioning fields, a `single` Analytics Application generation request is created. However, for selection Analytics Applications that designate a set of partitioning fields and the user selects multiple values for any of those partitioning fields, ODAG uses a separate `singlesub` request to generate a separate Analytics Application for each combination of selected partition field values, and tracks the queuing and data load phase of each of those sub-requests separately. Note that `singlesub` requests share the same link ID as their spawning `multiple` parent request.
+    FieldValueV2:
+      type: object
+      required:
+      - strValue
+      - selStatus
+      properties:
+        numValue:
+          type: string
+        strValue:
+          type: string
+        selStatus:
+          $ref: '#/components/schemas/SelectStatusV2'
+      description: A single field value with its selection status.
+    ReloadAppPayloadV2:
+      type: object
+      properties:
+        copyRequest:
+          type: boolean
+          description: Determines whether the request should be copied along with the generated Analytics Application.
+        actualRowEst:
+          type: integer
+          description: The current row estimate value calculated by the link's `rowEstExpr` property in the context of the selection Analytics Application.
+        selectionState:
+          $ref: '#/components/schemas/SelectionStateV2'
+        bindSelectionState:
+          $ref: '#/components/schemas/SelectionStateV2'
+      description: Payload to send when reloading an Analytics Application generated by an ODAG request.
     RequestAction:
       enum:
       - cancel
@@ -785,20 +799,6 @@ components:
           type: string
           description: The new name of the generated Analytics Application.
       description: Payload to send when renaming an Analytics Application generated by an ODAG request.
-    ReloadAppPayloadV2:
-      type: object
-      properties:
-        copyRequest:
-          type: boolean
-          description: Determines whether the request should be copied along with the generated Analytics Application.
-        actualRowEst:
-          type: integer
-          description: The current row estimate value calculated by the link's `rowEstExpr` property in the context of the selection Analytics Application.
-        selectionState:
-          $ref: '#/components/schemas/SelectionStateV2'
-        bindSelectionState:
-          $ref: '#/components/schemas/SelectionStateV2'
-      description: Payload to send when reloading an Analytics Application generated by an ODAG request.
 x-refined-from:
 - qliksense-analytics-odag-links.json
 - qliksense-analytics-odag-requests.json
