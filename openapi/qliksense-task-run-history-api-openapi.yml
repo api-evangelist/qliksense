@@ -206,6 +206,14 @@ paths:
         limit: 100
 components:
   schemas:
+    TaskRunSearchFilterField:
+      enum:
+      - ID
+      - STATUS
+      - SUB_STATUS
+      - PERIOD
+      type: string
+      description: The run-history field to filter on.
     FileStatistics:
       type: object
       properties:
@@ -216,35 +224,6 @@ components:
           type: number
           description: Number of files processed.
       description: Statistics for file-based tasks.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for programmatic handling.
-        title:
-          type: string
-          description: Brief human-readable summary of the error.
-        detail:
-          type: string
-          description: Detailed explanation of the error and suggested remediation steps.
-        source:
-          $ref: '#/components/schemas/ErrorSource'
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code associated with the error.
-      description: Represents a single error condition with details about what went wrong.
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
     DataTaskInstanceState:
       type: object
       properties:
@@ -384,6 +363,136 @@ components:
               description: Throughput in records per second
           description: Statistics for the most recent batch of changes processed during the task run, including timing and throughput metrics.
       description: Represents the execution state of a task instance, including progress metrics, errors, and operation-specific statistics.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    TaskRunItemRsp:
+      type: object
+      properties:
+        runId:
+          type: string
+          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
+          description: Identifier of the run instance.
+        status:
+          $ref: '#/components/schemas/TaskRunStatus'
+        endTime:
+          type: string
+          format: date-time
+          example: '2024-03-01T09:30:00Z'
+          description: Timestamp indicating when the run ended.
+        duration:
+          type: string
+          example: 00:30:00
+          description: Duration of the run in HH:MM:SS format.
+        startTime:
+          type: string
+          format: date-time
+          example: '2024-03-01T09:00:00Z'
+          description: Timestamp indicating when the run started.
+        subStatus:
+          type: string
+          description: Sub-status of the run, when applicable.
+        errorMessage:
+          type: string
+          default: ''
+          description: Error message, if the run failed.
+        datasetsCount:
+          type: integer
+          format: int32
+          example: 10
+          description: Total number of datasets processed in this run.
+        originSubStatus:
+          type: string
+          description: Origin-specific sub-status of the run, when applicable.
+        datasetsErrorCount:
+          type: integer
+          format: int32
+          example: 0
+          description: Number of datasets that encountered errors in this run.
+      description: Represents a single historical task run instance with execution status, timing, and error information.
+    TaskRunStatus:
+      enum:
+      - STARTING
+      - RUNNING
+      - COMPLETED
+      - FAILED
+      - CANCELED
+      - MISFIRED
+      type: string
+      description: Execution status of a task run instance.
+    DataTaskRuntimeState:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data task
+        type:
+          $ref: '#/components/schemas/DataTaskType'
+        lastRun:
+          $ref: '#/components/schemas/DataTaskInstanceState'
+        runReadiness:
+          type: object
+          properties:
+            state:
+              enum:
+              - READY_TO_RUN
+              - ALREADY_RUNNING
+              - NOT_RUNNABLE
+              type: string
+            message:
+              type: string
+      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
+    DataTaskType:
+      enum:
+      - LANDING
+      - STORAGE
+      - QVD_STORAGE
+      - TRANSFORM
+      - DATAMART
+      - REGISTERED_DATA
+      - REPLICATION
+      - DISTRIBUTION
+      - LAKE_LANDING
+      - KNOWLEDGE_MART
+      - FILE_BASED_KNOWLEDGE_MART
+      - LAKEHOUSE_STORAGE
+      - LAKEHOUSE_MIRROR
+      - STREAMING_LAKE_LANDING
+      - STREAMING_TRANSFORM
+      - REPLICATE_LANDING
+      type: string
+      x-enum-varnames:
+      - LANDING
+      - STORAGE
+      - QVD_STORAGE
+      - TRANSFORM
+      - DATAMART
+      - REGISTERED_DATA
+      - REPLICATION
+      - LAKE_LANDING
+      - KNOWLEDGE_MART
+      - FILE_BASED_KNOWLEDGE_MART
+      - LAKEHOUSE_STORAGE
+      - LAKEHOUSE_MIRROR
+      - STREAMING_LAKE_LANDING
+      - STREAMING_TRANSFORM
+      - REPLICATE_LANDING
     DataTaskDatasetState:
       type: object
       properties:
@@ -535,65 +644,6 @@ components:
               type: number
               description: Throughput in records per second
       description: Represents the execution state of a single dataset within a task run, including full load, CDC, and streaming progress.
-    TaskRunSearchFilterOperator:
-      enum:
-      - IN
-      - NOT_IN
-      - BETWEEN
-      type: string
-      description: 'Filter operator.
-
-        - `IN` / `NOT_IN`: exact match against the values list (recommended for ID, STATUS, SUB_STATUS).
-
-        - `BETWEEN`: only valid with the `PERIOD` field. The `value` list must contain two ISO-8601 timestamps (start, end).
-
-        '
-    DataTaskRuntimeState:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the data task
-        type:
-          $ref: '#/components/schemas/DataTaskType'
-        lastRun:
-          $ref: '#/components/schemas/DataTaskInstanceState'
-        runReadiness:
-          type: object
-          properties:
-            state:
-              enum:
-              - READY_TO_RUN
-              - ALREADY_RUNNING
-              - NOT_RUNNABLE
-              type: string
-            message:
-              type: string
-      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
-    OperationStatistics:
-      type: object
-      properties:
-        deleteCount:
-          type: number
-          description: Number of delete operations.
-        failedCount:
-          type: number
-          description: Number of failed operations.
-        insertCount:
-          type: number
-          description: Number of insert operations.
-        updateCount:
-          type: number
-          description: Number of update operations.
-      description: Breakdown of operations for record-oriented tasks.
-    TaskRunSearchFilterField:
-      enum:
-      - ID
-      - STATUS
-      - SUB_STATUS
-      - PERIOD
-      type: string
-      description: The run-history field to filter on.
     DiSearchTaskRunHistoryRsp:
       type: object
       properties:
@@ -610,35 +660,22 @@ components:
           type: boolean
           example: true
           description: True when more pages are available after this one; false when this is the last page.
-    TaskRunSearchFilter:
-      type: object
-      required:
-      - field
-      - operator
-      - value
-      properties:
-        field:
-          $ref: '#/components/schemas/TaskRunSearchFilterField'
-        value:
-          type: array
-          items:
-            type: string
-          description: Values to match. For `BETWEEN` on `PERIOD`, supply exactly two ISO-8601 timestamps.
-        operator:
-          $ref: '#/components/schemas/TaskRunSearchFilterOperator'
-      description: Specifies a single filter criterion to apply when searching task run history.
-    Errors:
+    OperationStatistics:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
-          type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+        deleteCount:
+          type: number
+          description: Number of delete operations.
+        failedCount:
+          type: number
+          description: Number of failed operations.
+        insertCount:
+          type: number
+          description: Number of insert operations.
+        updateCount:
+          type: number
+          description: Number of update operations.
+      description: Breakdown of operations for record-oriented tasks.
     ListDataTaskDatasetsRsp:
       type: object
       properties:
@@ -646,50 +683,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DataTaskDatasetState'
-    TaskRunItemRsp:
-      type: object
-      properties:
-        runId:
-          type: string
-          example: caf50cbf-d6f8-47c6-a5e0-b31e0d11102a
-          description: Identifier of the run instance.
-        status:
-          $ref: '#/components/schemas/TaskRunStatus'
-        endTime:
-          type: string
-          format: date-time
-          example: '2024-03-01T09:30:00Z'
-          description: Timestamp indicating when the run ended.
-        duration:
-          type: string
-          example: 00:30:00
-          description: Duration of the run in HH:MM:SS format.
-        startTime:
-          type: string
-          format: date-time
-          example: '2024-03-01T09:00:00Z'
-          description: Timestamp indicating when the run started.
-        subStatus:
-          type: string
-          description: Sub-status of the run, when applicable.
-        errorMessage:
-          type: string
-          default: ''
-          description: Error message, if the run failed.
-        datasetsCount:
-          type: integer
-          format: int32
-          example: 10
-          description: Total number of datasets processed in this run.
-        originSubStatus:
-          type: string
-          description: Origin-specific sub-status of the run, when applicable.
-        datasetsErrorCount:
-          type: integer
-          format: int32
-          example: 0
-          description: Number of datasets that encountered errors in this run.
-      description: Represents a single historical task run instance with execution status, timing, and error information.
     DiSearchTaskRunHistoryReq:
       type: object
       properties:
@@ -721,48 +714,55 @@ components:
             operator: BETWEEN
           description: Field filters to apply to the search.
       description: Request parameters for searching task run history, including filter criteria and pagination options.
-    DataTaskType:
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    TaskRunSearchFilterOperator:
       enum:
-      - LANDING
-      - STORAGE
-      - QVD_STORAGE
-      - TRANSFORM
-      - DATAMART
-      - REGISTERED_DATA
-      - REPLICATION
-      - DISTRIBUTION
-      - LAKE_LANDING
-      - KNOWLEDGE_MART
-      - FILE_BASED_KNOWLEDGE_MART
-      - LAKEHOUSE_STORAGE
-      - LAKEHOUSE_MIRROR
-      - STREAMING_LAKE_LANDING
-      - STREAMING_TRANSFORM
-      - REPLICATE_LANDING
+      - IN
+      - NOT_IN
+      - BETWEEN
       type: string
-      x-enum-varnames:
-      - LANDING
-      - STORAGE
-      - QVD_STORAGE
-      - TRANSFORM
-      - DATAMART
-      - REGISTERED_DATA
-      - REPLICATION
-      - LAKE_LANDING
-      - KNOWLEDGE_MART
-      - FILE_BASED_KNOWLEDGE_MART
-      - LAKEHOUSE_STORAGE
-      - LAKEHOUSE_MIRROR
-      - STREAMING_LAKE_LANDING
-      - STREAMING_TRANSFORM
-      - REPLICATE_LANDING
-    TaskRunStatus:
-      enum:
-      - STARTING
-      - RUNNING
-      - COMPLETED
-      - FAILED
-      - CANCELED
-      - MISFIRED
-      type: string
-      description: Execution status of a task run instance.
+      description: 'Filter operator.
+
+        - `IN` / `NOT_IN`: exact match against the values list (recommended for ID, STATUS, SUB_STATUS).
+
+        - `BETWEEN`: only valid with the `PERIOD` field. The `value` list must contain two ISO-8601 timestamps (start, end).
+
+        '
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    TaskRunSearchFilter:
+      type: object
+      required:
+      - field
+      - operator
+      - value
+      properties:
+        field:
+          $ref: '#/components/schemas/TaskRunSearchFilterField'
+        value:
+          type: array
+          items:
+            type: string
+          description: Values to match. For `BETWEEN` on `PERIOD`, supply exactly two ISO-8601 timestamps.
+        operator:
+          $ref: '#/components/schemas/TaskRunSearchFilterOperator'
+      description: Specifies a single filter criterion to apply when searching task run history.

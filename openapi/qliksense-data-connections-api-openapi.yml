@@ -432,14 +432,14 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    sort:
+    userId:
       in: query
-      name: sort
+      name: userId
       schema:
         type: string
-      example: +qName
+      example: 6K9xjsItDexffolu5vg1oWYkY8x7f-0G
       required: false
-      description: Name of field sort on for pagination, with prefix with + or - indicating ascending or descending order. When used for data-connections, sort field only applies to non-datafiles connections. Whatever sorting order is, datafiles connections will be returned after all regular connections being returned.
+      description: Filtering on userId. Requires admin role if specified userId doesn't match that is defined in JWT.
     personal:
       in: query
       name: personal
@@ -448,6 +448,71 @@ components:
       example: false
       required: false
       description: Filtering on personal connections, ignored if spaceId is defined in same request
+    includeDisabled:
+      in: query
+      name: includeDisabled
+      schema:
+        type: boolean
+      example: true
+      required: false
+      description: Includes connections that uses disabled datasources
+    dataName:
+      in: query
+      name: dataName
+      schema:
+        type: string
+      example: data
+      required: false
+      description: Provides an alternate name to be used for data[] element in GET response.
+    parseConnection:
+      in: query
+      name: parseConnection
+      schema:
+        type: boolean
+        example: true
+      example: true
+      required: false
+      description: List of connection properties shall be returned when the query is set to true, default is false
+    authCodeInHeader:
+      in: header
+      name: qlik-auth-code
+      schema:
+        type: string
+        example: code=aPrxxWbemCeRRVGEJVgYDAkU_TzTKE6Geu9...
+      required: false
+      description: OAuth authentication code. This header is required by certain datasources when patching a data connection.
+    qConnID:
+      in: path
+      name: qID
+      schema:
+        type: string
+      example: 82ee7b44-0c4d-491b-bd38-82640c0430a5
+      required: true
+      description: Connection ID
+    owner:
+      in: query
+      name: owner
+      schema:
+        type: string
+      example: 928e2a66-01ba-4678-aa32-e74c213896fa
+      required: false
+      description: Filtering on datafile connections by owner (i.e. app) ID.
+    extended:
+      in: query
+      name: extended
+      schema:
+        type: boolean
+      example: false
+      required: false
+      description: Returns extended list of properties (e.g. encrypted credential string) when set to true.
+    nocache:
+      in: query
+      name: noCache
+      schema:
+        type: boolean
+      example: false
+      required: false
+      description: datafiles connections will be returned from cache by default (if data-connections is configured to use cache), this query parameter is used disable this default behavior, e.g. return an update-to-date datafiles connection if the query is set to true
     limit:
       in: query
       name: limit
@@ -460,38 +525,14 @@ components:
       example: 30
       required: false
       description: Number of resources to be returned (between 1 and 100)
-    extended:
+    nodatafiles:
       in: query
-      name: extended
+      name: noDatafiles
       schema:
         type: boolean
-      example: false
+      example: true
       required: false
-      description: Returns extended list of properties (e.g. encrypted credential string) when set to true.
-    userId:
-      in: query
-      name: userId
-      schema:
-        type: string
-      example: 6K9xjsItDexffolu5vg1oWYkY8x7f-0G
-      required: false
-      description: Filtering on userId. Requires admin role if specified userId doesn't match that is defined in JWT.
-    locale:
-      in: query
-      name: locale
-      schema:
-        type: string
-      example: en
-      required: false
-      description: ICU locale ID, used only when caseinsensitive is set to true, default to 'en' if undefined
-    dataName:
-      in: query
-      name: dataName
-      schema:
-        type: string
-      example: data
-      required: false
-      description: Provides an alternate name to be used for data[] element in GET response.
+      description: Datafiles connections will not be returned if set to true
     bycredentialname:
       in: query
       name: byCredentialName
@@ -510,14 +551,6 @@ components:
       example: connectionname
       required: false
       description: The connection ID in the path becomes a connection name when this query parameter is set.
-    nocache:
-      in: query
-      name: noCache
-      schema:
-        type: boolean
-      example: false
-      required: false
-      description: datafiles connections will be returned from cache by default (if data-connections is configured to use cache), this query parameter is used disable this default behavior, e.g. return an update-to-date datafiles connection if the query is set to true
     spaceID:
       in: query
       name: spaceId
@@ -542,55 +575,6 @@ components:
       example: true
       required: false
       description: Base Qri (encrypted) will be returned when the query is set to true, default is false
-    authCodeInHeader:
-      in: header
-      name: qlik-auth-code
-      schema:
-        type: string
-        example: code=aPrxxWbemCeRRVGEJVgYDAkU_TzTKE6Geu9...
-      required: false
-      description: OAuth authentication code. This header is required by certain datasources when patching a data connection.
-    page:
-      in: query
-      name: page
-      schema:
-        type: string
-      example: page=JwAAAAljcmVhdGVkAPfQ-sx0AQAAB19pZABfb93nZcM4SN1M0e8A
-      required: false
-      description: Pagination cursor string, which is generated automatically in previous pagination query.
-    qConnID:
-      in: path
-      name: qID
-      schema:
-        type: string
-      example: 82ee7b44-0c4d-491b-bd38-82640c0430a5
-      required: true
-      description: Connection ID
-    nodatafiles:
-      in: query
-      name: noDatafiles
-      schema:
-        type: boolean
-      example: true
-      required: false
-      description: Datafiles connections will not be returned if set to true
-    parseConnection:
-      in: query
-      name: parseConnection
-      schema:
-        type: boolean
-        example: true
-      example: true
-      required: false
-      description: List of connection properties shall be returned when the query is set to true, default is false
-    includeDisabled:
-      in: query
-      name: includeDisabled
-      schema:
-        type: boolean
-      example: true
-      required: false
-      description: Includes connections that uses disabled datasources
     filter:
       in: query
       name: filter
@@ -599,6 +583,14 @@ components:
         example: qName co "abc" or qName sw "dd" and qType eq "rest" and created gt "2000-01-10T15:04:05Z"
       required: false
       description: Filtering resources by properties (filterable properties only) using SCIM filter string. Note the filter string only applies to connections managed by data-connections service, i.e. filtering doesn't apply to DataFile connections. When filtering on datetime property (e.g. created, updated), datetime should be in RFC3339 format.
+    locale:
+      in: query
+      name: locale
+      schema:
+        type: string
+      example: en
+      required: false
+      description: ICU locale ID, used only when caseinsensitive is set to true, default to 'en' if undefined
     caseinsensitive:
       in: query
       name: caseinsensitive
@@ -608,14 +600,14 @@ components:
       example: true
       required: false
       description: Sort results will be returned in case insensitive order if set to true (Only used along with sort query)
-    owner:
+    sort:
       in: query
-      name: owner
+      name: sort
       schema:
         type: string
-      example: 928e2a66-01ba-4678-aa32-e74c213896fa
+      example: +qName
       required: false
-      description: Filtering on datafile connections by owner (i.e. app) ID.
+      description: Name of field sort on for pagination, with prefix with + or - indicating ascending or descending order. When used for data-connections, sort field only applies to non-datafiles connections. Whatever sorting order is, datafiles connections will be returned after all regular connections being returned.
     credentialID:
       in: query
       name: credentialId
@@ -624,46 +616,236 @@ components:
       example: 22379dc5-076e-4fec-ae20-5529a8a57dc2
       required: false
       description: Credential ID
+    page:
+      in: query
+      name: page
+      schema:
+        type: string
+      example: page=JwAAAAljcmVhdGVkAPfQ-sx0AQAAB19pZABfb93nZcM4SN1M0e8A
+      required: false
+      description: Pagination cursor string, which is generated automatically in previous pagination query.
   schemas:
-    BulkResponse:
+    ConnectionCreate:
       type: object
+      required:
+      - qName
+      - qConnectStatement
+      - qType
+      - datasourceID
       properties:
-        data:
+        qID:
+          type: string
+          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
+          description: Unique identifier (UUID) for the data connection. A UUID will be generated automatically if qID is not specified or empty
+        tags:
           type: array
           items:
+            type: string
+            example: tag
+            description: tag string (256 bytes or less)
+          example: '["tag1, "tag2"]'
+          description: List of tags attached to the connection (allow max 32 tags)
+        owner:
+          type: string
+          example: 928e2a66-01ba-4678-aa32-e74c213896fa
+          description: App ID
+        qName:
+          type: string
+          example: MyConnection
+          description: Descriptive name of the data connection
+        qType:
+          type: string
+          example: QvOdbcConnectorPackage.exe
+          description: Type of connection - indicates connection provider type
+        space:
+          type: string
+          example: 611bcebaeec1203d88211ac4
+          description: ID of the space to which the connection belongs
+        qLogOn:
+          enum:
+          - '0'
+          - '1'
+          - LOG_ON_SERVICE_USER
+          - LOG_ON_CURRENT_USER
+          type: string
+          example: '1'
+          description: Indicates the type of user associated with the data connection.
+        qPassword:
+          type: string
+          example: Connector encoded password
+          description: Any logon password associated with the data connection (connector encoded)
+        qUsername:
+          type: string
+          example: MyUsername
+          description: Any logon username associated with the data connection
+        datasourceID:
+          type: string
+          example: snowflake
+          description: ID of the datasource associated with this connection
+        qriInRequest:
+          type: string
+          example: qri:db:snowflake://BQ1-3F_BvWfxxCDDiz9vQepqHLAcHWqacoqwLq4wxWM
+          description: QRI string of the connection. The string will be persisted to mongo when the request is originated from trusted client (i.e. dcaas) to avoid invalid QRi string.
+        qArchitecture:
+          enum:
+          - 0
+          - 1
+          type: integer
+          example: 0
+          description: 0 or 1 value indicating whether the data connector is 64-bit (0) or 32-bit (1). Defaults to 0 if not specified.
+        qCredentialsID:
+          type: string
+          example: 935ec250-65bc-47c0-965b-53554f3f87d8
+          description: ID of the credential associated with the connection
+        qEngineObjectID:
+          type: string
+          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
+          description: Unique identifier (UUID) for the data connection as specified by the Sense engine. A UUID will be generated automatically if this field is not specified or empty
+        qCredentialsName:
+          type: string
+          example: MyCredential
+          description: Name of the credential associated with the connection
+        qConnectStatement:
+          type: string
+          example: CUSTOM CONNECT TO \"provider=QvOdbcConnectorPackage.exe;driver=snowflake;server=...\"
+          description: Connection string for the data connection
+        qConnectionSecret:
+          type: string
+          example: Any connection specific secret string
+          description: String that contains connection specific secret (or password) that requires encryption before persist to database. This field is connection level secret
+        qSeparateCredentials:
+          type: boolean
+          default: false
+          example: false
+          description: Indicates whether or not to create a credential-less connection
+      description: Schema used to create a connection with given connection string (i.e. qConnectStatement) along with other metadata
+    ActionUpdateRequest:
+      type: object
+      required:
+      - connections
+      properties:
+        connections:
+          type: array
+          items:
+            type: object
             required:
             - id
-            - status
             properties:
               id:
                 type: string
                 example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
-                description: ID of the resource
-              error:
-                $ref: '#/components/schemas/Error'
-              status:
-                type: integer
-                example: 204
-                description: Status code of operation on resource identified by ID
-    Error:
+                description: Connection ID
+              name:
+                type: string
+                example: MyConnection
+                description: Connection name
+              ownerId:
+                type: string
+                example: 6K9xjsItDexffSlu5vg1oWYkY8x7f-06
+                description: User ID to which the connection will be updated. If not present, the connection's owner wont be changed
+              spaceId:
+                type: string
+                example: 611bcebaeec1203d88211ac4
+                description: Space ID to which the connection will be updated. If not present, the connection's space wont be changed. If it is empty string, then the connection will be moved to the personal space of the user identified by ownerId (If ownerId is undefined, then the connection will be in oroginal owner's personal space)
+              spaceType:
+                enum:
+                - personal
+                - shared
+                - managed
+                - data
+                type: string
+                example: personal
+                description: Space type. Required when spaceId is specified
+    ConnectionCreateResponse:
       type: object
+      required:
+      - qID
+      - qName
+      - qConnectStatement
+      - qType
+      - qLogOn
+      - qEngineObjectID
+      - qArchitecture
+      - qSeparateCredentials
+      - privileges
       properties:
-        code:
+        qID:
           type: string
-          example: DCERROR-0010
-          description: Unique internal error code
-        title:
+          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
+          description: Unique identifier (UUID) for the data connection, must be same as qEngineObjectID
+        user:
           type: string
-          example: Bad or invalid request
-          description: A summary in english explaining what went wrong
-        detail:
+          example: rFdHeUOiVYgPX5iTbvL0x0Cs6F62QI
+          description: User ID of the connection's creator
+        links:
+          $ref: '#/components/schemas/Link'
+        qName:
           type: string
-          example: Field xxx is missing in the request
-          description: More concrete details
-        status:
+          example: MyConnection
+          description: Descriptive name of the data connection
+        qType:
+          type: string
+          example: QvOdbcConnectorPackage.exe
+          description: Type of connection - indicates connection provider type
+        space:
+          type: string
+          example: 611bcebaeec1203d88211ac4
+          description: ID of the space to which the connection belongs
+        qLogOn:
+          enum:
+          - '0'
+          - '1'
+          - LOG_ON_SERVICE_USER
+          - LOG_ON_CURRENT_USER
+          type: string
+          example: '1'
+          description: Indicates the type of user associated with the data connection.
+        created:
+          type: string
+          example: '2022-04-09T10:00:28.287Z'
+          description: Datetime when the connection was created
+        updated:
+          type: string
+          example: '2022-04-09T10:00:28.287Z'
+          description: Datetime when the connection was last updated
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+          example: '[update, delete, read]'
+          description: Array of string (i.e. update, delete, read) indicating the user's privileges on the associated connection
+        qArchitecture:
+          enum:
+          - 0
+          - 1
           type: integer
-          example: 400
-          description: HTTP status code
+          example: 0
+          description: 0 or 1 value indicating whether the data connector is 64-bit (0) or 32-bit (1). Defaults to 0 if not specified.
+        qReferenceKey:
+          type: string
+          example: credential:key
+          description: Reference key of credential in redis
+        qCredentialsID:
+          type: string
+          example: 7b475581-2f68-4c81-ac52-25705b8229fb
+          description: ID of the credential associated with the connection
+        qEngineObjectID:
+          type: string
+          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
+          description: Unique identifier (UUID) for the data connection, must be same as qID
+        qCredentialsName:
+          type: string
+          example: MyCredential
+          description: Name of the credential associated with the connection
+        qConnectStatement:
+          type: string
+          example: CUSTOM CONNECT TO \"provider=QvOdbcConnectorPackage.exe;driver=snowflake;server=...\"
+          description: Connection string for the data connection
+        qSeparateCredentials:
+          type: boolean
+          example: true
+          description: Indicates whether or not this is a credential-less connection
+      description: Essential fields of a connection
     PatchRequest:
       type: array
       items:
@@ -692,6 +874,66 @@ components:
             - type: array
             example: New value
             description: Value used for the patch. Required only for `add` or `replace` operations. The value type should match the type of the target field.
+    ResponseErrors:
+      type: object
+      properties:
+        errors:
+          $ref: '#/components/schemas/Errors'
+    BulkResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            required:
+            - id
+            - status
+            properties:
+              id:
+                type: string
+                example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
+                description: ID of the resource
+              error:
+                $ref: '#/components/schemas/Error'
+              status:
+                type: integer
+                example: 204
+                description: Status code of operation on resource identified by ID
+    TopLevelLink:
+      type: object
+      required:
+      - self
+      properties:
+        next:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              example: https://mytenant.us.qlikcloud.com/...
+              description: URL pointing to the next page of resources
+          description: URL link to next page of requested resources (available to paged request only)
+        prev:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              example: https://mytenant.us.qlikcloud.com/...
+              description: URL pointing to the previous page of resources
+          description: URL link to previous page of requested resources (available to paged request only)
+        self:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              example: https://mytenant.us.qlikcloud.com/.../0e445014-a564-496a-9a8d-28baadcc3ef9
+              description: URL pointing to the resource
+          description: Link to current query
     ConnectionGet:
       type: object
       required:
@@ -807,41 +1049,6 @@ components:
           example: true
           description: Indicates whether or not this is a credential-less connection
       description: Essential fields of a connection
-    TopLevelLink:
-      type: object
-      required:
-      - self
-      properties:
-        next:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              example: https://mytenant.us.qlikcloud.com/...
-              description: URL pointing to the next page of resources
-          description: URL link to next page of requested resources (available to paged request only)
-        prev:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              example: https://mytenant.us.qlikcloud.com/...
-              description: URL pointing to the previous page of resources
-          description: URL link to previous page of requested resources (available to paged request only)
-        self:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              example: https://mytenant.us.qlikcloud.com/.../0e445014-a564-496a-9a8d-28baadcc3ef9
-              description: URL pointing to the resource
-          description: Link to current query
     DcaasConnectionCreateAuthResponse:
       type: object
       required:
@@ -852,96 +1059,70 @@ components:
           example: https://www.dropbox.com/oauth2/authorize?client_id=...
           description: Authentication URL used to generate authentication code for datasources supporting OAuth
       description: Authentication URL response for OAuth datasources (when authUrlOnly is set to true in request)
-    ConnectionCreateResponse:
+    ActionDuplicateRequest:
       type: object
       required:
-      - qID
-      - qName
-      - qConnectStatement
-      - qType
-      - qLogOn
-      - qEngineObjectID
-      - qArchitecture
-      - qSeparateCredentials
-      - privileges
+      - id
       properties:
-        qID:
+        id:
           type: string
-          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
-          description: Unique identifier (UUID) for the data connection, must be same as qEngineObjectID
-        user:
+          example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
+          description: ID of the source connection being duplicated
+        name:
           type: string
-          example: rFdHeUOiVYgPX5iTbvL0x0Cs6F62QI
-          description: User ID of the connection's creator
-        links:
-          $ref: '#/components/schemas/Link'
-        qName:
-          type: string
-          example: MyConnection
-          description: Descriptive name of the data connection
-        qType:
-          type: string
-          example: QvOdbcConnectorPackage.exe
-          description: Type of connection - indicates connection provider type
-        space:
+          example: ResourceName
+          description: Optional name for the duplicated connection, must be unique in the target scope. If not specified, a name will be automatically generated
+        spaceId:
           type: string
           example: 611bcebaeec1203d88211ac4
-          description: ID of the space to which the connection belongs
-        qLogOn:
-          enum:
-          - '0'
-          - '1'
-          - LOG_ON_SERVICE_USER
-          - LOG_ON_CURRENT_USER
+          description: Optional target space ID for the duplicated connection. If not specified, the duplicated connection will be in the same space as the source connection
+        qPassword:
           type: string
-          example: '1'
-          description: Indicates the type of user associated with the data connection.
-        created:
+          example: Password
+          description: Optional credential password, specify to override credential embedded (or associated) with the source connection
+        qUsername:
           type: string
-          example: '2022-04-09T10:00:28.287Z'
-          description: Datetime when the connection was created
-        updated:
-          type: string
-          example: '2022-04-09T10:00:28.287Z'
-          description: Datetime when the connection was last updated
-        privileges:
+          example: UserName
+          description: Optional credential username, specify to override credential embedded (or associated) with the source connection
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Error'
+    Connections:
+      type: object
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/Privilege'
-          example: '[update, delete, read]'
-          description: Array of string (i.e. update, delete, read) indicating the user's privileges on the associated connection
-        qArchitecture:
-          enum:
-          - 0
-          - 1
+            $ref: '#/components/schemas/ConnectionGet'
+        meta:
+          $ref: '#/components/schemas/Meta'
+        links:
+          $ref: '#/components/schemas/TopLevelLink'
+        errors:
+          $ref: '#/components/schemas/Errors'
+    Link:
+      type: object
+      required:
+      - self
+      properties:
+        self:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              example: https://mytenant.us.qlikcloud.com/...
+              description: URL pointing to the resource
+          description: Link to current query
+    Meta:
+      type: object
+      properties:
+        count:
           type: integer
-          example: 0
-          description: 0 or 1 value indicating whether the data connector is 64-bit (0) or 32-bit (1). Defaults to 0 if not specified.
-        qReferenceKey:
-          type: string
-          example: credential:key
-          description: Reference key of credential in redis
-        qCredentialsID:
-          type: string
-          example: 7b475581-2f68-4c81-ac52-25705b8229fb
-          description: ID of the credential associated with the connection
-        qEngineObjectID:
-          type: string
-          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
-          description: Unique identifier (UUID) for the data connection, must be same as qID
-        qCredentialsName:
-          type: string
-          example: MyCredential
-          description: Name of the credential associated with the connection
-        qConnectStatement:
-          type: string
-          example: CUSTOM CONNECT TO \"provider=QvOdbcConnectorPackage.exe;driver=snowflake;server=...\"
-          description: Connection string for the data connection
-        qSeparateCredentials:
-          type: boolean
-          example: true
-          description: Indicates whether or not this is a credential-less connection
-      description: Essential fields of a connection
+          example: 12
+          description: Total count of resources being requested.
     Privilege:
       enum:
       - list
@@ -953,43 +1134,6 @@ components:
       type: string
       example: list
       description: Access type allowed on associated data connection
-    ActionUpdateRequest:
-      type: object
-      required:
-      - connections
-      properties:
-        connections:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
-                description: Connection ID
-              name:
-                type: string
-                example: MyConnection
-                description: Connection name
-              ownerId:
-                type: string
-                example: 6K9xjsItDexffSlu5vg1oWYkY8x7f-06
-                description: User ID to which the connection will be updated. If not present, the connection's owner wont be changed
-              spaceId:
-                type: string
-                example: 611bcebaeec1203d88211ac4
-                description: Space ID to which the connection will be updated. If not present, the connection's space wont be changed. If it is empty string, then the connection will be moved to the personal space of the user identified by ownerId (If ownerId is undefined, then the connection will be in oroginal owner's personal space)
-              spaceType:
-                enum:
-                - personal
-                - shared
-                - managed
-                - data
-                type: string
-                example: personal
-                description: Space type. Required when spaceId is specified
     ConnectionUpdate:
       type: object
       required:
@@ -1067,182 +1211,25 @@ components:
           type: boolean
           example: true
           description: Indicates whether or not this is a credential-less connection
-    ResponseErrors:
+    Error:
       type: object
       properties:
-        errors:
-          $ref: '#/components/schemas/Errors'
-    ActionDeleteRequest:
-      type: object
-      required:
-      - connections
-      properties:
-        connections:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
-                description: ID of connection
-              name:
-                type: string
-                example: MyConnection
-                description: Connection name
-    Link:
-      type: object
-      required:
-      - self
-      properties:
-        self:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              example: https://mytenant.us.qlikcloud.com/...
-              description: URL pointing to the resource
-          description: Link to current query
-    ConnectionCreate:
-      type: object
-      required:
-      - qName
-      - qConnectStatement
-      - qType
-      - datasourceID
-      properties:
-        qID:
+        code:
           type: string
-          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
-          description: Unique identifier (UUID) for the data connection. A UUID will be generated automatically if qID is not specified or empty
-        tags:
-          type: array
-          items:
-            type: string
-            example: tag
-            description: tag string (256 bytes or less)
-          example: '["tag1, "tag2"]'
-          description: List of tags attached to the connection (allow max 32 tags)
-        owner:
+          example: DCERROR-0010
+          description: Unique internal error code
+        title:
           type: string
-          example: 928e2a66-01ba-4678-aa32-e74c213896fa
-          description: App ID
-        qName:
+          example: Bad or invalid request
+          description: A summary in english explaining what went wrong
+        detail:
           type: string
-          example: MyConnection
-          description: Descriptive name of the data connection
-        qType:
-          type: string
-          example: QvOdbcConnectorPackage.exe
-          description: Type of connection - indicates connection provider type
-        space:
-          type: string
-          example: 611bcebaeec1203d88211ac4
-          description: ID of the space to which the connection belongs
-        qLogOn:
-          enum:
-          - '0'
-          - '1'
-          - LOG_ON_SERVICE_USER
-          - LOG_ON_CURRENT_USER
-          type: string
-          example: '1'
-          description: Indicates the type of user associated with the data connection.
-        qPassword:
-          type: string
-          example: Connector encoded password
-          description: Any logon password associated with the data connection (connector encoded)
-        qUsername:
-          type: string
-          example: MyUsername
-          description: Any logon username associated with the data connection
-        datasourceID:
-          type: string
-          example: snowflake
-          description: ID of the datasource associated with this connection
-        qriInRequest:
-          type: string
-          example: qri:db:snowflake://BQ1-3F_BvWfxxCDDiz9vQepqHLAcHWqacoqwLq4wxWM
-          description: QRI string of the connection. The string will be persisted to mongo when the request is originated from trusted client (i.e. dcaas) to avoid invalid QRi string.
-        qArchitecture:
-          enum:
-          - 0
-          - 1
+          example: Field xxx is missing in the request
+          description: More concrete details
+        status:
           type: integer
-          example: 0
-          description: 0 or 1 value indicating whether the data connector is 64-bit (0) or 32-bit (1). Defaults to 0 if not specified.
-        qCredentialsID:
-          type: string
-          example: 935ec250-65bc-47c0-965b-53554f3f87d8
-          description: ID of the credential associated with the connection
-        qEngineObjectID:
-          type: string
-          example: b4a949cb-3aaf-4cd5-a140-dd3ea34f0d28
-          description: Unique identifier (UUID) for the data connection as specified by the Sense engine. A UUID will be generated automatically if this field is not specified or empty
-        qCredentialsName:
-          type: string
-          example: MyCredential
-          description: Name of the credential associated with the connection
-        qConnectStatement:
-          type: string
-          example: CUSTOM CONNECT TO \"provider=QvOdbcConnectorPackage.exe;driver=snowflake;server=...\"
-          description: Connection string for the data connection
-        qConnectionSecret:
-          type: string
-          example: Any connection specific secret string
-          description: String that contains connection specific secret (or password) that requires encryption before persist to database. This field is connection level secret
-        qSeparateCredentials:
-          type: boolean
-          default: false
-          example: false
-          description: Indicates whether or not to create a credential-less connection
-      description: Schema used to create a connection with given connection string (i.e. qConnectStatement) along with other metadata
-    Errors:
-      type: array
-      items:
-        $ref: '#/components/schemas/Error'
-    Connections:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConnectionGet'
-        meta:
-          $ref: '#/components/schemas/Meta'
-        links:
-          $ref: '#/components/schemas/TopLevelLink'
-        errors:
-          $ref: '#/components/schemas/Errors'
-    ActionDuplicateRequest:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
-          description: ID of the source connection being duplicated
-        name:
-          type: string
-          example: ResourceName
-          description: Optional name for the duplicated connection, must be unique in the target scope. If not specified, a name will be automatically generated
-        spaceId:
-          type: string
-          example: 611bcebaeec1203d88211ac4
-          description: Optional target space ID for the duplicated connection. If not specified, the duplicated connection will be in the same space as the source connection
-        qPassword:
-          type: string
-          example: Password
-          description: Optional credential password, specify to override credential embedded (or associated) with the source connection
-        qUsername:
-          type: string
-          example: UserName
-          description: Optional credential username, specify to override credential embedded (or associated) with the source connection
+          example: 400
+          description: HTTP status code
     DcaasConnectionCreate:
       type: object
       required:
@@ -1279,10 +1266,23 @@ components:
           example: '{"property1": "value1", "property2": "value2", ...}'
           description: Connection properties required to create dataconnection for the given datasource, which is defined by the response of 'GET /v1/data-sources/:{datasourceId}/api-specs'
       description: Schema used to create a connection using a list of connection properties for given datasource
-    Meta:
+    ActionDeleteRequest:
       type: object
+      required:
+      - connections
       properties:
-        count:
-          type: integer
-          example: 12
-          description: Total count of resources being requested.
+        connections:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                type: string
+                example: b2c1ab1f-392c-4cd1-87bd-4c3cd256f5fd
+                description: ID of connection
+              name:
+                type: string
+                example: MyConnection
+                description: Connection name

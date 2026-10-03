@@ -135,53 +135,6 @@ paths:
         limit: 1000
 components:
   schemas:
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for programmatic handling.
-        title:
-          type: string
-          description: Brief human-readable summary of the error.
-        detail:
-          type: string
-          description: Detailed explanation of the error and suggested remediation steps.
-        source:
-          $ref: '#/components/schemas/ErrorSource'
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code associated with the error.
-      description: Represents a single error condition with details about what went wrong.
-    PlatformType:
-      enum:
-      - SNOWFLAKE
-      - BIGQUERY
-      - SYNAPSE
-      - DATABRICKS
-      - REDSHIFT
-      - MSSQL
-      - FABRIC
-      - QLIK_QVD
-      - QLIK_QVD_CUSTOMER_MANAGED
-      - QLIK_OPEN_LAKEHOUSE
-      - NONE
-      type: string
-      example: SNOWFLAKE
-      description: 'The platform type of the project. Supported values: - SNOWFLAKE: Snowflake - BIGQUERY: Google BigQuery - SYNAPSE: Azure Synapse - DATABRICKS: Databricks - REDSHIFT: Amazon Redshift - MSSQL: Microsoft SQL Server - FABRIC: Microsoft Fabric (OneLake) - QLIK_QVD: Qlik-managed QVD - QLIK_QVD_CUSTOMER_MANAGED: Customer-managed QVD - QLIK_OPEN_LAKEHOUSE: Qlik Open Lakehouse - NONE: No platform (e.g. replication-only projects)
-
-        '
     CreateDiProjectReq:
       type: object
       properties:
@@ -214,18 +167,25 @@ components:
           type: string
           example: storage-connection-string
           description: The cloud staging connection string
-    Errors:
+    Error:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
+        code:
           type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
     DiProjectItemRsp:
       type: object
       properties:
@@ -248,6 +208,16 @@ components:
           type: string
         platformType:
           $ref: '#/components/schemas/PlatformType'
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     ListDiProjectsRsp:
       type: object
       properties:
@@ -255,3 +225,33 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DiProjectItemRsp'
+    PlatformType:
+      enum:
+      - SNOWFLAKE
+      - BIGQUERY
+      - SYNAPSE
+      - DATABRICKS
+      - REDSHIFT
+      - MSSQL
+      - FABRIC
+      - QLIK_QVD
+      - QLIK_QVD_CUSTOMER_MANAGED
+      - QLIK_OPEN_LAKEHOUSE
+      - NONE
+      type: string
+      example: SNOWFLAKE
+      description: 'The platform type of the project. Supported values: - SNOWFLAKE: Snowflake - BIGQUERY: Google BigQuery - SYNAPSE: Azure Synapse - DATABRICKS: Databricks - REDSHIFT: Amazon Redshift - MSSQL: Microsoft SQL Server - FABRIC: Microsoft Fabric (OneLake) - QLIK_QVD: Qlik-managed QVD - QLIK_QVD_CUSTOMER_MANAGED: Customer-managed QVD - QLIK_OPEN_LAKEHOUSE: Qlik Open Lakehouse - NONE: No platform (e.g. replication-only projects)
+
+        '
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.

@@ -284,245 +284,6 @@ paths:
         limit: 1000
 components:
   schemas:
-    ErrorResponse500:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-500
-              title:
-                type: string
-                example: Internal Server Error
-              detail:
-                type: string
-                example: Something went wrong in the server.
-              status:
-                type: integer
-                example: 500
-        traceId:
-          type: string
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: integer
-                readOnly: true
-                description: Error code.
-              title:
-                type: string
-                readOnly: true
-                description: Error cause.
-    PatchRequest:
-      type: array
-      items:
-        oneOf:
-        - $ref: '#/components/schemas/JSONPatchRequestAddReplaceTest'
-        - $ref: '#/components/schemas/JSONPatchRequestRemove'
-        - $ref: '#/components/schemas/JSONPatchRequestMoveCopy'
-    ReleaseCadenceConfig:
-      enum:
-      - monthly
-      - continuous
-      type: string
-      description: Set the release cadence
-    JSONPatchRequestAddReplaceTest:
-      type: object
-      required:
-      - value
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - add
-          - replace
-          - test
-          type: string
-          description: The operation to perform.
-        path:
-          type: string
-          description: A JSON Pointer path.
-        value:
-          description: The value to add, replace or test.
-      additionalProperties: false
-    ErrorResponse401:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-401
-              title:
-                type: string
-                example: Unauthorized
-              detail:
-                type: string
-                example: The user is not authorized to access the service.
-              status:
-                type: integer
-                example: 401
-        traceId:
-          type: string
-    StartPage:
-      enum:
-      - analytics-hub
-      - data-integration-hub
-      - management-console
-      - analytics-creation-hub
-      type: string
-    TenantStartPagesResponse:
-      type: object
-      required:
-      - defaultValue
-      - values
-      properties:
-        values:
-          type: array
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/StartPageConfigHub'
-            - $ref: '#/components/schemas/StartPageConfigCreationHub'
-            - $ref: '#/components/schemas/StartPageConfigQdi'
-        defaultValue:
-          enum:
-          - analytics-hub
-          type: string
-    JSONPatchRequestMoveCopy:
-      type: object
-      required:
-      - from
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - move
-          - copy
-          type: string
-          description: The operation to perform.
-        from:
-          type: string
-          description: A JSON Pointer path.
-        path:
-          type: string
-          description: A JSON Pointer path.
-      additionalProperties: false
-    ErrorResponse400:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-400
-              title:
-                type: string
-                example: Bad request
-              detail:
-                type: string
-                example: The request is incorrect.
-              status:
-                type: integer
-                example: 400
-        traceId:
-          type: string
-    TenantSettingsCreateDefinition:
-      type: object
-      properties:
-        customizeNoAccess:
-          $ref: '#/components/schemas/CustomizeNoAccess'
-        preferredStartPage:
-          $ref: '#/components/schemas/StartPage'
-      description: Create a new tenant settings entry for the tenant ID specified in the JWT. At least one of preferredStartPage or customizeNoAccess must be provided.
-    ErrorResponse403:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-403
-              title:
-                type: string
-                example: Forbidden
-              detail:
-                type: string
-                example: You don't have sufficient permissions to access this resource.
-              status:
-                type: integer
-                example: 403
-        traceId:
-          type: string
-    CustomizeNoAccess:
-      type: object
-      required:
-      - linkEnabled
-      properties:
-        linkUrl:
-          type: string
-          format: uri
-        message:
-          type: string
-        linkLabel:
-          type: string
-        linkEnabled:
-          type: boolean
-    StartPageConfigCreationHub:
-      type: object
-      properties:
-        route:
-          enum:
-          - /analytics
-          type: string
-        value:
-          enum:
-          - analytics-creation-hub
-          type: string
-    SetCrossRegionDataProcessingConfig:
-      type: boolean
-      description: Set to true to enable cross-region inference, false to disable.
-    StartPageConfigHub:
-      type: object
-      properties:
-        route:
-          enum:
-          - /insights
-          type: string
-        value:
-          enum:
-          - analytics-hub
-          type: string
-    StartPageConfigQdi:
-      type: object
-      properties:
-        route:
-          enum:
-          - /qdi
-          type: string
-        value:
-          enum:
-          - data-integration-hub
-          type: string
     TenantSettingsDefinition:
       type: object
       required:
@@ -571,6 +332,14 @@ components:
           description: Tenant-wide preference for opting out of session replay. When set, this value overrides individual user preferences. EU regions default to true (opted out) if this is not explicitly configured.
         crossRegionDataProcessing:
           $ref: '#/components/schemas/SetCrossRegionDataProcessingConfig'
+    TenantSettingsCreateDefinition:
+      type: object
+      properties:
+        customizeNoAccess:
+          $ref: '#/components/schemas/CustomizeNoAccess'
+        preferredStartPage:
+          $ref: '#/components/schemas/StartPage'
+      description: Create a new tenant settings entry for the tenant ID specified in the JWT. At least one of preferredStartPage or customizeNoAccess must be provided.
     StartPageConfigConsole:
       type: object
       properties:
@@ -590,6 +359,20 @@ components:
         value:
           $ref: '#/components/schemas/SetCrossRegionDataProcessingConfig'
       description: Set to true to enable cross-region inference, false to disable. Defaults to false.
+    StartPage:
+      enum:
+      - analytics-hub
+      - data-integration-hub
+      - management-console
+      - analytics-creation-hub
+      type: string
+    PatchRequest:
+      type: array
+      items:
+        oneOf:
+        - $ref: '#/components/schemas/JSONPatchRequestAddReplaceTest'
+        - $ref: '#/components/schemas/JSONPatchRequestRemove'
+        - $ref: '#/components/schemas/JSONPatchRequestMoveCopy'
     JSONPatchRequestRemove:
       type: object
       required:
@@ -605,25 +388,242 @@ components:
           type: string
           description: A JSON Pointer path.
       additionalProperties: false
+    ReleaseCadenceConfig:
+      enum:
+      - monthly
+      - continuous
+      type: string
+      description: Set the release cadence
+    JSONPatchRequestMoveCopy:
+      type: object
+      required:
+      - from
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - move
+          - copy
+          type: string
+          description: The operation to perform.
+        from:
+          type: string
+          description: A JSON Pointer path.
+        path:
+          type: string
+          description: A JSON Pointer path.
+      additionalProperties: false
+    SetCrossRegionDataProcessingConfig:
+      type: boolean
+      description: Set to true to enable cross-region inference, false to disable.
+    ErrorResponse403:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-403
+              title:
+                type: string
+                example: Forbidden
+              detail:
+                type: string
+                example: You don't have sufficient permissions to access this resource.
+              status:
+                type: integer
+                example: 403
+        traceId:
+          type: string
+    TenantStartPagesResponse:
+      type: object
+      required:
+      - defaultValue
+      - values
+      properties:
+        values:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/StartPageConfigHub'
+            - $ref: '#/components/schemas/StartPageConfigCreationHub'
+            - $ref: '#/components/schemas/StartPageConfigQdi'
+        defaultValue:
+          enum:
+          - analytics-hub
+          type: string
+    ErrorResponse500:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-500
+              title:
+                type: string
+                example: Internal Server Error
+              detail:
+                type: string
+                example: Something went wrong in the server.
+              status:
+                type: integer
+                example: 500
+        traceId:
+          type: string
+    JSONPatchRequestAddReplaceTest:
+      type: object
+      required:
+      - value
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - add
+          - replace
+          - test
+          type: string
+          description: The operation to perform.
+        path:
+          type: string
+          description: A JSON Pointer path.
+        value:
+          description: The value to add, replace or test.
+      additionalProperties: false
+    ErrorResponse400:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-400
+              title:
+                type: string
+                example: Bad request
+              detail:
+                type: string
+                example: The request is incorrect.
+              status:
+                type: integer
+                example: 400
+        traceId:
+          type: string
+    StartPageConfigCreationHub:
+      type: object
+      properties:
+        route:
+          enum:
+          - /analytics
+          type: string
+        value:
+          enum:
+          - analytics-creation-hub
+          type: string
+    CustomizeNoAccess:
+      type: object
+      required:
+      - linkEnabled
+      properties:
+        linkUrl:
+          type: string
+          format: uri
+        message:
+          type: string
+        linkLabel:
+          type: string
+        linkEnabled:
+          type: boolean
+    ErrorResponse401:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-401
+              title:
+                type: string
+                example: Unauthorized
+              detail:
+                type: string
+                example: The user is not authorized to access the service.
+              status:
+                type: integer
+                example: 401
+        traceId:
+          type: string
+    StartPageConfigQdi:
+      type: object
+      properties:
+        route:
+          enum:
+          - /qdi
+          type: string
+        value:
+          enum:
+          - data-integration-hub
+          type: string
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: integer
+                readOnly: true
+                description: Error code.
+              title:
+                type: string
+                readOnly: true
+                description: Error cause.
+    StartPageConfigHub:
+      type: object
+      properties:
+        route:
+          enum:
+          - /insights
+          type: string
+        value:
+          enum:
+          - analytics-hub
+          type: string
   responses:
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse403'
-      description: Forbidden
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse401'
-      description: Unauthorized
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse400'
       description: Bad Request
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse401'
+      description: Unauthorized
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse403'
+      description: Forbidden
     InternalServerError:
       content:
         application/json:

@@ -1048,6 +1048,559 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    DataFileBatchDeleteRequest:
+      type: object
+      required:
+      - delete
+      properties:
+        delete:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchDeleteItem'
+          description: If specified, the explicit list of data files to delete.
+        deleteAllBySpace:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BatchDeleteAllBySpaceItem'
+          description: If specified, attempt to delete all of the data files from the specified shared spaces.
+        deleteAllFromPersonalSpace:
+          type:
+          - boolean
+          - 'null'
+          example: true
+          description: If specified, attempt to delete all of the datafiles from ther user's personal space.
+      additionalProperties: false
+    SpaceStatsResponse:
+      type: object
+      required:
+      - aggregateAppScopedFileSize
+      - aggregateFileSize
+      - aggregateInternalFileSize
+      - directAppScopedFileCount
+      - directFileCount
+      - directFolderCount
+      - directInternalFileCount
+      - totalAppScopedFileCount
+      - totalFileCount
+      - totalFolderCount
+      - totalInternalFileCount
+      properties:
+        totalFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of data files that reside as direct and indirect children of the given folder and it''s sub-folder
+
+            hierarchy.'
+        directFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: The number of data files that reside as direct children of the given folder.
+        totalFolderCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of folders that reside as direct and indirect children of the given folder and it''s sub-folder
+
+            hierarchy.'
+        aggregateFileSize:
+          type: integer
+          format: int64
+          example: 10000
+          description: 'The sum of the file sizes, in bytes, of all data files that reside as direct and indirect children of the given
+
+            folder and it''s sub-folder hierarchy.'
+        directFolderCount:
+          type: integer
+          format: int64
+          example: 50
+          description: The number of sub-folders that reside as direct children of the given folder.
+        totalInternalFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
+
+            direct and indirect children of the given folder and it''s sub-folder hierarchy.'
+        directInternalFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
+
+            direct children of the given folder.'
+        totalAppScopedFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of app-scoped data files that reside as direct and indirect children of the given folder and it''s
+
+            sub-folder hierarchy.'
+        directAppScopedFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: The number of app-scoped data files that reside as direct children of the given folder.
+        aggregateInternalFileSize:
+          type: integer
+          format: int64
+          example: 10000
+          description: 'The sum of the file sizes, in bytes, of all internal data files that reside as direct and indirect children of
+
+            the given folder and it''s sub-folder hierarchy.'
+        aggregateAppScopedFileSize:
+          type: integer
+          format: int64
+          example: 10000
+          description: 'The sum of the file sizes, in bytes, of all app-scoped data files that reside as direct and indirect children of
+
+            the given folder and it''s sub-folder hierarchy.'
+      additionalProperties: false
+    LinkResponse:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: The URL for the link.
+      additionalProperties: false
+    GetDataFileInfosSortField:
+      enum:
+      - name
+      - +name
+      - -name
+      - size
+      - +size
+      - -size
+      - modifiedDate
+      - +modifiedDate
+      - -modifiedDate
+      - folder
+      - +folder
+      - -folder
+      - baseName
+      - +baseName
+      - -baseName
+      type: string
+      example: name
+      description: <p>Members:</p><ul></ul>
+    FolderStatsResponse:
+      type: object
+      required:
+      - aggregateAppScopedFileSize
+      - aggregateFileSize
+      - aggregateInternalFileSize
+      - directAppScopedFileCount
+      - directFileCount
+      - directFolderCount
+      - directInternalFileCount
+      - totalAppScopedFileCount
+      - totalFileCount
+      - totalFolderCount
+      - totalInternalFileCount
+      properties:
+        totalFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of data files that reside as direct and indirect children of the given folder and it''s sub-folder
+
+            hierarchy.'
+        directFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: The number of data files that reside as direct children of the given folder.
+        totalFolderCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of folders that reside as direct and indirect children of the given folder and it''s sub-folder
+
+            hierarchy.'
+        aggregateFileSize:
+          type: integer
+          format: int64
+          example: 10000
+          description: 'The sum of the file sizes, in bytes, of all data files that reside as direct and indirect children of the given
+
+            folder and it''s sub-folder hierarchy.'
+        directFolderCount:
+          type: integer
+          format: int64
+          example: 50
+          description: The number of sub-folders that reside as direct children of the given folder.
+        totalInternalFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
+
+            direct and indirect children of the given folder and it''s sub-folder hierarchy.'
+        directInternalFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
+
+            direct children of the given folder.'
+        totalAppScopedFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: 'The number of app-scoped data files that reside as direct and indirect children of the given folder and it''s
+
+            sub-folder hierarchy.'
+        directAppScopedFileCount:
+          type: integer
+          format: int64
+          example: 50
+          description: The number of app-scoped data files that reside as direct children of the given folder.
+        aggregateInternalFileSize:
+          type: integer
+          format: int64
+          example: 10000
+          description: 'The sum of the file sizes, in bytes, of all internal data files that reside as direct and indirect children of
+
+            the given folder and it''s sub-folder hierarchy.'
+        aggregateAppScopedFileSize:
+          type: integer
+          format: int64
+          example: 10000
+          description: 'The sum of the file sizes, in bytes, of all app-scoped data files that reside as direct and indirect children of
+
+            the given folder and it''s sub-folder hierarchy.'
+      additionalProperties: false
+    ConnectionsResponse:
+      type: object
+      required:
+      - connectStatement
+      - id
+      - name
+      - type
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
+          description: The unique identifier of the connection.
+        name:
+          type: string
+          example: DataFiles
+          description: The name of the connection.
+        type:
+          type: string
+          example: qix-datafiles.exe
+          description: The type of the connection.
+        spaceId:
+          type:
+          - string
+          - 'null'
+          example: 617979737a9f56e49dea2e6e
+          description: 'The team space that the given connection is associated with.  If null, the connection is not associated
+
+            with any specific team space.'
+        spaceStats:
+          $ref: '#/components/schemas/SpaceStatsResponse'
+        connectStatement:
+          type: string
+          example: CUSTOM CONNECT TO \"provider=qix-datafiles.exe;path=mydatafiles;\"
+          description: The connect statement that will be passed to the connector when invoked.
+      additionalProperties: false
+    DataFilePermission:
+      enum:
+      - read
+      - update
+      - delete
+      - list
+      - change_owner
+      - change_space
+      type: string
+      example: Read
+      description: <p>Members:</p><ul></ul>
+    BatchChangeSpaceItem:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
+          description: The ID of the data file whose space will be changed.
+        spaceId:
+          type:
+          - string
+          - 'null'
+          example: 617979737a9f56e49dea2e6e
+          description: 'The ID of the new space.  Passing in a null will result in the data file being moved to the user''s
+
+            personal space.'
+      additionalProperties: false
+    GetConnectionsResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionsResponse'
+          description: Properties of the connections to the tenant spaces.
+        links:
+          $ref: '#/components/schemas/LinksResponse'
+      additionalProperties: false
+    ChangeDataFileSpaceRequest:
+      type: object
+      properties:
+        spaceId:
+          type:
+          - string
+          - 'null'
+          example: 617979737a9f56e49dea2e6e
+          description: The ID of the space.  If null, this data file will be moved to the user's personal space.
+      additionalProperties: false
+    PutDataFileFolderMergeBehavior:
+      enum:
+      - merge
+      - replace
+      type: string
+      example: merge
+      description: 'If a SourceId is specified, and a folder is being updated by this PUT operation, this specifies how the
+
+        source folder contents should be applied to the target folder, if the target folder is not empty.  ''merge''
+
+        implies the contents of the source folder should be merged with the existing target contents.  That is, all
+
+        existing direct or indirect child items in the target folder are replaced by the same items in the source folder.
+
+        All existing items in the target folder that are not present in the source folder are left, as is, in the target.
+
+        ''replace'' implies the contents of the source folder should replace the contents of the target folder.  That is,
+
+        all direct or indirect items in the target folder are removed before the items from the source folder are copied
+
+        over.  The resulting target folder only contains the items from the source folder.  If not specified, the default
+
+        behavior is ''merge''.<p>Members:</p><ul></ul>'
+    GetDataFileInfosResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataFileUploadResponse'
+          description: Properties of the uploaded data files.
+        links:
+          $ref: '#/components/schemas/LinksResponse'
+      additionalProperties: false
+    MultiStatusResponseItem:
+      type: object
+      required:
+      - code
+      - id
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
+          description: The unique identifier of the file.
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        title:
+          type:
+          - string
+          - 'null'
+          example: Cursor not formatted correctly.
+          description: Summary of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          example: Invalid encoding of cursor.
+          description: A human-readable explanation specific to this occurrence of the problem.
+        status:
+          type: integer
+          format: int32
+          example: 400
+          description: The HTTP status code.
+      additionalProperties: false
+    MultiStatusResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MultiStatusResponseItem'
+          description: List of individual results for the items in the specified batch.
+      additionalProperties: false
+    LinksResponse:
+      type: object
+      required:
+      - next
+      - prev
+      - self
+      properties:
+        next:
+          $ref: '#/components/schemas/LinkResponse'
+        prev:
+          $ref: '#/components/schemas/LinkResponse'
+        self:
+          $ref: '#/components/schemas/LinkResponse'
+      additionalProperties: false
+    ErrorCode:
+      enum:
+      - HTTP-200
+      - HTTP-201
+      - HTTP-204
+      - HTTP-400
+      - HTTP-403
+      - HTTP-404
+      - HTTP-409
+      - HTTP-413
+      - HTTP-423
+      - HTTP-500
+      - HTTP-501
+      - HTTP-503
+      - DF-001
+      - DF-002
+      - DF-003
+      - DF-004
+      - DF-005
+      - DF-006
+      - DF-007
+      - DF-008
+      - DF-009
+      - DF-010
+      - DF-011
+      - DF-012
+      - DF-013
+      - DF-014
+      - DF-015
+      - DF-016
+      - DF-017
+      - DF-018
+      - DF-019
+      - DF-020
+      - DF-021
+      - DF-022
+      - DF-023
+      - DF-024
+      - DF-025
+      - DF-026
+      type: string
+      example: HTTP-200
+      description: "Fine-grained error codes for data-files REST operations.  For operations which do not have a more fine-grained\nerror code, the error code is set to the HTTP status code.<p>Members:</p><ul><li><i>DF-001</i> - The page cursor passed as a parameter to the GET operation is invalid.</li><li><i>DF-002</i> - The sort specification passed as a parameter to the GET operation is invalid.</li><li><i>DF-003</i> - FolderPath and FolderId are mutually exclusive, they cannot both be passed as parameters.</li><li><i>DF-004</i> - The provided FolderPath must be in canonical form.</li><li><i>DF-005</i> - The specified parent folder cannot be found.</li><li><i>DF-006</i> - The specified owner cannot be found.</li><li><i>DF-007</i> - A connection corresponding to the specified space cannot be found.</li><li><i>DF-008</i> - THe specified ID must correspond to a folder, not a file.</li><li><i>DF-009</i> - The specified space cannot be found.</li><li><i>DF-010</i> - The specified file name contains an invalid file extension.</li><li><i>DF-011</i> - The specified file name is missing a file extension.</li><li><i>DF-012</i> - The specified temporary content file could not be found.</li><li><i>DF-013</i> - Access to the specified space is forbidden.</li><li><i>DF-014</i> - The specified connection cannot be found.</li><li><i>DF-015</i> - The provided filename must be in canonical form.</li><li><i>DF-016</i> - The datafile size quota for the given personal space has been exceeded.</li><li><i>DF-017</i> - The specified source file or folder could not be found.</li><li><i>DF-018</i> - The source and target of a datafile operation must either both be folders or both be files, but they are\n            not.</li><li><i>DF-019</i> - The specified target folder is a child of the specified source folder, which is not allowed.</li><li><i>DF-020</i> - The specified folder does not exist in the specified space.</li><li><i>DF-021</i> - The specified source file or folder is already locked.</li><li><i>DF-022</i> - The automatic creation of a missing parent folder failed.</li><li><i>DF-023</i> - An attempt to lock a parent folder of a given data file item failed.</li><li><i>DF-024</i> - The attempt to copy a source file or folder to a target failed.</li><li><i>DF-025</i> - The specified target file or folder is already locked.</li><li><i>DF-026</i> - The request results in the creation of a folder hierarchy which is beyond the max allowed folder\n            hierarchy depth.</li></ul>"
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorResponseItem'
+          description: List of errors and their properties.
+      additionalProperties: false
+    ErrorResponseItem:
+      type: object
+      required:
+      - code
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        title:
+          type:
+          - string
+          - 'null'
+          example: Cursor not formatted correctly.
+          description: Summary of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          example: Invalid encoding of cursor.
+          description: A human-readable explanation specific to this occurrence of the problem.
+      additionalProperties: false
+    QuotaResponse:
+      type: object
+      required:
+      - allowedExtensions
+      - allowedInternalExtensions
+      - maxFileSize
+      - maxLargeFileSize
+      - maxSize
+      - size
+      properties:
+        size:
+          type: integer
+          format: int64
+          example: 5000
+          description: 'The current aggregate size of all files uploaded by a given user.  If the current aggregate size is greater
+
+            than the maximum aggregate size, this is a quota violation.'
+        maxSize:
+          type: integer
+          format: int64
+          example: 9223372036854776000
+          description: The maximum aggregate size of all files uploaded by a given user.
+        maxFileSize:
+          type: integer
+          format: int64
+          example: 524288000
+          description: Maximum allowable size of an uploaded file.
+        maxLargeFileSize:
+          type: integer
+          format: int64
+          example: 6442450944
+          description: 'Maximum allowable size for a single uploaded large data file (in bytes).  This is a file that was indirectly
+
+            uploaded using the temp content service chunked upload capability.'
+        allowedExtensions:
+          type: array
+          items:
+            type: string
+            example: csv, xlsx, txt, qvd
+            description: The allowed file extensions on files that are uploaded.
+          example: csv, xlsx, txt, qvd
+          description: The allowed file extensions on files that are uploaded.
+        allowedInternalExtensions:
+          type: array
+          items:
+            type: string
+            example: dxf, gml, qrep
+            description: 'The allowed file extensions for files that are only used internally by the system (and thus not typically
+
+              shown to end users).'
+          example: dxf, gml, qrep
+          description: 'The allowed file extensions for files that are only used internally by the system (and thus not typically
+
+            shown to end users).'
+      additionalProperties: false
+    DataFileBatchChangeSpaceRequest:
+      type: object
+      required:
+      - change-space
+      properties:
+        change-space:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchChangeSpaceItem'
+          description: The list of data files to delete.
+      description: Specifies the list of data file change space operations in a single batch.
+      additionalProperties: false
     DataFileUploadResponse:
       type: object
       required:
@@ -1149,330 +1702,6 @@ components:
           example: '2020-07-07T20:52:40.8534780Z'
           description: If the data file's content was updated, this is the DateTime of the last content update.
       additionalProperties: false
-    MultiStatusResponse:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MultiStatusResponseItem'
-          description: List of individual results for the items in the specified batch.
-      additionalProperties: false
-    ConnectionsResponse:
-      type: object
-      required:
-      - connectStatement
-      - id
-      - name
-      - type
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
-          description: The unique identifier of the connection.
-        name:
-          type: string
-          example: DataFiles
-          description: The name of the connection.
-        type:
-          type: string
-          example: qix-datafiles.exe
-          description: The type of the connection.
-        spaceId:
-          type:
-          - string
-          - 'null'
-          example: 617979737a9f56e49dea2e6e
-          description: 'The team space that the given connection is associated with.  If null, the connection is not associated
-
-            with any specific team space.'
-        spaceStats:
-          $ref: '#/components/schemas/SpaceStatsResponse'
-        connectStatement:
-          type: string
-          example: CUSTOM CONNECT TO \"provider=qix-datafiles.exe;path=mydatafiles;\"
-          description: The connect statement that will be passed to the connector when invoked.
-      additionalProperties: false
-    GetDataFileInfosSortField:
-      enum:
-      - name
-      - +name
-      - -name
-      - size
-      - +size
-      - -size
-      - modifiedDate
-      - +modifiedDate
-      - -modifiedDate
-      - folder
-      - +folder
-      - -folder
-      - baseName
-      - +baseName
-      - -baseName
-      type: string
-      example: name
-      description: <p>Members:</p><ul></ul>
-    LinkResponse:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: The URL for the link.
-      additionalProperties: false
-    ErrorResponseItem:
-      type: object
-      required:
-      - code
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-        title:
-          type:
-          - string
-          - 'null'
-          example: Cursor not formatted correctly.
-          description: Summary of the problem.
-        detail:
-          type:
-          - string
-          - 'null'
-          example: Invalid encoding of cursor.
-          description: A human-readable explanation specific to this occurrence of the problem.
-      additionalProperties: false
-    DataFileBatchDeleteRequest:
-      type: object
-      required:
-      - delete
-      properties:
-        delete:
-          type: array
-          items:
-            $ref: '#/components/schemas/BatchDeleteItem'
-          description: If specified, the explicit list of data files to delete.
-        deleteAllBySpace:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BatchDeleteAllBySpaceItem'
-          description: If specified, attempt to delete all of the data files from the specified shared spaces.
-        deleteAllFromPersonalSpace:
-          type:
-          - boolean
-          - 'null'
-          example: true
-          description: If specified, attempt to delete all of the datafiles from ther user's personal space.
-      additionalProperties: false
-    DataFileBatchChangeSpaceRequest:
-      type: object
-      required:
-      - change-space
-      properties:
-        change-space:
-          type: array
-          items:
-            $ref: '#/components/schemas/BatchChangeSpaceItem'
-          description: The list of data files to delete.
-      description: Specifies the list of data file change space operations in a single batch.
-      additionalProperties: false
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorResponseItem'
-          description: List of errors and their properties.
-      additionalProperties: false
-    GetConnectionsSortField:
-      enum:
-      - spaceId
-      - +spaceId
-      - -spaceId
-      type: string
-      example: spaceId
-      description: <p>Members:</p><ul></ul>
-    GetDataFileInfosResponse:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataFileUploadResponse'
-          description: Properties of the uploaded data files.
-        links:
-          $ref: '#/components/schemas/LinksResponse'
-      additionalProperties: false
-    LinksResponse:
-      type: object
-      required:
-      - next
-      - prev
-      - self
-      properties:
-        next:
-          $ref: '#/components/schemas/LinkResponse'
-        prev:
-          $ref: '#/components/schemas/LinkResponse'
-        self:
-          $ref: '#/components/schemas/LinkResponse'
-      additionalProperties: false
-    ChangeDataFileOwnerRequest:
-      type: object
-      required:
-      - ownerId
-      properties:
-        ownerId:
-          type: string
-          example: lDL4DIINndhL_iJkcbqWyJenuwizP-2D
-          description: The ID of the new owner.
-      additionalProperties: false
-    PutDataFileFolderMergeBehavior:
-      enum:
-      - merge
-      - replace
-      type: string
-      example: merge
-      description: 'If a SourceId is specified, and a folder is being updated by this PUT operation, this specifies how the
-
-        source folder contents should be applied to the target folder, if the target folder is not empty.  ''merge''
-
-        implies the contents of the source folder should be merged with the existing target contents.  That is, all
-
-        existing direct or indirect child items in the target folder are replaced by the same items in the source folder.
-
-        All existing items in the target folder that are not present in the source folder are left, as is, in the target.
-
-        ''replace'' implies the contents of the source folder should replace the contents of the target folder.  That is,
-
-        all direct or indirect items in the target folder are removed before the items from the source folder are copied
-
-        over.  The resulting target folder only contains the items from the source folder.  If not specified, the default
-
-        behavior is ''merge''.<p>Members:</p><ul></ul>'
-    ChangeDataFileSpaceRequest:
-      type: object
-      properties:
-        spaceId:
-          type:
-          - string
-          - 'null'
-          example: 617979737a9f56e49dea2e6e
-          description: The ID of the space.  If null, this data file will be moved to the user's personal space.
-      additionalProperties: false
-    GetConnectionsResponse:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConnectionsResponse'
-          description: Properties of the connections to the tenant spaces.
-        links:
-          $ref: '#/components/schemas/LinksResponse'
-      additionalProperties: false
-    FolderStatsResponse:
-      type: object
-      required:
-      - aggregateAppScopedFileSize
-      - aggregateFileSize
-      - aggregateInternalFileSize
-      - directAppScopedFileCount
-      - directFileCount
-      - directFolderCount
-      - directInternalFileCount
-      - totalAppScopedFileCount
-      - totalFileCount
-      - totalFolderCount
-      - totalInternalFileCount
-      properties:
-        totalFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of data files that reside as direct and indirect children of the given folder and it''s sub-folder
-
-            hierarchy.'
-        directFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: The number of data files that reside as direct children of the given folder.
-        totalFolderCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of folders that reside as direct and indirect children of the given folder and it''s sub-folder
-
-            hierarchy.'
-        aggregateFileSize:
-          type: integer
-          format: int64
-          example: 10000
-          description: 'The sum of the file sizes, in bytes, of all data files that reside as direct and indirect children of the given
-
-            folder and it''s sub-folder hierarchy.'
-        directFolderCount:
-          type: integer
-          format: int64
-          example: 50
-          description: The number of sub-folders that reside as direct children of the given folder.
-        totalInternalFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
-
-            direct and indirect children of the given folder and it''s sub-folder hierarchy.'
-        directInternalFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
-
-            direct children of the given folder.'
-        totalAppScopedFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of app-scoped data files that reside as direct and indirect children of the given folder and it''s
-
-            sub-folder hierarchy.'
-        directAppScopedFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: The number of app-scoped data files that reside as direct children of the given folder.
-        aggregateInternalFileSize:
-          type: integer
-          format: int64
-          example: 10000
-          description: 'The sum of the file sizes, in bytes, of all internal data files that reside as direct and indirect children of
-
-            the given folder and it''s sub-folder hierarchy.'
-        aggregateAppScopedFileSize:
-          type: integer
-          format: int64
-          example: 10000
-          description: 'The sum of the file sizes, in bytes, of all app-scoped data files that reside as direct and indirect children of
-
-            the given folder and it''s sub-folder hierarchy.'
-      additionalProperties: false
     BatchDeleteAllBySpaceItem:
       type: object
       required:
@@ -1484,79 +1713,6 @@ components:
           minLength: 1
           description: The ID of the space whose data files will be deleted.
       additionalProperties: false
-    DataFilePermission:
-      enum:
-      - read
-      - update
-      - delete
-      - list
-      - change_owner
-      - change_space
-      type: string
-      example: Read
-      description: <p>Members:</p><ul></ul>
-    BatchChangeSpaceItem:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
-          description: The ID of the data file whose space will be changed.
-        spaceId:
-          type:
-          - string
-          - 'null'
-          example: 617979737a9f56e49dea2e6e
-          description: 'The ID of the new space.  Passing in a null will result in the data file being moved to the user''s
-
-            personal space.'
-      additionalProperties: false
-    ErrorCode:
-      enum:
-      - HTTP-200
-      - HTTP-201
-      - HTTP-204
-      - HTTP-400
-      - HTTP-403
-      - HTTP-404
-      - HTTP-409
-      - HTTP-413
-      - HTTP-423
-      - HTTP-500
-      - HTTP-501
-      - HTTP-503
-      - DF-001
-      - DF-002
-      - DF-003
-      - DF-004
-      - DF-005
-      - DF-006
-      - DF-007
-      - DF-008
-      - DF-009
-      - DF-010
-      - DF-011
-      - DF-012
-      - DF-013
-      - DF-014
-      - DF-015
-      - DF-016
-      - DF-017
-      - DF-018
-      - DF-019
-      - DF-020
-      - DF-021
-      - DF-022
-      - DF-023
-      - DF-024
-      - DF-025
-      - DF-026
-      type: string
-      example: HTTP-200
-      description: "Fine-grained error codes for data-files REST operations.  For operations which do not have a more fine-grained\nerror code, the error code is set to the HTTP status code.<p>Members:</p><ul><li><i>DF-001</i> - The page cursor passed as a parameter to the GET operation is invalid.</li><li><i>DF-002</i> - The sort specification passed as a parameter to the GET operation is invalid.</li><li><i>DF-003</i> - FolderPath and FolderId are mutually exclusive, they cannot both be passed as parameters.</li><li><i>DF-004</i> - The provided FolderPath must be in canonical form.</li><li><i>DF-005</i> - The specified parent folder cannot be found.</li><li><i>DF-006</i> - The specified owner cannot be found.</li><li><i>DF-007</i> - A connection corresponding to the specified space cannot be found.</li><li><i>DF-008</i> - THe specified ID must correspond to a folder, not a file.</li><li><i>DF-009</i> - The specified space cannot be found.</li><li><i>DF-010</i> - The specified file name contains an invalid file extension.</li><li><i>DF-011</i> - The specified file name is missing a file extension.</li><li><i>DF-012</i> - The specified temporary content file could not be found.</li><li><i>DF-013</i> - Access to the specified space is forbidden.</li><li><i>DF-014</i> - The specified connection cannot be found.</li><li><i>DF-015</i> - The provided filename must be in canonical form.</li><li><i>DF-016</i> - The datafile size quota for the given personal space has been exceeded.</li><li><i>DF-017</i> - The specified source file or folder could not be found.</li><li><i>DF-018</i> - The source and target of a datafile operation must either both be folders or both be files, but they are\n            not.</li><li><i>DF-019</i> - The specified target folder is a child of the specified source folder, which is not allowed.</li><li><i>DF-020</i> - The specified folder does not exist in the specified space.</li><li><i>DF-021</i> - The specified source file or folder is already locked.</li><li><i>DF-022</i> - The automatic creation of a missing parent folder failed.</li><li><i>DF-023</i> - An attempt to lock a parent folder of a given data file item failed.</li><li><i>DF-024</i> - The attempt to copy a source file or folder to a target failed.</li><li><i>DF-025</i> - The specified target file or folder is already locked.</li><li><i>DF-026</i> - The request results in the creation of a folder hierarchy which is beyond the max allowed folder\n            hierarchy depth.</li></ul>"
     BatchDeleteItem:
       type: object
       required:
@@ -1568,177 +1724,21 @@ components:
           example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
           description: The ID of the data file to delete.
       additionalProperties: false
-    SpaceStatsResponse:
+    GetConnectionsSortField:
+      enum:
+      - spaceId
+      - +spaceId
+      - -spaceId
+      type: string
+      example: spaceId
+      description: <p>Members:</p><ul></ul>
+    ChangeDataFileOwnerRequest:
       type: object
       required:
-      - aggregateAppScopedFileSize
-      - aggregateFileSize
-      - aggregateInternalFileSize
-      - directAppScopedFileCount
-      - directFileCount
-      - directFolderCount
-      - directInternalFileCount
-      - totalAppScopedFileCount
-      - totalFileCount
-      - totalFolderCount
-      - totalInternalFileCount
+      - ownerId
       properties:
-        totalFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of data files that reside as direct and indirect children of the given folder and it''s sub-folder
-
-            hierarchy.'
-        directFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: The number of data files that reside as direct children of the given folder.
-        totalFolderCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of folders that reside as direct and indirect children of the given folder and it''s sub-folder
-
-            hierarchy.'
-        aggregateFileSize:
-          type: integer
-          format: int64
-          example: 10000
-          description: 'The sum of the file sizes, in bytes, of all data files that reside as direct and indirect children of the given
-
-            folder and it''s sub-folder hierarchy.'
-        directFolderCount:
-          type: integer
-          format: int64
-          example: 50
-          description: The number of sub-folders that reside as direct children of the given folder.
-        totalInternalFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
-
-            direct and indirect children of the given folder and it''s sub-folder hierarchy.'
-        directInternalFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of ''internal'' data files (IE, those that are not visible to end users by default) that reside as
-
-            direct children of the given folder.'
-        totalAppScopedFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: 'The number of app-scoped data files that reside as direct and indirect children of the given folder and it''s
-
-            sub-folder hierarchy.'
-        directAppScopedFileCount:
-          type: integer
-          format: int64
-          example: 50
-          description: The number of app-scoped data files that reside as direct children of the given folder.
-        aggregateInternalFileSize:
-          type: integer
-          format: int64
-          example: 10000
-          description: 'The sum of the file sizes, in bytes, of all internal data files that reside as direct and indirect children of
-
-            the given folder and it''s sub-folder hierarchy.'
-        aggregateAppScopedFileSize:
-          type: integer
-          format: int64
-          example: 10000
-          description: 'The sum of the file sizes, in bytes, of all app-scoped data files that reside as direct and indirect children of
-
-            the given folder and it''s sub-folder hierarchy.'
-      additionalProperties: false
-    QuotaResponse:
-      type: object
-      required:
-      - allowedExtensions
-      - allowedInternalExtensions
-      - maxFileSize
-      - maxLargeFileSize
-      - maxSize
-      - size
-      properties:
-        size:
-          type: integer
-          format: int64
-          example: 5000
-          description: 'The current aggregate size of all files uploaded by a given user.  If the current aggregate size is greater
-
-            than the maximum aggregate size, this is a quota violation.'
-        maxSize:
-          type: integer
-          format: int64
-          example: 9223372036854776000
-          description: The maximum aggregate size of all files uploaded by a given user.
-        maxFileSize:
-          type: integer
-          format: int64
-          example: 524288000
-          description: Maximum allowable size of an uploaded file.
-        maxLargeFileSize:
-          type: integer
-          format: int64
-          example: 6442450944
-          description: 'Maximum allowable size for a single uploaded large data file (in bytes).  This is a file that was indirectly
-
-            uploaded using the temp content service chunked upload capability.'
-        allowedExtensions:
-          type: array
-          items:
-            type: string
-            example: csv, xlsx, txt, qvd
-            description: The allowed file extensions on files that are uploaded.
-          example: csv, xlsx, txt, qvd
-          description: The allowed file extensions on files that are uploaded.
-        allowedInternalExtensions:
-          type: array
-          items:
-            type: string
-            example: dxf, gml, qrep
-            description: 'The allowed file extensions for files that are only used internally by the system (and thus not typically
-
-              shown to end users).'
-          example: dxf, gml, qrep
-          description: 'The allowed file extensions for files that are only used internally by the system (and thus not typically
-
-            shown to end users).'
-      additionalProperties: false
-    MultiStatusResponseItem:
-      type: object
-      required:
-      - code
-      - id
-      - status
-      properties:
-        id:
+        ownerId:
           type: string
-          format: uuid
-          example: ee6a390c-5d33-11e8-9c2d-fa7ae01bbebc
-          description: The unique identifier of the file.
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-        title:
-          type:
-          - string
-          - 'null'
-          example: Cursor not formatted correctly.
-          description: Summary of the problem.
-        detail:
-          type:
-          - string
-          - 'null'
-          example: Invalid encoding of cursor.
-          description: A human-readable explanation specific to this occurrence of the problem.
-        status:
-          type: integer
-          format: int32
-          example: 400
-          description: The HTTP status code.
+          example: lDL4DIINndhL_iJkcbqWyJenuwizP-2D
+          description: The ID of the new owner.
       additionalProperties: false

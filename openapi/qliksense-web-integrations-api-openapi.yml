@@ -293,6 +293,39 @@ paths:
         limit: 100
 components:
   schemas:
+    Error:
+      type: object
+      required:
+      - code
+      - status
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON Pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+        status:
+          type: string
+          description: The HTTP status code.
+      description: An error object describing the error.
     WebIntegrationPatchSchema:
       type: array
       items:
@@ -301,6 +334,140 @@ components:
       - op: replace
         path: /name
         value: New name
+    WebIntegrationPostSchema:
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: My Web Integration
+          description: The name of the web integration to create.
+        validOrigins:
+          type: array
+          items:
+            type: string
+            format: uri
+          example:
+          - https://thirdPartyApp.com
+          description: The origins that are allowed to make requests to the tenant.
+    WebIntegration:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uid
+          readOnly: true
+          description: The unique web integration identifier.
+        name:
+          type: string
+          description: The name of the web integration.
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The time the web integration was created.
+        tenantId:
+          type: string
+          format: uid
+          description: The tenant that the web integration belongs to.
+        createdBy:
+          type: string
+          format: uid
+          readOnly: true
+          description: The user that created the web integration.
+        lastUpdated:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The time the web integration was last updated.
+        validOrigins:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: The origins that are allowed to make requests to the tenant.
+      description: A web integration object.
+    WebIntegrationPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          enum:
+          - /name
+          - /validOrigins
+          type: string
+          description: A JSON Pointer.
+        value:
+          type: string
+          description: New value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    WebIntegrations:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebIntegration'
+          description: Properties of web integrations in a given tenant.
+        links:
+          type: object
+          required:
+          - self
+          properties:
+            next:
+              type: object
+              required:
+              - href
+              properties:
+                href:
+                  type: string
+                  description: URL to the next page of records.
+              description: Link information for next page.
+            prev:
+              type: object
+              required:
+              - href
+              properties:
+                href:
+                  type: string
+                  description: URL to the previous page of records.
+              description: Link information for previous page.
+            self:
+              type: object
+              required:
+              - href
+              properties:
+                href:
+                  type: string
+                  description: URL to the current page of records.
+              description: Link information for current page.
+          description: Pagination links
+      description: An array of web integration objects.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: TENANTS-8
+          title: Not found
+          status: 404
+        traceId: 000000000000000079cf1ebeae103de1
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: An array of errors related to the operation.
+        traceId:
+          type: string
+          description: A unique identifier for tracing the error.
+      description: The error response object describing the error from the handling of an HTTP request.
     WebIntegrationPost:
       type: object
       properties:
@@ -357,170 +524,3 @@ components:
           - https://thirdPartyApp.com
           description: The origins that are allowed to make requests to the tenant.
       description: The creation of a web integration response.
-    WebIntegrationPostSchema:
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          example: My Web Integration
-          description: The name of the web integration to create.
-        validOrigins:
-          type: array
-          items:
-            type: string
-            format: uri
-          example:
-          - https://thirdPartyApp.com
-          description: The origins that are allowed to make requests to the tenant.
-    WebIntegrationPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          enum:
-          - /name
-          - /validOrigins
-          type: string
-          description: A JSON Pointer.
-        value:
-          type: string
-          description: New value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: TENANTS-8
-          title: Not found
-          status: 404
-        traceId: 000000000000000079cf1ebeae103de1
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: An array of errors related to the operation.
-        traceId:
-          type: string
-          description: A unique identifier for tracing the error.
-      description: The error response object describing the error from the handling of an HTTP request.
-    Error:
-      type: object
-      required:
-      - code
-      - status
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the error.
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON Pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-        status:
-          type: string
-          description: The HTTP status code.
-      description: An error object describing the error.
-    WebIntegration:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uid
-          readOnly: true
-          description: The unique web integration identifier.
-        name:
-          type: string
-          description: The name of the web integration.
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The time the web integration was created.
-        tenantId:
-          type: string
-          format: uid
-          description: The tenant that the web integration belongs to.
-        createdBy:
-          type: string
-          format: uid
-          readOnly: true
-          description: The user that created the web integration.
-        lastUpdated:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The time the web integration was last updated.
-        validOrigins:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: The origins that are allowed to make requests to the tenant.
-      description: A web integration object.
-    WebIntegrations:
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebIntegration'
-          description: Properties of web integrations in a given tenant.
-        links:
-          type: object
-          required:
-          - self
-          properties:
-            next:
-              type: object
-              required:
-              - href
-              properties:
-                href:
-                  type: string
-                  description: URL to the next page of records.
-              description: Link information for next page.
-            prev:
-              type: object
-              required:
-              - href
-              properties:
-                href:
-                  type: string
-                  description: URL to the previous page of records.
-              description: Link information for previous page.
-            self:
-              type: object
-              required:
-              - href
-              properties:
-                href:
-                  type: string
-                  description: URL to the current page of records.
-              description: Link information for current page.
-          description: Pagination links
-      description: An array of web integration objects.

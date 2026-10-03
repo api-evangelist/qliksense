@@ -341,25 +341,10 @@ paths:
         limit: 100
 components:
   schemas:
-    BindingArrayV2:
-      type: array
-      items:
-        $ref: '#/components/schemas/BindingV2'
-      description: A collection of Bindings.  Note that there can be multiple bindings having the same `templateAppFieldName` in a binding collection to denote different usages of the field's selection state in the context of the data prep logic but they all must have the same value for their `range` property.
-    LinkPropLimitPolicyV2:
-      type: object
-      required:
-      - context
-      - limitPolicy
-      properties:
-        context:
-          $ref: '#/components/schemas/LinkUsageContextV2'
-        limitPolicy:
-          enum:
-          - Restrict
-          - AutoDelete
-          type: string
-      description: The action to take when the limit to the maximum number of generated Analytics Applications is reached.
+    UserIdV2:
+      type: string
+      example: wcgIs6wGcDdyzep9QmyopWvNH1FJTOhh
+      description: The system-assigned ID for a user
     LinkStatusV2:
       enum:
       - active
@@ -368,113 +353,16 @@ components:
       - incomplete
       type: string
       description: The current status of a link.
-    LinkPutPayloadV2:
-      type: object
-      required:
-      - name
-      - selectionApp
-      properties:
-        name:
-          $ref: '#/components/schemas/LinkNameV2'
-        ownerId:
-          $ref: '#/components/schemas/UserIdV2'
-        bindings:
-          $ref: '#/components/schemas/BindingArrayV2'
-        properties:
-          $ref: '#/components/schemas/LinkPropertiesV2'
-        rowEstExpr:
-          $ref: '#/components/schemas/LinkRowEstExprV2'
-        dynamicView:
-          type: boolean
-          description: When `true`, the ODAG link is treated as a dynamic view. Analytics Application retention time is overridden to `24 hours` and the maximum number of generated Analytics Applications is set to `1`.
-        templateApp:
-          $ref: '#/components/schemas/AppIdV2'
-        selectionApp:
-          $ref: '#/components/schemas/AppIdV2'
-        includeScript:
-          type: boolean
-          default: false
-          description: Set to `true` to include the generated Analytics Application load script in the generated Analytics Application. The default value is `false`.
-        statusSetting:
-          $ref: '#/components/schemas/LinkStatusSettingV2'
-      description: An object that defines the properties of a Link to be modified.
-    LinkUsageContextV2:
+    LinkId:
       type: string
-      description: An expression based on the usage environment of a Link typically including predicates that test the current user's membership in a group or possession of a user role that when evaluated truthfully enables an applicable value for a Link property. For example, `User_*` indicates that the link property setting applies to all users while `User.name = joe` indicates the rule applies only to a specific user named `joe`.
-    LinkPropOverrideGenAppLimitV2:
-      type: object
-      required:
-      - context
-      properties:
-        context:
-          $ref: '#/components/schemas/LinkUsageContextV2'
-        overrideGenAppLimit:
-          type: boolean
-          default: false
-      description: The limit to the number of Analytics Applications generated can be overridden using this specific Link that can exist, and still not deleted. The default value for this property is `false`. If this property value is set to `true`, then the `limit` value in `genAppLimit` is ignored.
-    SelAppLinkUsagePayload:
-      type: object
-      required:
-      - linkList
-      properties:
-        linkList:
-          type: array
-          items:
-            type: string
-          description: An array of Link IDs.
-      description: A JSON payload containing an array of LinkIds.
+      pattern: ^[a-fA-F0-9]{24}$
+      description: The system-assigned ID for a link.
     CanCreateLinks:
       type: object
       properties:
         canCreateLinks:
           type: boolean
       description: An object used to inform the caller whether the current user has privilege to create new Links.
-    LinkPropAppOpenMethodV2:
-      type: object
-      required:
-      - context
-      - openMethod
-      properties:
-        context:
-          $ref: '#/components/schemas/LinkUsageContextV2'
-        openMethod:
-          enum:
-          - Tab
-          - Window
-          type: string
-          default: Tab
-      description: Sets the default method by which the newly generated Analytics Application is displayed when opened. The default is `Tab` to open a new tab in the same browser.  Note that not all devices permit both methods so the chosen behavior may not apply if it is not supported on the user's device or browser.
-    UserStateCondensedV2:
-      type: object
-      required:
-      - id
-      - name
-      - subject
-      - tenantid
-      properties:
-        id:
-          $ref: '#/components/schemas/UserIdV2'
-        name:
-          type: string
-        subject:
-          type: string
-          description: Identity subject used for identity mapping.
-        tenantid:
-          type: string
-          description: Tenant identifier.
-      description: Condensed state of a user returned in state of ownable ODAG entities (for example, a link or request).
-    BindFormattingV2:
-      type: object
-      properties:
-        quote:
-          type: string
-          default: ''''
-          description: The character to use for quote wrapping each of the bound values when formatting the source values associated with this binding.  If this property is not supplied, a single quote character (`'`) will be used by default.  Use an empty string to suppress quote wrapping the values.
-        delimiter:
-          type: string
-          default: ','
-          description: The character to use as a separator between two (or more) bound values when formatting the source values associated with this binding.  If this property is not supplied, a comma character will be used by default.  Use an empty string to indicate that no separator character should be used.
-      description: A property value that describes the formatting of field values in a Binding. This is currently only settable in the template Analytics Application script and not when creating or updating a Link.
     LinkPropRowEstRangeV2:
       type: object
       required:
@@ -490,6 +378,67 @@ components:
           type: integer
           description: The maximum value for the row estimate to enable usage of the link. If the row estimate expression evaluates to a value larger than this value, the user will be prevented from submitting an ODAG request for this link.
       description: A link property that defines a value range that the evaluated value of the row estimate measure must fall within in order to allow submissions of a request for the link.
+    AppNameV2:
+      type: string
+      example: appname
+      minLength: 1
+      description: The name of an Analytics Application.
+    SelectionStateDescrV2:
+      type: string
+      description: A combination of the letters `S` and/or `O` to indicate which values from the selection states `selected` or `optional` in the hypercube of the selection Analytics Application to harvest as bind values to inject into the script of the template Analytics Application at ODAG request submission time. This is currently only settable in the template Analytics Application script and not when creating or updating a Link.
+    LinkPropAppOpenMethodV2:
+      type: object
+      required:
+      - context
+      - openMethod
+      properties:
+        context:
+          $ref: '#/components/schemas/LinkUsageContextV2'
+        openMethod:
+          enum:
+          - Tab
+          - Window
+          type: string
+          default: Tab
+      description: Sets the default method by which the newly generated Analytics Application is displayed when opened. The default is `Tab` to open a new tab in the same browser.  Note that not all devices permit both methods so the chosen behavior may not apply if it is not supported on the user's device or browser.
+    LinkPropGenAppLimitV2:
+      type: object
+      required:
+      - context
+      - limit
+      properties:
+        limit:
+          type: integer
+        context:
+          $ref: '#/components/schemas/LinkUsageContextV2'
+      description: The limit to the number of Analytics Applications generated using this specific Link that can exist, and still not deleted, before the policy defined by the `limitPolicy` property (configured separately via LinkPropertiesV2.limitPolicy) is applied. If no `limitPolicy` is defined, the `Restrict` policy is assumed. If there is no value for this property applicable to the current user, there is no limit to the number of Analytics Applications that can be generated from this link for the user.  The count of the current number of Analytics Applications is based on just those Analytics Applications generated by the current user (and still in existence) for this specific link. The minimum value for `limit` is `1`.
+    LinkUsageContextV2:
+      type: string
+      description: An expression based on the usage environment of a Link typically including predicates that test the current user's membership in a group or possession of a user role that when evaluated truthfully enables an applicable value for a Link property. For example, `User_*` indicates that the link property setting applies to all users while `User.name = joe` indicates the rule applies only to a specific user named `joe`.
+    AppIdV2:
+      type: string
+      minLength: 1
+      description: The system-assigned ID for an Analytics Application.
+    LinkPropDisableV2:
+      type: object
+      required:
+      - context
+      - disable
+      properties:
+        context:
+          $ref: '#/components/schemas/LinkUsageContextV2'
+        disable:
+          type: boolean
+      description: Set to `true` to temporarily disable the use of this Link to generate Analytics Applications.
+    SelectAppParamTypeV2:
+      enum:
+      - Field
+      - Variable
+      - Property
+      - Exclude
+      - BDI
+      type: string
+      description: The different kinds of selection Analytics Application parameters whose values can be bound to the script of template Analytics Applications when generating new Analytics Applications. Note that `Exclude` is used to specifically prevent fields defined as optional bind parameters in the template Analytics Application script from being bound (these must either not have the optional quantity constraint specifiers or have a minimum quantity of 0).
     MetaV2:
       type: object
       properties:
@@ -498,56 +447,44 @@ components:
           format: int32
           description: 'The HTTP status code for the error. Generally speaking, the following codes have these meanings: `200` - Success, `201` - Success (object created), `400` - Error with user input, `403` - Authorization error (user lacks permission), `404` - Object not found, `409` - Attempt to change an object using an obsolete last ModifiedDate.'
       description: Additional metadata associated with an error.
-    LinkAddPayloadV2:
+    SelAppLinkUsagePayload:
       type: object
       required:
-      - name
-      - selectionApp
+      - linkList
       properties:
-        name:
-          $ref: '#/components/schemas/LinkNameV2'
-        bindings:
-          $ref: '#/components/schemas/BindingArrayV2'
-        properties:
-          $ref: '#/components/schemas/LinkPropertiesV2'
-        rowEstExpr:
-          $ref: '#/components/schemas/LinkRowEstExprV2'
-        dynamicView:
-          type: boolean
-          description: When `true`, the ODAG link is treated as a dynamic view. Analytics Application retention time is overridden to `24 hours` and the maximum number of generated Analytics Applications is set to `1`.
-        templateApp:
-          $ref: '#/components/schemas/AppIdV2'
-        selectionApp:
-          $ref: '#/components/schemas/AppIdV2'
-        includeScript:
-          type: boolean
-          default: false
-          description: Set to `true` to include the generated Analytics Application load script in the generated Analytics Application. The default value is `false`.
-        statusSetting:
-          $ref: '#/components/schemas/LinkStatusSettingV2'
-      description: An object that defines the properties of a Link to be created.
-    AppStateCondensedV2:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          $ref: '#/components/schemas/AppIdV2'
-        name:
-          $ref: '#/components/schemas/AppNameV2'
-      description: Condensed state of an Analytics Application returned in `state` for Link, LinkUsage, Request, and ODAG Apps GET calls.
-    LinkPropAppRetentionTimeV2:
+        linkList:
+          type: array
+          items:
+            type: string
+          description: An array of Link IDs.
+      description: A JSON payload containing an array of LinkIds.
+    LinkPropGenAppNameV2:
       type: object
       required:
       - context
-      - retentionTime
+      - formatString
+      properties:
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppNameParameterV2'
+        context:
+          $ref: '#/components/schemas/LinkUsageContextV2'
+        formatString:
+          type: string
+          description: A string containing the base text of the name to use for the generated Analytics Application and optionally any number of placeholder patterns of the form `{N}` where `N` is an integer greater than or equal to `0`. The integer identifies the offset in the `params` array of an `AppNameParameterV2` to evaluate at ODAG Request execution time to compute a fragment of the generated Analytics Application's name and insert it at the same position as its corresponding `{N}` placeholder.
+      description: An object that defines how to compute the name to use for the generated Analytics Application.
+    LinkPropOverrideGenAppLimitV2:
+      type: object
+      required:
+      - context
       properties:
         context:
           $ref: '#/components/schemas/LinkUsageContextV2'
-        retentionTime:
-          type: string
-      description: A string that defines the length of time that a generated Analytics Application should be allowed to exist before it is automatically purged.  The format must be in either ISO 8601 duration format or the text `unlimited`.
+        overrideGenAppLimit:
+          type: boolean
+          default: false
+      description: The limit to the number of Analytics Applications generated can be overridden using this specific Link that can exist, and still not deleted. The default value for this property is `false`. If this property value is set to `true`, then the `limit` value in `genAppLimit` is ignored.
     LinkStateFullV2:
       type: object
       required:
@@ -611,77 +548,120 @@ components:
           items:
             type: object
       description: The full state of a Link.
-    SelectAppParamTypeV2:
-      enum:
-      - Field
-      - Variable
-      - Property
-      - Exclude
-      - BDI
-      type: string
-      description: The different kinds of selection Analytics Application parameters whose values can be bound to the script of template Analytics Applications when generating new Analytics Applications. Note that `Exclude` is used to specifically prevent fields defined as optional bind parameters in the template Analytics Application script from being bound (these must either not have the optional quantity constraint specifiers or have a minimum quantity of 0).
-    LinkPropMenuLabelV2:
+    ErrorV2:
       type: object
-      required:
-      - context
-      - label
       properties:
-        label:
-          type: string
-        context:
-          $ref: '#/components/schemas/LinkUsageContextV2'
-      description: The default label to use for this Link in the context of the selection Analytics Application's ODAG navigation menu.
-    LinkTypeV2:
-      enum:
-      - link
-      - view
-      - all
-      type: string
-      default: link
-      description: The type of link
-    LinkStatusSettingV2:
-      enum:
-      - activate
-      - disable
-      - decommission
-      type: string
-      description: 'The requested status transition to apply to a Link.
-
-        New links are always created with status `active`; `statusSetting` is ignored.
-
-        When updating a Link, if `statusSetting` is provided, the request updates the Link''s `status` only (other fields in the payload are not applied). If omitted, the Link''s status is not changed.
-
-        `statusSetting` is an action, and it maps to the resulting `status`: - `activate` sets `status` to `active`. - `disable` sets `status` to `disabled`. - `decommission` sets `status` to `decommissioned`.
-
-        If `statusSetting` has an unsupported value, the request returns an error and the Link is not updated.
-
-        Links with status `decommissioned` cannot change status.'
-    LinkStateRefV2:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          $ref: '#/components/schemas/LinkId'
-        link:
-          $ref: '#/components/schemas/LinkStateFullV2'
-      description: Used to return a possibly empty link state when querying multiple links by ID where any one of those IDs may be invalid or obsolete. If the `link` field is missing, it means there was no accessible link for the corresponding `id`.
-    LinkPropGenAppNameV2:
-      type: object
-      required:
-      - context
-      - formatString
-      properties:
-        params:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/AppNameParameterV2'
+            $ref: '#/components/schemas/ErrorDetailsV2'
+        traceId:
+          type: string
+          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
+      description: A standard error response containing a list of one or more errors.
+    LinkRowEstExprV2:
+      type: string
+      description: The measure expression to be evaluated in the context of the selection Analytics Application for the link that estimates the number of records that will be qualified by the primary load query of the template Analytics Application. This expression must be valid in the context of the selection Analytics Application fields and update whenever the selection state of the selection Analytics Application changes.
+    LinkPropTargetSheetV2:
+      type: object
+      required:
+      - context
+      - sheetId
+      properties:
         context:
           $ref: '#/components/schemas/LinkUsageContextV2'
-        formatString:
+        sheetId:
           type: string
-          description: A string containing the base text of the name to use for the generated Analytics Application and optionally any number of placeholder patterns of the form `{N}` where `N` is an integer greater than or equal to `0`. The integer identifies the offset in the `params` array of an `AppNameParameterV2` to evaluate at ODAG Request execution time to compute a fragment of the generated Analytics Application's name and insert it at the same position as its corresponding `{N}` placeholder.
-      description: An object that defines how to compute the name to use for the generated Analytics Application.
+          description: The ID of the sheet to first navigate to when opening the generated Analytics Application from the selection Analytics Application.
+        sheetName:
+          type: string
+          description: An optional, read-only property that is returned when retrieving a link if the `targetSheet` setting exists for the current user in the link's `properties` set and the sheet with that ID exists in the link's `templateApp`.
+      description: An optional property that a Link creator can specify to cause the client to navigate to a specific sheet in the generated Analytics Application when opening the generated Analytics Application from the selection Analytics Application's navpoint panel.
+    LinkAddPayloadV2:
+      type: object
+      required:
+      - name
+      - selectionApp
+      properties:
+        name:
+          $ref: '#/components/schemas/LinkNameV2'
+        bindings:
+          $ref: '#/components/schemas/BindingArrayV2'
+        properties:
+          $ref: '#/components/schemas/LinkPropertiesV2'
+        rowEstExpr:
+          $ref: '#/components/schemas/LinkRowEstExprV2'
+        dynamicView:
+          type: boolean
+          description: When `true`, the ODAG link is treated as a dynamic view. Analytics Application retention time is overridden to `24 hours` and the maximum number of generated Analytics Applications is set to `1`.
+        templateApp:
+          $ref: '#/components/schemas/AppIdV2'
+        selectionApp:
+          $ref: '#/components/schemas/AppIdV2'
+        includeScript:
+          type: boolean
+          default: false
+          description: Set to `true` to include the generated Analytics Application load script in the generated Analytics Application. The default value is `false`.
+        statusSetting:
+          $ref: '#/components/schemas/LinkStatusSettingV2'
+      description: An object that defines the properties of a Link to be created.
+    NumericOnlyV2:
+      type: boolean
+      default: false
+      description: Set to `true` to indicate that only numeric values from the selection Analytics Application source parameter should be used. The default value for this property, if left unspecified, is `false`. This is currently only settable in the template Analytics Application script and not when creating or updating a Link.
+    LinkPropAppRetentionTimeV2:
+      type: object
+      required:
+      - context
+      - retentionTime
+      properties:
+        context:
+          $ref: '#/components/schemas/LinkUsageContextV2'
+        retentionTime:
+          type: string
+      description: A string that defines the length of time that a generated Analytics Application should be allowed to exist before it is automatically purged.  The format must be in either ISO 8601 duration format or the text `unlimited`.
+    AppNameParameterV2:
+      enum:
+      - templateAppName
+      - userId
+      - curYear
+      - curMonth
+      - curDay
+      - curHr
+      - curMin
+      - curSec
+      type: string
+      description: One of the allowed variables that, when evaluated at ODAG Request execution time, can be used to compute a part of a generated Analytics Application's name.
+    LinkPutPayloadV2:
+      type: object
+      required:
+      - name
+      - selectionApp
+      properties:
+        name:
+          $ref: '#/components/schemas/LinkNameV2'
+        ownerId:
+          $ref: '#/components/schemas/UserIdV2'
+        bindings:
+          $ref: '#/components/schemas/BindingArrayV2'
+        properties:
+          $ref: '#/components/schemas/LinkPropertiesV2'
+        rowEstExpr:
+          $ref: '#/components/schemas/LinkRowEstExprV2'
+        dynamicView:
+          type: boolean
+          description: When `true`, the ODAG link is treated as a dynamic view. Analytics Application retention time is overridden to `24 hours` and the maximum number of generated Analytics Applications is set to `1`.
+        templateApp:
+          $ref: '#/components/schemas/AppIdV2'
+        selectionApp:
+          $ref: '#/components/schemas/AppIdV2'
+        includeScript:
+          type: boolean
+          default: false
+          description: Set to `true` to include the generated Analytics Application load script in the generated Analytics Application. The default value is `false`.
+        statusSetting:
+          $ref: '#/components/schemas/LinkStatusSettingV2'
+      description: An object that defines the properties of a Link to be modified.
     BindingV2:
       type: object
       required:
@@ -704,10 +684,27 @@ components:
         templateAppVarName:
           type: string
       description: An object that defines how values accessible in the selection Analytics Application are to be harvested and injected into the data prep phase of the template Analytics Application at Analytics Application generation time.
-    UserIdV2:
-      type: string
-      example: wcgIs6wGcDdyzep9QmyopWvNH1FJTOhh
-      description: The system-assigned ID for a user
+    LinkPropMenuLabelV2:
+      type: object
+      required:
+      - context
+      - label
+      properties:
+        label:
+          type: string
+        context:
+          $ref: '#/components/schemas/LinkUsageContextV2'
+      description: The default label to use for this Link in the context of the selection Analytics Application's ODAG navigation menu.
+    LinkStateRefV2:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          $ref: '#/components/schemas/LinkId'
+        link:
+          $ref: '#/components/schemas/LinkStateFullV2'
+      description: Used to return a possibly empty link state when querying multiple links by ID where any one of those IDs may be invalid or obsolete. If the `link` field is missing, it means there was no accessible link for the corresponding `id`.
     ErrorDetailsV2:
       type: object
       properties:
@@ -722,46 +719,75 @@ components:
           type: string
           description: The message describing the error.
       description: A single error entry within an error response.
-    ErrorV2:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorDetailsV2'
-        traceId:
-          type: string
-          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
-      description: A standard error response containing a list of one or more errors.
-    LinkPropGenAppLimitV2:
-      type: object
-      required:
-      - context
-      - limit
-      properties:
-        limit:
-          type: integer
-        context:
-          $ref: '#/components/schemas/LinkUsageContextV2'
-      description: The limit to the number of Analytics Applications generated using this specific Link that can exist, and still not deleted, before the policy defined by the `limitPolicy` property (configured separately via LinkPropertiesV2.limitPolicy) is applied. If no `limitPolicy` is defined, the `Restrict` policy is assumed. If there is no value for this property applicable to the current user, there is no limit to the number of Analytics Applications that can be generated from this link for the user.  The count of the current number of Analytics Applications is based on just those Analytics Applications generated by the current user (and still in existence) for this specific link. The minimum value for `limit` is `1`.
-    LinkPropDisableV2:
-      type: object
-      required:
-      - context
+    LinkStatusSettingV2:
+      enum:
+      - activate
       - disable
+      - decommission
+      type: string
+      description: 'The requested status transition to apply to a Link.
+
+        New links are always created with status `active`; `statusSetting` is ignored.
+
+        When updating a Link, if `statusSetting` is provided, the request updates the Link''s `status` only (other fields in the payload are not applied). If omitted, the Link''s status is not changed.
+
+        `statusSetting` is an action, and it maps to the resulting `status`: - `activate` sets `status` to `active`. - `disable` sets `status` to `disabled`. - `decommission` sets `status` to `decommissioned`.
+
+        If `statusSetting` has an unsupported value, the request returns an error and the Link is not updated.
+
+        Links with status `decommissioned` cannot change status.'
+    AppStateCondensedV2:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          $ref: '#/components/schemas/AppIdV2'
+        name:
+          $ref: '#/components/schemas/AppNameV2'
+      description: Condensed state of an Analytics Application returned in `state` for Link, LinkUsage, Request, and ODAG Apps GET calls.
+    LinkTypeV2:
+      enum:
+      - link
+      - view
+      - all
+      type: string
+      default: link
+      description: The type of link
+    LinkPropLimitPolicyV2:
+      type: object
+      required:
+      - context
+      - limitPolicy
       properties:
         context:
           $ref: '#/components/schemas/LinkUsageContextV2'
-        disable:
-          type: boolean
-      description: Set to `true` to temporarily disable the use of this Link to generate Analytics Applications.
-    AppIdV2:
-      type: string
-      minLength: 1
-      description: The system-assigned ID for an Analytics Application.
-    SelectionStateDescrV2:
-      type: string
-      description: A combination of the letters `S` and/or `O` to indicate which values from the selection states `selected` or `optional` in the hypercube of the selection Analytics Application to harvest as bind values to inject into the script of the template Analytics Application at ODAG request submission time. This is currently only settable in the template Analytics Application script and not when creating or updating a Link.
+        limitPolicy:
+          enum:
+          - Restrict
+          - AutoDelete
+          type: string
+      description: The action to take when the limit to the maximum number of generated Analytics Applications is reached.
+    UserStateCondensedV2:
+      type: object
+      required:
+      - id
+      - name
+      - subject
+      - tenantid
+      properties:
+        id:
+          $ref: '#/components/schemas/UserIdV2'
+        name:
+          type: string
+        subject:
+          type: string
+          description: Identity subject used for identity mapping.
+        tenantid:
+          type: string
+          description: Tenant identifier.
+      description: Condensed state of a user returned in state of ownable ODAG entities (for example, a link or request).
     LinkPropertiesV2:
       type: object
       required:
@@ -808,27 +834,29 @@ components:
           items:
             $ref: '#/components/schemas/LinkPropOverrideGenAppLimitV2'
       description: The complete set of possible properties for a link and their associated user context/value pairings.
-    AppNameParameterV2:
-      enum:
-      - templateAppName
-      - userId
-      - curYear
-      - curMonth
-      - curDay
-      - curHr
-      - curMin
-      - curSec
+    BindingArrayV2:
+      type: array
+      items:
+        $ref: '#/components/schemas/BindingV2'
+      description: A collection of Bindings.  Note that there can be multiple bindings having the same `templateAppFieldName` in a binding collection to denote different usages of the field's selection state in the context of the data prep logic but they all must have the same value for their `range` property.
+    BindFormattingV2:
+      type: object
+      properties:
+        quote:
+          type: string
+          default: ''''
+          description: The character to use for quote wrapping each of the bound values when formatting the source values associated with this binding.  If this property is not supplied, a single quote character (`'`) will be used by default.  Use an empty string to suppress quote wrapping the values.
+        delimiter:
+          type: string
+          default: ','
+          description: The character to use as a separator between two (or more) bound values when formatting the source values associated with this binding.  If this property is not supplied, a comma character will be used by default.  Use an empty string to indicate that no separator character should be used.
+      description: A property value that describes the formatting of field values in a Binding. This is currently only settable in the template Analytics Application script and not when creating or updating a Link.
+    LinkNameV2:
       type: string
-      description: One of the allowed variables that, when evaluated at ODAG Request execution time, can be used to compute a part of a generated Analytics Application's name.
-    NumericOnlyV2:
-      type: boolean
-      default: false
-      description: Set to `true` to indicate that only numeric values from the selection Analytics Application source parameter should be used. The default value for this property, if left unspecified, is `false`. This is currently only settable in the template Analytics Application script and not when creating or updating a Link.
-    AppNameV2:
-      type: string
-      example: appname
+      example: ODAG Link name
+      maxLength: 255
       minLength: 1
-      description: The name of an Analytics Application.
+      description: The name of a link.
     ValueCountRangeV2:
       type: object
       properties:
@@ -837,34 +865,6 @@ components:
         upperBound:
           type: integer
       description: The lower and upper bound for the permitted number of values that must exist in the selection Analytics Application's source parameter in order for this binding to be valid (and permit an ODAG Request to be submitted. If this property is not supplied, there is no constraint on either the lower or upper bound. To indicate that an exact number of selections are required, use the same number for both the lower and upper bound.
-    LinkPropTargetSheetV2:
-      type: object
-      required:
-      - context
-      - sheetId
-      properties:
-        context:
-          $ref: '#/components/schemas/LinkUsageContextV2'
-        sheetId:
-          type: string
-          description: The ID of the sheet to first navigate to when opening the generated Analytics Application from the selection Analytics Application.
-        sheetName:
-          type: string
-          description: An optional, read-only property that is returned when retrieving a link if the `targetSheet` setting exists for the current user in the link's `properties` set and the sheet with that ID exists in the link's `templateApp`.
-      description: An optional property that a Link creator can specify to cause the client to navigate to a specific sheet in the generated Analytics Application when opening the generated Analytics Application from the selection Analytics Application's navpoint panel.
-    LinkRowEstExprV2:
-      type: string
-      description: The measure expression to be evaluated in the context of the selection Analytics Application for the link that estimates the number of records that will be qualified by the primary load query of the template Analytics Application. This expression must be valid in the context of the selection Analytics Application fields and update whenever the selection state of the selection Analytics Application changes.
-    LinkNameV2:
-      type: string
-      example: ODAG Link name
-      maxLength: 255
-      minLength: 1
-      description: The name of a link.
-    LinkId:
-      type: string
-      pattern: ^[a-fA-F0-9]{24}$
-      description: The system-assigned ID for a link.
   parameters:
     OptOwnedByV2:
       in: query

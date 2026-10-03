@@ -119,13 +119,6 @@ components:
           type: string
           example: a1b2c3d4f5
           description: Identifier of the sharing task to trigger.
-    Error_meta:
-      type: object
-      properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
     Errors:
       type: object
       example:
@@ -158,3 +151,10 @@ components:
           type: string
           readOnly: true
           description: Error cause.
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.

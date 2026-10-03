@@ -70,15 +70,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    StandardError:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/StandardErrorItem'
     MigrationInformation:
       type: object
       properties:
@@ -118,6 +109,15 @@ components:
         migratingToFingerprint:
           type: string
           description: The new key ARN fingerprint.
+    StandardError:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/StandardErrorItem'
     StandardErrorItem:
       type: object
       required:

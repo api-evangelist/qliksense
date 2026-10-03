@@ -658,11 +658,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    pageLink:
+    resultMeta:
       type: object
       properties:
-        href:
-          type: string
+        countTotal:
+          type: integer
     termsResult:
       type: object
       required:
@@ -676,23 +676,76 @@ components:
           $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
-    JSONPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /name
-        value: new name
-      - op: replace
-        path: /description
-        value: new description
-      description: An array of JSON Patch documents
-    resultMeta:
+    termLinksTo:
       type: object
       properties:
-        countTotal:
-          type: integer
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          x-qlik-filterable: true
+        name:
+          type: string
+          example: Sales App
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+        title:
+          type: string
+          description: Describes reason for item status during batch operation. E.g. why an error occurs during creation.
+        status:
+          type: number
+          example: 201
+          description: Http status code for item during batch operation.
+        openUrl:
+          type: string
+          example: https://tenant.qlik.com/sense/app/52bc4307-f9f2-4ce6-b521-67ca87018759
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+        createdBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          x-qlik-filterable: true
+        resourceId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Different formats based on resource type. Could be e.g. OID or UUID.
+          x-qlik-filterable: true
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          x-qlik-filterable: true
+        subResourceId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Different formats based on subresource type. Could be e.g. OID or UUID.
+          x-qlik-filterable: true
+        resourceSpaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        subResourceName:
+          type: string
+          example: Sales YTD
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          x-qlik-filterable: true
+        subResourceInvalid:
+          type: boolean
+          description: Populated and true if no matching subresource is found on parent resource. E.g. if a dataset field no longer exist but a link to that field exists.
+      description: Describes links to other entities such as qlik charts, dataset columns etc.
     pageLinks:
       type: object
       properties:
@@ -703,71 +756,6 @@ components:
         self:
           $ref: '#/components/schemas/pageLink'
       description: URLs to a resource request
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
-    termStatus:
-      type: object
-      required:
-      - type
-      - updatedBy
-      - updatedAt
-      properties:
-        type:
-          enum:
-          - draft
-          - verified
-          - deprecated
-          type: string
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          description: Time when the state was changed
-        updatedBy:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          description: The unique identifier of the user who last changed the status of the term
-      description: Terms status is used determine the status of a term
-      x-qlik-filterable: true
-    errorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 795dedf8cf38b60088a6e4feb6eace75
-    errorResponseCode:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
     createTerm:
       type: object
       required:
@@ -821,6 +809,16 @@ components:
             The field is typically generated by the UI but can be set programmatically using the rich text format.
 
             '
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
     termCreateLinksTo:
       type: object
       required:
@@ -871,6 +869,78 @@ components:
         If any one subresource field is specified, all three are required.
 
         '
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      description: An array of JSON Patch documents
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    termStatus:
+      type: object
+      required:
+      - type
+      - updatedBy
+      - updatedAt
+      properties:
+        type:
+          enum:
+          - draft
+          - verified
+          - deprecated
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          description: Time when the state was changed
+        updatedBy:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: The unique identifier of the user who last changed the status of the term
+      description: Terms status is used determine the status of a term
+      x-qlik-filterable: true
     termRelatesTo:
       type: object
       required:
@@ -1005,73 +1075,3 @@ components:
             The field is typically generated by the UI but can be set programmatically using the rich text format.
 
             '
-    termLinksTo:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-          x-qlik-filterable: true
-        name:
-          type: string
-          example: Sales App
-        type:
-          enum:
-          - definition
-          - related
-          type: string
-        title:
-          type: string
-          description: Describes reason for item status during batch operation. E.g. why an error occurs during creation.
-        status:
-          type: number
-          example: 201
-          description: Http status code for item during batch operation.
-        openUrl:
-          type: string
-          example: https://tenant.qlik.com/sense/app/52bc4307-f9f2-4ce6-b521-67ca87018759
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-        createdBy:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          x-qlik-filterable: true
-        resourceId:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: Different formats based on resource type. Could be e.g. OID or UUID.
-          x-qlik-filterable: true
-        resourceType:
-          enum:
-          - app
-          - dataset
-          type: string
-          x-qlik-filterable: true
-        subResourceId:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: Different formats based on subresource type. Could be e.g. OID or UUID.
-          x-qlik-filterable: true
-        resourceSpaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-        subResourceName:
-          type: string
-          example: Sales YTD
-        subResourceType:
-          enum:
-          - master_dimension
-          - master_measure
-          - field
-          type: string
-          x-qlik-filterable: true
-        subResourceInvalid:
-          type: boolean
-          description: Populated and true if no matching subresource is found on parent resource. E.g. if a dataset field no longer exist but a link to that field exists.
-      description: Describes links to other entities such as qlik charts, dataset columns etc.

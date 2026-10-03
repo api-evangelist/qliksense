@@ -138,28 +138,12 @@ components:
           default: P365D
           example: P365D
           description: The expiry of the scim `externalClient` token in ISO8601 duration format, e.g. `P365D` for 365 days. Used during the creation of an `externalClient` API key for configuring a SCIM compatible Identity Provider.
-    ApiKeysConfigPatchSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/ApiKeyConfigPatch'
-      example:
-      - op: replace
-        path: /max_keys_per_user
-        value: 10
     RetryAfterHeader:
       type: object
       properties:
         retry-after:
           type: integer
           description: The amount of seconds to wait before retrying the request.
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors and their properties.
     Error:
       type: object
       required:
@@ -214,3 +198,19 @@ components:
         value:
           description: The value to be used for this operation.
       description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors and their properties.
+    ApiKeysConfigPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiKeyConfigPatch'
+      example:
+      - op: replace
+        path: /max_keys_per_user
+        value: 10

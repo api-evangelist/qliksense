@@ -374,14 +374,15 @@ paths:
         limit: 100
 components:
   schemas:
-    BatchIdDto:
+    ErrorResponse:
       type: object
       properties:
-        ids:
+        errors:
           type: array
           items:
-            type: string
-          uniqueItems: true
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     DataStoreInfo:
       type: object
       required:
@@ -395,6 +396,25 @@ components:
         type:
           type: string
           readOnly: true
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    BatchIdDto:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
     JsonPatch:
       type: object
       required:
@@ -420,26 +440,6 @@ components:
         value:
           type: object
           description: The value to add, replace or test.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     DataAsset:
       type: object
       title: Data Asset

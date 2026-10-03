@@ -307,101 +307,109 @@ paths:
         limit: 1000
 components:
   schemas:
-    ComparisonType:
-      enum:
-      - '>'
-      - '>='
-      - <
-      - <=
-      - '> <'
-      - '>= <='
-      type: string
-      example: '>'
-      description: Comparison operation type
-    BreakdownSearchFilter:
-      type: object
-      required:
-      - searchType
-      properties:
-        searchType:
-          $ref: '#/components/schemas/SearchType'
-        searchString:
-          type: string
-          example: Marketing
-          description: String to search for. If empty, all dimension values are analyzed.
-      description: Search-based filtering configuration. If searchString is empty or not provided, all dimension values will be analyzed (no filtering applied).
-    SearchType:
-      enum:
-      - contains
-      - exactMatch
-      - startsWith
-      - endsWith
-      - beginningOfWord
-      type: string
-      example: contains
-      description: Search operation type
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          example: OWL-001
-          description: The error code is in the form of 'OWL-xxx', ranges from 'OWL-001' to 'OWL-016'.
-        title:
-          type: string
-        detail:
-          type: string
-    Href:
+    BreakDownDimension:
       type: object
       example:
-        href: http://example.com
+        filter:
+          type: values
+          values:
+          - Europe
+          - Asia
+        values:
+        - Europe
+        - Asia
+        dimension: Region
+      required:
+      - dimension
       properties:
-        href:
+        filter:
+          $ref: '#/components/schemas/BreakdownFilter'
+        values:
+          type: array
+          items:
+            type: string
+            example: Europe
+            description: A dimension value to include in the breakdown.
+          example:
+          - Europe
+          - Asia
+          description: List of values (kept for backward compatibility)
+        dimension:
           type: string
-          format: uri
-          example: http://example.com
-    AdaptiveCardsLinks:
+          example: Region
+          description: The dimension name
+      description: 'Breakdown dimension with filtering capabilities.
+
+        - `dimension` is required.
+
+        - `values` and `filter` are optional. If both are omitted (or `values` is empty and `filter` is null), the API interprets this as "analyze all values" for the given dimension.
+
+        '
+    BreakdownConditionFilter:
       type: object
+      required:
+      - conditionType
+      - comparisonType
       properties:
-        next:
-          $ref: '#/components/schemas/Href'
-        prev:
-          $ref: '#/components/schemas/Href'
-        self:
-          $ref: '#/components/schemas/Href'
-    ValueType:
-      enum:
-      - calculated
-      - fixed
-      type: string
-      example: fixed
-      description: Whether the value is calculated or fixed
-    AnalysisTypeEnum:
-      enum:
-      - recordHigh
-      - recordLow
-      - aboveModel
-      - belowModel
-      - spikesUp
-      - spikesDown
-      - newBaseLine
-      - trendChanges
-      type: string
-      example: spikesUp
-      description: Type of analysis performed on the in-app metric.
-    ConditionType:
-      enum:
-      - general
-      - compare
-      type: string
-      example: general
-      description: Condition evaluation type
-    AdaptiveCard:
-      type: object
-      description: Adaptive Card
+        field:
+          type: string
+          example: Sales
+          description: Primary field for calculated values
+        value:
+          type: number
+          example: 100
+          description: Fixed numeric value (used by single comparisons with Compare.Fixed and General.Fixed)
+        field2:
+          type: string
+          example: Cost
+          description: Additional field used only by General.Calculated for single comparisons
+        toField:
+          type: string
+          example: MaxPrice
+          description: Upper bound field for range comparisons with Calculated value type (used with > < or >= <=)
+        toValue:
+          type: number
+          example: 500
+          description: Upper bound value for range comparisons with Fixed value type (used with > < or >= <=)
+        fromField:
+          type: string
+          example: MinPrice
+          description: Lower bound field for range comparisons with Calculated value type (used with > < or >= <=)
+        fromValue:
+          type: number
+          example: 100
+          description: Lower bound value for range comparisons with Fixed value type (used with > < or >= <=)
+        valueType:
+          $ref: '#/components/schemas/ValueType'
+        aggregation:
+          $ref: '#/components/schemas/AggregationType'
+        aggregation2:
+          $ref: '#/components/schemas/AggregationType'
+        conditionType:
+          $ref: '#/components/schemas/ConditionType'
+        toAggregation:
+          $ref: '#/components/schemas/AggregationType'
+        comparisonType:
+          $ref: '#/components/schemas/ComparisonType'
+        fromAggregation:
+          $ref: '#/components/schemas/AggregationType'
+      description: 'Condition-based filtering configuration. Supports single comparisons (>, >=, <, <=) and range comparisons (> <, >= <=).
+
+
+        **Single Comparisons:**
+
+        - Compare type: Uses `value` (Fixed) or `aggregation`+`field` (Calculated)
+
+        - General type: Uses `aggregation`+`field` and either `value` (Fixed) or `aggregation2`+`field2` (Calculated)
+
+
+        **Range Comparisons (> < or >= <=):**
+
+        - Compare type: Uses `fromValue`+`toValue` (Fixed) or `fromAggregation`+`fromField`+`toAggregation`+`toField` (Calculated)
+
+        - General type: Uses `aggregation`+`field` plus either `fromValue`+`toValue` (Fixed) or `fromAggregation`+`fromField`+`toAggregation`+`toField` (Calculated)
+
+        '
     FormattedInAppMetricDefinition:
       type: object
       required:
@@ -465,16 +473,20 @@ components:
           type: integer
           example: 7
           description: Number of days to offset the execution of analyses for this aggregation period.
-    AggregationFrequencyEnum:
+    ComparisonType:
       enum:
-      - D
-      - W
-      - M
-      - Q
-      - Y
+      - '>'
+      - '>='
+      - <
+      - <=
+      - '> <'
+      - '>= <='
       type: string
-      example: D
-      description: Comparison period for the analysis.
+      example: '>'
+      description: Comparison operation type
+    AdaptiveCard:
+      type: object
+      description: Adaptive Card
     FormattedInAppMetricRecord:
       type: object
       required:
@@ -521,13 +533,79 @@ components:
           type: string
           example: '2023-10-01T12:00:00Z'
           description: The time when the in-app metric was created.
-    StatusEnum:
+    BreakdownTopBottomFilter:
+      type: object
+      required:
+      - type
+      - unit
+      - number
+      properties:
+        type:
+          $ref: '#/components/schemas/TopBottomType'
+        unit:
+          $ref: '#/components/schemas/TopBottomUnit'
+        number:
+          type: integer
+          example: 10
+          description: Number of top/bottom values to select
+      description: Top/bottom filtering configuration
+    TopBottomUnit:
+      enum:
+      - numerical
+      - percentage
+      type: string
+      example: numerical
+      description: Unit for top/bottom selection
+    AdaptiveCards:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdaptiveCard'
+        links:
+          $ref: '#/components/schemas/AdaptiveCardsLinks'
+        inAppMetrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormattedInAppMetricRecord'
+    ValueType:
+      enum:
+      - calculated
+      - fixed
+      type: string
+      example: fixed
+      description: Whether the value is calculated or fixed
+    UpwardIsEnum:
       enum:
       - 0
       - 1
+      - -1
       type: integer
       example: 1
-      description: Status of the in app metrics (0 - inactive, 1 - active).
+      description: Indicates whether an increase in the metric is considered neutral (0), positive (1) or negative (-1).
+    SearchType:
+      enum:
+      - contains
+      - exactMatch
+      - startsWith
+      - endsWith
+      - beginningOfWord
+      type: string
+      example: contains
+      description: Search operation type
+    Href:
+      type: object
+      example:
+        href: http://example.com
+      properties:
+        href:
+          type: string
+          format: uri
+          example: http://example.com
     Errors:
       type: object
       example:
@@ -611,82 +689,27 @@ components:
         topBottom:
           $ref: '#/components/schemas/BreakdownTopBottomFilter'
       description: Filter configuration for a breakdown dimension
-    BreakdownTopBottomFilter:
+    BreakdownSearchFilter:
       type: object
       required:
-      - type
-      - unit
-      - number
+      - searchType
       properties:
-        type:
-          $ref: '#/components/schemas/TopBottomType'
-        unit:
-          $ref: '#/components/schemas/TopBottomUnit'
-        number:
-          type: integer
-          example: 10
-          description: Number of top/bottom values to select
-      description: Top/bottom filtering configuration
-    UpwardIsEnum:
-      enum:
-      - 0
-      - 1
-      - -1
-      type: integer
-      example: 1
-      description: Indicates whether an increase in the metric is considered neutral (0), positive (1) or negative (-1).
-    TopBottomUnit:
-      enum:
-      - numerical
-      - percentage
-      type: string
-      example: numerical
-      description: Unit for top/bottom selection
-    TopBottomType:
-      enum:
-      - top
-      - bottom
-      type: string
-      example: top
-      description: Whether to select top or bottom values
-    BreakDownDimension:
-      type: object
-      example:
-        filter:
-          type: values
-          values:
-          - Europe
-          - Asia
-        values:
-        - Europe
-        - Asia
-        dimension: Region
-      required:
-      - dimension
-      properties:
-        filter:
-          $ref: '#/components/schemas/BreakdownFilter'
-        values:
-          type: array
-          items:
-            type: string
-            example: Europe
-            description: A dimension value to include in the breakdown.
-          example:
-          - Europe
-          - Asia
-          description: List of values (kept for backward compatibility)
-        dimension:
+        searchType:
+          $ref: '#/components/schemas/SearchType'
+        searchString:
           type: string
-          example: Region
-          description: The dimension name
-      description: 'Breakdown dimension with filtering capabilities.
-
-        - `dimension` is required.
-
-        - `values` and `filter` are optional. If both are omitted (or `values` is empty and `filter` is null), the API interprets this as "analyze all values" for the given dimension.
-
-        '
+          example: Marketing
+          description: String to search for. If empty, all dimension values are analyzed.
+      description: Search-based filtering configuration. If searchString is empty or not provided, all dimension values will be analyzed (no filtering applied).
+    AdaptiveCardsLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Href'
+        prev:
+          $ref: '#/components/schemas/Href'
+        self:
+          $ref: '#/components/schemas/Href'
     AggregationType:
       enum:
       - sum
@@ -697,6 +720,20 @@ components:
       type: string
       example: sum
       description: Aggregation operation type
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          example: OWL-001
+          description: The error code is in the form of 'OWL-xxx', ranges from 'OWL-001' to 'OWL-016'.
+        title:
+          type: string
+        detail:
+          type: string
     BreakdownFilterType:
       enum:
       - values
@@ -706,84 +743,47 @@ components:
       type: string
       example: values
       description: Type of breakdown filter
-    BreakdownConditionFilter:
-      type: object
-      required:
-      - conditionType
-      - comparisonType
-      properties:
-        field:
-          type: string
-          example: Sales
-          description: Primary field for calculated values
-        value:
-          type: number
-          example: 100
-          description: Fixed numeric value (used by single comparisons with Compare.Fixed and General.Fixed)
-        field2:
-          type: string
-          example: Cost
-          description: Additional field used only by General.Calculated for single comparisons
-        toField:
-          type: string
-          example: MaxPrice
-          description: Upper bound field for range comparisons with Calculated value type (used with > < or >= <=)
-        toValue:
-          type: number
-          example: 500
-          description: Upper bound value for range comparisons with Fixed value type (used with > < or >= <=)
-        fromField:
-          type: string
-          example: MinPrice
-          description: Lower bound field for range comparisons with Calculated value type (used with > < or >= <=)
-        fromValue:
-          type: number
-          example: 100
-          description: Lower bound value for range comparisons with Fixed value type (used with > < or >= <=)
-        valueType:
-          $ref: '#/components/schemas/ValueType'
-        aggregation:
-          $ref: '#/components/schemas/AggregationType'
-        aggregation2:
-          $ref: '#/components/schemas/AggregationType'
-        conditionType:
-          $ref: '#/components/schemas/ConditionType'
-        toAggregation:
-          $ref: '#/components/schemas/AggregationType'
-        comparisonType:
-          $ref: '#/components/schemas/ComparisonType'
-        fromAggregation:
-          $ref: '#/components/schemas/AggregationType'
-      description: 'Condition-based filtering configuration. Supports single comparisons (>, >=, <, <=) and range comparisons (> <, >= <=).
-
-
-        **Single Comparisons:**
-
-        - Compare type: Uses `value` (Fixed) or `aggregation`+`field` (Calculated)
-
-        - General type: Uses `aggregation`+`field` and either `value` (Fixed) or `aggregation2`+`field2` (Calculated)
-
-
-        **Range Comparisons (> < or >= <=):**
-
-        - Compare type: Uses `fromValue`+`toValue` (Fixed) or `fromAggregation`+`fromField`+`toAggregation`+`toField` (Calculated)
-
-        - General type: Uses `aggregation`+`field` plus either `fromValue`+`toValue` (Fixed) or `fromAggregation`+`fromField`+`toAggregation`+`toField` (Calculated)
-
-        '
-    AdaptiveCards:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AdaptiveCard'
-        links:
-          $ref: '#/components/schemas/AdaptiveCardsLinks'
-        inAppMetrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/FormattedInAppMetricRecord'
+    TopBottomType:
+      enum:
+      - top
+      - bottom
+      type: string
+      example: top
+      description: Whether to select top or bottom values
+    ConditionType:
+      enum:
+      - general
+      - compare
+      type: string
+      example: general
+      description: Condition evaluation type
+    StatusEnum:
+      enum:
+      - 0
+      - 1
+      type: integer
+      example: 1
+      description: Status of the in app metrics (0 - inactive, 1 - active).
+    AnalysisTypeEnum:
+      enum:
+      - recordHigh
+      - recordLow
+      - aboveModel
+      - belowModel
+      - spikesUp
+      - spikesDown
+      - newBaseLine
+      - trendChanges
+      type: string
+      example: spikesUp
+      description: Type of analysis performed on the in-app metric.
+    AggregationFrequencyEnum:
+      enum:
+      - D
+      - W
+      - M
+      - Q
+      - Y
+      type: string
+      example: D
+      description: Comparison period for the analysis.

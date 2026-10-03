@@ -385,18 +385,6 @@ components:
         format: int64
         minimum: 0
       description: Standard HTTP `Content-Length` header.
-    AcceptRanges:
-      schema:
-        type: string
-      description: Standard HTTP `Accept-Ranges` header.
-    TusResumable:
-      schema:
-        type: string
-      description: The version of the tus protocol used.
-    ContentDisposition:
-      schema:
-        type: string
-      description: Standard HTTP `Content-Disposition` header.
     Location:
       schema:
         type: string
@@ -407,25 +395,27 @@ components:
         do HEAD and PATCH requests.
 
         '
-    TusVersion:
-      schema:
-        type: string
-      description: A comma-separated list of tus protocol versions supported by the server.
     ContentRange:
       schema:
         type: string
       description: Standard HTTP `Content-Range` header.
+    TusResumable:
+      schema:
+        type: string
+      description: The version of the tus protocol used.
+    ContentDisposition:
+      schema:
+        type: string
+      description: Standard HTTP `Content-Disposition` header.
+    TusVersion:
+      schema:
+        type: string
+      description: A comma-separated list of tus protocol versions supported by the server.
+    AcceptRanges:
+      schema:
+        type: string
+      description: Standard HTTP `Accept-Ranges` header.
   schemas:
-    Errors:
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
-      description: An array of Error objects.
     Error:
       type: object
       required:
@@ -482,3 +472,13 @@ components:
         TTLSeconds:
           type: integer
           description: Time-to-live in seconds.
+    Errors:
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
+      description: An array of Error objects.

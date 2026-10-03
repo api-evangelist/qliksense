@@ -405,6 +405,23 @@ paths:
         limit: 100
 components:
   schemas:
+    ErrorResult:
+      type: object
+      properties:
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErrorResponseItem'
+          description: List of errors and their properties.
+        statusCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+      additionalProperties: false
     ErrorResponseItem:
       type: object
       properties:
@@ -431,6 +448,88 @@ components:
           - 'null'
           example: Invalid encoding of cursor.
           description: A human-readable explanation specific to this occurrence of the problem.
+      additionalProperties: false
+    PaginationLink:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: The URL for the pagination link.
+      additionalProperties: false
+    Operation:
+      type: object
+      properties:
+        op:
+          type:
+          - string
+          - 'null'
+        from:
+          type:
+          - string
+          - 'null'
+        path:
+          type:
+          - string
+          - 'null'
+        value:
+          type:
+          - object
+          - 'null'
+      additionalProperties: false
+    GetTemplatesResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReportTemplateResponse'
+          description: The current page data.
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+      additionalProperties: false
+    CreateTemplateRequest:
+      type: object
+      required:
+      - name
+      - temporaryContentId
+      properties:
+        name:
+          type: string
+          example: Sales by category
+          maxLength: 255
+          minLength: 1
+          description: Template name
+        description:
+          type:
+          - string
+          - 'null'
+          example: Sales grouped by product category
+          maxLength: 255
+          description: Template description
+        sourceAppId:
+          type:
+          - string
+          - 'null'
+          example: 78fb8e8d-bc83-4da1-b0d1-b0dc0a5c3e5b
+          description: The ID of the app that this template is using as data source. The id stored in the template file metadata is used if no value is specified.
+        sourceAppAction:
+          enum:
+          - validate
+          - replace
+          type: string
+          format: Enumeration
+          default: validate
+          description: Specifies the action to perform with the given source app id. Use "validate" to verify that the template source app matches the provided value. Use "replace" to migrate the template to a different app by replacing the source app id.
+        temporaryContentId:
+          type: string
+          example: 69b14f2bb93332c3ff8c64b8
+          minLength: 1
+          description: The ID of a previously uploaded temporary content file
       additionalProperties: false
     ReportTemplateResponse:
       type: object
@@ -547,58 +646,6 @@ components:
           minLength: 1
           description: The ID of a previously uploaded temporary content file
       additionalProperties: false
-    GetTemplatesResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ReportTemplateResponse'
-          description: The current page data.
-        links:
-          $ref: '#/components/schemas/PaginationLinks'
-      additionalProperties: false
-    CreateTemplateRequest:
-      type: object
-      required:
-      - name
-      - temporaryContentId
-      properties:
-        name:
-          type: string
-          example: Sales by category
-          maxLength: 255
-          minLength: 1
-          description: Template name
-        description:
-          type:
-          - string
-          - 'null'
-          example: Sales grouped by product category
-          maxLength: 255
-          description: Template description
-        sourceAppId:
-          type:
-          - string
-          - 'null'
-          example: 78fb8e8d-bc83-4da1-b0d1-b0dc0a5c3e5b
-          description: The ID of the app that this template is using as data source. The id stored in the template file metadata is used if no value is specified.
-        sourceAppAction:
-          enum:
-          - validate
-          - replace
-          type: string
-          format: Enumeration
-          default: validate
-          description: Specifies the action to perform with the given source app id. Use "validate" to verify that the template source app matches the provided value. Use "replace" to migrate the template to a different app by replacing the source app id.
-        temporaryContentId:
-          type: string
-          example: 69b14f2bb93332c3ff8c64b8
-          minLength: 1
-          description: The ID of a previously uploaded temporary content file
-      additionalProperties: false
     PaginationLinks:
       type: object
       properties:
@@ -608,51 +655,4 @@ components:
           $ref: '#/components/schemas/PaginationLink'
         self:
           $ref: '#/components/schemas/PaginationLink'
-      additionalProperties: false
-    Operation:
-      type: object
-      properties:
-        op:
-          type:
-          - string
-          - 'null'
-        from:
-          type:
-          - string
-          - 'null'
-        path:
-          type:
-          - string
-          - 'null'
-        value:
-          type:
-          - object
-          - 'null'
-      additionalProperties: false
-    ErrorResult:
-      type: object
-      properties:
-        errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErrorResponseItem'
-          description: List of errors and their properties.
-        statusCode:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          readOnly: true
-      additionalProperties: false
-    PaginationLink:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: The URL for the pagination link.
       additionalProperties: false

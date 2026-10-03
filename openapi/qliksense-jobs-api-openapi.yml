@@ -44,6 +44,21 @@ paths:
         tier: '2'
         limit: 100
 components:
+  parameters:
+    corrId:
+      in: path
+      name: corrId
+      schema:
+        type: string
+      required: true
+      description: The ID of a correlated resource of corrType
+    corrType:
+      in: path
+      name: corrType
+      schema:
+        $ref: '#/components/schemas/CorrType'
+      required: true
+      description: The type of a resource paired with a corrId
   schemas:
     CorrType:
       enum:
@@ -111,14 +126,12 @@ components:
           type: string
       additionalProperties: false
   responses:
-    500InternalError:
+    403Forbidden:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Failure'
-      description: '`Internal Error`'
-    204NoContent:
-      description: '`No Content`'
+      description: '`Forbidden`'
     FailureDefault:
       content:
         application/json:
@@ -137,24 +150,11 @@ components:
           schema:
             $ref: '#/components/schemas/Failure'
       description: '`Bad Request`'
-    403Forbidden:
+    500InternalError:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Failure'
-      description: '`Forbidden`'
-  parameters:
-    corrType:
-      in: path
-      name: corrType
-      schema:
-        $ref: '#/components/schemas/CorrType'
-      required: true
-      description: The type of a resource paired with a corrId
-    corrId:
-      in: path
-      name: corrId
-      schema:
-        type: string
-      required: true
-      description: The ID of a correlated resource of corrType
+      description: '`Internal Error`'
+    204NoContent:
+      description: '`No Content`'

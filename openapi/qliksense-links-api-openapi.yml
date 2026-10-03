@@ -195,106 +195,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    linksResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/termLinksTo'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
     resultMeta:
       type: object
       properties:
         countTotal:
           type: integer
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-      description: URLs to a resource request
-    errorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 795dedf8cf38b60088a6e4feb6eace75
-    errorResponseCode:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    termCreateLinksTo:
-      type: object
-      required:
-      - resourceType
-      - resourceId
-      properties:
-        type:
-          enum:
-          - definition
-          - related
-          type: string
-          description: 'The type of relationship between the term and the linked resource:
-
-            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
-
-            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
-
-            '
-        resourceId:
-          type: string
-          description: The unique identifier of the resource (app or dataset) to link to the term.
-        resourceType:
-          enum:
-          - app
-          - dataset
-          type: string
-          description: The type of resource being linked to the term.
-        subResourceId:
-          type: string
-          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
-        subResourceName:
-          type: string
-          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
-        subResourceType:
-          enum:
-          - master_dimension
-          - master_measure
-          - field
-          type: string
-          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
-      description: 'Describes links to other data assets such as analytics applications or dataset.
-
-
-        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
-
-        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
-
-        If any one subresource field is specified, all three are required.
-
-        '
-    pageLink:
-      type: object
-      properties:
-        href:
-          type: string
     termLinksTo:
       type: object
       properties:
@@ -365,3 +270,98 @@ components:
           type: boolean
           description: Populated and true if no matching subresource is found on parent resource. E.g. if a dataset field no longer exist but a link to that field exists.
       description: Describes links to other entities such as qlik charts, dataset columns etc.
+    linksResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/termLinksTo'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    termCreateLinksTo:
+      type: object
+      required:
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          enum:
+          - definition
+          - related
+          type: string
+          description: 'The type of relationship between the term and the linked resource:
+
+            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
+
+            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
+
+            '
+        resourceId:
+          type: string
+          description: The unique identifier of the resource (app or dataset) to link to the term.
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          description: The type of resource being linked to the term.
+        subResourceId:
+          type: string
+          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
+        subResourceName:
+          type: string
+          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
+      description: 'Describes links to other data assets such as analytics applications or dataset.
+
+
+        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
+
+        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
+
+        If any one subresource field is specified, all three are required.
+
+        '
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string

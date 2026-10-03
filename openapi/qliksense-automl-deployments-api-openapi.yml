@@ -105,28 +105,6 @@ paths:
         limit: 300
 components:
   schemas:
-    appErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error'
-    realtimePredictionInput:
-      type: object
-      properties:
-        rows:
-          type: array
-          items:
-            type: array
-            items:
-              type: string
-          description: The rows of the dataset to produce predictions from. Date features must be in ISO 8601 format.
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/realTimePredictionInputSchema'
-          description: The schema of the input dataset.
     realTimePredictionInputSchema:
       type: object
       properties:
@@ -177,6 +155,28 @@ components:
         resourceId:
           type: string
           description: The resource id that the error occurred on
+    appErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'
+    realtimePredictionInput:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          description: The rows of the dataset to produce predictions from. Date features must be in ISO 8601 format.
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/realTimePredictionInputSchema'
+          description: The schema of the input dataset.
   parameters:
     deploymentId:
       in: path

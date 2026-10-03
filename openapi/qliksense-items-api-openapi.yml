@@ -649,31 +649,7 @@ paths:
         tier: '1'
         limit: 1000
 components:
-  parameters:
-    noActionParam:
-      in: query
-      name: noActions
-      schema:
-        type: boolean
-        default: false
-      required: false
-      description: 'If set to true, the user''s available actions for each item will not be evaluated meaning the actions-array will be omitted from the response (reduces response time).
-
-        '
   schemas:
-    ItemsListItemsResponseBody:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemResultResponseBody'
-        links:
-          $ref: '#/components/schemas/itemsLinksResponseBody'
-      description: ListItemsResponseBody result type
     itemResourceTypeEnum:
       enum:
       - app
@@ -697,7 +673,114 @@ components:
       - page
       type: string
       description: The case-sensitive string defining the item's type.
-    ItemsListItemCollectionsResponseBody:
+    collectionLinksResponseBody:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        items:
+          $ref: '#/components/schemas/Link'
+    itemViewsWeeksResponseBody:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+          description: The RFC3339 datetime representing the start of the referenced week.
+        total:
+          type: integer
+          description: Total number of views the resource got during the referenced week.
+        unique:
+          type: integer
+          description: Number of unique users who viewed the resource during the referenced week.
+    itemViewsResponseBody:
+      type: object
+      properties:
+        week:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemViewsWeeksResponseBody'
+        total:
+          type: integer
+          description: Total number of views the resource got during the last 28 days.
+        trend:
+          type: number
+          example: -4.2
+          description: Trend in views over the last 4 weeks. The trend value is a float number representing a linear regression slope (the x-coefficient) calculated from the weekly unique users views in the preceding 4 weeks.
+        unique:
+          type: integer
+          description: Number of unique users who viewed the resource during the last 28 days.
+        usedBy:
+          type: integer
+          description: Number of apps this dataset is used in (datasets only).
+    CollectionTypes:
+      enum:
+      - private
+      - public
+      - publicgoverned
+      type: string
+    ErrorResponseBody:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceError'
+    collectionsLinksResponseBody:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+    itemLinksResponseBody:
+      type: object
+      properties:
+        open:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        qvPlugin:
+          $ref: '#/components/schemas/Link'
+        thumbnail:
+          $ref: '#/components/schemas/Link'
+        collections:
+          $ref: '#/components/schemas/Link'
+    itemsResourceSizeResponseBody:
+      type: object
+      properties:
+        appFile:
+          type: number
+          description: Size of the app on disk in bytes.
+        appMemory:
+          type: number
+          description: Size of the app in memory in bytes.
+    meta:
+      type: object
+      properties:
+        fault:
+          type: boolean
+          description: Is the error a server-side fault?
+        explain:
+          type: object
+          description: Further explanation of the error
+        timeout:
+          type: boolean
+          description: Is the error a timeout?
+        temporary:
+          type: boolean
+          description: Is the error temporary?
+    collectionMetaResponseBody:
+      type: object
+      properties:
+        items:
+          $ref: '#/components/schemas/itemsResultResponseBody'
+      description: Collection metadata and computed fields.
+    itemsResultResponseBody:
       type: object
       required:
       - data
@@ -706,10 +789,34 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/collectionResultResponseBody'
+            $ref: '#/components/schemas/itemResultResponseBody'
         links:
-          $ref: '#/components/schemas/collectionsLinksResponseBody'
-      description: ListItemCollectionsResponseBody result type
+          $ref: '#/components/schemas/itemsLinksResponseBody'
+      description: Multiple items.
+    ItemsListItemsResponseBody:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemResultResponseBody'
+        links:
+          $ref: '#/components/schemas/itemsLinksResponseBody'
+      description: ListItemsResponseBody result type
+    itemsLinksResponseBody:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        collection:
+          $ref: '#/components/schemas/Link'
     ItemsUpdateItemRequestBody:
       type: object
       required:
@@ -748,88 +855,33 @@ components:
         resourceCustomAttributes:
           type: object
           additionalProperties: true
-    itemViewsResponseBody:
-      type: object
-      properties:
-        week:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemViewsWeeksResponseBody'
-        total:
-          type: integer
-          description: Total number of views the resource got during the last 28 days.
-        trend:
-          type: number
-          example: -4.2
-          description: Trend in views over the last 4 weeks. The trend value is a float number representing a linear regression slope (the x-coefficient) calculated from the weekly unique users views in the preceding 4 weeks.
-        unique:
-          type: integer
-          description: Number of unique users who viewed the resource during the last 28 days.
-        usedBy:
-          type: integer
-          description: Number of apps this dataset is used in (datasets only).
-    collectionResultResponseBody:
+    ItemsListItemCollectionsResponseBody:
       type: object
       required:
-      - id
-      - name
-      - type
-      - createdAt
-      - updatedAt
-      - tenantId
+      - data
       - links
-      - itemCount
       properties:
-        id:
-          type: string
-          description: The collection's unique identifier.
-        full:
-          type: boolean
-          description: States if a collection has reached its items limit or not
-        meta:
-          $ref: '#/components/schemas/collectionMetaResponseBody'
-        name:
-          type: string
-          minLength: 1
-        type:
-          enum:
-          - private
-          - public
-          - favorite
-          - publicgoverned
-          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/collectionResultResponseBody'
         links:
-          $ref: '#/components/schemas/collectionLinksResponseBody'
-        tenantId:
-          type: string
-          description: The ID of the tenant that owns the collection. This property is populated by using JWT.
-        createdAt:
-          type: string
-          format: date-time
-          description: The RFC3339 datetime when the collection was created.
-        creatorId:
-          type: string
-          description: The ID of the user who created the collection. This property is only populated if the JWT contains a userId.
-        itemCount:
-          type: integer
-          format: int64
-          description: The number of items that have been added to the collection that the user has access to.
-        updatedAt:
-          type: string
-          format: date-time
-          description: The RFC3339 datetime when the collection was last updated.
-        updaterId:
-          type: string
-          description: The ID of the user who last updated the collection. This property is only populated if the JWT contains a userId.
-        description:
-          type: string
-      description: A collection.
-    collectionMetaResponseBody:
+          $ref: '#/components/schemas/collectionsLinksResponseBody'
+      description: ListItemCollectionsResponseBody result type
+    ServiceError:
       type: object
       properties:
-        items:
-          $ref: '#/components/schemas/itemsResultResponseBody'
-      description: Collection metadata and computed fields.
+        code:
+          type: string
+          description: Code is a unique identifier for this error class.
+        meta:
+          $ref: '#/components/schemas/meta'
+        title:
+          type: string
+          description: Title is the name of this class of errors.
+        detail:
+          type: string
+          description: Detail is a human-readable explanation specific to this occurrence of the problem.
     spaceTypeEnum:
       enum:
       - shared
@@ -838,6 +890,12 @@ components:
       - data
       type: string
       description: The case-sensitive string defining the space type.
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+          format: uri
     itemMetaResponseBody:
       type: object
       required:
@@ -865,39 +923,6 @@ components:
           type: boolean
           description: The flag that indicates if item is in the user's favorites collection.
       description: Item metadata and computed fields.
-    ServiceError:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Code is a unique identifier for this error class.
-        meta:
-          $ref: '#/components/schemas/meta'
-        title:
-          type: string
-          description: Title is the name of this class of errors.
-        detail:
-          type: string
-          description: Detail is a human-readable explanation specific to this occurrence of the problem.
-    Link:
-      type: object
-      properties:
-        href:
-          type: string
-          format: uri
-    itemTagResponseBody:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: The ID of the tag/collection.
-        name:
-          type: string
-          description: The name of the tag/collection.
-      description: Holds basic information about a tag or collection.
     itemResultResponseBody:
       type: object
       required:
@@ -1006,113 +1031,88 @@ components:
           type: object
           additionalProperties: true
       description: An item.
-    itemsLinksResponseBody:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        collection:
-          $ref: '#/components/schemas/Link'
-    collectionsLinksResponseBody:
-      type: object
-      properties:
-        item:
-          $ref: '#/components/schemas/Link'
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-    ErrorResponseBody:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceError'
-    itemLinksResponseBody:
-      type: object
-      properties:
-        open:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        qvPlugin:
-          $ref: '#/components/schemas/Link'
-        thumbnail:
-          $ref: '#/components/schemas/Link'
-        collections:
-          $ref: '#/components/schemas/Link'
-    itemsResultResponseBody:
+    collectionResultResponseBody:
       type: object
       required:
-      - data
+      - id
+      - name
+      - type
+      - createdAt
+      - updatedAt
+      - tenantId
       - links
+      - itemCount
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemResultResponseBody'
+        id:
+          type: string
+          description: The collection's unique identifier.
+        full:
+          type: boolean
+          description: States if a collection has reached its items limit or not
+        meta:
+          $ref: '#/components/schemas/collectionMetaResponseBody'
+        name:
+          type: string
+          minLength: 1
+        type:
+          enum:
+          - private
+          - public
+          - favorite
+          - publicgoverned
+          type: string
         links:
-          $ref: '#/components/schemas/itemsLinksResponseBody'
-      description: Multiple items.
-    CollectionTypes:
-      enum:
-      - private
-      - public
-      - publicgoverned
-      type: string
-    collectionLinksResponseBody:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Link'
-        items:
-          $ref: '#/components/schemas/Link'
-    itemViewsWeeksResponseBody:
-      type: object
-      properties:
-        start:
+          $ref: '#/components/schemas/collectionLinksResponseBody'
+        tenantId:
+          type: string
+          description: The ID of the tenant that owns the collection. This property is populated by using JWT.
+        createdAt:
           type: string
           format: date-time
-          description: The RFC3339 datetime representing the start of the referenced week.
-        total:
+          description: The RFC3339 datetime when the collection was created.
+        creatorId:
+          type: string
+          description: The ID of the user who created the collection. This property is only populated if the JWT contains a userId.
+        itemCount:
           type: integer
-          description: Total number of views the resource got during the referenced week.
-        unique:
-          type: integer
-          description: Number of unique users who viewed the resource during the referenced week.
-    meta:
+          format: int64
+          description: The number of items that have been added to the collection that the user has access to.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The RFC3339 datetime when the collection was last updated.
+        updaterId:
+          type: string
+          description: The ID of the user who last updated the collection. This property is only populated if the JWT contains a userId.
+        description:
+          type: string
+      description: A collection.
+    itemTagResponseBody:
       type: object
+      required:
+      - id
+      - name
       properties:
-        fault:
-          type: boolean
-          description: Is the error a server-side fault?
-        explain:
-          type: object
-          description: Further explanation of the error
-        timeout:
-          type: boolean
-          description: Is the error a timeout?
-        temporary:
-          type: boolean
-          description: Is the error temporary?
-    itemsResourceSizeResponseBody:
-      type: object
-      properties:
-        appFile:
-          type: number
-          description: Size of the app on disk in bytes.
-        appMemory:
-          type: number
-          description: Size of the app in memory in bytes.
+        id:
+          type: string
+          description: The ID of the tag/collection.
+        name:
+          type: string
+          description: The name of the tag/collection.
+      description: Holds basic information about a tag or collection.
   headers:
     X-B3-Traceid:
       schema:
         type: string
       description: The TraceId for the trace associated with the call stack. Every span in a trace shares this ID.
+  parameters:
+    noActionParam:
+      in: query
+      name: noActions
+      schema:
+        type: boolean
+        default: false
+      required: false
+      description: 'If set to true, the user''s available actions for each item will not be evaluated meaning the actions-array will be omitted from the response (reduces response time).
+
+        '

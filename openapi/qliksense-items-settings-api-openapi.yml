@@ -130,20 +130,6 @@ paths:
         limit: 100
 components:
   schemas:
-    ServiceError:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Code is a unique identifier for this error class.
-        meta:
-          $ref: '#/components/schemas/meta'
-        title:
-          type: string
-          description: Title is the name of this class of errors.
-        detail:
-          type: string
-          description: Detail is a human-readable explanation specific to this occurrence of the problem.
     meta:
       type: object
       properties:
@@ -159,6 +145,20 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
+    ServiceError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code is a unique identifier for this error class.
+        meta:
+          $ref: '#/components/schemas/meta'
+        title:
+          type: string
+          description: Title is the name of this class of errors.
+        detail:
+          type: string
+          description: Detail is a human-readable explanation specific to this occurrence of the problem.
     ItemsSettingsResponseBody:
       type: object
       required:

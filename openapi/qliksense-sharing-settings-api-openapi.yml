@@ -128,13 +128,6 @@ paths:
         limit: 100
 components:
   schemas:
-    Error_meta:
-      type: object
-      properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
     SharingSettings:
       type: object
       properties:
@@ -203,6 +196,30 @@ components:
           type: object
           properties: {}
           description: The value to be used for this operation.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
     SharingSettingsPatchCompliantList:
       type: array
       items:
@@ -221,6 +238,20 @@ components:
         path: /enable-report-subscription
         value: false
       description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    APISettingsUpload:
+      type: object
+      required:
+      - enable-sharing
+      properties:
+        maxRecipients:
+          type: number
+          example: 200
+          readOnly: true
+          description: Maximum number of recipients when creating a sharing task
+        enable-sharing:
+          type: boolean
+          example: true
+          description: Whether API endpoints for sharing are enabled
     Errors:
       type: object
       example:
@@ -236,34 +267,3 @@ components:
             $ref: '#/components/schemas/Error'
         traceId:
           type: string
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    APISettingsUpload:
-      type: object
-      required:
-      - enable-sharing
-      properties:
-        maxRecipients:
-          type: number
-          example: 200
-          readOnly: true
-          description: Maximum number of recipients when creating a sharing task
-        enable-sharing:
-          type: boolean
-          example: true
-          description: Whether API endpoints for sharing are enabled

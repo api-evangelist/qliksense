@@ -833,171 +833,6 @@ components:
         type:
           type: string
           readOnly: true
-    BatchIdDto:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: string
-          uniqueItems: true
-    UserTag:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of the tag in Collections
-        name:
-          type: string
-          maxLength: 128
-          minLength: 1
-      description: An array of user-supplied tags
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
-    PageDataStore:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataStore'
-        page:
-          type: integer
-          format: int32
-        limit:
-          type: integer
-          format: int32
-        links:
-          $ref: '#/components/schemas/Links'
-        pages:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-    JsonPatch:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - add
-          - remove
-          - replace
-          - move
-          - copy
-          - test
-          type: string
-          description: The operation to be performed.
-        from:
-          type: string
-          description: A JSON Pointer path pointing to the location to move/copy from.
-        path:
-          type: string
-          description: A JSON pointer to the property being affected.
-        value:
-          type: object
-          description: The value to add, replace or test.
-    Links:
-      type: object
-      properties:
-        last:
-          $ref: '#/components/schemas/Link'
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        first:
-          $ref: '#/components/schemas/Link'
-    DataStore:
-      type: object
-      title: Data Store
-      required:
-      - technicalName
-      - type
-      properties:
-        id:
-          type: string
-          description: Only required when updating the resource. Must be null for new resources.
-        uri:
-          type: string
-          maxLength: 512
-          minLength: 0
-        name:
-          type: string
-          maxLength: 255
-          minLength: 0
-        tags:
-          type: array
-          items:
-            type: string
-          uniqueItems: true
-        type:
-          type: string
-          maxLength: 64
-          minLength: 1
-        ownerId:
-          type: string
-          description: The value is automatically set by the application.
-        spaceId:
-          type: string
-        version:
-          type: integer
-          format: int64
-          description: Only required when updating the resource. Must be null for new resources.
-        tenantId:
-          type: string
-          readOnly: true
-          description: The value is automatically set by the application. User defined value is ignored.
-        createdBy:
-          type: string
-          readOnly: true
-          description: The value is automatically set by the application. User defined value is ignored.
-        properties:
-          type: object
-          description: A Map of name-value pairs.
-          additionalProperties:
-            type: object
-            description: A Map of name-value pairs.
-        createdTime:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The value is automatically set by the application. User defined value is ignored.
-        description:
-          type: string
-          maxLength: 1024
-          minLength: 0
-        technicalName:
-          type: string
-          maxLength: 255
-          minLength: 1
-        lastModifiedBy:
-          type: string
-          readOnly: true
-          description: The value is automatically set by the application. User defined value is ignored.
-        lastModifiedTime:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The value is automatically set by the application. User defined value is ignored.
-        technicalDescription:
-          type: string
-          maxLength: 1024
-          minLength: 0
     PageDataSet:
       type: object
       properties:
@@ -1116,26 +951,6 @@ components:
         createdByConnectionId:
           type: string
           description: The connectionId that created the Dataset. Optional.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    TableConnectionInfo:
-      type: object
-      properties:
-        tableName:
-          type: string
-        selectionScript:
-          type: string
-        additionalProperties:
-          type: object
-          additionalProperties:
-            type: string
     FieldDataType:
       type: object
       required:
@@ -1164,160 +979,31 @@ components:
             description: 'The properties map key is string and the value is of type object. Please note, Datatype DECIMAL requires two mandatory properties to be defined; these properties must be named: precision and scale, each of these property accepts integer value.  All other datatypes does not require any manadatory properties to be defined.'
         originalType:
           type: string
-    Link:
+    JsonPatch:
       type: object
-      properties:
-        href:
-          type: string
-    Schema:
-      type: object
-      title: Schema
       required:
-      - dataFields
+      - op
+      - path
       properties:
-        anomalies:
-          type: array
-          items:
-            type: string
-            description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
-          description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
-          uniqueItems: true
-        dataFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataField'
-        schemaName:
+        op:
+          enum:
+          - add
+          - remove
+          - replace
+          - move
+          - copy
+          - test
           type: string
-        loadOptions:
+          description: The operation to be performed.
+        from:
+          type: string
+          description: A JSON Pointer path pointing to the location to move/copy from.
+        path:
+          type: string
+          description: A JSON pointer to the property being affected.
+        value:
           type: object
-          description: 'Options for loading files. Example: "qLabel": "embedded labels"'
-          additionalProperties:
-            type: object
-            description: 'Options for loading files. Example: "qLabel": "embedded labels"'
-        effectiveDate:
-          type: string
-          format: date-time
-          readOnly: true
-        overrideSchemaAnomalies:
-          type: boolean
-      description: Optional field to specify additional schemas for files where multiple tables or sheets are available. User must define primary schema in 'schema' attribute and rest of the sheets/ tables can be defined using this field. This field is not populated for the dataSets with single schema
-    PageDataAsset:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataAsset'
-        page:
-          type: integer
-          format: int32
-        limit:
-          type: integer
-          format: int32
-        links:
-          $ref: '#/components/schemas/Links'
-        pages:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-    DataField:
-      type: object
-      required:
-      - dataType
-      - name
-      properties:
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-        tags:
-          type: array
-          items:
-            type: string
-            description: An array of system tags
-          description: An array of system tags
-          uniqueItems: true
-        alias:
-          type: string
-        index:
-          type: integer
-          format: int32
-          readOnly: true
-        orphan:
-          type: boolean
-        dataType:
-          $ref: '#/components/schemas/FieldDataType'
-        nullable:
-          type: boolean
-        userTags:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserTag'
-          description: An array of user-supplied tags
-          uniqueItems: true
-        encrypted:
-          type: boolean
-        sensitive:
-          type: boolean
-        primaryKey:
-          type: boolean
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        description:
-          type: string
-        ordinalPositionInKey:
-          type: integer
-          format: int32
-    Operational:
-      type: object
-      title: Operational
-      properties:
-        size:
-          type: integer
-          format: int64
-        status:
-          type: string
-        endDate:
-          type: string
-          format: date-time
-        location:
-          type: string
-        rowCount:
-          type: integer
-          format: int64
-        startDate:
-          type: string
-          format: date-time
-        logMessage:
-          type: string
-        tableOwner:
-          type: string
-        lastLoadTime:
-          type: string
-          format: date-time
-        contentUpdated:
-          type: boolean
-        lastUpdateTime:
-          type: string
-          format: date-time
-        tableConnectionInfo:
-          $ref: '#/components/schemas/TableConnectionInfo'
-    DataAssetInfo:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-          readOnly: true
-        dataStoreInfo:
-          $ref: '#/components/schemas/DataStoreInfo'
+          description: The value to add, replace or test.
     DataAsset:
       type: object
       title: Data Asset
@@ -1396,3 +1082,317 @@ components:
           type: string
           maxLength: 1024
           minLength: 0
+    DataField:
+      type: object
+      required:
+      - dataType
+      - name
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+        tags:
+          type: array
+          items:
+            type: string
+            description: An array of system tags
+          description: An array of system tags
+          uniqueItems: true
+        alias:
+          type: string
+        index:
+          type: integer
+          format: int32
+          readOnly: true
+        orphan:
+          type: boolean
+        dataType:
+          $ref: '#/components/schemas/FieldDataType'
+        nullable:
+          type: boolean
+        userTags:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTag'
+          description: An array of user-supplied tags
+          uniqueItems: true
+        encrypted:
+          type: boolean
+        sensitive:
+          type: boolean
+        primaryKey:
+          type: boolean
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        description:
+          type: string
+        ordinalPositionInKey:
+          type: integer
+          format: int32
+    BatchIdDto:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+    Operational:
+      type: object
+      title: Operational
+      properties:
+        size:
+          type: integer
+          format: int64
+        status:
+          type: string
+        endDate:
+          type: string
+          format: date-time
+        location:
+          type: string
+        rowCount:
+          type: integer
+          format: int64
+        startDate:
+          type: string
+          format: date-time
+        logMessage:
+          type: string
+        tableOwner:
+          type: string
+        lastLoadTime:
+          type: string
+          format: date-time
+        contentUpdated:
+          type: boolean
+        lastUpdateTime:
+          type: string
+          format: date-time
+        tableConnectionInfo:
+          $ref: '#/components/schemas/TableConnectionInfo'
+    TableConnectionInfo:
+      type: object
+      properties:
+        tableName:
+          type: string
+        selectionScript:
+          type: string
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+    Schema:
+      type: object
+      title: Schema
+      required:
+      - dataFields
+      properties:
+        anomalies:
+          type: array
+          items:
+            type: string
+            description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
+          description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
+          uniqueItems: true
+        dataFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataField'
+        schemaName:
+          type: string
+        loadOptions:
+          type: object
+          description: 'Options for loading files. Example: "qLabel": "embedded labels"'
+          additionalProperties:
+            type: object
+            description: 'Options for loading files. Example: "qLabel": "embedded labels"'
+        effectiveDate:
+          type: string
+          format: date-time
+          readOnly: true
+        overrideSchemaAnomalies:
+          type: boolean
+      description: Optional field to specify additional schemas for files where multiple tables or sheets are available. User must define primary schema in 'schema' attribute and rest of the sheets/ tables can be defined using this field. This field is not populated for the dataSets with single schema
+    PageDataAsset:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataAsset'
+        page:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        links:
+          $ref: '#/components/schemas/Links'
+        pages:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    PageDataStore:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataStore'
+        page:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        links:
+          $ref: '#/components/schemas/Links'
+        pages:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+    DataAssetInfo:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          readOnly: true
+        dataStoreInfo:
+          $ref: '#/components/schemas/DataStoreInfo'
+    Links:
+      type: object
+      properties:
+        last:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        first:
+          $ref: '#/components/schemas/Link'
+    DataStore:
+      type: object
+      title: Data Store
+      required:
+      - technicalName
+      - type
+      properties:
+        id:
+          type: string
+          description: Only required when updating the resource. Must be null for new resources.
+        uri:
+          type: string
+          maxLength: 512
+          minLength: 0
+        name:
+          type: string
+          maxLength: 255
+          minLength: 0
+        tags:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        type:
+          type: string
+          maxLength: 64
+          minLength: 1
+        ownerId:
+          type: string
+          description: The value is automatically set by the application.
+        spaceId:
+          type: string
+        version:
+          type: integer
+          format: int64
+          description: Only required when updating the resource. Must be null for new resources.
+        tenantId:
+          type: string
+          readOnly: true
+          description: The value is automatically set by the application. User defined value is ignored.
+        createdBy:
+          type: string
+          readOnly: true
+          description: The value is automatically set by the application. User defined value is ignored.
+        properties:
+          type: object
+          description: A Map of name-value pairs.
+          additionalProperties:
+            type: object
+            description: A Map of name-value pairs.
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The value is automatically set by the application. User defined value is ignored.
+        description:
+          type: string
+          maxLength: 1024
+          minLength: 0
+        technicalName:
+          type: string
+          maxLength: 255
+          minLength: 1
+        lastModifiedBy:
+          type: string
+          readOnly: true
+          description: The value is automatically set by the application. User defined value is ignored.
+        lastModifiedTime:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The value is automatically set by the application. User defined value is ignored.
+        technicalDescription:
+          type: string
+          maxLength: 1024
+          minLength: 0
+    UserTag:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the tag in Collections
+        name:
+          type: string
+          maxLength: 128
+          minLength: 1
+      description: An array of user-supplied tags

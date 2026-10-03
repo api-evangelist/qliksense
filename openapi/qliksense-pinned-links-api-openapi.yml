@@ -282,51 +282,6 @@ paths:
         limit: 100
 components:
   schemas:
-    BulkCreatePinnedLinkItemPayload:
-      allOf:
-      - $ref: '#/components/schemas/CreatePinnedLinkConfigPayload'
-      - type: object
-        required:
-        - links
-        properties:
-          links:
-            type: array
-            items:
-              $ref: '#/components/schemas/CreatePinnedLinkPayload'
-    JSONPatchPinnedLinkPayload:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-          path:
-            enum:
-            - /name
-            - /link
-            type: string
-          value:
-            type: string
-            example: https://updatedlink.com
-            description: The value to be used for this operation.
-    CreatePinnedLinkPayload:
-      type: object
-      required:
-      - name
-      - link
-      properties:
-        link:
-          type: string
-          description: The URL the user will be taken to when they click on the custom link. Must be https.
-        name:
-          type: string
-          description: The title of the link, which will be shown in the navigation bar. Max length 50 characters.
     Error:
       type: object
       properties:
@@ -338,6 +293,17 @@ components:
           type: string
           readOnly: true
           description: Error cause.
+    BulkCreatePinnedLinkItemPayload:
+      allOf:
+      - $ref: '#/components/schemas/CreatePinnedLinkConfigPayload'
+      - type: object
+        required:
+        - links
+        properties:
+          links:
+            type: array
+            items:
+              $ref: '#/components/schemas/CreatePinnedLinkPayload'
     CreatePinnedLinkConfigPayload:
       type: object
       required:
@@ -354,25 +320,6 @@ components:
           - tenant
           type: string
           description: Specifies the scope of the link. Only supports `tenant`.
-    ErrorResponse403:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-403
-              title:
-                type: string
-                example: Forbidden
-              detail:
-                type: string
-                example: You don't have sufficient permissions to access this resource.
-        traceId:
-          type: string
     PinnedLink:
       type: object
       required:
@@ -412,3 +359,56 @@ components:
           description: Date string
         updatedBy:
           type: string
+    JSONPatchPinnedLinkPayload:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+          path:
+            enum:
+            - /name
+            - /link
+            type: string
+          value:
+            type: string
+            example: https://updatedlink.com
+            description: The value to be used for this operation.
+    ErrorResponse403:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-403
+              title:
+                type: string
+                example: Forbidden
+              detail:
+                type: string
+                example: You don't have sufficient permissions to access this resource.
+        traceId:
+          type: string
+    CreatePinnedLinkPayload:
+      type: object
+      required:
+      - name
+      - link
+      properties:
+        link:
+          type: string
+          description: The URL the user will be taken to when they click on the custom link. Must be https.
+        name:
+          type: string
+          description: The title of the link, which will be shown in the navigation bar. Max length 50 characters.

@@ -554,61 +554,6 @@ components:
               description: The URI query parameter that caused the error.
           description: References to the source of the error.
       description: An error object describing the error.
-    AuthSettingsResource:
-      type: object
-      required:
-      - tenantId
-      - userSessionInactivityTimeoutMinutes
-      - maxUserSessionLifespanMinutes
-      properties:
-        id:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          readOnly: true
-          x-go-name: ID
-          description: The unique identifier for the authentication settings.
-        tenantId:
-          type: string
-          format: uid
-          example: 644fd58b846d649c82eba436
-          readOnly: true
-          x-go-name: TenantID
-          description: The tenant unique identifier associated with the authentication settings.
-        isDefault:
-          type: boolean
-          example: false
-          readOnly: true
-          description: '`true` if the authentication settings are using tenant-wide defaults. No custom values have been saved for this tenant.'
-        maxUserSessionLifespanMinutes:
-          type: integer
-          format: int64
-          example: 1440
-          x-go-name: MaxUserSessionLifespanMinutes
-          description: Maximum total lifespan for a user session, in minutes. Sessions are invalidated after this duration regardless of activity.
-        dcrAllowedAuthenticationMethods:
-          type: array
-          items:
-            enum:
-            - none
-            - client_secret
-            type: string
-          example:
-          - client_secret
-          x-go-name: DcrAllowedAuthenticationMethods
-          description: The allowed authentication methods for dynamic client registration. Only present when dynamic client registration is enabled.
-        dynamicClientRegistrationEnabled:
-          type: boolean
-          example: false
-          x-go-name: DynamicClientRegistrationEnabled
-          description: Indicates whether dynamic client registration is enabled for this tenant.
-        userSessionInactivityTimeoutMinutes:
-          type: integer
-          format: int64
-          example: 60
-          x-go-name: UserSessionInactivityTimeoutMinutes
-          description: Maximum inactivity period for a user session, in minutes. Sessions that have been idle for longer than this value are invalidated.
-      description: The authentication settings for a tenant, controlling user session duration and inactivity behavior.
     AuthSettingsJSONPatchArray:
       type: array
       items:
@@ -665,6 +610,61 @@ components:
           x-go-type: any
           description: Value to set for the targeted authentication settings field. Timeout fields accept only integer values, `/dynamicClientRegistrationEnabled` accepts only boolean values, and `/dcrAllowedAuthenticationMethods` accepts an array of strings.
       description: A JSON Patch document for authentication settings as defined in http://tools.ietf.org/html/rfc6902.
+    AuthSettingsResource:
+      type: object
+      required:
+      - tenantId
+      - userSessionInactivityTimeoutMinutes
+      - maxUserSessionLifespanMinutes
+      properties:
+        id:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          x-go-name: ID
+          description: The unique identifier for the authentication settings.
+        tenantId:
+          type: string
+          format: uid
+          example: 644fd58b846d649c82eba436
+          readOnly: true
+          x-go-name: TenantID
+          description: The tenant unique identifier associated with the authentication settings.
+        isDefault:
+          type: boolean
+          example: false
+          readOnly: true
+          description: '`true` if the authentication settings are using tenant-wide defaults. No custom values have been saved for this tenant.'
+        maxUserSessionLifespanMinutes:
+          type: integer
+          format: int64
+          example: 1440
+          x-go-name: MaxUserSessionLifespanMinutes
+          description: Maximum total lifespan for a user session, in minutes. Sessions are invalidated after this duration regardless of activity.
+        dcrAllowedAuthenticationMethods:
+          type: array
+          items:
+            enum:
+            - none
+            - client_secret
+            type: string
+          example:
+          - client_secret
+          x-go-name: DcrAllowedAuthenticationMethods
+          description: The allowed authentication methods for dynamic client registration. Only present when dynamic client registration is enabled.
+        dynamicClientRegistrationEnabled:
+          type: boolean
+          example: false
+          x-go-name: DynamicClientRegistrationEnabled
+          description: Indicates whether dynamic client registration is enabled for this tenant.
+        userSessionInactivityTimeoutMinutes:
+          type: integer
+          format: int64
+          example: 60
+          x-go-name: UserSessionInactivityTimeoutMinutes
+          description: Maximum inactivity period for a user session, in minutes. Sessions that have been idle for longer than this value are invalidated.
+      description: The authentication settings for a tenant, controlling user session duration and inactivity behavior.
     Errors:
       type: object
       example:
@@ -682,6 +682,179 @@ components:
           type: string
           description: A unique identifier for tracing the error.
       description: The error response object describing the error from the handling of an HTTP request.
+    ListIPPoliciesResult:
+      type: object
+      required:
+      - links
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IPPolicyListItem'
+          description: An array of IP policies.
+        links:
+          $ref: '#/components/schemas/Links'
+        totalResults:
+          type: integer
+          description: Indicates the total number of matching documents. Will only be returned if the query parameter "totalResults" is true.
+    CreateIPPolicy:
+      type: object
+      required:
+      - allowedIps
+      properties:
+        name:
+          type: string
+          example: Allow access from office IP addresses.
+          description: The descriptive name for the IP policy.
+          x-oapi-codegen-extra-tags:
+            validate: required,max=1000,min=1
+        enabled:
+          type: boolean
+          default: false
+          example: true
+          description: Indicates whether the IP policy is enabled.
+        allowedIps:
+          type: array
+          items:
+            type: string
+            example: 61.254.213.0/24
+            description: An IPv4 address or IPv4 CIDR range to allow.
+          example:
+          - 61.254.213.0/24
+          - 22.46.216.142
+          description: An array of allowed IP IPv4 addresses, either as plain IP addresses, or as CIDR ranges.
+          x-oapi-codegen-extra-tags:
+            validate: required,max=100,min=1,unique,dive,cidrv4|ipv4
+    Links:
+      type: object
+      required:
+      - self
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      description: Contains pagination links. self is a link to the current results page, next is a link to the next results page and prev is a link to the previous results page
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: New name
+      - op: replace
+        path: /allowedIps
+        value:
+        - 61.254.213.0/24
+        - 22.46.216.142
+      - op: replace
+        path: /enabled
+        value: true
+      description: An array of JSON Patch documents
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+          x-oapi-codegen-extra-tags:
+            validate: required,oneof=replace
+        path:
+          enum:
+          - /enabled
+          - /name
+          - /allowedIps
+          type: string
+          description: A JSON Pointer.
+          x-oapi-codegen-extra-tags:
+            validate: required,oneof=/enabled /name /allowedIps
+        value:
+          oneOf:
+          - type: string
+          - type: boolean
+          - type: array
+            items:
+              type: string
+          x-go-type: any
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    IPPolicyListItem:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          readOnly: true
+          description: The unique identifier for the IP policy.
+          x-qlik-filterable: true
+        name:
+          type: string
+          example: Allow access from office IP addresses.
+          description: The descriptive name for the IP policy.
+          x-qlik-filterable: true
+        enabled:
+          type: boolean
+          example: true
+          description: Indicates whether the IP policy is enabled.
+        editable:
+          type: boolean
+          example: true
+          description: Indicates whether the IP policy can be updated.
+        tenantId:
+          type: string
+          format: uid
+          example: 644fd58b846d649c82eba436
+          description: The tenant unique identifier associated with the given IP policy.
+          x-qlik-filterable: true
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-21T17:32:28Z'
+          description: The timestamp for when the resource was created.
+          x-qlik-filterable: true
+        createdBy:
+          type: string
+          example: 507f191e810c19729de860ea
+          description: The user ID of the user who created the IP policy.
+        deletable:
+          type: boolean
+          example: true
+          description: Indicates whether the IP policy can be deleted.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-22T10:01:02Z'
+          description: The timestamp for when the resource was last updated.
+          x-qlik-filterable: true
+        updatedBy:
+          type: string
+          example: 507f191e810c19729de860ea
+          description: The user ID of the user who last updated the IP policy.
+        allowedIps:
+          type: array
+          items:
+            type: string
+          example:
+          - 61.254.213.0/24
+          - 22.46.216.142
+          description: An array of allowed IP addresses.
+        toggleable:
+          type: boolean
+          example: true
+          description: Indicates whether the IP policy can be enabled/disabled.
     IPPolicyResource:
       type: object
       required:
@@ -763,102 +936,6 @@ components:
           type: boolean
           example: true
           description: Indicates whether the IP policy can be enabled/disabled..
-    JSONPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /name
-        value: New name
-      - op: replace
-        path: /allowedIps
-        value:
-        - 61.254.213.0/24
-        - 22.46.216.142
-      - op: replace
-        path: /enabled
-        value: true
-      description: An array of JSON Patch documents
-    Links:
-      type: object
-      required:
-      - self
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      description: Contains pagination links. self is a link to the current results page, next is a link to the next results page and prev is a link to the previous results page
-    IPPolicyListItem:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          readOnly: true
-          description: The unique identifier for the IP policy.
-          x-qlik-filterable: true
-        name:
-          type: string
-          example: Allow access from office IP addresses.
-          description: The descriptive name for the IP policy.
-          x-qlik-filterable: true
-        enabled:
-          type: boolean
-          example: true
-          description: Indicates whether the IP policy is enabled.
-        editable:
-          type: boolean
-          example: true
-          description: Indicates whether the IP policy can be updated.
-        tenantId:
-          type: string
-          format: uid
-          example: 644fd58b846d649c82eba436
-          description: The tenant unique identifier associated with the given IP policy.
-          x-qlik-filterable: true
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-03-21T17:32:28Z'
-          description: The timestamp for when the resource was created.
-          x-qlik-filterable: true
-        createdBy:
-          type: string
-          example: 507f191e810c19729de860ea
-          description: The user ID of the user who created the IP policy.
-        deletable:
-          type: boolean
-          example: true
-          description: Indicates whether the IP policy can be deleted.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-03-22T10:01:02Z'
-          description: The timestamp for when the resource was last updated.
-          x-qlik-filterable: true
-        updatedBy:
-          type: string
-          example: 507f191e810c19729de860ea
-          description: The user ID of the user who last updated the IP policy.
-        allowedIps:
-          type: array
-          items:
-            type: string
-          example:
-          - 61.254.213.0/24
-          - 22.46.216.142
-          description: An array of allowed IP addresses.
-        toggleable:
-          type: boolean
-          example: true
-          description: Indicates whether the IP policy can be enabled/disabled.
     Link:
       type: object
       required:
@@ -869,83 +946,6 @@ components:
           format: uri
           example: http://mytenant.us.qlikcloud.com/api/core/ip-policies?page=QaFdFYW6pImZvRgFaDyB1UffNgfs4mRd
       description: A link
-    ListIPPoliciesResult:
-      type: object
-      required:
-      - links
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/IPPolicyListItem'
-          description: An array of IP policies.
-        links:
-          $ref: '#/components/schemas/Links'
-        totalResults:
-          type: integer
-          description: Indicates the total number of matching documents. Will only be returned if the query parameter "totalResults" is true.
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-          x-oapi-codegen-extra-tags:
-            validate: required,oneof=replace
-        path:
-          enum:
-          - /enabled
-          - /name
-          - /allowedIps
-          type: string
-          description: A JSON Pointer.
-          x-oapi-codegen-extra-tags:
-            validate: required,oneof=/enabled /name /allowedIps
-        value:
-          oneOf:
-          - type: string
-          - type: boolean
-          - type: array
-            items:
-              type: string
-          x-go-type: any
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    CreateIPPolicy:
-      type: object
-      required:
-      - allowedIps
-      properties:
-        name:
-          type: string
-          example: Allow access from office IP addresses.
-          description: The descriptive name for the IP policy.
-          x-oapi-codegen-extra-tags:
-            validate: required,max=1000,min=1
-        enabled:
-          type: boolean
-          default: false
-          example: true
-          description: Indicates whether the IP policy is enabled.
-        allowedIps:
-          type: array
-          items:
-            type: string
-            example: 61.254.213.0/24
-            description: An IPv4 address or IPv4 CIDR range to allow.
-          example:
-          - 61.254.213.0/24
-          - 22.46.216.142
-          description: An array of allowed IP IPv4 addresses, either as plain IP addresses, or as CIDR ranges.
-          x-oapi-codegen-extra-tags:
-            validate: required,max=100,min=1,unique,dive,cidrv4|ipv4
 x-refined-from:
 - qliksense-core-auth-settings.json
 - qliksense-core-ip-policies.json

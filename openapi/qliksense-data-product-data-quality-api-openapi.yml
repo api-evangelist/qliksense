@@ -85,15 +85,32 @@ paths:
         tier: special
         limit: 10
 components:
-  parameters:
-    DataProductIdPath:
-      in: path
-      name: dataProductId
-      schema:
-        type: string
-      required: true
-      description: Unique identifier of the data product. Must be a valid GUID assigned when the data product was created.
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    DatasetIdType:
+      type: string
+      example: 669144f5aa2d642638ef1dd0
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
     ExecutionStatus:
       enum:
       - REQUESTED
@@ -116,31 +133,6 @@ components:
           type: string
           description: Unique identifier for the data quality batch computation job.
       description: Response containing the batch computation identifier and per-dataset quality computation results.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
-    DatasetIdType:
-      type: string
-      example: 669144f5aa2d642638ef1dd0
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the dataset
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     ComputationResponse:
       type: object
       required:
@@ -159,3 +151,11 @@ components:
           type: string
           description: Unique identifier for this individual data quality computation job.
       description: Result of a data quality computation for a single dataset.
+  parameters:
+    DataProductIdPath:
+      in: path
+      name: dataProductId
+      schema:
+        type: string
+      required: true
+      description: Unique identifier of the data product. Must be a valid GUID assigned when the data product was created.

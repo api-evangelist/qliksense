@@ -497,83 +497,7 @@ paths:
         tier: '1'
         limit: 1000
 components:
-  responses:
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse401'
-      description: Unauthorized
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse400'
-      description: Bad Request
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse404'
-      description: Not found
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse403'
-      description: Forbidden
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse500'
-      description: Internal Server Error
   schemas:
-    BrandFile:
-      type: object
-      properties:
-        id:
-          enum:
-          - logo
-          - favIcon
-          - styles
-          type: string
-        eTag:
-          type: string
-        path:
-          type: string
-        contentType:
-          type: string
-      description: Represents one of the assets used as part of the brand. These include logos, favicons, and some styles.
-    ErrorResponse404:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-404
-              title:
-                type: string
-                example: Not found
-              detail:
-                type: string
-                example: The resource was not found.
-        traceId:
-          type: string
-    NoActiveBrand:
-      type: object
-      description: Empty object inferring lack of active branding.
-    Link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL of a resource request.
     ErrorResponse500:
       type: object
       properties:
@@ -593,22 +517,6 @@ components:
                 example: Something went wrong in the server.
         traceId:
           type: string
-    BrandsList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Brand'
-        links:
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-      description: A collection of brands.
     ErrorResponse401:
       type: object
       properties:
@@ -628,6 +536,129 @@ components:
                 example: The user is not authorized to access the service.
         traceId:
           type: string
+    ErrorResponse404:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-404
+              title:
+                type: string
+                example: Not found
+              detail:
+                type: string
+                example: The resource was not found.
+        traceId:
+          type: string
+    BrandsList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+        links:
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+      description: A collection of brands.
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL of a resource request.
+    NoActiveBrand:
+      type: object
+      description: Empty object inferring lack of active branding.
+    BrandPatch:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - add
+          - remove
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          enum:
+          - /name
+          - /description
+          type: string
+          example: /description
+          description: The path for the given resource field to patch.
+        value:
+          type: string
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    ErrorResponse400:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-400
+              title:
+                type: string
+                example: Bad request
+              detail:
+                type: string
+                example: The request is incorrect.
+        traceId:
+          type: string
+    ErrorResponse403:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-403
+              title:
+                type: string
+                example: Forbidden
+              detail:
+                type: string
+                example: You don't have sufficient permissions to access this resource.
+        traceId:
+          type: string
+    BrandFile:
+      type: object
+      properties:
+        id:
+          enum:
+          - logo
+          - favIcon
+          - styles
+          type: string
+        eTag:
+          type: string
+        path:
+          type: string
+        contentType:
+          type: string
+      description: Represents one of the assets used as part of the brand. These include logos, favicons, and some styles.
     Brand:
       type: object
       required:
@@ -672,76 +703,38 @@ components:
         description:
           type: string
       description: A brand is a collection of assets for applying custom branding. Only a single brand can be active in a tenant.
-    BrandPatch:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - add
-          - remove
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          enum:
-          - /name
-          - /description
-          type: string
-          example: /description
-          description: The path for the given resource field to patch.
-        value:
-          type: string
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
-    ErrorResponse403:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-403
-              title:
-                type: string
-                example: Forbidden
-              detail:
-                type: string
-                example: You don't have sufficient permissions to access this resource.
-        traceId:
-          type: string
-    ErrorResponse400:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-400
-              title:
-                type: string
-                example: Bad request
-              detail:
-                type: string
-                example: The request is incorrect.
-        traceId:
-          type: string
+  responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse400'
+      description: Bad Request
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse403'
+      description: Forbidden
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse500'
+      description: Internal Server Error
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse404'
+      description: Not found
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse401'
+      description: Unauthorized
   parameters:
-    brand-id:
-      in: path
-      name: brand-id
-      schema:
-        type: string
-      required: true
-      description: The brand's unique identifier.
     brand-file-id:
       in: path
       name: brand-file-id
@@ -753,3 +746,10 @@ components:
         type: string
       required: true
       description: The unique identifier of a file within a brand.
+    brand-id:
+      in: path
+      name: brand-id
+      schema:
+        type: string
+      required: true
+      description: The brand's unique identifier.

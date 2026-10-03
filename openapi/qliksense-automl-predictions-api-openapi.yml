@@ -372,12 +372,6 @@ paths:
         limit: 1000
 components:
   parameters:
-    refId:
-      in: query
-      name: refId
-      schema:
-        type: string
-      description: ''
     predictionId:
       in: path
       name: predictionId
@@ -386,6 +380,12 @@ components:
         format: uuid
       required: true
       description: The ID of the prediction configuration object that provides parameters to be applied when the prediction is produced.
+    refId:
+      in: query
+      name: refId
+      schema:
+        type: string
+      description: ''
   schemas:
     appErrorResponse:
       type: object

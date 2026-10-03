@@ -508,137 +508,86 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    licenseStatus:
-      type: object
-      example:
-        type: Signed
-        trial: false
-        valid: 2018-01-01/2018-12-31
-        origin: Internal
-        status: Ok
-        product: Qlik Sense Business
-        extensionStatus: Unavailable
-      required:
-      - origin
-      - product
-      - status
-      - trial
-      - type
-      - valid
-      - extensionStatus
-      - deactivated
-      properties:
-        type:
-          enum:
-          - Signed
-          - Plain
-          - '2.0'
-          type: string
-          description: Type of license key.
-        trial:
-          type: boolean
-          description: Boolean indicating if it is a trial license.
-        valid:
-          type: string
-          description: Period that the license is currently set to be active. Represented as an ISO 8601 time interval with start and end.
-        origin:
-          enum:
-          - Internal
-          - External
-          type: string
-          description: Origin of license key.
-        status:
-          enum:
-          - Ok
-          - Blacklisted
-          - Expired
-          - Missing
-          type: string
-          description: Enum with status of license. Only status Ok grants license. access.
-        product:
-          type: string
-          description: The product the license is valid for.
-        deactivated:
-          type: boolean
-          description: Boolean indicating if the license is deactivated.
-        extensionStatus:
-          enum:
-          - Unavailable
-          - Pending
-          - Available
-          type: string
-          description: Enum with extension status of license. access.
-    assignmentsActionsDeleteRequest:
-      type: object
-      example:
-        delete:
-        - type: analyzer
-          subject: qlik\malik
-      required:
-      - delete
-      properties:
-        delete:
-          type: array
-          items:
-            type: object
-            required:
-            - subject
-            - type
-            properties:
-              type:
-                type: string
-                description: Allotment type
-              subject:
-                type: string
-                description: User subject
-    assignmentsResponse:
+    assignmentsActionsAddResponse:
       type: object
       example:
         data:
-        - type: analyzer
-          excess: false
-          created: '2020-12-03T09:24:48.114Z'
+        - type: professional
+          status: 201
           subject: qlik\kalle
-        - type: false
-          created: '2020-12-03T09:24:48.114Z'
+        - code: LICENSES-011
+          type: analyzer
+          title: No available allotment error, No available allotment.
+          status: 403
           subject: qlik\nalle
-        links:
-          next:
-            href: http://license/v1/licenses/assignments?limit=4&page=bmV4dDpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZrQUE%3D
-          prev:
-            href: http://license/v1/licenses/assignments?limit=4&page=cHJldjpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZ0QUE%3D
       required:
       - data
-      - links
       properties:
         data:
           type: array
           items:
             required:
-            - type
             - subject
-            - excess
-            - created
+            - status
             properties:
+              code:
+                type: string
+                description: Error code
               type:
                 type: string
                 description: Allotment type
-              excess:
-                type: boolean
-                description: Assignment excess status.
-              created:
+              title:
                 type: string
-                description: Assignment created date.
+                description: Error title
+              status:
+                type: integer
+                description: Response status
               subject:
                 type: string
                 description: Subject
-        links:
-          type: object
-          properties:
-            next:
-              $ref: '#/components/schemas/href'
-            prev:
-              $ref: '#/components/schemas/href'
+    assignmentsActionsUpdateResponse:
+      type: object
+      example:
+        data:
+        - type: professional
+          status: 200
+          subject: qlik\malik
+          sourceType: analyzer
+        - code: LICENSES-016
+          title: Assignment not found.
+          status: 404
+          subject: qlik/sara
+          sourceType: analyzer
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            required:
+            - status
+            properties:
+              code:
+                type: string
+                description: Error code
+              type:
+                type: string
+                description: Target allotment type.
+              title:
+                type: string
+                description: Error title
+              status:
+                type: integer
+                description: HTTP status code indicating the result of the individual assignment operation. A value of 200 represents a successful update, while 201 indicates a new resource was created due to a subject update. Any 400-level status codes indicate an error.
+              subject:
+                type: string
+                description: Target subject.
+              sourceType:
+                type: string
+                description: Current allotment type.
+              sourceSubject:
+                type: string
+                description: Current subject.
     consumptionEventsResponse:
       type: object
       required:
@@ -687,35 +636,44 @@ components:
               $ref: '#/components/schemas/href'
             prev:
               $ref: '#/components/schemas/href'
-    assignmentsActionsUpdateRequest:
+    errorResponse:
       type: object
       example:
-        update:
-        - type: professional
-          subject: qlik\malik
-          sourceType: analyzer
+        error: util.Error
+        errors:
+        - code: LICENSES-123
+          title: error title
+        message: error message
       required:
-      - update
+      - errors
+      - error
+      - message
       properties:
-        update:
+        error:
+          type: string
+          description: Error type
+          x-qlik-deprecated: true
+        errors:
           type: array
           items:
             type: object
             required:
-            - subject
+            - code
+            - title
             properties:
-              type:
+              code:
                 type: string
-                description: Target assignment type.
-              subject:
+                description: Error code
+              title:
                 type: string
-                description: User subject, the current or the desired after the patch.
-              sourceType:
+                description: Error title
+              detail:
                 type: string
-                description: Current assignment type.
-              sourceSubject:
-                type: string
-                description: The current user subject, in case that should be patched.
+                description: Additional error detail.
+        message:
+          type: string
+          description: Error message
+          x-qlik-deprecated: true
     licenseOverview:
       type: object
       example:
@@ -856,49 +814,60 @@ components:
         parentLicenseNumber:
           type: string
           description: the parent number of the license. can be shared by multiple license numbers
-    assignmentsActionsUpdateResponse:
+    href:
+      type: object
+      properties:
+        href:
+          type: string
+          description: link
+    assignmentsResponse:
       type: object
       example:
         data:
-        - type: professional
-          status: 200
-          subject: qlik\malik
-          sourceType: analyzer
-        - code: LICENSES-016
-          title: Assignment not found.
-          status: 404
-          subject: qlik/sara
-          sourceType: analyzer
+        - type: analyzer
+          excess: false
+          created: '2020-12-03T09:24:48.114Z'
+          subject: qlik\kalle
+        - type: false
+          created: '2020-12-03T09:24:48.114Z'
+          subject: qlik\nalle
+        links:
+          next:
+            href: http://license/v1/licenses/assignments?limit=4&page=bmV4dDpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZrQUE%3D
+          prev:
+            href: http://license/v1/licenses/assignments?limit=4&page=cHJldjpGZ0FBQUFkZmFXUUFYOHBUcTlpM1U4UU1YWHZ0QUE%3D
       required:
       - data
+      - links
       properties:
         data:
           type: array
           items:
             required:
-            - status
+            - type
+            - subject
+            - excess
+            - created
             properties:
-              code:
-                type: string
-                description: Error code
               type:
                 type: string
-                description: Target allotment type.
-              title:
+                description: Allotment type
+              excess:
+                type: boolean
+                description: Assignment excess status.
+              created:
                 type: string
-                description: Error title
-              status:
-                type: integer
-                description: HTTP status code indicating the result of the individual assignment operation. A value of 200 represents a successful update, while 201 indicates a new resource was created due to a subject update. Any 400-level status codes indicate an error.
+                description: Assignment created date.
               subject:
                 type: string
-                description: Target subject.
-              sourceType:
-                type: string
-                description: Current allotment type.
-              sourceSubject:
-                type: string
-                description: Current subject.
+                description: Subject
+        links:
+          type: object
+          properties:
+            next:
+              $ref: '#/components/schemas/href'
+            prev:
+              $ref: '#/components/schemas/href'
     assignmentsActionsAddRequest:
       type: object
       example:
@@ -932,50 +901,35 @@ components:
               subject:
                 type: string
                 description: User subject
-    href:
-      type: object
-      properties:
-        href:
-          type: string
-          description: link
-    errorResponse:
+    assignmentsActionsUpdateRequest:
       type: object
       example:
-        error: util.Error
-        errors:
-        - code: LICENSES-123
-          title: error title
-        message: error message
+        update:
+        - type: professional
+          subject: qlik\malik
+          sourceType: analyzer
       required:
-      - errors
-      - error
-      - message
+      - update
       properties:
-        error:
-          type: string
-          description: Error type
-          x-qlik-deprecated: true
-        errors:
+        update:
           type: array
           items:
             type: object
             required:
-            - code
-            - title
+            - subject
             properties:
-              code:
+              type:
                 type: string
-                description: Error code
-              title:
+                description: Target assignment type.
+              subject:
                 type: string
-                description: Error title
-              detail:
+                description: User subject, the current or the desired after the patch.
+              sourceType:
                 type: string
-                description: Additional error detail.
-        message:
-          type: string
-          description: Error message
-          x-qlik-deprecated: true
+                description: Current assignment type.
+              sourceSubject:
+                type: string
+                description: The current user subject, in case that should be patched.
     settingsBody:
       type: object
       example:
@@ -988,43 +942,66 @@ components:
         autoAssignProfessional:
           type: boolean
           description: If professional users are available, they will be automatically assigned. Otherwise, analyzer capacity will be assigned, if available.
-    assignmentsActionsAddResponse:
+    licenseStatus:
       type: object
       example:
-        data:
-        - type: professional
-          status: 201
-          subject: qlik\kalle
-        - code: LICENSES-011
-          type: analyzer
-          title: No available allotment error, No available allotment.
-          status: 403
-          subject: qlik\nalle
+        type: Signed
+        trial: false
+        valid: 2018-01-01/2018-12-31
+        origin: Internal
+        status: Ok
+        product: Qlik Sense Business
+        extensionStatus: Unavailable
       required:
-      - data
+      - origin
+      - product
+      - status
+      - trial
+      - type
+      - valid
+      - extensionStatus
+      - deactivated
       properties:
-        data:
-          type: array
-          items:
-            required:
-            - subject
-            - status
-            properties:
-              code:
-                type: string
-                description: Error code
-              type:
-                type: string
-                description: Allotment type
-              title:
-                type: string
-                description: Error title
-              status:
-                type: integer
-                description: Response status
-              subject:
-                type: string
-                description: Subject
+        type:
+          enum:
+          - Signed
+          - Plain
+          - '2.0'
+          type: string
+          description: Type of license key.
+        trial:
+          type: boolean
+          description: Boolean indicating if it is a trial license.
+        valid:
+          type: string
+          description: Period that the license is currently set to be active. Represented as an ISO 8601 time interval with start and end.
+        origin:
+          enum:
+          - Internal
+          - External
+          type: string
+          description: Origin of license key.
+        status:
+          enum:
+          - Ok
+          - Blacklisted
+          - Expired
+          - Missing
+          type: string
+          description: Enum with status of license. Only status Ok grants license. access.
+        product:
+          type: string
+          description: The product the license is valid for.
+        deactivated:
+          type: boolean
+          description: Boolean indicating if the license is deactivated.
+        extensionStatus:
+          enum:
+          - Unavailable
+          - Pending
+          - Available
+          type: string
+          description: Enum with extension status of license. access.
     assignmentsActionsDeleteResponse:
       type: object
       example:
@@ -1061,3 +1038,26 @@ components:
               subject:
                 type: string
                 description: Subject
+    assignmentsActionsDeleteRequest:
+      type: object
+      example:
+        delete:
+        - type: analyzer
+          subject: qlik\malik
+      required:
+      - delete
+      properties:
+        delete:
+          type: array
+          items:
+            type: object
+            required:
+            - subject
+            - type
+            properties:
+              type:
+                type: string
+                description: Allotment type
+              subject:
+                type: string
+                description: User subject

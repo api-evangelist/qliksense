@@ -508,31 +508,112 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    atlasGlossary:
+    resultMeta:
       type: object
       properties:
-        guid:
-          type: string
+        countTotal:
+          type: integer
+    importOwner:
+      type: object
+      properties:
         name:
           type: string
-        terms:
+          example: Joe Smith
+        email:
+          type: string
+          example: joe.smith@qlik.com
+        userId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+    importCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
+        name:
+          type: string
+          description: 'The name of the category. May not be identical to another category belonging to the same parent.
+
+            '
+        parentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        stewards:
           type: array
           items:
-            $ref: '#/components/schemas/atlasTerm'
-        usage:
+            type: string
+            format: uid
+            example: 507f191e810c19729de860ea
+        description:
           type: string
-        language:
-          type: string
-        categories:
+        stewardDetails:
           type: array
           items:
-            $ref: '#/components/schemas/atlasCategory'
-        qualifiedName:
+            $ref: '#/components/schemas/stewardDetail'
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
           type: string
-        longDescription:
+          example: 795dedf8cf38b60088a6e4feb6eace75
+    termCreateLinksTo:
+      type: object
+      required:
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          enum:
+          - definition
+          - related
           type: string
-        shortDescription:
+          description: 'The type of relationship between the term and the linked resource:
+
+            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
+
+            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
+
+            '
+        resourceId:
           type: string
+          description: The unique identifier of the resource (app or dataset) to link to the term.
+        resourceType:
+          enum:
+          - app
+          - dataset
+          type: string
+          description: The type of resource being linked to the term.
+        subResourceId:
+          type: string
+          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
+        subResourceName:
+          type: string
+          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
+        subResourceType:
+          enum:
+          - master_dimension
+          - master_measure
+          - field
+          type: string
+          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
+      description: 'Describes links to other data assets such as analytics applications or dataset.
+
+
+        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
+
+        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
+
+        If any one subresource field is specified, all three are required.
+
+        '
     exportTerm:
       type: object
       properties:
@@ -588,332 +669,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/stewardDetail'
-    errorResponseBadRequest:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 795dedf8cf38b60088a6e4feb6eace75
-      description: '### Custom error codes
-
-        * BG-1 - Context JWT is missing tenantId.
-
-        * BG-2 - Context JWT is missing userId.
-
-        * BG-4 - Invalid or unsupported Content Type. Valid types are: application/json, application/json+qlik, application/json+atlan, application/json+atlas
-
-        * BG-5 - Failed to decode JSON payload.
-
-        * BG-6 - A glossary name is required.
-
-        * BG-7 - Two categories with the same name cannot have the same parent.
-
-        * BG-11 - Glossary validation failed - A value or parameter is invalid or not set
-
-        * BG-12 - Category validation failed - A value or parameter is invalid or not set
-
-        * BG-13 - Term validation failed - A value or parameter is invalid or not set
-
-        * BG-14 - Two or more categories share Id
-
-        * BG-15 - Two or more terms share Id
-
-        * BG-16 - Not detecting proper Atlas format
-
-        * BG-17 - Not detecting proper Atlan format
-
-        * BG-18 - Not detecting proper Qlik format
-
-        * BG-19 - Invalid format in term
-
-        * BG-20 - Duplicate link definition
-
-        * BG-21 - Rich text validation failed. Rich text fields must be valid JSON strings in the format: [{"type":"paragraph","children":[{"text":"your text here"}]}]
-
-        * BG-22 - Import cancelled
-
-        * BG-23 - Duplicate link related
-
-        '
-    atlanGlossary:
-      type: object
-      properties:
-        entity:
-          $ref: '#/components/schemas/atlanEntity'
-        referredEntities:
-          type: array
-          items:
-            $ref: '#/components/schemas/atlanEntity'
-      description: Atlan glossary format. For more information, see https://docs.atlan.com/
-    createGlossary:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          example: Organization wide glossary
-          description: Name of the glossary
-        tags:
-          type: array
-          items:
-            type: string
-          example:
-          - Red
-          - Sales
-          description: List of tags for glossary
-        spaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          description: Unique unique identifier of the space to contain the glossary
-        overview:
-          type: string
-          example: '[{"type":"paragraph","children":[{"text":"This glossary contains business terms"}]}]'
-          description: 'Overview of the glossary content. This is a rich text field represented as a JSON string.
-
-            The field is typically generated by the UI but can be set programmatically using the rich text format.
-
-            '
-        description:
-          type: string
-          example: This glossary contains definitions and concepts of business terms.
-          description: Description of the glossary
-        termTemplate:
-          $ref: '#/components/schemas/termTemplate'
-    atlanRelationshipAttributes:
-      type: object
-      properties:
-        isA:
-          $ref: '#/components/schemas/atlanTermHeader'
-        terms:
-          $ref: '#/components/schemas/atlanRelationEntity'
-        seeAlso:
-          $ref: '#/components/schemas/atlanTermHeader'
-        antonyms:
-          $ref: '#/components/schemas/atlanTermHeader'
-        synonyms:
-          $ref: '#/components/schemas/atlanTermHeader'
-        categories:
-          $ref: '#/components/schemas/atlanRelationEntity'
-        classifies:
-          $ref: '#/components/schemas/atlanTermHeader'
-        replacedBy:
-          $ref: '#/components/schemas/atlanTermHeader'
-    errorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 795dedf8cf38b60088a6e4feb6eace75
-    termRelatesTo:
-      type: object
-      required:
-      - termId
-      - type
-      properties:
-        type:
-          enum:
-          - isA
-          - hasA
-          - seeAlso
-          - synonym
-          - antonym
-          - classifies
-          - other
-          - replaces
-          - replacedBy
-          - hasSubtype
-          - preferredTerm
-          - seeInstead
-          - defines
-          - definedBy
-          type: string
-          description: How the term related to the other object
-        termId:
-          type: string
-          format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: The unique identifier of the related term. NOTE! In case of import the string refers to the index of the term in the import document.
-    glossariesResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/glossary'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
-    atlanResourceLink:
-      type: object
-      properties:
-        url:
-          type: string
-        displayName:
-          type: string
-    atlanEntity:
-      type: object
-      properties:
-        guid:
-          type: string
-        labels:
-          type: array
-          items:
-            type: string
-        status:
-          type: string
-        typeName:
-          type: string
-        attributes:
-          $ref: '#/components/schemas/atlanEntityAttributes'
-        relationshipAttributes:
-          $ref: '#/components/schemas/atlanRelationshipAttributes'
-    atlanTermHeader:
-      type: object
-      properties:
-        guid:
-          type: string
-        steward:
-          type: string
-        expression:
-          type: string
-        description:
-          type: string
-        displayText:
-          type: string
-        entityStatus:
-          type: string
-        relationGuid:
-          type: string
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
-    qlikGlossary:
-      type: object
-      properties:
-        name:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-          example:
-          - tag1
-          - tag2
-        terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/importTerm'
-        spaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-        overview:
-          type: string
-          example: '[{"type":"paragraph","children":[{"text":""}]}]'
-          description: 'Overview of the glossary. This is a rich text field represented as a JSON string.
-
-            The field is typically generated by the UI but can be set programmatically using the rich text format.
-
-            '
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/importCategory'
-        description:
-          type: string
-        termTemplate:
-          $ref: '#/components/schemas/termTemplate'
-    exportCategory:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
-        name:
-          type: string
-          description: 'The name of the category. May not be identical to another category belonging to the same parent.
-
-            '
-        parentId:
-          type: string
-          format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-        description:
-          type: string
-        stewardDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/stewardDetail'
-    stewardDetail:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-        userId:
-          type: string
-          format: uid
-    atlasCategory:
-      type: object
-      properties:
-        description:
-          type: string
-        displayText:
-          type: string
-        categoryGuid:
-          type: string
-        relationGuid:
-          type: string
-        parentCategoryGuid:
-          type: string
-    JSONPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /name
-        value: new name
-      - op: replace
-        path: /description
-        value: new description
-      description: An array of JSON Patch documents
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
     glossary:
       type: object
       required:
@@ -995,6 +750,33 @@ components:
           description: Description of the glossary
         termTemplate:
           $ref: '#/components/schemas/termTemplate'
+    errorResponseCode:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    glossariesResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/glossary'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    atlanResourceLink:
+      type: object
+      properties:
+        url:
+          type: string
+        displayName:
+          type: string
     atlanEntityAttributes:
       type: object
       properties:
@@ -1017,127 +799,30 @@ components:
           type: string
         userDescription:
           type: string
-    importCategory:
+    atlasCategory:
       type: object
       properties:
-        id:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
-        name:
-          type: string
-          description: 'The name of the category. May not be identical to another category belonging to the same parent.
-
-            '
-        parentId:
-          type: string
-          format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-        stewards:
-          type: array
-          items:
-            type: string
-            format: uid
-            example: 507f191e810c19729de860ea
         description:
-          type: string
-        stewardDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/stewardDetail'
-    atlanRelationEntity:
-      type: object
-      properties:
-        guid:
-          type: string
-        typeName:
           type: string
         displayText:
           type: string
-        entityStatus:
+        categoryGuid:
           type: string
-    importOwner:
+        relationGuid:
+          type: string
+        parentCategoryGuid:
+          type: string
+    termTemplate:
       type: object
       properties:
-        name:
+        relatedInformation:
           type: string
-          example: Joe Smith
-        email:
-          type: string
-          example: joe.smith@qlik.com
-        userId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-    errorResponseNotFound:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 795dedf8cf38b60088a6e4feb6eace75
-      description: '### Custom error codes
+          example: '[{"type":"paragraph","children":[{"text":""}]}]'
+          description: 'Template text for new terms. This is a rich text field represented as a JSON string.
 
-        * BG-8 - Glossary not found
-
-        * BG-9 - Category not found
-
-        * BG-10 - Term not found
-
-        '
-    termCreateLinksTo:
-      type: object
-      required:
-      - resourceType
-      - resourceId
-      properties:
-        type:
-          enum:
-          - definition
-          - related
-          type: string
-          description: 'The type of relationship between the term and the linked resource:
-
-            - `definition`: Use when the term provides the formal definition for the linked resource (e.g., a term defines what a master measure or dimension means)
-
-            - `related`: Use when the term is generally related to the resource but doesn''t formally define it
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
 
             '
-        resourceId:
-          type: string
-          description: The unique identifier of the resource (app or dataset) to link to the term.
-        resourceType:
-          enum:
-          - app
-          - dataset
-          type: string
-          description: The type of resource being linked to the term.
-        subResourceId:
-          type: string
-          description: Required when subResourceType or subResourceName is provided. The unique identifier of the subresource.
-        subResourceName:
-          type: string
-          description: Required when subResourceType or subResourceId is provided. The display name of the subresource.
-        subResourceType:
-          enum:
-          - master_dimension
-          - master_measure
-          - field
-          type: string
-          description: Required when subResourceId or subResourceName is provided. The type of the subresource.
-      description: 'Describes links to other data assets such as analytics applications or dataset.
-
-
-        **Note**: When linking to a subresource (e.g., a master dimension, master measure, or dataset field within an app or dataset),
-
-        all three subresource fields (`subResourceType`, `subResourceId`, and `subResourceName`) must be provided together.
-
-        If any one subresource field is specified, all three are required.
-
-        '
     errorResponseForbidden:
       type: object
       properties:
@@ -1155,6 +840,210 @@ components:
         * BG-30 - Feature not enabled on tenant.
 
         '
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://tools.ietf.org/html/rfc6902.
+    qlikGlossary:
+      type: object
+      properties:
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - tag1
+          - tag2
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/importTerm'
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+        overview:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":""}]}]'
+          description: 'Overview of the glossary. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/importCategory'
+        description:
+          type: string
+        termTemplate:
+          $ref: '#/components/schemas/termTemplate'
+    atlanTermHeader:
+      type: object
+      properties:
+        guid:
+          type: string
+        steward:
+          type: string
+        expression:
+          type: string
+        description:
+          type: string
+        displayText:
+          type: string
+        entityStatus:
+          type: string
+        relationGuid:
+          type: string
+    atlanEntity:
+      type: object
+      properties:
+        guid:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        typeName:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/atlanEntityAttributes'
+        relationshipAttributes:
+          $ref: '#/components/schemas/atlanRelationshipAttributes'
+    atlasGlossary:
+      type: object
+      properties:
+        guid:
+          type: string
+        name:
+          type: string
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/atlasTerm'
+        usage:
+          type: string
+        language:
+          type: string
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/atlasCategory'
+        qualifiedName:
+          type: string
+        longDescription:
+          type: string
+        shortDescription:
+          type: string
+    stewardDetail:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        userId:
+          type: string
+          format: uid
+    atlanRelationEntity:
+      type: object
+      properties:
+        guid:
+          type: string
+        typeName:
+          type: string
+        displayText:
+          type: string
+        entityStatus:
+          type: string
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      description: An array of JSON Patch documents
+    createGlossary:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: Organization wide glossary
+          description: Name of the glossary
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: List of tags for glossary
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: Unique unique identifier of the space to contain the glossary
+        overview:
+          type: string
+          example: '[{"type":"paragraph","children":[{"text":"This glossary contains business terms"}]}]'
+          description: 'Overview of the glossary content. This is a rich text field represented as a JSON string.
+
+            The field is typically generated by the UI but can be set programmatically using the rich text format.
+
+            '
+        description:
+          type: string
+          example: This glossary contains definitions and concepts of business terms.
+          description: Description of the glossary
+        termTemplate:
+          $ref: '#/components/schemas/termTemplate'
+    atlanRelationshipAttributes:
+      type: object
+      properties:
+        isA:
+          $ref: '#/components/schemas/atlanTermHeader'
+        terms:
+          $ref: '#/components/schemas/atlanRelationEntity'
+        seeAlso:
+          $ref: '#/components/schemas/atlanTermHeader'
+        antonyms:
+          $ref: '#/components/schemas/atlanTermHeader'
+        synonyms:
+          $ref: '#/components/schemas/atlanTermHeader'
+        categories:
+          $ref: '#/components/schemas/atlanRelationEntity'
+        classifies:
+          $ref: '#/components/schemas/atlanTermHeader'
+        replacedBy:
+          $ref: '#/components/schemas/atlanTermHeader'
     atlasTerm:
       type: object
       properties:
@@ -1174,6 +1063,207 @@ components:
           type: string
         relationGuid:
           type: string
+    errorResponseBadRequest:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+      description: '### Custom error codes
+
+        * BG-1 - Context JWT is missing tenantId.
+
+        * BG-2 - Context JWT is missing userId.
+
+        * BG-4 - Invalid or unsupported Content Type. Valid types are: application/json, application/json+qlik, application/json+atlan, application/json+atlas
+
+        * BG-5 - Failed to decode JSON payload.
+
+        * BG-6 - A glossary name is required.
+
+        * BG-7 - Two categories with the same name cannot have the same parent.
+
+        * BG-11 - Glossary validation failed - A value or parameter is invalid or not set
+
+        * BG-12 - Category validation failed - A value or parameter is invalid or not set
+
+        * BG-13 - Term validation failed - A value or parameter is invalid or not set
+
+        * BG-14 - Two or more categories share Id
+
+        * BG-15 - Two or more terms share Id
+
+        * BG-16 - Not detecting proper Atlas format
+
+        * BG-17 - Not detecting proper Atlan format
+
+        * BG-18 - Not detecting proper Qlik format
+
+        * BG-19 - Invalid format in term
+
+        * BG-20 - Duplicate link definition
+
+        * BG-21 - Rich text validation failed. Rich text fields must be valid JSON strings in the format: [{"type":"paragraph","children":[{"text":"your text here"}]}]
+
+        * BG-22 - Import cancelled
+
+        * BG-23 - Duplicate link related
+
+        '
+    atlanGlossary:
+      type: object
+      properties:
+        entity:
+          $ref: '#/components/schemas/atlanEntity'
+        referredEntities:
+          type: array
+          items:
+            $ref: '#/components/schemas/atlanEntity'
+      description: Atlan glossary format. For more information, see https://docs.atlan.com/
+    importTerm:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: 'The id of the term. Used to identify the term in future updates. If not provided, will use the leading 30 chars of the term name and an incremental index
+
+            '
+        name:
+          type: string
+          example: name
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - tag1
+          - tag2
+        owner:
+          type: array
+          items:
+            $ref: '#/components/schemas/importOwner'
+        linksTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termCreateLinksTo'
+        stewards:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+        relatesTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/termRelatesTo'
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+          description: 'Categories that the term belongs to. Refers to the `id` property of the category object
+
+            '
+        description:
+          type: string
+          example: description
+        abbreviation:
+          type: string
+          example: abbr
+        stewardDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'
+      description: URLs to a resource request
+    exportCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: "The id for resolving updates in future imports/updates. \nOpposed to the id of terms, id on category are not resolved by backend. Any category referred in the category array in terms will have to be identical to the id property of the category. If not, the category reference will be discarded.\n"
+        name:
+          type: string
+          description: 'The name of the category. May not be identical to another category belonging to the same parent.
+
+            '
+        parentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+        stewardDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/stewardDetail'
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    errorResponseNotFound:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 795dedf8cf38b60088a6e4feb6eace75
+      description: '### Custom error codes
+
+        * BG-8 - Glossary not found
+
+        * BG-9 - Category not found
+
+        * BG-10 - Term not found
+
+        '
+    termRelatesTo:
+      type: object
+      required:
+      - termId
+      - type
+      properties:
+        type:
+          enum:
+          - isA
+          - hasA
+          - seeAlso
+          - synonym
+          - antonym
+          - classifies
+          - other
+          - replaces
+          - replacedBy
+          - hasSubtype
+          - preferredTerm
+          - seeInstead
+          - defines
+          - definedBy
+          type: string
+          description: How the term related to the other object
+        termId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: The unique identifier of the related term. NOTE! In case of import the string refers to the index of the term in the import document.
     exportGlossary:
       type: object
       properties:
@@ -1239,93 +1329,3 @@ components:
           type: string
         termTemplate:
           $ref: '#/components/schemas/termTemplate'
-    termTemplate:
-      type: object
-      properties:
-        relatedInformation:
-          type: string
-          example: '[{"type":"paragraph","children":[{"text":""}]}]'
-          description: 'Template text for new terms. This is a rich text field represented as a JSON string.
-
-            The field is typically generated by the UI but can be set programmatically using the rich text format.
-
-            '
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-      description: URLs to a resource request
-    importTerm:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: 'The id of the term. Used to identify the term in future updates. If not provided, will use the leading 30 chars of the term name and an incremental index
-
-            '
-        name:
-          type: string
-          example: name
-        tags:
-          type: array
-          items:
-            type: string
-          example:
-          - tag1
-          - tag2
-        owner:
-          type: array
-          items:
-            $ref: '#/components/schemas/importOwner'
-        linksTo:
-          type: array
-          items:
-            $ref: '#/components/schemas/termCreateLinksTo'
-        stewards:
-          type: array
-          items:
-            $ref: '#/components/schemas/stewardDetail'
-        relatesTo:
-          type: array
-          items:
-            $ref: '#/components/schemas/termRelatesTo'
-        categories:
-          type: array
-          items:
-            type: string
-            format: uuid
-          example:
-          - 123e4567-e89b-12d3-a456-426614174000
-          description: 'Categories that the term belongs to. Refers to the `id` property of the category object
-
-            '
-        description:
-          type: string
-          example: description
-        abbreviation:
-          type: string
-          example: abbr
-        stewardDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/stewardDetail'
-    errorResponseCode:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    pageLink:
-      type: object
-      properties:
-        href:
-          type: string

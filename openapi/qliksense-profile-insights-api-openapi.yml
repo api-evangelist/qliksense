@@ -136,234 +136,13 @@ paths:
         limit: 1000
 components:
   schemas:
-    DataType:
+    ExperimentType:
       enum:
-      - DATE
-      - TIME
-      - DATETIME
-      - TIMESTAMP
-      - STRING
-      - DOUBLE
-      - DECIMAL
-      - INTEGER
-      - BOOLEAN
-      - BINARY
-      - CUSTOM
-      - FLOAT
-      - OBJECT
+      - binary
+      - multiclass
+      - regression
       type: string
-      example: STRING
-      description: 'The data type of this feature in your dataset
-
-        '
-    DatasetOrigin:
-      enum:
-      - new
-      - changed
-      - refreshed
-      - same
-      type: string
-      default: new
-      description: Whether this is a new or other dataset
-    ModelAlgorithm:
-      enum:
-      - catboost_classifier
-      - catboost_regression
-      - elasticnet_regression
-      - gaussian_nb
-      - kneighbors_classifier
-      - lasso_regression
-      - lasso
-      - lgbm_classifier
-      - lgbm_regression
-      - linear_regression
-      - logistic_regression
-      - random_forest_classifier
-      - random_forest_regression
-      - sgd_regression
-      - xgb_classifier
-      - xgb_regression
-      type: string
-      description: 'Enumeration of model algorithms.
-
-
-        A subset of these may be provided based on your ExperimentType. This is
-
-        based on your target''s featureType. When you select a target feature
-
-        from your ProfileInsights response (defaultVersionConfig.featuresList),
-
-        it tells you which algorithms will be available if you choose it as your
-
-        target.
-
-        '
-    DataSetProfile:
-      type: object
-      required:
-      - meta
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProfileMetadata'
-        samples:
-          type: array
-          items:
-            $ref: '#/components/schemas/TableSample'
-        profiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/TableProfile'
-      description: Full dataset profile from the Profile Service.
-      additionalProperties: false
-    EntityId:
-      type: string
-      format: uuid
-      description: ID of this entity
-      x-qlik-filterable: true
-    BinnedFrequency:
-      type: object
-      properties:
-        binEdge:
-          type: number
-        frequency:
-          type: number
-      description: A frequency bin in a field's frequency distribution.
-      additionalProperties: false
-    APIError:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: Qlik error code (not HTTP response status code)
-        meta:
-          type: object
-          properties:
-            issue:
-              type: string
-              description: The issue code
-            details:
-              type: string
-              description: Extra details for what may have caused the error
-            errorId:
-              type: string
-              description: The unique id of the error instance
-            argument:
-              type: string
-              description: The argument
-            resource:
-              type: string
-              description: The resource type that the error occurred on
-            resourceId:
-              type: string
-              description: The resource id that the error occurred on
-          description: 'Additional details about the error. These may vary by error.
-
-            '
-          additionalProperties: false
-        title:
-          type: string
-          description: Short summary of error
-        detail:
-          type: string
-          description: Description of the error
-      description: An error object
-      additionalProperties: false
-    TableRecord:
-      type: object
-      properties:
-        values:
-          type: array
-          items:
-            type: string
-      description: A single record of sample values.
-      additionalProperties: false
-    ProfileClassification:
-      type: object
-      properties:
-        pii:
-          type: boolean
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProfileClassificationTag'
-        sensitive:
-          type: boolean
-        obfuscation:
-          type: string
-      description: Classification metadata for a field.
-      additionalProperties: false
-    FeatureInsights:
-      type: object
-      required:
-      - name
-      - experimentTypes
-      - willBeDropped
-      - insights
-      - cannotBeTarget
-      properties:
-        name:
-          type: string
-          description: Name of the feature insight
-        insights:
-          type: array
-          items:
-            $ref: '#/components/schemas/Insights'
-          description: 'List of insights about this feature.
-
-            '
-        willBeDropped:
-          type: boolean
-          description: 'Whether this feature will be dropped. Traits like high cardinality
-
-            make some features less predictive or too costly to merit use.
-
-            '
-        cannotBeTarget:
-          type: boolean
-          description: Whether a feature cannot be the target field
-        experimentTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExperimentType'
-          description: Experiment types in this feature insight
-        defaultFeatureType:
-          $ref: '#/components/schemas/FeatureType'
-        engineeredFeatures:
-          type: array
-          items:
-            type: string
-          example: "[\n  `${featureName}.YEAR`,\n  `${featureName}.MONTH`\n]\n"
-          description: 'Preliminary list of engineered features as strings. If subsequent
-
-            processing validates them, they''ll be converted to EngineeredFeature
-
-            objects within a NestedColumn, each of which may contain its own
-
-            FeatureInsights.
-
-            '
-        estimatedMaxForecastHorizon:
-          type: integer
-          description: 'Only applies for time series experiment types. This intial estimate
-
-            of the combined max forecast window and gap (aka - horizon). It only
-
-            applies to possible date index columns. After the experiment version
-
-            is created, we get a more precise number for subsequent versions.
-
-            When training data is grouped, this estimate may be less accurate.
-
-            '
-      description: 'Metadata about the features in your dataset, generated when you create
-
-        ProfileInsights.
-
-        '
-      additionalProperties: false
+      description: Experiment type
     ProfileInsights:
       type: object
       required:
@@ -461,15 +240,23 @@ components:
             '
       description: Insights (metadata) about an experiment dataset
       additionalProperties: false
-    ProfileFrequency:
-      type: object
-      properties:
-        value:
-          type: string
-        frequency:
-          type: number
-      description: A value and its frequency count.
-      additionalProperties: false
+    Insights:
+      enum:
+      - constant
+      - high_cardinality
+      - high_cardinality_integer
+      - too_many_nulls
+      - will_be_impact_encoded
+      - will_be_one_hot_encoded
+      - possible_free_text_encoded
+      - valid_index
+      - underrepresented_class
+      - invalid_column_name
+      - will_be_date_engineered
+      type: string
+      description: 'Insights about a feature, such as why it''s not included in a model
+
+        '
     ProfileInsightsGetResponse:
       type: object
       required:
@@ -492,57 +279,171 @@ components:
               $ref: '#/components/schemas/ProfileInsights'
           additionalProperties: false
       additionalProperties: false
-    ProfileMetadata:
+    FeatureInsights:
       type: object
       required:
-      - dataSetId
-      - status
+      - name
+      - experimentTypes
+      - willBeDropped
+      - insights
+      - cannotBeTarget
       properties:
-        status:
-          enum:
-          - FINISHED
-          - PARTIAL
-          - QUEUED
-          - RUNNING
-          - STALE
-          - CANCELLED
-          - FAILED
-          - INCOMPLETE
-          - DEFERRED
+        name:
           type: string
-        messages:
+          description: Name of the feature insight
+        insights:
+          type: array
+          items:
+            $ref: '#/components/schemas/Insights'
+          description: 'List of insights about this feature.
+
+            '
+        willBeDropped:
+          type: boolean
+          description: 'Whether this feature will be dropped. Traits like high cardinality
+
+            make some features less predictive or too costly to merit use.
+
+            '
+        cannotBeTarget:
+          type: boolean
+          description: Whether a feature cannot be the target field
+        experimentTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperimentType'
+          description: Experiment types in this feature insight
+        defaultFeatureType:
+          $ref: '#/components/schemas/FeatureType'
+        engineeredFeatures:
           type: array
           items:
             type: string
-        dataSetId:
-          $ref: '#/components/schemas/DataSetId'
-        resultType:
-          enum:
-          - NORMAL
-          - BASIC
-          - BASIC_TOO_LARGE
-          type: string
-        connectionId:
-          type: string
-        lastLoadTime:
-          type: string
-        maxSizeBytes:
-          type: number
-        computationEndTime:
-          type: string
-        computationStartTime:
-          type: string
-      description: Metadata about a dataset profile computation.
+          example: "[\n  `${featureName}.YEAR`,\n  `${featureName}.MONTH`\n]\n"
+          description: 'Preliminary list of engineered features as strings. If subsequent
+
+            processing validates them, they''ll be converted to EngineeredFeature
+
+            objects within a NestedColumn, each of which may contain its own
+
+            FeatureInsights.
+
+            '
+        estimatedMaxForecastHorizon:
+          type: integer
+          description: 'Only applies for time series experiment types. This intial estimate
+
+            of the combined max forecast window and gap (aka - horizon). It only
+
+            applies to possible date index columns. After the experiment version
+
+            is created, we get a more precise number for subsequent versions.
+
+            When training data is grouped, this estimate may be less accurate.
+
+            '
+      description: 'Metadata about the features in your dataset, generated when you create
+
+        ProfileInsights.
+
+        '
       additionalProperties: false
-    TenantId:
+    DataSetProfile:
+      type: object
+      required:
+      - meta
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProfileMetadata'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableSample'
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableProfile'
+      description: Full dataset profile from the Profile Service.
+      additionalProperties: false
+    FeatureType:
+      enum:
+      - categorical
+      - numeric
+      - date
+      - freetext
       type: string
-      format: uuid
-      description: Tenant ID for this entity
-      x-qlik-filterable: true
-    OwnerId:
+      description: 'The default feature type based on the feature''s data type.
+
+        If you want a value to be interpreted differently (e.g. 0/1
+
+        as categorical/boolean instead of numeric), use `changeType`.
+
+        '
+    ModelAlgorithm:
+      enum:
+      - catboost_classifier
+      - catboost_regression
+      - elasticnet_regression
+      - gaussian_nb
+      - kneighbors_classifier
+      - lasso_regression
+      - lasso
+      - lgbm_classifier
+      - lgbm_regression
+      - linear_regression
+      - logistic_regression
+      - random_forest_classifier
+      - random_forest_regression
+      - sgd_regression
+      - xgb_classifier
+      - xgb_regression
       type: string
-      description: ID of owner/user for this entity
-      x-qlik-filterable: true
+      description: 'Enumeration of model algorithms.
+
+
+        A subset of these may be provided based on your ExperimentType. This is
+
+        based on your target''s featureType. When you select a target feature
+
+        from your ProfileInsights response (defaultVersionConfig.featuresList),
+
+        it tells you which algorithms will be available if you choose it as your
+
+        target.
+
+        '
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
+    TableProfile:
+      type: object
+      required:
+      - name
+      - numberOfRows
+      - fieldProfiles
+      properties:
+        name:
+          type: string
+        sizeInBytes:
+          type: number
+        numberOfRows:
+          type: integer
+        fieldProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldProfile'
+      description: Profile metadata for a single table/dataset.
+      additionalProperties: false
     ExperimentMode:
       enum:
       - intelligent
@@ -551,17 +452,176 @@ components:
       type: string
       default: intelligent
       description: The model training mode for the experiment version
-    FeaturesList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Feature'
-      description: 'List of features from your dataset for creating Experiment
+    ProfileInsightsInput:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              enum:
+              - profile-insights
+              type: string
+              default: profile-insights
+            attributes:
+              type: object
+              properties:
+                target:
+                  type: string
+                  description: 'Optional selected target provided on subsequent requests
 
-        Versions. This appears in from ProfileInsights response (in the
+                    '
+                include:
+                  $ref: '#/components/schemas/IncludeProfileInsightsField'
+                dataSetId:
+                  $ref: '#/components/schemas/DataSetId'
+                shouldWait:
+                  type: boolean
+                  default: false
+                  description: 'Whether the server should or client should manage polling/waiting
 
-        defaultVersionConfig). You can adjust the default settings before
+                    '
+                experimentType:
+                  $ref: '#/components/schemas/ExperimentType'
+              description: The request body for this resource
+              additionalProperties: false
+          description: Data wrapper for request input
+          additionalProperties: false
+      description: 'Input to get dataset and feature metadata needed to create
 
-        using it as input to create or update Experiment Versions.
+        experiment versions
+
+        '
+      additionalProperties: false
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    ProfileClassificationTag:
+      type: object
+      properties:
+        tag:
+          type: string
+        score:
+          type: number
+      description: A classification tag with a confidence score.
+      additionalProperties: false
+    DataSetId:
+      type: string
+      example: 672e55cfcadfb8a18281523e
+      description: The Qlik catalog dataset ID
+    DatasetOrigin:
+      enum:
+      - new
+      - changed
+      - refreshed
+      - same
+      type: string
+      default: new
+      description: Whether this is a new or other dataset
+    EntityId:
+      type: string
+      format: uuid
+      description: ID of this entity
+      x-qlik-filterable: true
+    TableRecord:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+      description: A single record of sample values.
+      additionalProperties: false
+    BinnedFrequency:
+      type: object
+      properties:
+        binEdge:
+          type: number
+        frequency:
+          type: number
+      description: A frequency bin in a field's frequency distribution.
+      additionalProperties: false
+    TenantId:
+      type: string
+      format: uuid
+      description: Tenant ID for this entity
+      x-qlik-filterable: true
+    TableSample:
+      type: object
+      properties:
+        name:
+          type: string
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableRecord'
+        fieldNames:
+          type: array
+          items:
+            type: string
+      description: Sample values from a table/dataset.
+      additionalProperties: false
+    ProfileFrequency:
+      type: object
+      properties:
+        value:
+          type: string
+        frequency:
+          type: number
+      description: A value and its frequency count.
+      additionalProperties: false
+    ChangeType:
+      enum:
+      - categorical
+      - numeric
+      - date
+      - freetext
+      type:
+      - string
+      - 'null'
+      default: null
+      description: 'Indicates if you want to change the featureType for this
+
+        feature within the experiment version
 
         '
     FieldProfile:
@@ -645,40 +705,77 @@ components:
           type: number
       description: Profile metadata for a single field/column.
       additionalProperties: false
-    TableProfile:
+    OwnerId:
+      type: string
+      description: ID of owner/user for this entity
+      x-qlik-filterable: true
+    ProfileMetadata:
       type: object
       required:
-      - name
-      - numberOfRows
-      - fieldProfiles
+      - dataSetId
+      - status
       properties:
-        name:
+        status:
+          enum:
+          - FINISHED
+          - PARTIAL
+          - QUEUED
+          - RUNNING
+          - STALE
+          - CANCELLED
+          - FAILED
+          - INCOMPLETE
+          - DEFERRED
           type: string
-        sizeInBytes:
-          type: number
-        numberOfRows:
-          type: integer
-        fieldProfiles:
+        messages:
           type: array
           items:
-            $ref: '#/components/schemas/FieldProfile'
-      description: Profile metadata for a single table/dataset.
+            type: string
+        dataSetId:
+          $ref: '#/components/schemas/DataSetId'
+        resultType:
+          enum:
+          - NORMAL
+          - BASIC
+          - BASIC_TOO_LARGE
+          type: string
+        connectionId:
+          type: string
+        lastLoadTime:
+          type: string
+        maxSizeBytes:
+          type: number
+        computationEndTime:
+          type: string
+        computationStartTime:
+          type: string
+      description: Metadata about a dataset profile computation.
       additionalProperties: false
-    Insights:
+    FeaturesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Feature'
+      description: 'List of features from your dataset for creating Experiment
+
+        Versions. This appears in from ProfileInsights response (in the
+
+        defaultVersionConfig). You can adjust the default settings before
+
+        using it as input to create or update Experiment Versions.
+
+        '
+    IncludeProfileInsightsField:
       enum:
-      - constant
-      - high_cardinality
-      - high_cardinality_integer
-      - too_many_nulls
-      - will_be_impact_encoded
-      - will_be_one_hot_encoded
-      - possible_free_text_encoded
-      - valid_index
-      - underrepresented_class
-      - invalid_column_name
-      - will_be_date_engineered
+      - dataSetProfile
       type: string
-      description: 'Insights about a feature, such as why it''s not included in a model
+      example: dataSetProfile
+      description: 'Fields to include in the response.
+
+
+        Currently only supported value is `dataSetProfile`.
+
+
+        When `dataSetProfile` is specified, the response includes the full dataset profile.
 
         '
     Feature:
@@ -711,138 +808,90 @@ components:
           description: The parent feature name for engineered features. e.g. `OrderDate` may be the parent of its engineered features (features extracted from parent) like `OrderDate.YEAR`, `OrderDate.MONTH`, etc.
       description: A feature (column) from your dataset
       additionalProperties: false
-    FeatureType:
-      enum:
-      - categorical
-      - numeric
-      - date
-      - freetext
-      type: string
-      description: 'The default feature type based on the feature''s data type.
-
-        If you want a value to be interpreted differently (e.g. 0/1
-
-        as categorical/boolean instead of numeric), use `changeType`.
-
-        '
-    ProfileClassificationTag:
+    ProfileClassification:
       type: object
       properties:
-        tag:
-          type: string
-        score:
-          type: number
-      description: A classification tag with a confidence score.
-      additionalProperties: false
-    DataSetId:
-      type: string
-      example: 672e55cfcadfb8a18281523e
-      description: The Qlik catalog dataset ID
-    ProfileInsightsInput:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              enum:
-              - profile-insights
-              type: string
-              default: profile-insights
-            attributes:
-              type: object
-              properties:
-                target:
-                  type: string
-                  description: 'Optional selected target provided on subsequent requests
-
-                    '
-                include:
-                  $ref: '#/components/schemas/IncludeProfileInsightsField'
-                dataSetId:
-                  $ref: '#/components/schemas/DataSetId'
-                shouldWait:
-                  type: boolean
-                  default: false
-                  description: 'Whether the server should or client should manage polling/waiting
-
-                    '
-                experimentType:
-                  $ref: '#/components/schemas/ExperimentType'
-              description: The request body for this resource
-              additionalProperties: false
-          description: Data wrapper for request input
-          additionalProperties: false
-      description: 'Input to get dataset and feature metadata needed to create
-
-        experiment versions
-
-        '
-      additionalProperties: false
-    IncludeProfileInsightsField:
-      enum:
-      - dataSetProfile
-      type: string
-      example: dataSetProfile
-      description: 'Fields to include in the response.
-
-
-        Currently only supported value is `dataSetProfile`.
-
-
-        When `dataSetProfile` is specified, the response includes the full dataset profile.
-
-        '
-    Failure:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
+        pii:
+          type: boolean
+        tags:
           type: array
           items:
-            $ref: '#/components/schemas/APIError'
-          uniqueItems: true
-        traceId:
+            $ref: '#/components/schemas/ProfileClassificationTag'
+        sensitive:
+          type: boolean
+        obfuscation:
           type: string
+      description: Classification metadata for a field.
       additionalProperties: false
-    ChangeType:
+    DataType:
       enum:
-      - categorical
-      - numeric
-      - date
-      - freetext
-      type:
-      - string
-      - 'null'
-      default: null
-      description: 'Indicates if you want to change the featureType for this
-
-        feature within the experiment version
+      - DATE
+      - TIME
+      - DATETIME
+      - TIMESTAMP
+      - STRING
+      - DOUBLE
+      - DECIMAL
+      - INTEGER
+      - BOOLEAN
+      - BINARY
+      - CUSTOM
+      - FLOAT
+      - OBJECT
+      type: string
+      example: STRING
+      description: 'The data type of this feature in your dataset
 
         '
-    TableSample:
-      type: object
-      properties:
-        name:
-          type: string
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/TableRecord'
-        fieldNames:
-          type: array
-          items:
-            type: string
-      description: Sample values from a table/dataset.
-      additionalProperties: false
-    ExperimentType:
-      enum:
-      - binary
-      - multiclass
-      - regression
-      type: string
-      description: Experiment type
+  responses:
+    404NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Not Found`'
+    401Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unauthorized`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'
   parameters:
     experimentType:
       in: query
@@ -873,52 +922,3 @@ components:
         $ref: '#/components/schemas/DataSetId'
       required: true
       description: The Qlik catalog dataset ID
-  responses:
-    503ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Service Unavailable`'
-    400BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Request`'
-    403Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Forbidden`'
-    401Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unauthorized`'
-    502BadGateway:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Gateway`'
-    500InternalError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Internal Error`'
-    404NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Not Found`'
-    FailureDefault:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unexpected Error`'

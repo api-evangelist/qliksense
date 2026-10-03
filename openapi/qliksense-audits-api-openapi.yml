@@ -409,17 +409,38 @@ paths:
         limit: 1000
 components:
   schemas:
-    GetResult:
+    GetObjectsResult:
       type: object
-      title: GetResult is the result type of the audit service Get method.
+      title: GetObjectsResult is the result type of audit service generic resources.
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/GetByIDResult'
-          description: List of audit items.
+            type: string
+          description: List of requested resources.
         links:
           $ref: '#/components/schemas/ListLinks'
+    ErrorResponse:
+      type: object
+      title: ErrorResponse indicates the error response.
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-400
+              title:
+                type: string
+                example: error title
+              detail:
+                type: string
+                example: error details
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
     GetSettingsResult:
       type: object
       title: GetSettingsResult is the result type of a getSettings request.
@@ -434,6 +455,65 @@ components:
               type: boolean
               description: Is Long Term Storage archiving enabled?.
           description: Server configuration options.
+    GetArchiveResult:
+      type: object
+      title: GetArchiveResult is the result type of the audit service GetArchive method.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArchiveItem'
+          description: List of archived events. The structure of the events depend on their type and version.
+    ArchiveItem:
+      type: object
+      title: ArchiveItem is schema for the achived audit entry.
+      properties:
+        data:
+          type: object
+          description: Additional information about the event's details. The structure depends on the type and version of the event.
+        source:
+          type: string
+          description: The source of the event message, usually the producing service.
+        userId:
+          type: string
+          description: The ID of the user who performed the action that triggered the event.
+        eventId:
+          type: string
+          description: The event's unique identifier.
+        tenantId:
+          type: string
+          description: The ID of the tenant that owns the item. This is populated using the JWT.
+        eventTime:
+          type: string
+          format: date-time
+          description: The RFC3339 datetime when the event happened.
+        eventType:
+          type: string
+          description: The type of event that describes committed action.
+        extensions:
+          $ref: '#/components/schemas/EventExtensions'
+        contentType:
+          type: string
+          description: The type that content is encoded in, always "application/json".
+        eventTypeVersion:
+          type: string
+          description: The version of the event type.
+    ListLinks:
+      type: object
+      title: ListLinks are the HAL links for a list result.
+      properties:
+        next:
+          $ref: '#/components/schemas/href'
+        prev:
+          $ref: '#/components/schemas/href'
+        self:
+          $ref: '#/components/schemas/href'
+    href:
+      type: object
+      title: href is a URL.
+      properties:
+        href:
+          type: string
     GetByIDResult:
       type: object
       title: GetByIDResult is the result type of the audit service GetByID method.
@@ -499,100 +579,20 @@ components:
           type: string
           description: If the event originated from a sub resource the topLevelResourceId contains the id of the top level resource associated with the sub resource.
       description: The availability of the properties depends on the event and the context it was triggered in.
-    ListLinks:
+    GetResult:
       type: object
-      title: ListLinks are the HAL links for a list result.
-      properties:
-        next:
-          $ref: '#/components/schemas/href'
-        prev:
-          $ref: '#/components/schemas/href'
-        self:
-          $ref: '#/components/schemas/href'
-    GetObjectsResult:
-      type: object
-      title: GetObjectsResult is the result type of audit service generic resources.
+      title: GetResult is the result type of the audit service Get method.
       properties:
         data:
           type: array
           items:
-            type: string
-          description: List of requested resources.
+            $ref: '#/components/schemas/GetByIDResult'
+          description: List of audit items.
         links:
           $ref: '#/components/schemas/ListLinks'
-    href:
-      type: object
-      title: href is a URL.
-      properties:
-        href:
-          type: string
-    GetArchiveResult:
-      type: object
-      title: GetArchiveResult is the result type of the audit service GetArchive method.
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ArchiveItem'
-          description: List of archived events. The structure of the events depend on their type and version.
     GetLinks:
       type: object
       title: GetLinks are the HAL links for a single result.
       properties:
         self:
           $ref: '#/components/schemas/href'
-    ErrorResponse:
-      type: object
-      title: ErrorResponse indicates the error response.
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-400
-              title:
-                type: string
-                example: error title
-              detail:
-                type: string
-                example: error details
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    ArchiveItem:
-      type: object
-      title: ArchiveItem is schema for the achived audit entry.
-      properties:
-        data:
-          type: object
-          description: Additional information about the event's details. The structure depends on the type and version of the event.
-        source:
-          type: string
-          description: The source of the event message, usually the producing service.
-        userId:
-          type: string
-          description: The ID of the user who performed the action that triggered the event.
-        eventId:
-          type: string
-          description: The event's unique identifier.
-        tenantId:
-          type: string
-          description: The ID of the tenant that owns the item. This is populated using the JWT.
-        eventTime:
-          type: string
-          format: date-time
-          description: The RFC3339 datetime when the event happened.
-        eventType:
-          type: string
-          description: The type of event that describes committed action.
-        extensions:
-          $ref: '#/components/schemas/EventExtensions'
-        contentType:
-          type: string
-          description: The type that content is encoded in, always "application/json".
-        eventTypeVersion:
-          type: string
-          description: The version of the event type.

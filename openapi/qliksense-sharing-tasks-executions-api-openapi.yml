@@ -265,26 +265,6 @@ paths:
         limit: 1000
 components:
   schemas:
-    StandardListResponseProps:
-      type: object
-      required:
-      - currentPageCount
-      - totalCount
-      properties:
-        totalCount:
-          type: integer
-          description: total count of entries in the collection as a whole
-        currentPageCount:
-          type: integer
-          description: count of entries on the currently shown page
-      description: properties that should be added to every list response
-    Error_meta:
-      type: object
-      properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
     SharingExecutionListResponse:
       allOf:
       - $ref: '#/components/schemas/StandardListResponseProps'
@@ -297,11 +277,74 @@ components:
             items:
               $ref: '#/components/schemas/SharingExecutionResponse'
             description: Gets a list of sharing-executions.
-    Links:
+    SharingExecutionFile:
       type: object
       properties:
-        self:
-          $ref: '#/components/schemas/Self'
+        type:
+          enum:
+          - image
+          - pdf
+          - pptx
+          - xlsx
+          - html
+          - docx
+          type: string
+        fileID:
+          type: string
+          example: za1b2c3d4z
+        userId:
+          type: string
+          readOnly: true
+          description: userId associated with the file
+        fileAlias:
+          type: string
+          example: small-image
+        templateId:
+          type: string
+          format: uuid
+          readOnly: true
+          description: identify the source task template
+        tempContentsLocation:
+          type: string
+    SharingExecutionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/SharingExecutionError'
+    SharingExecutionResponse:
+      allOf:
+      - $ref: '#/components/schemas/SharingExecutionPersist'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/Links'
+          fileLocations:
+            type: array
+            items:
+              type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
     SharingExecutionError:
       type: object
       properties:
@@ -317,6 +360,70 @@ components:
           type: string
           readOnly: true
           description: Error cause.
+    Page:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items?limit=12
+          description: URL to particular set of elements
+        type:
+          enum:
+          - prev
+          - next
+          type: string
+          example: next
+          description: Page type, can be next or prev
+        token:
+          type: string
+          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
+          description: Page unique token
+    Links:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+    StandardListResponseProps:
+      type: object
+      required:
+      - currentPageCount
+      - totalCount
+      properties:
+        totalCount:
+          type: integer
+          description: total count of entries in the collection as a whole
+        currentPageCount:
+          type: integer
+          description: count of entries on the currently shown page
+      description: properties that should be added to every list response
+    Self:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    TargetUser:
+      type: object
+      properties:
+        type:
+          type: string
+          description: type of user eg email, userId, groupId
+        value:
+          type: string
+          description: contains the value of user type e.g. abc@xyz.com, 213efewr3
+        timezone:
+          type: string
+          description: timezone for the timestamp on the attached file name
+        filterName:
+          type: string
+          x-qlik-deprecated: true
+        filterNames:
+          type: array
+          items:
+            type: string
+            description: contains the value of the user filter
+      description: User that this execution is targeting as a recipient
     SharingExecutionPersist:
       type: object
       properties:
@@ -438,84 +545,6 @@ components:
           type: integer
           readOnly: true
           description: Total count of successfully uploaded reports in this execution
-    SharingExecutionResponse:
-      allOf:
-      - $ref: '#/components/schemas/SharingExecutionPersist'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/Links'
-          fileLocations:
-            type: array
-            items:
-              type: string
-    Self:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
-    ListLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
-    SharingExecutionFile:
-      type: object
-      properties:
-        type:
-          enum:
-          - image
-          - pdf
-          - pptx
-          - xlsx
-          - html
-          - docx
-          type: string
-        fileID:
-          type: string
-          example: za1b2c3d4z
-        userId:
-          type: string
-          readOnly: true
-          description: userId associated with the file
-        fileAlias:
-          type: string
-          example: small-image
-        templateId:
-          type: string
-          format: uuid
-          readOnly: true
-          description: identify the source task template
-        tempContentsLocation:
-          type: string
-    SharingExecutionErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/SharingExecutionError'
-    Page:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items?limit=12
-          description: URL to particular set of elements
-        type:
-          enum:
-          - prev
-          - next
-          type: string
-          example: next
-          description: Page type, can be next or prev
-        token:
-          type: string
-          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
-          description: Page unique token
     Errors:
       type: object
       example:
@@ -531,41 +560,12 @@ components:
             $ref: '#/components/schemas/Error'
         traceId:
           type: string
-    Error:
+    ListLinks:
       type: object
       properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    TargetUser:
-      type: object
-      properties:
-        type:
-          type: string
-          description: type of user eg email, userId, groupId
-        value:
-          type: string
-          description: contains the value of user type e.g. abc@xyz.com, 213efewr3
-        timezone:
-          type: string
-          description: timezone for the timestamp on the attached file name
-        filterName:
-          type: string
-          x-qlik-deprecated: true
-        filterNames:
-          type: array
-          items:
-            type: string
-            description: contains the value of the user filter
-      description: User that this execution is targeting as a recipient
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'

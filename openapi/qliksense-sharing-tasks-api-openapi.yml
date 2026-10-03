@@ -389,124 +389,207 @@ paths:
         limit: 100
 components:
   schemas:
-    Error_meta:
+    EmailAddressRecipientPersist:
       type: object
       properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
-    CleanupStrategy:
-      enum:
-      - noCleanup
-      - removeOldBookmarks
-      type: string
-      default: noCleanup
-      description: A bookmark is considered old if its modification date is older than the app creation date.
-      x-qlik-stability: stable
-      x-qlik-visibility: public
-    SharingTaskRecurringListResponse:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          recipients:
-            $ref: '#/components/schemas/SharingTaskRecurringRecipients'
-          sharingTasks:
-            type: array
-            items:
-              $ref: '#/components/schemas/SharingTaskRecurringResponse'
-            description: Gets a list of recurring sharing tasks.
-    SharingTaskRecurringPersist_encryptedEmailContent:
-      type: object
-      properties:
-        body:
-          $ref: '#/components/schemas/EncryptedProperty'
-        subject:
-          $ref: '#/components/schemas/EncryptedProperty'
-      description: the subject and body content for the email to send on report subscriptions
-    Error:
-      type: object
-      properties:
-        code:
+        value:
           type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    TaskRecipientError:
+          format: email
+          example: abc@xyz.com
+          description: Email of recipient (external user).
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        taskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRecipientError'
+      description: recipient object model that is directly persisted in the DB
+    SharingTaskPatchRequestCompliantList:
+      type: array
+      items:
+        $ref: '#/components/schemas/SharingTaskRecurringPatchRequestCompliant'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /tags
+        value:
+        - tag1
+        - tag2
+      - op: replace
+        path: /tags
+        value: new-tag
+      - op: replace
+        path: /tags
+        value: deleted-tag
+      - op: replace
+        path: /ownerId
+        value: new-owner
+      - op: replace
+        path: /enabled
+        value: true
+      - op: replace
+        path: /description
+        value: new-description
+    TaskError:
       type: object
       properties:
         value:
           enum:
-          - USER_IS_DELETED
-          - USER_DISABLED_IN_QCS
-          - NO_ACCESS_TO_APP
-          - UNSUBSCRIBED_FROM_SHARING
-          - USER_DISABLED_IN_SHARING_BY_OWNER
-          - CHART_NOT_FOUND
-          - APP_NOT_FOUND
-          - SHEET_NOT_FOUND
-          - ENGINE_POD_NOT_AVAILABLE
-          - CHART_TYPE_NOT_ALLOWED
-          - GENERIC_EXECUTION_FAILURE
-          - USER_NOT_FOUND_DL
-          - USER_DISABLED_IN_DL
-          - FILTER_NOT_FOUND
-          - BOOKMARK_NOT_FOUND
+          - OWNER_DISABLED
+          - OWNER_ACCESS
+          - OWNER_LICENSE
+          - APP_DELETED
+          - NO_RECIPIENTS
+          - PARTIAL_ACCESS
+          - ORPHAN
+          - PARTIAL_SENT
+          - FATAL_SENT_ERROR
+          - SECTION_ACCESS_MODIFIED
+          - INVALID_DISTRIBUTION_LIST
+          - MAX_DL_RECIPIENTS_LIMIT_REACHED
+          - TEMPLATE_NOT_FOUND
+          - REPORTING_BOOKMARK_NOT_FOUND
+          - DATA_CONNECTION_NOT_FOUND
+          - INVALID_SHAREPOINT_DIRECTORY
+          - GENERIC_FILE_UPLOAD_ERROR
+          - DISABLED_DUE_TO_OWNERSHIP_CHANGE
+          - REPORTING_CONSUMPTION_EXCEEDED
+          - REPORTING_CAPABILITY_NOT_FOUND
+          - EXECUTION_TIME_OUT
+          - OWNER_INSUFFICIENT_PERMISSIONS
+          - MAX_UNIQUE_REPORTS_LIMIT_REACHED
+          - MISSING_DISTRIBUTION_LIST
+          - SECTION_ACCESS_NOT_SUPPORTED
+          - REPORTING_DAILY_QUOTA_EXCEEDED
+          - EMAIL_DELIVERY_FAILURE
           type: string
-          example: NO_ACCESS_TO_APP
-          description: Identifier for type of error occurring on sharing task specific for recipient
+          description: Identifier for type of error occurring on sharing task
         timestamp:
           type: string
           example: '2019-10-15T16:07:01.492Z'
           description: Timestamp for the creation of the error
-    EncryptedProperty:
+    SharingTaskRecurringCreateRequest:
       type: object
+      required:
+      - name
+      - state
+      - templates
+      - type
       properties:
-        value:
-          x-go-type:
-            type: '[]byte'
-            hints:
-              kind: primitive
-            embedded: true
-        cipher:
+        name:
           type: string
-      description: Encrypted property in DB
-    SharingTaskRecurringResponse:
-      allOf:
-      - $ref: '#/components/schemas/SharingTaskRecurringPersist'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/Links'
-          enabled:
-            type: boolean
-            description: true if the sharing task is enabled
-          latestExecutionURL:
+          example: Example Sharing Task
+          minLength: 1
+          description: Name of this sharing task
+        tags:
+          type: array
+          items:
             type: string
-            description: URL to querying the latest execution tied to this sharing task
-          latestExecutionFilesURL:
-            type: array
-            items:
-              type: string
-            description: URL to querying the files of the latest execution tied to this sharing task
-      description: Whatever is persisted in the db + links
-    Links:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Self'
+            example: finance
+            description: A tag associated with the sharing task.
+          description: used to assign sharing task to a collection bucket (tags)
+        type:
+          enum:
+          - chart-monitoring
+          - chart-sharing
+          - sheet-sharing
+          - template-sharing
+          type: string
+          example: chart-monitoring
+          description: the sharing task resource type.
+        state:
+          $ref: '#/components/schemas/State'
+        appName:
+          type: string
+          example: Sales Dashboard
+          minLength: 1
+          description: Name of the app associated (through the templates) with this sharing task
+          x-qlik-deprecated: true
+        enabled:
+          type: boolean
+          default: true
+          description: Toggle for enabling sharing task.
+        message:
+          type: string
+          example: Look at the presentation.
+          maxLength: 280
+          description: Message along with sharing task
+        spaceId:
+          type: string
+          example: 5f7b1a2c3d4e5f6a7b8c9d0e
+          maxLength: 255
+          description: Space ID of the sharing task
+        subType:
+          enum:
+          - pdf
+          - pptx
+          - xlsx
+          - html
+          - docx
+          type: string
+          example: pdf
+          description: the sharing task resource mashup sub type.
+          x-qlik-deprecated: true
+        trigger:
+          $ref: '#/components/schemas/Trigger'
+        startTime:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Time to start capturing the history
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateResult'
+          description: Templates associated with the sharing task
+        expiration:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the termination of the task
+        recipients:
+          $ref: '#/components/schemas/SharingTaskRecurringRecipients'
+        description:
+          type: string
+          example: Weekly sales report subscription.
+          maxLength: 255
+          description: Description of the sharing task
+        emailContent:
+          $ref: '#/components/schemas/EmailComposition'
+        cleanupStrategy:
+          $ref: '#/components/schemas/CleanupStrategy'
+        retentionPolicy:
+          $ref: '#/components/schemas/RetentionPolicy'
+        scheduleOptions:
+          $ref: '#/components/schemas/ScheduleOptions'
+        dataConnectionID:
+          type: string
+          example: data-connection-123
+          description: the id of the data connection
+        sharePointFolder:
+          type: string
+          example: Shared Documents/Reports
+          description: the SharePoint folder to upload the report to
+        executeOnCreation:
+          type: boolean
+          default: true
+          description: making this true will execute the sharing task upon creation regardless of next trigger
+        transportChannels:
+          type: array
+          items:
+            enum:
+            - email
+            - sharepoint
+            type: string
+            example: email
+            description: Channel used to deliver the report to recipients.
+          description: the transport type for the report
+        distributionListId:
+          type: string
+          example: mpoXaH22_vLR1pStfI7oUdGya1nKK24
+          description: the id of the distribution list associated to the app
     SharingTaskRecurringPersist:
       type: object
       properties:
@@ -741,6 +824,52 @@ components:
           description: 'Flag to configure the persistent bookmark to use variables. it is valid for subscriptions with type chart-sharing or sheet-sharing. Deprecated: please use the same field defined in the template instead.'
           x-qlik-deprecated: true
       description: Type of object stored in the database. Required fields mean that property cannot be null
+    CleanupStrategy:
+      enum:
+      - noCleanup
+      - removeOldBookmarks
+      type: string
+      default: noCleanup
+      description: A bookmark is considered old if its modification date is older than the app creation date.
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+    UserIDRecipient:
+      type: object
+      properties:
+        value:
+          type: string
+          example: 1b263bs8m0mm_s21s3f
+          description: User ID of recipient (internal user).
+        groups:
+          type: array
+          items:
+            type: string
+            example: sales
+            description: Name of a group that the user is a member of.
+          example:
+          - addedIndividually
+          - group1
+          - group2
+          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts.
+        subscribed:
+          type: boolean
+          example: true
+          description: Whether this recipient is subscribed to alerts of a task
+        taskRecipientErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaskRecipientError'
+        alertingTaskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskRecipientError'
+      description: an internal recipient based on its user id.
     AlertingTaskRecipientError:
       type: object
       properties:
@@ -760,6 +889,469 @@ components:
           type: string
           example: NO_ACCESS_TO_APP
           description: Identifier for type of error occurring on alerting task
+    TaskGroupRecipientError:
+      type: object
+      properties:
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          - GROUP_NOT_FOUND_DL
+          - GROUP_DISABLED_IN_DL
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on sharing task specific for group recipient
+        timestamp:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+    Error_meta:
+      type: object
+      properties:
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
+    EmailComposition:
+      type: object
+      properties:
+        body:
+          type: string
+          example: report body string
+          description: Body content of the email sent to recipients.
+        subject:
+          type: string
+          example: report subject
+          description: Subject line of the email sent to recipients.
+      x-omitempty: false
+    RetentionPolicy:
+      type: object
+      properties:
+        historySize:
+          type: integer
+          example: 10
+          description: Number indicating the size of the window which stores the history. For Chart monitoring, the size should be 10.
+        overrideInterval:
+          type: string
+          default: FREQ=DAILY;INTERVAL=1
+          example: FREQ=DAILY;INTERVAL=1
+          description: Using RFC-5545 provide the time interval in which the previous generated can be overridden with the newly generated report. For Chart monitoring, interval should be FREQ=DAILY;INTERVAL=1
+    SharingTaskRecurringRecipients:
+      type: object
+      properties:
+        DLUsers:
+          type: array
+        userIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIDRecipient'
+        DLGroups:
+          type: array
+        emailAddresses:
+          type: array
+          items:
+            type: string
+            format: email
+            example: abc@xyz.com
+            description: Email of recipient (external user).
+      description: List of recipients. An internal recipient is represented by their user id.
+    Self:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    UserIDRecipientPersist:
+      type: object
+      properties:
+        value:
+          type: string
+          example: 1b263bs8m0mm_s21s3f
+          description: User ID of recipient (internal user).
+        groups:
+          type: array
+          items:
+            type: string
+          example:
+          - addedIndividually
+          - group1
+          - group2
+          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
+        subscribed:
+          type: boolean
+          description: Whether this user is subscribed to alerts in this task
+        enabledByUser:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by api calls.
+        enabledBySystem:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by external settings.
+        taskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRecipientError'
+        alertingTaskRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskRecipientError'
+      description: recipient object model that is directly persisted in the DB
+    ChartTemplate:
+      type: object
+      properties:
+        appId:
+          type: string
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        jsOpts:
+          type: object
+          properties: {}
+          description: Visualization state from client as a string json value. Can include language, theme, viewState etc.
+        outDpi:
+          type: integer
+          example: 96
+          description: outDpi of chart
+        outZoom:
+          type: number
+          example: 1
+          description: outZoom of chart
+        patches:
+          type: array
+          items:
+            type: object
+            properties: {}
+          description: Soft property changes on chart
+        sheetId:
+          type: string
+          example: bdf2efee-815e-4eb7-9e1e-asdfasdfasdf
+          description: sheetId of app
+        widthPx:
+          type: integer
+          example: 1584
+          description: widthPx of chart
+        heightPx:
+          type: integer
+          example: 587
+          description: heightPx of chart
+        objectId:
+          type: string
+          example: 167f3e67-ff3b-4ead-a09e-e8cc81d8ad78
+          description: ID of object
+        objectDef:
+          type: object
+          properties: {}
+          description: Session chart object definition
+        persistentBookmarkIncludeVariables:
+          type: boolean
+          example: true
+          description: Flag to configure the persistent bookmark to use variables.
+          x-qlik-stability: stable
+          x-qlik-visibility: public
+      description: 'If the template type is not "chart", this can be null. Otherwise, the following properties are required: appId, sheetId, objectId, widthPx, heightPx, language. The following properties are optional: outZoom, outDpi'
+    SheetTemplate:
+      type: object
+      properties:
+        appId:
+          type: string
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        jsOpts:
+          type: object
+          properties: {}
+          description: Sheet state from client as a string json value. Can include language, theme, viewState etc.
+        sheetId:
+          type: string
+          example: 39a671a-5f58-468c-bb49-dff933294774
+          description: ID of sheet
+        widthPx:
+          type: integer
+          example: 1584
+          description: widthPx of chart
+        heightPx:
+          type: integer
+          example: 587
+          description: heightPx of chart
+        isPrivate:
+          type: boolean
+          example: false
+          description: optional value to indicate that this sheet is private (used in multi-sheet sharing)
+          x-omitempty: true
+          x-qlik-deprecated: true
+        sheetName:
+          type: string
+          example: My new sheet
+          description: an optional name for the sheet (used in multi-sheet sharing)
+          x-omitempty: true
+          x-qlik-deprecated: true
+        jsOptsById:
+          type: object
+          example: {}
+          description: Map of Qlik Sense object id to rendering options applied when generating the report.
+          additionalProperties:
+            type: object
+            properties: {}
+            description: Visualizations state from client as a string json value. Can include language, theme, viewState etc.
+        patchesById:
+          type: object
+          example: {}
+          description: Map of Qlik Sense object id to patches applied when generating the report.
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              properties: {}
+            description: Soft property changes on charts
+      x-qlik-deprecated: true
+    ScheduleOptions:
+      type: object
+      properties:
+        timezone:
+          type:
+          - string
+          - 'null'
+          example: Canada/Pacific
+          description: The timezone for time calculations in SCHEDULED triggers, optional.
+        recurrence:
+          type: array
+          items:
+            type: string
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1
+            description: A recurrence rule (RRULE) describing the schedule.
+          example:
+          - RRULE:FREQ=HOURLY;INTERVAL=2
+          description: List of RRULEs for SCHEDULED triggers, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. It is mandatory if the trigger type is SCHEDULED. At least 1 rule must be set and maximum 5 rules are allowed.
+        endDateTime:
+          type:
+          - string
+          - 'null'
+          default: ''
+          example: '2026-01-02T16:04:05'
+          description: EndDateTime is a local date time with respect to the above timezone parameter. If the timezone parameter is missing, then the timezone used is the one retrieved from user infos. Therefore ISO8601 time offsets are not allowed (e.g. "2026-01-02T16:04:05Z" or "2026-01-02T16:04:05+01"), if passed an error will be returned. EndDateTime is an optional parameter, when not set or when it's an empty string, the recurrence is intended to be never ending.
+        chronosJobID:
+          type: string
+          example: chronos-job-123
+          readOnly: true
+          description: The chronos job identifier. It is set once the related chronos job is created.
+        startDateTime:
+          type:
+          - string
+          - 'null'
+          example: '2006-01-02T16:04:05'
+          description: StartDateTime is a local date time with respect to the above timezone parameter. If the timezone parameter is missing, then the timezone used is the one retrieved from user infos. Therefore ISO8601 time offsets are not allowed (e.g. "2026-01-02T16:04:05Z" or "2026-01-02T16:04:05+01"), if passed an error will be returned. StartDateTime should not be older than 1 year from current date. StartDateTime is an optional parameter, when not set or when it's an empty string, its value is set to the current local date time.
+        lastExecutionTime:
+          type:
+          - string
+          - 'null'
+          example: '2020-11-20T12:00:55.000Z'
+          readOnly: true
+          description: lastExecutionTime is the time of the chronos job last execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if job has not run yet.
+        nextExecutionTime:
+          type:
+          - string
+          - 'null'
+          example: '2020-11-20T12:00:55.000Z'
+          readOnly: true
+          description: nextExecutionTime is the time of the chronos job next execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if the job is completed.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    GroupIDRecipientPersist:
+      type: object
+      properties:
+        value:
+          type: string
+          example: group1
+          description: Group ID of recipient.
+        enabledByUser:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by api calls.
+        enabledBySystem:
+          type: boolean
+          example: true
+          description: Whether this recipient can receive alerts, set by external settings.
+        taskGroupRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskGroupRecipientError'
+        alertingTaskGroupRecipientErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
+      description: recipient object model that is directly persisted in the DB
+    AlertingTaskGroupRecipientError:
+      type: object
+      properties:
+        added:
+          type: string
+          example: '2019-10-15T16:07:01.492Z'
+          description: Timestamp for the creation of the error
+        value:
+          enum:
+          - GROUP_IS_DISABLED
+          - MAX_ALERTS_LIMIT_REACHED
+          - GROUP_WITH_NO_APP_ACCESS
+          - GROUP_IS_DELETED
+          type: string
+          example: GROUP_WITH_NO_APP_ACCESS
+          description: Identifier for type of error occurring on alerting task
+    Page:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items?limit=12
+          description: URL to particular set of elements
+        type:
+          enum:
+          - prev
+          - next
+          type: string
+          example: next
+          description: Page type, can be next or prev
+        token:
+          type: string
+          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
+          description: Page unique token
+    SharingTaskRecurringListResponse:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          recipients:
+            $ref: '#/components/schemas/SharingTaskRecurringRecipients'
+          sharingTasks:
+            type: array
+            items:
+              $ref: '#/components/schemas/SharingTaskRecurringResponse'
+            description: Gets a list of recurring sharing tasks.
+    StandardListResponseProps:
+      type: object
+      required:
+      - currentPageCount
+      - totalCount
+      properties:
+        totalCount:
+          type: integer
+          description: total count of entries in the collection as a whole
+        currentPageCount:
+          type: integer
+          description: count of entries on the currently shown page
+      description: properties that should be added to every list response
+    EncryptedProperty:
+      type: object
+      properties:
+        value:
+          x-go-type:
+            type: '[]byte'
+            hints:
+              kind: primitive
+            embedded: true
+        cipher:
+          type: string
+      description: Encrypted property in DB
+    Trigger:
+      type: object
+      required:
+      - recurrence
+      properties:
+        recurrence:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            example: RRULE:FREQ=WEEKLY;INTERVAL=1
+            description: A recurrence rule (RRULE) describing when the task is triggered.
+          description: List of RRULE lines for a recurring event, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; event start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. This field is omitted for single events.
+        chronosJobID:
+          type: string
+          example: chronos-job-123
+          readOnly: true
+          description: The chronosJobId which triggers the sharing task
+          x-omitempty: false
+        executeOnAppReload:
+          type: boolean
+          default: true
+          description: Toggle for executing sharing task on app reload.
+        executionHistoryInterval:
+          enum:
+          - minutely
+          - hourly
+          - daily
+          - weekly
+          - monthly
+          - quarterly
+          - yearly
+          type: string
+          example: daily
+          description: To prevent overflow in the history, setting this to daily store the chart of a previous day in the history and maintain the live version with the tag latest.
+    SharingTaskRecurringResponse:
+      allOf:
+      - $ref: '#/components/schemas/SharingTaskRecurringPersist'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/Links'
+          enabled:
+            type: boolean
+            description: true if the sharing task is enabled
+          latestExecutionURL:
+            type: string
+            description: URL to querying the latest execution tied to this sharing task
+          latestExecutionFilesURL:
+            type: array
+            items:
+              type: string
+            description: URL to querying the files of the latest execution tied to this sharing task
+      description: Whatever is persisted in the db + links
+    TemplateResult:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/TemplatePersist'
+      - {}
+    RecipientsPersist:
+      type: object
+      properties:
+        DLUsers:
+          type: array
+        userIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserIDRecipientPersist'
+        DLGroups:
+          type: array
+        groupIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupIDRecipientPersist'
+        emailAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddressRecipientPersist'
+        netRecipientCount:
+          type: integer
+          example: 10
+          description: Net count of recipients in DLGroups and DLUsers.
+      description: List of persisted recipients.
     TemplatePersist:
       type: object
       required:
@@ -828,275 +1420,166 @@ components:
             $ref: '#/components/schemas/MultiSheetTemplate'
           description: array of sheet data for multi-sheet type template
       description: Depending on the value of type, sharing service will internally validate a specific property regarding its data. Type "file" validates property "fileData", type "chart" validates property "chartData", type "story" validates property "storyData". Check description of each of the models for their required properties.
-    Trigger:
-      type: object
-      required:
-      - recurrence
-      properties:
-        recurrence:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            example: RRULE:FREQ=WEEKLY;INTERVAL=1
-            description: A recurrence rule (RRULE) describing when the task is triggered.
-          description: List of RRULE lines for a recurring event, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; event start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. This field is omitted for single events.
-        chronosJobID:
-          type: string
-          example: chronos-job-123
-          readOnly: true
-          description: The chronosJobId which triggers the sharing task
-          x-omitempty: false
-        executeOnAppReload:
-          type: boolean
-          default: true
-          description: Toggle for executing sharing task on app reload.
-        executionHistoryInterval:
-          enum:
-          - minutely
-          - hourly
-          - daily
-          - weekly
-          - monthly
-          - quarterly
-          - yearly
-          type: string
-          example: daily
-          description: To prevent overflow in the history, setting this to daily store the chart of a previous day in the history and maintain the live version with the tag latest.
-    UserIDRecipientPersist:
+    TaskRecipientError:
       type: object
       properties:
         value:
+          enum:
+          - USER_IS_DELETED
+          - USER_DISABLED_IN_QCS
+          - NO_ACCESS_TO_APP
+          - UNSUBSCRIBED_FROM_SHARING
+          - USER_DISABLED_IN_SHARING_BY_OWNER
+          - CHART_NOT_FOUND
+          - APP_NOT_FOUND
+          - SHEET_NOT_FOUND
+          - ENGINE_POD_NOT_AVAILABLE
+          - CHART_TYPE_NOT_ALLOWED
+          - GENERIC_EXECUTION_FAILURE
+          - USER_NOT_FOUND_DL
+          - USER_DISABLED_IN_DL
+          - FILTER_NOT_FOUND
+          - BOOKMARK_NOT_FOUND
           type: string
-          example: 1b263bs8m0mm_s21s3f
-          description: User ID of recipient (internal user).
-        groups:
-          type: array
-          items:
-            type: string
-          example:
-          - addedIndividually
-          - group1
-          - group2
-          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
-        subscribed:
-          type: boolean
-          description: Whether this user is subscribed to alerts in this task
-        enabledByUser:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by api calls.
-        enabledBySystem:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by external settings.
-        taskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskRecipientError'
-        alertingTaskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskRecipientError'
-      description: recipient object model that is directly persisted in the DB
-    AlertingTaskGroupRecipientError:
-      type: object
-      properties:
-        added:
+          example: NO_ACCESS_TO_APP
+          description: Identifier for type of error occurring on sharing task specific for recipient
+        timestamp:
           type: string
           example: '2019-10-15T16:07:01.492Z'
           description: Timestamp for the creation of the error
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
+    Error:
+      type: object
+      properties:
+        code:
           type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on alerting task
-    RecipientsPersist:
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    Links:
       type: object
       properties:
-        DLUsers:
-          type: array
-        userIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserIDRecipientPersist'
-        DLGroups:
-          type: array
-        groupIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupIDRecipientPersist'
-        emailAddresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailAddressRecipientPersist'
-        netRecipientCount:
-          type: integer
-          example: 10
-          description: Net count of recipients in DLGroups and DLUsers.
-      description: List of persisted recipients.
-    State:
-      type: object
-      properties:
-        fields:
-          type: array
-          items:
-            type: object
-            properties: {}
-          description: Selected fields that led to discovery of monitored Insight Advisor chart
-        queryItems:
-          type: array
-          items:
-            type: object
-            properties: {}
-          description: Query that led to discovery of monitored Insight Advisor chart
-        selections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Selection'
-      description: State of the selections and jsOpts
-    SharingTaskRecurringRecipients:
-      type: object
-      properties:
-        DLUsers:
-          type: array
-        userIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserIDRecipient'
-        DLGroups:
-          type: array
-        emailAddresses:
-          type: array
-          items:
-            type: string
-            format: email
-            example: abc@xyz.com
-            description: Email of recipient (external user).
-      description: List of recipients. An internal recipient is represented by their user id.
-    SharingTaskRecurringCreateRequest:
+        self:
+          $ref: '#/components/schemas/Self'
+    SharingTaskRecurringPatchRequestCompliant:
       type: object
       required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - replace
+          - remove
+          type: string
+          description: The operation to be performed
+        path:
+          enum:
+          - /name
+          - /tags
+          - /ownerId
+          - /enabled
+          - /description
+          - /scheduleOptions
+          - /templates
+          - /recipients
+          - /recipient
+          - /sharePointFolder
+          - /dataConnectionID
+          - /transportChannels
+          - /bookmarkId
+          type: string
+          description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
+        value:
+          type: object
+          properties: {}
+          description: The value to be used for this operation.
+    Selection:
+      type: object
+      required:
+      - isNumeric
       - name
-      - state
-      - templates
-      - type
+      - stateName
+      - values
       properties:
         name:
           type: string
-          example: Example Sharing Task
-          minLength: 1
-          description: Name of this sharing task
-        tags:
+          example: Country
+          description: Name of the field the selection applies to.
+        values:
           type: array
           items:
             type: string
-            example: finance
-            description: A tag associated with the sharing task.
-          description: used to assign sharing task to a collection bucket (tags)
-        type:
-          enum:
-          - chart-monitoring
-          - chart-sharing
-          - sheet-sharing
-          - template-sharing
-          type: string
-          example: chart-monitoring
-          description: the sharing task resource type.
-        state:
-          $ref: '#/components/schemas/State'
-        appName:
-          type: string
-          example: Sales Dashboard
-          minLength: 1
-          description: Name of the app associated (through the templates) with this sharing task
-          x-qlik-deprecated: true
-        enabled:
+            example: Germany
+            description: A selected value for the field.
+        isNumeric:
           type: boolean
-          default: true
-          description: Toggle for enabling sharing task.
-        message:
+          example: false
+          description: Whether the selected values are numeric.
+        stateName:
           type: string
-          example: Look at the presentation.
-          maxLength: 280
-          description: Message along with sharing task
-        spaceId:
+          example: $
+          description: Name of the selection state the values belong to.
+        displayName:
           type: string
-          example: 5f7b1a2c3d4e5f6a7b8c9d0e
-          maxLength: 255
-          description: Space ID of the sharing task
-        subType:
-          enum:
-          - pdf
-          - pptx
-          - xlsx
-          - html
-          - docx
-          type: string
-          example: pdf
-          description: the sharing task resource mashup sub type.
-          x-qlik-deprecated: true
-        trigger:
-          $ref: '#/components/schemas/Trigger'
-        startTime:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Time to start capturing the history
-        templates:
+          example: Country
+          description: Human-readable name of the field the selection applies to.
+        displayValues:
           type: array
           items:
-            $ref: '#/components/schemas/TemplateResult'
-          description: Templates associated with the sharing task
-        expiration:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the termination of the task
-        recipients:
-          $ref: '#/components/schemas/SharingTaskRecurringRecipients'
-        description:
-          type: string
-          example: Weekly sales report subscription.
-          maxLength: 255
-          description: Description of the sharing task
-        emailContent:
-          $ref: '#/components/schemas/EmailComposition'
-        cleanupStrategy:
-          $ref: '#/components/schemas/CleanupStrategy'
-        retentionPolicy:
-          $ref: '#/components/schemas/RetentionPolicy'
-        scheduleOptions:
-          $ref: '#/components/schemas/ScheduleOptions'
-        dataConnectionID:
-          type: string
-          example: data-connection-123
-          description: the id of the data connection
-        sharePointFolder:
-          type: string
-          example: Shared Documents/Reports
-          description: the SharePoint folder to upload the report to
-        executeOnCreation:
-          type: boolean
-          default: true
-          description: making this true will execute the sharing task upon creation regardless of next trigger
-        transportChannels:
-          type: array
-          items:
-            enum:
-            - email
-            - sharepoint
             type: string
-            example: email
-            description: Channel used to deliver the report to recipients.
-          description: the transport type for the report
-        distributionListId:
+            example: Germany
+            description: A human-readable selected value for the field.
+    StoryTemplate:
+      type: object
+      properties:
+        appId:
           type: string
-          example: mpoXaH22_vLR1pStfI7oUdGya1nKK24
-          description: the id of the distribution list associated to the app
+          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
+          description: ID of app
+        storyId:
+          type: string
+          example: 39a671a-5f58-468c-bb49-dff933294774
+          description: ID of story
+    InsightURL:
+      type: object
+      properties:
+        status:
+          enum:
+          - successful
+          - failed
+          type: string
+          description: the status of the creation for this insight URL
+        directURL:
+          type: string
+        insightID:
+          type: string
+        resourceID:
+          type: string
+          description: an identifier for the object within the template that this insight link points to
+        templateID:
+          type: string
+          description: an identifier for the template that this insight link points to
+          x-qlik-deprecated: true
+        fallbackURL:
+          type: string
+      description: In case of multiple insight urls for multi-sheet sharing (or subsequent multi types) this defines those URLs and a mapping to the correct object.
+    SharingTaskRecurringPersist_encryptedEmailContent:
+      type: object
+      properties:
+        body:
+          $ref: '#/components/schemas/EncryptedProperty'
+        subject:
+          $ref: '#/components/schemas/EncryptedProperty'
+      description: the subject and body content for the email to send on report subscriptions
     MultiSheetTemplate:
       type: object
       properties:
@@ -1162,117 +1645,26 @@ components:
           description: Flag to configure the persistent bookmark to use variables
           x-qlik-stability: stable
           x-qlik-visibility: public
-    EmailAddressRecipientPersist:
+    State:
       type: object
       properties:
-        value:
-          type: string
-          format: email
-          example: abc@xyz.com
-          description: Email of recipient (external user).
-        enabled:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts.
-        taskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskRecipientError'
-      description: recipient object model that is directly persisted in the DB
-    GroupIDRecipientPersist:
-      type: object
-      properties:
-        value:
-          type: string
-          example: group1
-          description: Group ID of recipient.
-        enabledByUser:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by api calls.
-        enabledBySystem:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts, set by external settings.
-        taskGroupRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskGroupRecipientError'
-        alertingTaskGroupRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskGroupRecipientError'
-      description: recipient object model that is directly persisted in the DB
-    TaskGroupRecipientError:
-      type: object
-      properties:
-        value:
-          enum:
-          - GROUP_IS_DISABLED
-          - MAX_ALERTS_LIMIT_REACHED
-          - GROUP_WITH_NO_APP_ACCESS
-          - GROUP_IS_DELETED
-          - GROUP_NOT_FOUND_DL
-          - GROUP_DISABLED_IN_DL
-          type: string
-          example: GROUP_WITH_NO_APP_ACCESS
-          description: Identifier for type of error occurring on sharing task specific for group recipient
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-    ChartTemplate:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        jsOpts:
-          type: object
-          properties: {}
-          description: Visualization state from client as a string json value. Can include language, theme, viewState etc.
-        outDpi:
-          type: integer
-          example: 96
-          description: outDpi of chart
-        outZoom:
-          type: number
-          example: 1
-          description: outZoom of chart
-        patches:
+        fields:
           type: array
           items:
             type: object
             properties: {}
-          description: Soft property changes on chart
-        sheetId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-asdfasdfasdf
-          description: sheetId of app
-        widthPx:
-          type: integer
-          example: 1584
-          description: widthPx of chart
-        heightPx:
-          type: integer
-          example: 587
-          description: heightPx of chart
-        objectId:
-          type: string
-          example: 167f3e67-ff3b-4ead-a09e-e8cc81d8ad78
-          description: ID of object
-        objectDef:
-          type: object
-          properties: {}
-          description: Session chart object definition
-        persistentBookmarkIncludeVariables:
-          type: boolean
-          example: true
-          description: Flag to configure the persistent bookmark to use variables.
-          x-qlik-stability: stable
-          x-qlik-visibility: public
-      description: 'If the template type is not "chart", this can be null. Otherwise, the following properties are required: appId, sheetId, objectId, widthPx, heightPx, language. The following properties are optional: outZoom, outDpi'
+          description: Selected fields that led to discovery of monitored Insight Advisor chart
+        queryItems:
+          type: array
+          items:
+            type: object
+            properties: {}
+          description: Query that led to discovery of monitored Insight Advisor chart
+        selections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Selection'
+      description: State of the selections and jsOpts
     ListLinks:
       type: object
       properties:
@@ -1282,395 +1674,3 @@ components:
           $ref: '#/components/schemas/Page'
         self:
           $ref: '#/components/schemas/Self'
-    Self:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
-    TaskError:
-      type: object
-      properties:
-        value:
-          enum:
-          - OWNER_DISABLED
-          - OWNER_ACCESS
-          - OWNER_LICENSE
-          - APP_DELETED
-          - NO_RECIPIENTS
-          - PARTIAL_ACCESS
-          - ORPHAN
-          - PARTIAL_SENT
-          - FATAL_SENT_ERROR
-          - SECTION_ACCESS_MODIFIED
-          - INVALID_DISTRIBUTION_LIST
-          - MAX_DL_RECIPIENTS_LIMIT_REACHED
-          - TEMPLATE_NOT_FOUND
-          - REPORTING_BOOKMARK_NOT_FOUND
-          - DATA_CONNECTION_NOT_FOUND
-          - INVALID_SHAREPOINT_DIRECTORY
-          - GENERIC_FILE_UPLOAD_ERROR
-          - DISABLED_DUE_TO_OWNERSHIP_CHANGE
-          - REPORTING_CONSUMPTION_EXCEEDED
-          - REPORTING_CAPABILITY_NOT_FOUND
-          - EXECUTION_TIME_OUT
-          - OWNER_INSUFFICIENT_PERMISSIONS
-          - MAX_UNIQUE_REPORTS_LIMIT_REACHED
-          - MISSING_DISTRIBUTION_LIST
-          - SECTION_ACCESS_NOT_SUPPORTED
-          - REPORTING_DAILY_QUOTA_EXCEEDED
-          - EMAIL_DELIVERY_FAILURE
-          type: string
-          description: Identifier for type of error occurring on sharing task
-        timestamp:
-          type: string
-          example: '2019-10-15T16:07:01.492Z'
-          description: Timestamp for the creation of the error
-    InsightURL:
-      type: object
-      properties:
-        status:
-          enum:
-          - successful
-          - failed
-          type: string
-          description: the status of the creation for this insight URL
-        directURL:
-          type: string
-        insightID:
-          type: string
-        resourceID:
-          type: string
-          description: an identifier for the object within the template that this insight link points to
-        templateID:
-          type: string
-          description: an identifier for the template that this insight link points to
-          x-qlik-deprecated: true
-        fallbackURL:
-          type: string
-      description: In case of multiple insight urls for multi-sheet sharing (or subsequent multi types) this defines those URLs and a mapping to the correct object.
-    EmailComposition:
-      type: object
-      properties:
-        body:
-          type: string
-          example: report body string
-          description: Body content of the email sent to recipients.
-        subject:
-          type: string
-          example: report subject
-          description: Subject line of the email sent to recipients.
-      x-omitempty: false
-    Page:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items?limit=12
-          description: URL to particular set of elements
-        type:
-          enum:
-          - prev
-          - next
-          type: string
-          example: next
-          description: Page type, can be next or prev
-        token:
-          type: string
-          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
-          description: Page unique token
-    Selection:
-      type: object
-      required:
-      - isNumeric
-      - name
-      - stateName
-      - values
-      properties:
-        name:
-          type: string
-          example: Country
-          description: Name of the field the selection applies to.
-        values:
-          type: array
-          items:
-            type: string
-            example: Germany
-            description: A selected value for the field.
-        isNumeric:
-          type: boolean
-          example: false
-          description: Whether the selected values are numeric.
-        stateName:
-          type: string
-          example: $
-          description: Name of the selection state the values belong to.
-        displayName:
-          type: string
-          example: Country
-          description: Human-readable name of the field the selection applies to.
-        displayValues:
-          type: array
-          items:
-            type: string
-            example: Germany
-            description: A human-readable selected value for the field.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    StandardListResponseProps:
-      type: object
-      required:
-      - currentPageCount
-      - totalCount
-      properties:
-        totalCount:
-          type: integer
-          description: total count of entries in the collection as a whole
-        currentPageCount:
-          type: integer
-          description: count of entries on the currently shown page
-      description: properties that should be added to every list response
-    SharingTaskRecurringPatchRequestCompliant:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - replace
-          - remove
-          type: string
-          description: The operation to be performed
-        path:
-          enum:
-          - /name
-          - /tags
-          - /ownerId
-          - /enabled
-          - /description
-          - /scheduleOptions
-          - /templates
-          - /recipients
-          - /recipient
-          - /sharePointFolder
-          - /dataConnectionID
-          - /transportChannels
-          - /bookmarkId
-          type: string
-          description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
-        value:
-          type: object
-          properties: {}
-          description: The value to be used for this operation.
-    SheetTemplate:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        jsOpts:
-          type: object
-          properties: {}
-          description: Sheet state from client as a string json value. Can include language, theme, viewState etc.
-        sheetId:
-          type: string
-          example: 39a671a-5f58-468c-bb49-dff933294774
-          description: ID of sheet
-        widthPx:
-          type: integer
-          example: 1584
-          description: widthPx of chart
-        heightPx:
-          type: integer
-          example: 587
-          description: heightPx of chart
-        isPrivate:
-          type: boolean
-          example: false
-          description: optional value to indicate that this sheet is private (used in multi-sheet sharing)
-          x-omitempty: true
-          x-qlik-deprecated: true
-        sheetName:
-          type: string
-          example: My new sheet
-          description: an optional name for the sheet (used in multi-sheet sharing)
-          x-omitempty: true
-          x-qlik-deprecated: true
-        jsOptsById:
-          type: object
-          example: {}
-          description: Map of Qlik Sense object id to rendering options applied when generating the report.
-          additionalProperties:
-            type: object
-            properties: {}
-            description: Visualizations state from client as a string json value. Can include language, theme, viewState etc.
-        patchesById:
-          type: object
-          example: {}
-          description: Map of Qlik Sense object id to patches applied when generating the report.
-          additionalProperties:
-            type: array
-            items:
-              type: object
-              properties: {}
-            description: Soft property changes on charts
-      x-qlik-deprecated: true
-    StoryTemplate:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: bdf2efee-815e-4eb7-9e1e-c42d516baf29
-          description: ID of app
-        storyId:
-          type: string
-          example: 39a671a-5f58-468c-bb49-dff933294774
-          description: ID of story
-    UserIDRecipient:
-      type: object
-      properties:
-        value:
-          type: string
-          example: 1b263bs8m0mm_s21s3f
-          description: User ID of recipient (internal user).
-        groups:
-          type: array
-          items:
-            type: string
-            example: sales
-            description: Name of a group that the user is a member of.
-          example:
-          - addedIndividually
-          - group1
-          - group2
-          description: A list of associated groups. If a user is added individually the "addedIndividually" pseudo group is included
-        enabled:
-          type: boolean
-          example: true
-          description: Whether this recipient can receive alerts.
-        subscribed:
-          type: boolean
-          example: true
-          description: Whether this recipient is subscribed to alerts of a task
-        taskRecipientErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TaskRecipientError'
-        alertingTaskRecipientErrors:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertingTaskRecipientError'
-      description: an internal recipient based on its user id.
-    ScheduleOptions:
-      type: object
-      properties:
-        timezone:
-          type:
-          - string
-          - 'null'
-          example: Canada/Pacific
-          description: The timezone for time calculations in SCHEDULED triggers, optional.
-        recurrence:
-          type: array
-          items:
-            type: string
-            example: RRULE:FREQ=WEEKLY;INTERVAL=1
-            description: A recurrence rule (RRULE) describing the schedule.
-          example:
-          - RRULE:FREQ=HOURLY;INTERVAL=2
-          description: List of RRULEs for SCHEDULED triggers, as specified in RFC5545. Note that DTSTART and DTEND, UNTIL lines are not allowed in this field; start and end times are specified in the start and end fields. RDATE and EXDATE lines are not currently supported. EXRULE is not supported since it is deprecated by RFC5545. It is mandatory if the trigger type is SCHEDULED. At least 1 rule must be set and maximum 5 rules are allowed.
-        endDateTime:
-          type:
-          - string
-          - 'null'
-          default: ''
-          example: '2026-01-02T16:04:05'
-          description: EndDateTime is a local date time with respect to the above timezone parameter. If the timezone parameter is missing, then the timezone used is the one retrieved from user infos. Therefore ISO8601 time offsets are not allowed (e.g. "2026-01-02T16:04:05Z" or "2026-01-02T16:04:05+01"), if passed an error will be returned. EndDateTime is an optional parameter, when not set or when it's an empty string, the recurrence is intended to be never ending.
-        chronosJobID:
-          type: string
-          example: chronos-job-123
-          readOnly: true
-          description: The chronos job identifier. It is set once the related chronos job is created.
-        startDateTime:
-          type:
-          - string
-          - 'null'
-          example: '2006-01-02T16:04:05'
-          description: StartDateTime is a local date time with respect to the above timezone parameter. If the timezone parameter is missing, then the timezone used is the one retrieved from user infos. Therefore ISO8601 time offsets are not allowed (e.g. "2026-01-02T16:04:05Z" or "2026-01-02T16:04:05+01"), if passed an error will be returned. StartDateTime should not be older than 1 year from current date. StartDateTime is an optional parameter, when not set or when it's an empty string, its value is set to the current local date time.
-        lastExecutionTime:
-          type:
-          - string
-          - 'null'
-          example: '2020-11-20T12:00:55.000Z'
-          readOnly: true
-          description: lastExecutionTime is the time of the chronos job last execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if job has not run yet.
-        nextExecutionTime:
-          type:
-          - string
-          - 'null'
-          example: '2020-11-20T12:00:55.000Z'
-          readOnly: true
-          description: nextExecutionTime is the time of the chronos job next execution in RFC3339 format (a time with a fixed UTC offset). Could be empty if the job is completed.
-    SharingTaskPatchRequestCompliantList:
-      type: array
-      items:
-        $ref: '#/components/schemas/SharingTaskRecurringPatchRequestCompliant'
-      example:
-      - op: replace
-        path: /name
-        value: new name
-      - op: replace
-        path: /tags
-        value:
-        - tag1
-        - tag2
-      - op: replace
-        path: /tags
-        value: new-tag
-      - op: replace
-        path: /tags
-        value: deleted-tag
-      - op: replace
-        path: /ownerId
-        value: new-owner
-      - op: replace
-        path: /enabled
-        value: true
-      - op: replace
-        path: /description
-        value: new-description
-    TemplateResult:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/TemplatePersist'
-      - {}
-    RetentionPolicy:
-      type: object
-      properties:
-        historySize:
-          type: integer
-          example: 10
-          description: Number indicating the size of the window which stores the history. For Chart monitoring, the size should be 10.
-        overrideInterval:
-          type: string
-          default: FREQ=DAILY;INTERVAL=1
-          example: FREQ=DAILY;INTERVAL=1
-          description: Using RFC-5545 provide the time interval in which the previous generated can be overridden with the newly generated report. For Chart monitoring, interval should be FREQ=DAILY;INTERVAL=1

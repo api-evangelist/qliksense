@@ -189,6 +189,16 @@ paths:
         limit: 100
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
     Error:
       type: object
       required:
@@ -204,38 +214,6 @@ components:
         detail:
           type: string
           description: May be used to provide additional details.
-    DeliveryList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Delivery'
-        links:
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-    Link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL to a resource request.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
     Delivery:
       type: object
       readOnly: true
@@ -304,25 +282,35 @@ components:
         statusMessage:
           type: string
           description: The status message of the delivery.
+    DeliveryList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delivery'
+        links:
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL to a resource request.
   responses:
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Unauthorized
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Bad Request
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
     Forbidden:
       content:
         application/json:
@@ -335,9 +323,21 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Internal Server Error
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
     ServiceUnavailable:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Service Unavailable
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized

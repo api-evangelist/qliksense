@@ -260,19 +260,6 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    ValidateTaskReq:
-      type: object
-      description: Request body for task validation
     PrepareTaskReq:
       type: object
       required:
@@ -282,48 +269,6 @@ components:
           type: boolean
           default: false
           description: Allow recreation of existing artifacts
-    ReloadDiTaskReq:
-      type: object
-      properties:
-        reloadStrategy:
-          enum:
-          - NONE
-          - TRUNCATE
-          - COMPARE_AND_APPLY
-          type: string
-          description: Reload strategy (optional, applies to materialized SQL transformations and transformation flows tasks)
-        selectedDatasets:
-          type: array
-          items:
-            type: object
-            properties:
-              datasetId:
-                type: string
-          description: Datasets to reload (optional, if omitted or empty, all datasets will be reloaded).
-    ReloadRequestResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Always true when the server successfully registers the request.
-      description: Indicates whether the reload request was registered successfully.
-    RecreateTaskDatasetsReq:
-      type: object
-      description: Request body to recreate task datasets.
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
-          type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
     Error:
       type: object
       properties:
@@ -343,6 +288,33 @@ components:
           format: int32
           description: HTTP status code associated with the error.
       description: Represents a single error condition with details about what went wrong.
+    ReloadRequestResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Always true when the server successfully registers the request.
+      description: Indicates whether the reload request was registered successfully.
+    ReloadDiTaskReq:
+      type: object
+      properties:
+        reloadStrategy:
+          enum:
+          - NONE
+          - TRUNCATE
+          - COMPARE_AND_APPLY
+          type: string
+          description: Reload strategy (optional, applies to materialized SQL transformations and transformation flows tasks)
+        selectedDatasets:
+          type: array
+          items:
+            type: object
+            properties:
+              datasetId:
+                type: string
+          description: Datasets to reload (optional, if omitted or empty, all datasets will be reloaded).
     AsyncActionRsp:
       type: object
       required:
@@ -352,6 +324,34 @@ components:
           type: string
           example: action-123456
           description: Identifier for tracking the action
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    RecreateTaskDatasetsReq:
+      type: object
+      description: Request body to recreate task datasets.
+    ValidateTaskReq:
+      type: object
+      description: Request body for task validation
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
   headers:
     AsyncActionLocation:
       schema:

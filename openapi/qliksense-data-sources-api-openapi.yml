@@ -321,6 +321,86 @@ paths:
         limit: 100
 components:
   schemas:
+    QriTemplate:
+      type: object
+      required:
+      - template
+      - properties
+      properties:
+        template:
+          type: string
+          example: '{schema}.{table}'
+          description: Qri template
+        properties:
+          type: array
+          items:
+            type: string
+            example: schema
+            description: List of string values in template
+          description: List of properties used in template
+      description: Connection part of Qri template
+    ResponseErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicApiError'
+    ApiSpecResponse:
+      type: object
+      required:
+      - connectorProvider
+      - connectorVersion
+      - connectionProperties
+      properties:
+        connectorVersion:
+          type: string
+          example: 1.180.0
+          description: Datasource provider (i.e. connector) version
+        connectorProvider:
+          type: string
+          example: QvRestConnector.exe
+          description: Datasource provider
+        connectionProperties:
+          type: object
+          example: '{"property1": "value", "property2": "value2"}'
+          description: List of properties required for the given datasource
+    QriDefinition:
+      type: object
+      required:
+      - qriPrefix
+      - connectionPart
+      - pathPart
+      properties:
+        itemPart:
+          allOf:
+          - description: Item part of QRI
+          - type: object
+            properties:
+              prefix:
+                type: string
+                example: '#'
+                description: Prefix of the template
+          - $ref: '#/components/schemas/QriTemplate'
+        pathPart:
+          allOf:
+          - description: Path part of QRI
+          - type: object
+            properties:
+              prefix:
+                type: string
+                example: '#'
+                description: Prefix of the template
+          - $ref: '#/components/schemas/QriTemplate'
+        qriPrefix:
+          type: string
+          example: qri:db:sap-sql://
+          description: Qri prefix
+        connectionPart:
+          allOf:
+          - description: Connection part of Qri
+          - $ref: '#/components/schemas/QriTemplate'
+      description: Qri definition template
     DataSourceSettingsRequest:
       type: object
       required:
@@ -331,26 +411,42 @@ components:
           example: false
           description: Indicates whether the data source is disabled.
       description: Defines configuration settings for a data source.
-    DataSourcesResponseNew:
+    UiInfo:
       type: object
-      required:
-      - dataSources
-      - lastUpdated
       properties:
-        dataSources:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataSourceNew'
-          description: List of datasources metadata object
-        lastUpdated:
+        iframe:
+          type: boolean
+          example: true
+          description: If support iframe
+        selectUrl:
           type: string
-          example: '2023-11-03T15:45:14.195Z'
-          description: Time stamp of last updated
-        connectorNodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConnectorNodesInfo'
-          description: List of connector nodes (only present when query parameter 'detail' is set to true)
+          example: /customdata/64/QvRestConnector/web/standalone/select-dialog.html
+          description: Select URL
+        connectUrl:
+          type: string
+          example: /customdata/64/QvRestConnector/web/standalone/connect-dialog.html
+          description: Connect URL
+        iconRectUrl:
+          type: string
+          example: /customdata/64/QvRestConnector/web/Icons/rest.png
+          description: Icon URL
+        iconSquareUrl:
+          type: string
+          example: /customdata/64/QvRestConnector/web/Icons/rest-square.png
+          description: Square icon URL
+        credentialsUrl:
+          type: string
+          example: /customdata/64/QvRestConnector/web/standalone/credentials-dialog.html
+          description: Credentials URL
+        connectorMainUrl:
+          type: string
+          example: /customdata/64/QvRestConnector/web/connector-main-iframe.js
+          description: Connector main URL
+        loadModelSupport:
+          type: string
+          example: 'false'
+          description: Indicate if the datasource supports load model
+      description: UI related metadata (only present when 'includeui' is set to true in query)
     PublicApiError:
       type: object
       required:
@@ -373,6 +469,71 @@ components:
           type: string
           example: This resource requires app read privileges.
           description: Concrete detail about the error
+    DataSourcesResponseNew:
+      type: object
+      required:
+      - dataSources
+      - lastUpdated
+      properties:
+        dataSources:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSourceNew'
+          description: List of datasources metadata object
+        lastUpdated:
+          type: string
+          example: '2023-11-03T15:45:14.195Z'
+          description: Time stamp of last updated
+        connectorNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorNodesInfo'
+          description: List of connector nodes (only present when query parameter 'detail' is set to true)
+    DataSourceSettingsResponse:
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          example: false
+          description: Indicates whether the data source is disabled.
+      description: Represents the current settings of a data source.
+    ConnectorNodesInfo:
+      type: object
+      required:
+      - url
+      - contractType
+      - providerName
+      - dataSourcesUpdated
+      - state
+      properties:
+        url:
+          type: string
+          example: localhost:50060
+          description: URL of connector node
+        state:
+          type: string
+          example: READY
+          description: State of the connector node
+        contractType:
+          type: number
+          example: 2
+          description: Contract type used to communicate with the connector (between 0 and 3)
+        providerName:
+          type: string
+          example: Qlik® REST Connector
+          description: Connector provider name
+        cachedDataSources:
+          type: array
+          items:
+            type: string
+          example:
+          - rest
+          description: List of datasource IDs provided by the provider
+        dataSourcesUpdated:
+          type: boolean
+          example: 'true'
+          description: Indicates whether the datasources are up to date
+      description: Datasource metadata
     DataSourceNew:
       type: object
       required:
@@ -424,164 +585,3 @@ components:
           example: sourceType
           description: Datasource property name (could be null)
       description: Datasource metadata
-    DataSourceSettingsResponse:
-      type: object
-      properties:
-        disabled:
-          type: boolean
-          example: false
-          description: Indicates whether the data source is disabled.
-      description: Represents the current settings of a data source.
-    UiInfo:
-      type: object
-      properties:
-        iframe:
-          type: boolean
-          example: true
-          description: If support iframe
-        selectUrl:
-          type: string
-          example: /customdata/64/QvRestConnector/web/standalone/select-dialog.html
-          description: Select URL
-        connectUrl:
-          type: string
-          example: /customdata/64/QvRestConnector/web/standalone/connect-dialog.html
-          description: Connect URL
-        iconRectUrl:
-          type: string
-          example: /customdata/64/QvRestConnector/web/Icons/rest.png
-          description: Icon URL
-        iconSquareUrl:
-          type: string
-          example: /customdata/64/QvRestConnector/web/Icons/rest-square.png
-          description: Square icon URL
-        credentialsUrl:
-          type: string
-          example: /customdata/64/QvRestConnector/web/standalone/credentials-dialog.html
-          description: Credentials URL
-        connectorMainUrl:
-          type: string
-          example: /customdata/64/QvRestConnector/web/connector-main-iframe.js
-          description: Connector main URL
-        loadModelSupport:
-          type: string
-          example: 'false'
-          description: Indicate if the datasource supports load model
-      description: UI related metadata (only present when 'includeui' is set to true in query)
-    ApiSpecResponse:
-      type: object
-      required:
-      - connectorProvider
-      - connectorVersion
-      - connectionProperties
-      properties:
-        connectorVersion:
-          type: string
-          example: 1.180.0
-          description: Datasource provider (i.e. connector) version
-        connectorProvider:
-          type: string
-          example: QvRestConnector.exe
-          description: Datasource provider
-        connectionProperties:
-          type: object
-          example: '{"property1": "value", "property2": "value2"}'
-          description: List of properties required for the given datasource
-    QriTemplate:
-      type: object
-      required:
-      - template
-      - properties
-      properties:
-        template:
-          type: string
-          example: '{schema}.{table}'
-          description: Qri template
-        properties:
-          type: array
-          items:
-            type: string
-            example: schema
-            description: List of string values in template
-          description: List of properties used in template
-      description: Connection part of Qri template
-    QriDefinition:
-      type: object
-      required:
-      - qriPrefix
-      - connectionPart
-      - pathPart
-      properties:
-        itemPart:
-          allOf:
-          - description: Item part of QRI
-          - type: object
-            properties:
-              prefix:
-                type: string
-                example: '#'
-                description: Prefix of the template
-          - $ref: '#/components/schemas/QriTemplate'
-        pathPart:
-          allOf:
-          - description: Path part of QRI
-          - type: object
-            properties:
-              prefix:
-                type: string
-                example: '#'
-                description: Prefix of the template
-          - $ref: '#/components/schemas/QriTemplate'
-        qriPrefix:
-          type: string
-          example: qri:db:sap-sql://
-          description: Qri prefix
-        connectionPart:
-          allOf:
-          - description: Connection part of Qri
-          - $ref: '#/components/schemas/QriTemplate'
-      description: Qri definition template
-    ConnectorNodesInfo:
-      type: object
-      required:
-      - url
-      - contractType
-      - providerName
-      - dataSourcesUpdated
-      - state
-      properties:
-        url:
-          type: string
-          example: localhost:50060
-          description: URL of connector node
-        state:
-          type: string
-          example: READY
-          description: State of the connector node
-        contractType:
-          type: number
-          example: 2
-          description: Contract type used to communicate with the connector (between 0 and 3)
-        providerName:
-          type: string
-          example: Qlik® REST Connector
-          description: Connector provider name
-        cachedDataSources:
-          type: array
-          items:
-            type: string
-          example:
-          - rest
-          description: List of datasource IDs provided by the provider
-        dataSourcesUpdated:
-          type: boolean
-          example: 'true'
-          description: Indicates whether the datasources are up to date
-      description: Datasource metadata
-    ResponseErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/PublicApiError'

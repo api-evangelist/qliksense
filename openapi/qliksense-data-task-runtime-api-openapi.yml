@@ -217,16 +217,6 @@ paths:
         limit: 120
 components:
   schemas:
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
     FileStatistics:
       type: object
       properties:
@@ -376,19 +366,82 @@ components:
               description: Throughput in records per second
           description: Statistics for the most recent batch of changes processed during the task run, including timing and throughput metrics.
       description: Represents the execution state of a task instance, including progress metrics, errors, and operation-specific statistics.
-    StartTaskReq:
+    Error:
       type: object
       properties:
-        option:
-          enum:
-          - PROCESS_CHANGES_FROM_TIMESTAMP
-          - PROCESS_CHANGES_FROM_POSITION
-          - RECOVER_USING_LOCALLY_STORED_CHECKPOINT
+        code:
           type: string
-          description: Task run option for the task (optional, applies to Replication tasks only).
-        processChangesFrom:
+          description: Machine-readable error code for programmatic handling.
+        title:
           type: string
-          description: The value indicating where to resume the process, either a timestamp or an offset depending on the run option (optional, applies to Replication tasks only).
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
+    DataTaskType:
+      enum:
+      - LANDING
+      - STORAGE
+      - QVD_STORAGE
+      - TRANSFORM
+      - DATAMART
+      - REGISTERED_DATA
+      - REPLICATION
+      - DISTRIBUTION
+      - LAKE_LANDING
+      - KNOWLEDGE_MART
+      - FILE_BASED_KNOWLEDGE_MART
+      - LAKEHOUSE_STORAGE
+      - LAKEHOUSE_MIRROR
+      - STREAMING_LAKE_LANDING
+      - STREAMING_TRANSFORM
+      - REPLICATE_LANDING
+      type: string
+      x-enum-varnames:
+      - LANDING
+      - STORAGE
+      - QVD_STORAGE
+      - TRANSFORM
+      - DATAMART
+      - REGISTERED_DATA
+      - REPLICATION
+      - LAKE_LANDING
+      - KNOWLEDGE_MART
+      - FILE_BASED_KNOWLEDGE_MART
+      - LAKEHOUSE_STORAGE
+      - LAKEHOUSE_MIRROR
+      - STREAMING_LAKE_LANDING
+      - STREAMING_TRANSFORM
+      - REPLICATE_LANDING
+    DataTaskRuntimeState:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data task
+        type:
+          $ref: '#/components/schemas/DataTaskType'
+        lastRun:
+          $ref: '#/components/schemas/DataTaskInstanceState'
+        runReadiness:
+          type: object
+          properties:
+            state:
+              enum:
+              - READY_TO_RUN
+              - ALREADY_RUNNING
+              - NOT_RUNNABLE
+              type: string
+            message:
+              type: string
+      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
     DataTaskDatasetState:
       type: object
       properties:
@@ -540,28 +593,6 @@ components:
               type: number
               description: Throughput in records per second
       description: Represents the execution state of a single dataset within a task run, including full load, CDC, and streaming progress.
-    DataTaskRuntimeState:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the data task
-        type:
-          $ref: '#/components/schemas/DataTaskType'
-        lastRun:
-          $ref: '#/components/schemas/DataTaskInstanceState'
-        runReadiness:
-          type: object
-          properties:
-            state:
-              enum:
-              - READY_TO_RUN
-              - ALREADY_RUNNING
-              - NOT_RUNNABLE
-              type: string
-            message:
-              type: string
-      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
     OperationStatistics:
       type: object
       properties:
@@ -578,6 +609,29 @@ components:
           type: number
           description: Number of update operations.
       description: Breakdown of operations for record-oriented tasks.
+    StartTaskReq:
+      type: object
+      properties:
+        option:
+          enum:
+          - PROCESS_CHANGES_FROM_TIMESTAMP
+          - PROCESS_CHANGES_FROM_POSITION
+          - RECOVER_USING_LOCALLY_STORED_CHECKPOINT
+          type: string
+          description: Task run option for the task (optional, applies to Replication tasks only).
+        processChangesFrom:
+          type: string
+          description: The value indicating where to resume the process, either a timestamp or an offset depending on the run option (optional, applies to Replication tasks only).
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     Errors:
       type: object
       properties:
@@ -590,57 +644,3 @@ components:
           type: string
           description: Unique identifier for this error response, useful for tracking and support inquiries.
       description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for programmatic handling.
-        title:
-          type: string
-          description: Brief human-readable summary of the error.
-        detail:
-          type: string
-          description: Detailed explanation of the error and suggested remediation steps.
-        source:
-          $ref: '#/components/schemas/ErrorSource'
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code associated with the error.
-      description: Represents a single error condition with details about what went wrong.
-    DataTaskType:
-      enum:
-      - LANDING
-      - STORAGE
-      - QVD_STORAGE
-      - TRANSFORM
-      - DATAMART
-      - REGISTERED_DATA
-      - REPLICATION
-      - DISTRIBUTION
-      - LAKE_LANDING
-      - KNOWLEDGE_MART
-      - FILE_BASED_KNOWLEDGE_MART
-      - LAKEHOUSE_STORAGE
-      - LAKEHOUSE_MIRROR
-      - STREAMING_LAKE_LANDING
-      - STREAMING_TRANSFORM
-      - REPLICATE_LANDING
-      type: string
-      x-enum-varnames:
-      - LANDING
-      - STORAGE
-      - QVD_STORAGE
-      - TRANSFORM
-      - DATAMART
-      - REGISTERED_DATA
-      - REPLICATION
-      - LAKE_LANDING
-      - KNOWLEDGE_MART
-      - FILE_BASED_KNOWLEDGE_MART
-      - LAKEHOUSE_STORAGE
-      - LAKEHOUSE_MIRROR
-      - STREAMING_LAKE_LANDING
-      - STREAMING_TRANSFORM
-      - REPLICATE_LANDING

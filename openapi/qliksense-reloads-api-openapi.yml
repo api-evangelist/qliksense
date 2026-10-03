@@ -356,70 +356,10 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ResourceType:
-      enum:
-      - api
-      - reload-tasks
-      - tasks
-      - automate
-      type: string
-      example: api
-      description: The String field identifying the service type that triggered the reload, e.g. "api"
-    Status:
-      enum:
-      - QUEUED
-      - RELOADING
-      - CANCELING
-      - SUCCEEDED
-      - FAILED
-      - CANCELED
-      - EXCEEDED_LIMIT
-      type: string
-      example: FAILED
-      description: The status of the reload. There are seven statuses. `QUEUED`, `RELOADING`, `CANCELING` are the active statuses. `SUCCEEDED`, `FAILED`, `CANCELED`, `EXCEEDED_LIMIT` are the end statuses.
-    Weight:
-      type: integer
-      default: 1
-      maximum: 10
-      minimum: 1
-      description: 'The weight of the reload for the same tenant. The higher the weight, the sooner the reload will be scheduled relative to other reloads for the same tenant. The personal app will be always set as 1.
-
-        '
-      x-qlik-stability: stable
-      x-qlik-visibility: public
     ResourceId:
       type: string
       example: 5be59decca62aa00097268a4
       description: The String field identifying the specific resource ID within that service
-    ReloadLinks:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Href'
-    ReloadStatus:
-      type: object
-      properties:
-        status:
-          enum:
-          - QUEUED
-          - RELOADING
-          - CANCELING
-          - SUCCEEDED
-          - FAILED
-          - CANCELED
-          - EXCEEDED_LIMIT
-          type: string
-          example: RELOADING
-          description: The status of the reload.
-    ReloadsLinks:
-      allOf:
-      - $ref: '#/components/schemas/ReloadLinks'
-      - type: object
-        properties:
-          next:
-            $ref: '#/components/schemas/Href'
-          prev:
-            $ref: '#/components/schemas/Href'
     Type:
       enum:
       - hub
@@ -431,10 +371,6 @@ components:
       type: string
       example: chronos
       description: 'What initiated the reload: hub = one-time reload manually triggered in hub, chronos = time based scheduled reload triggered by chronos, external = reload triggered via external API request, automations = reload triggered in automation, data-refresh = reload triggered by refresh of data, choreographer = reload triggered by choreographer.'
-    Partial:
-      type: boolean
-      example: false
-      description: The boolean value used to present the reload is partial or not.
     Reload:
       type: object
       required:
@@ -504,18 +440,6 @@ components:
           description: The error message when the status is FAILED.
         resourceType:
           $ref: '#/components/schemas/ResourceType'
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     Error:
       type: object
       required:
@@ -530,27 +454,37 @@ components:
           type: string
         detail:
           type: string
-    Reloads:
+    Status:
+      enum:
+      - QUEUED
+      - RELOADING
+      - CANCELING
+      - SUCCEEDED
+      - FAILED
+      - CANCELED
+      - EXCEEDED_LIMIT
+      type: string
+      example: FAILED
+      description: The status of the reload. There are seven statuses. `QUEUED`, `RELOADING`, `CANCELING` are the active statuses. `SUCCEEDED`, `FAILED`, `CANCELED`, `EXCEEDED_LIMIT` are the end statuses.
+    ReloadLinks:
       type: object
-      required:
-      - data
-      - links
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reload'
-        links:
-          $ref: '#/components/schemas/ReloadsLinks'
-    Href:
-      type: object
-      example:
-        href: http://example.com
-      properties:
-        href:
-          type: string
-          format: uri
-          example: http://example.com
+        self:
+          $ref: '#/components/schemas/Href'
+    Weight:
+      type: integer
+      default: 1
+      maximum: 10
+      minimum: 1
+      description: 'The weight of the reload for the same tenant. The higher the weight, the sooner the reload will be scheduled relative to other reloads for the same tenant. The personal app will be always set as 1.
+
+        '
+      x-qlik-stability: stable
+      x-qlik-visibility: public
+    Partial:
+      type: boolean
+      example: false
+      description: The boolean value used to present the reload is partial or not.
     ReloadRequest:
       required:
       - appId
@@ -579,3 +513,69 @@ components:
           $ref: '#/components/schemas/ResourceId'
         resourceType:
           $ref: '#/components/schemas/ResourceType'
+    Href:
+      type: object
+      example:
+        href: http://example.com
+      properties:
+        href:
+          type: string
+          format: uri
+          example: http://example.com
+    ReloadsLinks:
+      allOf:
+      - $ref: '#/components/schemas/ReloadLinks'
+      - type: object
+        properties:
+          next:
+            $ref: '#/components/schemas/Href'
+          prev:
+            $ref: '#/components/schemas/Href'
+    Reloads:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reload'
+        links:
+          $ref: '#/components/schemas/ReloadsLinks'
+    ResourceType:
+      enum:
+      - api
+      - reload-tasks
+      - tasks
+      - automate
+      type: string
+      example: api
+      description: The String field identifying the service type that triggered the reload, e.g. "api"
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ReloadStatus:
+      type: object
+      properties:
+        status:
+          enum:
+          - QUEUED
+          - RELOADING
+          - CANCELING
+          - SUCCEEDED
+          - FAILED
+          - CANCELED
+          - EXCEEDED_LIMIT
+          type: string
+          example: RELOADING
+          description: The status of the reload.

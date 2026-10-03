@@ -94,28 +94,15 @@ paths:
         limit: 100
 components:
   schemas:
-    Error_meta:
+    AlertingSettingsUpload:
       type: object
+      required:
+      - enable-data-alerting
       properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
+        enable-data-alerting:
+          type: boolean
+          example: true
+          description: true if data-alerting feature is enabled. A status change could potentially result in a considerable amount of API operations to enable/disable triggers. Enabling this feature also requires that the license has this feature enabled.
     Error:
       type: object
       properties:
@@ -133,15 +120,13 @@ components:
           type: string
           readOnly: true
           description: Error cause.
-    AlertingSettingsUpload:
+    Error_meta:
       type: object
-      required:
-      - enable-data-alerting
       properties:
-        enable-data-alerting:
-          type: boolean
-          example: true
-          description: true if data-alerting feature is enabled. A status change could potentially result in a considerable amount of API operations to enable/disable triggers. Enabling this feature also requires that the license has this feature enabled.
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.
     AlertingSettings:
       type: object
       required:
@@ -191,3 +176,18 @@ components:
           example: '2020-09-02T13:44:33Z'
           readOnly: true
           description: UTC timestamp of the most recent change of data-alerting-feature-operation-status. If there has not been any such change, this is the timestamp of the initial creation of the record.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string

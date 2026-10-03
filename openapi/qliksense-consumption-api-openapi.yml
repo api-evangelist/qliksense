@@ -128,29 +128,48 @@ paths:
         limit: 1000
 components:
   schemas:
-    ExecutionsByTenantList:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          data:
-            type: array
-            items:
-              $ref: '#/components/schemas/ExecutionResponse'
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          overage:
-            type: boolean
-            example: false
-            x-omitempty: false
-          closeToOverage:
-            type: boolean
-            example: false
-            x-omitempty: false
-          globalUsageAvailable:
-            type: boolean
-            example: true
-            x-omitempty: false
+    Enforcement:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          description: Resource type to be blocked
+        actionToBlock:
+          type: string
+          description: Resource action type to be blocked
+    ErrorResponse:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleErrorResponse'
+        traceId:
+          type: string
+    Page:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items?limit=12
+          description: URL to particular set of elements
+        type:
+          enum:
+          - prev
+          - next
+          type: string
+          example: next
+          description: Page type, can be next or prev
+        token:
+          type: string
+          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
+          description: Page unique token
     StandardListResponseProps:
       type: object
       required:
@@ -366,15 +385,29 @@ components:
           type: string
           example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
       description: Object with Href to a particular element or set of elements
-    ListLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
+    ExecutionsByTenantList:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExecutionResponse'
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          overage:
+            type: boolean
+            example: false
+            x-omitempty: false
+          closeToOverage:
+            type: boolean
+            example: false
+            x-omitempty: false
+          globalUsageAvailable:
+            type: boolean
+            example: true
+            x-omitempty: false
     SingleErrorResponse:
       type: object
       properties:
@@ -394,45 +427,12 @@ components:
           type: string
           readOnly: true
           description: Error cause.
-    Page:
+    ListLinks:
       type: object
       properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items?limit=12
-          description: URL to particular set of elements
-        type:
-          enum:
-          - prev
-          - next
-          type: string
-          example: next
-          description: Page type, can be next or prev
-        token:
-          type: string
-          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
-          description: Page unique token
-    Enforcement:
-      type: object
-      properties:
-        resourceType:
-          type: string
-          description: Resource type to be blocked
-        actionToBlock:
-          type: string
-          description: Resource action type to be blocked
-    ErrorResponse:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/SingleErrorResponse'
-        traceId:
-          type: string
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'

@@ -340,96 +340,21 @@ paths:
         tier: '2'
         limit: 100
 components:
-  responses:
-    503ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Service Unavailable`'
-    204NoContent:
-      description: '`No Content`'
-    400BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Request`'
-    403Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Forbidden`'
-    401Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unauthorized`'
-    502BadGateway:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Gateway`'
-    500InternalError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Internal Error`'
-    404NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Not Found`'
-    FailureDefault:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unexpected Error`'
   schemas:
-    EntityId:
+    DeployedModelIds:
+      type: array
+      items:
+        type: string
+        format: uuid
+        description: ID of a modelID within the tenant
+      description: IDs of all models deployed to the deployment
+    ErrorMessage:
       type: string
-      format: uuid
-      description: ID of this entity
+      description: JSON string of error object
+    CreatedBy:
+      type: string
+      description: ID of the owner/user that created this entity.
       x-qlik-filterable: true
-    EntityDescription:
-      type: string
-      description: Description of this entity
-    ModelId:
-      type: string
-      format: uuid
-      description: ID of the model
-      x-qlik-filterable: true
-    CreatedAt:
-      type: string
-      description: Timestamp when this was created
-    DeploymentGetResponse:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - id
-          - attributes
-          properties:
-            id:
-              $ref: '#/components/schemas/EntityId'
-            type:
-              enum:
-              - deployment
-              type: string
-            attributes:
-              $ref: '#/components/schemas/Deployment'
-          additionalProperties: false
-      additionalProperties: false
     FindResponseMeta:
       type: object
       required:
@@ -439,48 +364,87 @@ components:
           type: integer
       description: Meta for FIND operations
       additionalProperties: false
-    APIError:
+    Failure:
       type: object
       required:
-      - code
-      - title
+      - errors
       properties:
-        code:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
           type: string
-          description: Qlik error code (not HTTP response status code)
-        meta:
+      additionalProperties: false
+    DeploymentInput:
+      type: object
+      properties:
+        data:
           type: object
           properties:
-            issue:
+            type:
+              enum:
+              - deployment
               type: string
-              description: The issue code
-            details:
-              type: string
-              description: Extra details for what may have caused the error
-            errorId:
-              type: string
-              description: The unique id of the error instance
-            argument:
-              type: string
-              description: The argument
-            resource:
-              type: string
-              description: The resource type that the error occurred on
-            resourceId:
-              type: string
-              description: The resource id that the error occurred on
-          description: 'Additional details about the error. These may vary by error.
-
-            '
+              default: deployment
+            attributes:
+              type: object
+              required:
+              - name
+              - spaceId
+              - modelId
+              properties:
+                name:
+                  $ref: '#/components/schemas/EntityName'
+                modelId:
+                  $ref: '#/components/schemas/ModelId'
+                spaceId:
+                  $ref: '#/components/schemas/SpaceId'
+                deprecated:
+                  type: boolean
+                  description: Whether this deployment is deprecated
+                description:
+                  $ref: '#/components/schemas/EntityDescription'
+                enablePredictions:
+                  type: boolean
+                  description: Whether to allow real-time predictions
+              additionalProperties: false
           additionalProperties: false
-        title:
-          type: string
-          description: Short summary of error
-        detail:
-          type: string
-          description: Description of the error
-      description: An error object
+      description: Input for creating a new deployment
       additionalProperties: false
+    DeploymentPatch:
+      type: array
+      items:
+        type: object
+        example:
+          op: replace
+          path: /name
+          value: New Name
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: All patch requests use the replace operation
+          path:
+            enum:
+            - /name
+            - /description
+            - /spaceId
+            type: string
+            description: Path for the property you want to update
+          value:
+            $ref: '#/components/schemas/AnyType'
+        description: Values that can be patched.
+        additionalProperties: false
+    EntityDescription:
+      type: string
+      description: Description of this entity
     ResponseLinks:
       type: object
       required:
@@ -539,35 +503,139 @@ components:
                 '
       description: Resource links included in paginated responses
       additionalProperties: false
-    DeploymentPatch:
+    ModelId:
+      type: string
+      format: uuid
+      description: ID of the model
+      x-qlik-filterable: true
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    Errors:
       type: array
       items:
-        type: object
-        example:
-          op: replace
-          path: /name
-          value: New Name
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-            description: All patch requests use the replace operation
-          path:
-            enum:
-            - /name
-            - /description
-            - /spaceId
-            type: string
-            description: Path for the property you want to update
-          value:
-            $ref: '#/components/schemas/AnyType'
-        description: Values that can be patched.
-        additionalProperties: false
+        $ref: '#/components/schemas/APIError'
+      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
+
+        '
+      description: JSON string with list of error objects
+    DeploymentPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - deployment
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Deployment'
+          additionalProperties: false
+      additionalProperties: false
+    EntityId:
+      type: string
+      format: uuid
+      description: ID of this entity
+      x-qlik-filterable: true
+    DeployedModelsInput:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              enum:
+              - deployed-models
+              type: string
+              default: deployed-models
+            attributes:
+              type: object
+              required:
+              - deployedModelIds
+              properties:
+                deployedModelIds:
+                  $ref: '#/components/schemas/DeployedModelIds'
+              additionalProperties: false
+          additionalProperties: false
+      description: Input values for adding deployed models to a deployment
+      additionalProperties: false
+    AnyType:
+      description: Use for fields that can be `any` type (string, number, etc.)
+    DeploymentGetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - deployment
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Deployment'
+          additionalProperties: false
+      additionalProperties: false
     EnumSortDeployments:
       enum:
       - createdAt
@@ -580,44 +648,6 @@ components:
       - +updatedAt
       - -updatedAt
       type: string
-    OwnerId:
-      type: string
-      description: ID of owner/user for this entity
-      x-qlik-filterable: true
-    AnyType:
-      description: Use for fields that can be `any` type (string, number, etc.)
-    ErrorMessage:
-      type: string
-      description: JSON string of error object
-    DeploymentFindResponse:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - type
-            - id
-            - attributes
-            properties:
-              id:
-                $ref: '#/components/schemas/EntityId'
-              type:
-                enum:
-                - deployment
-                type: string
-              attributes:
-                $ref: '#/components/schemas/Deployment'
-            additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/FindResponseMeta'
-        links:
-          $ref: '#/components/schemas/ResponseLinks'
-      additionalProperties: false
     Deployment:
       type: object
       required:
@@ -668,152 +698,54 @@ components:
 
         '
       additionalProperties: false
-    DeploymentInput:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              enum:
-              - deployment
-              type: string
-              default: deployment
-            attributes:
-              type: object
-              required:
-              - name
-              - spaceId
-              - modelId
-              properties:
-                name:
-                  $ref: '#/components/schemas/EntityName'
-                modelId:
-                  $ref: '#/components/schemas/ModelId'
-                spaceId:
-                  $ref: '#/components/schemas/SpaceId'
-                deprecated:
-                  type: boolean
-                  description: Whether this deployment is deprecated
-                description:
-                  $ref: '#/components/schemas/EntityDescription'
-                enablePredictions:
-                  type: boolean
-                  description: Whether to allow real-time predictions
-              additionalProperties: false
-          additionalProperties: false
-      description: Input for creating a new deployment
-      additionalProperties: false
-    UpdatedAt:
+    OwnerId:
       type: string
-      description: Timestamp when this was updated
-    Errors:
-      type: array
-      items:
-        $ref: '#/components/schemas/APIError'
-      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
-
-        '
-      description: JSON string with list of error objects
-    DeploymentPostResponse:
+      description: ID of owner/user for this entity
+      x-qlik-filterable: true
+    DeploymentFindResponse:
       type: object
       required:
       - data
+      - links
       properties:
         data:
-          type: object
-          required:
-          - type
-          - id
-          - attributes
-          properties:
-            id:
-              $ref: '#/components/schemas/EntityId'
-            type:
-              enum:
-              - deployment
-              type: string
-            attributes:
-              $ref: '#/components/schemas/Deployment'
-          additionalProperties: false
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - deployment
+                type: string
+              attributes:
+                $ref: '#/components/schemas/Deployment'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
       additionalProperties: false
-    SpaceId:
-      type: string
-      description: Space ID for this entity (empty string for personal space)
-      x-qlik-filterable: true
     EntityName:
       type: string
       description: Name of this entity
       x-qlik-filterable: true
-    DeployedModelIds:
-      type: array
-      items:
-        type: string
-        format: uuid
-        description: ID of a modelID within the tenant
-      description: IDs of all models deployed to the deployment
-    CreatedBy:
+    CreatedAt:
       type: string
-      description: ID of the owner/user that created this entity.
+      description: Timestamp when this was created
+    SpaceId:
+      type: string
+      description: Space ID for this entity (empty string for personal space)
       x-qlik-filterable: true
-    Failure:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/APIError'
-          uniqueItems: true
-        traceId:
-          type: string
-      additionalProperties: false
-    DeployedModelsInput:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          properties:
-            type:
-              enum:
-              - deployed-models
-              type: string
-              default: deployed-models
-            attributes:
-              type: object
-              required:
-              - deployedModelIds
-              properties:
-                deployedModelIds:
-                  $ref: '#/components/schemas/DeployedModelIds'
-              additionalProperties: false
-          additionalProperties: false
-      description: Input values for adding deployed models to a deployment
-      additionalProperties: false
+    UpdatedAt:
+      type: string
+      description: Timestamp when this was updated
   parameters:
-    deploymentId:
-      in: path
-      name: deploymentId
-      schema:
-        type: string
-      required: true
-      description: ID of the deployment
-    limit:
-      in: query
-      name: limit
-      schema:
-        type: integer
-        default: 32
-        maximum: 100
-      example: 10
-      required: false
-      description: Number of results per page. Default is 32.
     deploymentsSort:
       in: query
       name: sort
@@ -825,6 +757,23 @@ components:
       description: 'Field(s) by which to sort response
 
         '
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 32
+        maximum: 100
+      example: 10
+      required: false
+      description: Number of results per page. Default is 32.
+    deploymentId:
+      in: path
+      name: deploymentId
+      schema:
+        type: string
+      required: true
+      description: ID of the deployment
     deploymentsFilter:
       in: query
       name: filter
@@ -866,3 +815,54 @@ components:
       example: 32
       required: false
       description: Number of rows to skip before getting page[size]
+  responses:
+    404NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Not Found`'
+    401Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unauthorized`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'
+    204NoContent:
+      description: '`No Content`'

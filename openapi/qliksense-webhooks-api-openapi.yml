@@ -353,6 +353,23 @@ paths:
         limit: 1000
 components:
   schemas:
+    EventTypes:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventType'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
     Error:
       type: object
       required:
@@ -368,13 +385,6 @@ components:
         detail:
           type: string
           description: May be used to provide additional details.
-    EventTypes:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventType'
     WebhookList:
       type: object
       properties:
@@ -521,13 +531,40 @@ components:
           type: boolean
           default: false
           description: If enabled the certificate chain of the configured URL will be checked for revocation before sending the webhook.
-    Link:
-      required:
-      - href
+    EventType:
+      type: object
       properties:
-        href:
+        name:
           type: string
-          description: URL to a resource request.
+          description: Name of the event type.
+        title:
+          type: string
+          description: Title of the event type.
+        levels:
+          type: array
+          items:
+            type: string
+          description: Specifies which levels that are supported for this event type.
+        category:
+          type: string
+          description: Category of the event type.
+        description:
+          type: string
+          description: Description of the event type.
+    WebhookResponse:
+      allOf:
+      - $ref: '#/components/schemas/WebhookResponseBase'
+      - type: object
+        properties:
+          origin:
+            enum:
+            - api
+            - automations
+            - management-console
+            type: string
+            default: api
+            readOnly: true
+            description: Indicates from where the webhook was created and its purpose.
     WebhookPatch:
       type: object
       required:
@@ -563,6 +600,13 @@ components:
           - type: string
           description: The value to be used for this operation.
       description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL to a resource request.
     WebhookBase:
       type: object
       required:
@@ -674,75 +718,25 @@ components:
           type: boolean
           default: false
           description: If enabled the certificate chain of the configured URL will be checked for revocation before sending the webhook.
-    WebhookResponse:
-      allOf:
-      - $ref: '#/components/schemas/WebhookResponseBase'
-      - type: object
-        properties:
-          origin:
-            enum:
-            - api
-            - automations
-            - management-console
-            type: string
-            default: api
-            readOnly: true
-            description: Indicates from where the webhook was created and its purpose.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
-    EventType:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the event type.
-        title:
-          type: string
-          description: Title of the event type.
-        levels:
-          type: array
-          items:
-            type: string
-          description: Specifies which levels that are supported for this event type.
-        category:
-          type: string
-          description: Category of the event type.
-        description:
-          type: string
-          description: Description of the event type.
   responses:
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Unauthorized
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Bad Request
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
     Forbidden:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Forbidden
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
     InternalServerError:
       content:
         application/json:
@@ -755,3 +749,9 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Service Unavailable
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized

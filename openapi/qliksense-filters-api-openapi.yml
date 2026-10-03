@@ -536,19 +536,40 @@ paths:
         limit: 1000
 components:
   schemas:
-    PatchFilter:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchFilterItem'
-    FiltersCount:
+    FilterV1_0:
       type: object
+      example:
+        fieldsByState:
+          $:
+          - name: Country
+            values:
+            - valueType: string
+              valueAsText: 1-Argentina
+            - valueType: string
+              valueAsText: 4-Brazil
+            overrideValues: false
+            selectExcluded: false
+          - name: Order number
+            values:
+            - valueType: number
+              valueAsText: '61300'
+              valueAsNumber: 61300
+            overrideValues: false
+            selectExcluded: false
       properties:
-        total:
-          type: number
-          format: int32
-          example: 20
-          readOnly: true
-          description: The total number of filters.
+        variables:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterVariable'
+          description: The filter variables.
+        fieldsByState:
+          type: object
+          description: Map of fields to apply by state. Maximum number of states allowed is 125. Maximum number of fields allowed is 125 and maximum number of overall field values allowed is 150000.
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FilterField'
+            maxItems: 125
     FilterField:
       type: object
       required:
@@ -574,112 +595,57 @@ components:
         selectExcluded:
           type: boolean
           example: false
-    LinksResponse:
-      type: object
-      example:
-        next:
-          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-        prev:
-          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-        self:
-          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-      required:
-      - next
-      - prev
-      - self
-      properties:
-        next:
-          $ref: '#/components/schemas/LinkResponse'
-        prev:
-          $ref: '#/components/schemas/LinkResponse'
-        self:
-          $ref: '#/components/schemas/LinkResponse'
-      additionalProperties: false
-    FilterErrors:
+    PatchFilterItem:
       type: object
       required:
-      - errors
+      - op
+      - path
+      - value
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilterError'
-      description: Errors occured during the Filter creation.
-    FilterFieldValue:
-      type: object
-      properties:
-        valueType:
+        op:
           enum:
-          - string
-          - number
-          - evaluate
-          - search
+          - replace
           type: string
-          example: string
-        valueAsText:
+          description: operation (replace).
+        path:
+          enum:
+          - /filter
           type: string
-          example: '2001'
-        valueAsNumber:
-          $ref: '#/components/schemas/Float64'
-    Filter:
+          description: A JSON Pointer path (/).
+        value:
+          type: object
+          properties:
+            Filter:
+              $ref: '#/components/schemas/FilterItemPatch'
+          description: The value to be used for this operation. The properties that cannot be patched include id, filterType, appId
+      additionalProperties: false
+    FilterItemPatch:
       type: object
       properties:
-        id:
-          type: string
-          example: c61841ac-7b35-4434-aa74-4421f10fc68e
-          readOnly: true
-          description: The filter ID (bookmarkId).
         name:
           type: string
           example: Filter 1
           description: The filter name.
-          x-qlik-filterable: true
         ownerId:
           type: string
           example: 649173fbc8ffcfde27412b99
           description: The user that owns the filter, if missing the same as the request user.
-        createdAt:
-          type: string
-          format: date-time
-          example: '2023-08-09T08:19:37.577Z'
-          readOnly: true
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2023-08-09T08:19:37.577Z'
-          readOnly: true
-        filterType:
-          $ref: '#/components/schemas/FilterType'
         filterV1_0:
           $ref: '#/components/schemas/FilterV1_0'
         description:
           type: string
           example: This is the filter description
           description: The filter description.
-          x-qlik-filterable: true
         filterVersion:
           enum:
           - filter-1.0
           - filter-2.0
           type: string
-    LinkResponse:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-      additionalProperties: false
-    Float64:
-      type: number
-      format: float64
-      x-go-type:
-        type: Float64
-        import:
-          alias: cModels
-          package: github.com/qlik-trial/reporting-service/v10/pkg/models
+    FilterType:
+      enum:
+      - REP
+      - SUB
+      type: string
     FilterError:
       type: object
       required:
@@ -748,42 +714,6 @@ components:
           example: Bad request. The server could not understand the request due to invalid syntax.
           description: A summary in english explaining what went wrong.
       description: Error occured during the Filter creation.
-    FilterList:
-      type: object
-      readOnly: true
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilterListItem'
-          description: a list of filters containing all the filters properties (like name,description...) except the filter definition (like FilterV1_0)
-        links:
-          $ref: '#/components/schemas/LinksResponse'
-    FilterItemPatch:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Filter 1
-          description: The filter name.
-        ownerId:
-          type: string
-          example: 649173fbc8ffcfde27412b99
-          description: The user that owns the filter, if missing the same as the request user.
-        filterV1_0:
-          $ref: '#/components/schemas/FilterV1_0'
-        description:
-          type: string
-          example: This is the filter description
-          description: The filter description.
-        filterVersion:
-          enum:
-          - filter-1.0
-          - filter-2.0
-          type: string
     FilterListItem:
       type: object
       properties:
@@ -827,59 +757,86 @@ components:
           - filter-2.0
           type: string
           readOnly: true
-    FilterV1_0:
+    FilterFieldValue:
       type: object
-      example:
-        fieldsByState:
-          $:
-          - name: Country
-            values:
-            - valueType: string
-              valueAsText: 1-Argentina
-            - valueType: string
-              valueAsText: 4-Brazil
-            overrideValues: false
-            selectExcluded: false
-          - name: Order number
-            values:
-            - valueType: number
-              valueAsText: '61300'
-              valueAsNumber: 61300
-            overrideValues: false
-            selectExcluded: false
       properties:
-        variables:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilterVariable'
-          description: The filter variables.
-        fieldsByState:
-          type: object
-          description: Map of fields to apply by state. Maximum number of states allowed is 125. Maximum number of fields allowed is 125 and maximum number of overall field values allowed is 150000.
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/FilterField'
-            maxItems: 125
-    FilterType:
-      enum:
-      - REP
-      - SUB
-      type: string
-    FilterVariable:
+        valueType:
+          enum:
+          - string
+          - number
+          - evaluate
+          - search
+          type: string
+          example: string
+        valueAsText:
+          type: string
+          example: '2001'
+        valueAsNumber:
+          $ref: '#/components/schemas/Float64'
+    Filter:
       type: object
-      required:
-      - name
       properties:
+        id:
+          type: string
+          example: c61841ac-7b35-4434-aa74-4421f10fc68e
+          readOnly: true
+          description: The filter ID (bookmarkId).
         name:
           type: string
-          example: variable 1
-        value:
+          example: Filter 1
+          description: The filter name.
+          x-qlik-filterable: true
+        ownerId:
           type: string
-          example: v1
-        evaluate:
-          type: boolean
-          example: true
+          example: 649173fbc8ffcfde27412b99
+          description: The user that owns the filter, if missing the same as the request user.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-08-09T08:19:37.577Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-08-09T08:19:37.577Z'
+          readOnly: true
+        filterType:
+          $ref: '#/components/schemas/FilterType'
+        filterV1_0:
+          $ref: '#/components/schemas/FilterV1_0'
+        description:
+          type: string
+          example: This is the filter description
+          description: The filter description.
+          x-qlik-filterable: true
+        filterVersion:
+          enum:
+          - filter-1.0
+          - filter-2.0
+          type: string
+    PatchFilter:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchFilterItem'
+    FilterErrors:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterError'
+      description: Errors occured during the Filter creation.
+    FiltersCount:
+      type: object
+      properties:
+        total:
+          type: number
+          format: int32
+          example: 20
+          readOnly: true
+          description: The total number of filters.
     FilterRequest:
       example:
         name: Filter sample
@@ -935,27 +892,70 @@ components:
           - filter-1.0
           - filter-2.0
           type: string
-    PatchFilterItem:
+    LinksResponse:
+      type: object
+      example:
+        next:
+          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+        prev:
+          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+        self:
+          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+      required:
+      - next
+      - prev
+      - self
+      properties:
+        next:
+          $ref: '#/components/schemas/LinkResponse'
+        prev:
+          $ref: '#/components/schemas/LinkResponse'
+        self:
+          $ref: '#/components/schemas/LinkResponse'
+      additionalProperties: false
+    FilterVariable:
       type: object
       required:
-      - op
-      - path
-      - value
+      - name
       properties:
-        op:
-          enum:
-          - replace
+        name:
           type: string
-          description: operation (replace).
-        path:
-          enum:
-          - /filter
-          type: string
-          description: A JSON Pointer path (/).
+          example: variable 1
         value:
-          type: object
-          properties:
-            Filter:
-              $ref: '#/components/schemas/FilterItemPatch'
-          description: The value to be used for this operation. The properties that cannot be patched include id, filterType, appId
+          type: string
+          example: v1
+        evaluate:
+          type: boolean
+          example: true
+    Float64:
+      type: number
+      format: float64
+      x-go-type:
+        type: Float64
+        import:
+          alias: cModels
+          package: github.com/qlik-trial/reporting-service/v10/pkg/models
+    LinkResponse:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
       additionalProperties: false
+    FilterList:
+      type: object
+      readOnly: true
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterListItem'
+          description: a list of filters containing all the filters properties (like name,description...) except the filter definition (like FilterV1_0)
+        links:
+          $ref: '#/components/schemas/LinksResponse'

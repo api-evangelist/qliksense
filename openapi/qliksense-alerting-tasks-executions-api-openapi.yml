@@ -433,31 +433,40 @@ paths:
         limit: 1000
 components:
   schemas:
-    StandardListResponseProps:
+    ExecutionStats:
       type: object
-      required:
-      - currentPageCount
-      - totalCount
       properties:
-        totalCount:
-          type: integer
-          description: total count of entries in the collection as a whole
-        currentPageCount:
-          type: integer
-          description: count of entries on the currently shown page
-      description: properties that should be added to every list response
-    AlertingExecutionListResponse:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          executions:
-            type: array
-            items:
-              $ref: '#/components/schemas/AlertingExecutionResponse'
-            description: Gets a list of alerting-executions.
+        endTime:
+          type: string
+        periodKey:
+          type: string
+        startTime:
+          type: string
+        totalExecutions:
+          type: string
+        triggeredExecutions:
+          type: string
+    AlertingExecutionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/AlertingExecutionError'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          readOnly: true
+          description: Error code specific to sharing service.
+        meta:
+          $ref: '#/components/schemas/Error_meta'
+        title:
+          type: string
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
     Error_meta:
       type: object
       properties:
@@ -465,6 +474,24 @@ components:
           type: integer
           readOnly: true
           description: HTTP error code.
+    Page:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://localhost:8787/v1/items?limit=12
+          description: URL to particular set of elements
+        type:
+          enum:
+          - prev
+          - next
+          type: string
+          example: next
+          description: Page type, can be next or prev
+        token:
+          type: string
+          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
+          description: Page unique token
     AlertingExecutionPersist:
       type: object
       properties:
@@ -531,54 +558,11 @@ components:
           - CONDITION_NOT_MET
           - FAILED
           type: string
-    AlertingExecutionError:
-      type: object
-      properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
     Links:
       type: object
       properties:
         self:
           $ref: '#/components/schemas/Self'
-    AlertingExecutionResult:
-      type: object
-      properties:
-        alertTriggerStatus:
-          type: string
-          example: alertSent
-        throttlerTokensLeft:
-          type: integer
-          example: 5
-    AlertingTaskExecutionStats:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          executionsStats:
-            type: array
-            items:
-              $ref: '#/components/schemas/ExecutionStats'
-      x-qlik-deprecated: true
-    Self:
-      type: object
-      properties:
-        href:
-          type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
     Evaluation:
       properties:
         id:
@@ -643,46 +627,93 @@ components:
           format: uid
           readOnly: true
           description: The unique id for the resource given from Data Condition Evaluator
-    ListLinks:
+    StandardListResponseProps:
       type: object
+      required:
+      - currentPageCount
+      - totalCount
       properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
-    ExecutionStats:
-      type: object
-      properties:
-        endTime:
-          type: string
-        periodKey:
-          type: string
-        startTime:
-          type: string
-        totalExecutions:
-          type: string
-        triggeredExecutions:
-          type: string
-    Page:
+        totalCount:
+          type: integer
+          description: total count of entries in the collection as a whole
+        currentPageCount:
+          type: integer
+          description: count of entries on the currently shown page
+      description: properties that should be added to every list response
+    Self:
       type: object
       properties:
         href:
           type: string
-          example: http://localhost:8787/v1/items?limit=12
-          description: URL to particular set of elements
-        type:
-          enum:
-          - prev
-          - next
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    AlertingExecutionError:
+      type: object
+      properties:
+        code:
           type: string
-          example: next
-          description: Page type, can be next or prev
-        token:
+          readOnly: true
+          description: Error code specific to sharing service.
+        title:
           type: string
-          example: JwAAAAJfaWQAGQAAADVjZjUwM2NjMjVkYzlhMTM1MzYwZTVjZAAA
-          description: Page unique token
+          readOnly: true
+          description: Error title.
+        detail:
+          type: string
+          readOnly: true
+          description: Error cause.
+    AlertingExecutionListResponse:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          executions:
+            type: array
+            items:
+              $ref: '#/components/schemas/AlertingExecutionResponse'
+            description: Gets a list of alerting-executions.
+    AlertingExecutionResult:
+      type: object
+      properties:
+        alertTriggerStatus:
+          type: string
+          example: alertSent
+        throttlerTokensLeft:
+          type: integer
+          example: 5
+    EvaluationGetResponse:
+      type: object
+      properties:
+        condition:
+          type: object
+          properties: {}
+        evaluation:
+          $ref: '#/components/schemas/Evaluation'
+        hideSelections:
+          type: boolean
+    AlertingTaskExecutionStats:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          executionsStats:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExecutionStats'
+      x-qlik-deprecated: true
+    AlertingExecutionResponse:
+      allOf:
+      - $ref: '#/components/schemas/AlertingExecutionPersist'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/Links'
+          evaluation:
+            $ref: '#/components/schemas/Evaluation'
     Errors:
       type: object
       example:
@@ -698,43 +729,12 @@ components:
             $ref: '#/components/schemas/Error'
         traceId:
           type: string
-    Error:
+    ListLinks:
       type: object
       properties:
-        code:
-          type: string
-          readOnly: true
-          description: Error code specific to sharing service.
-        meta:
-          $ref: '#/components/schemas/Error_meta'
-        title:
-          type: string
-          readOnly: true
-          description: Error title.
-        detail:
-          type: string
-          readOnly: true
-          description: Error cause.
-    AlertingExecutionErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/AlertingExecutionError'
-    AlertingExecutionResponse:
-      allOf:
-      - $ref: '#/components/schemas/AlertingExecutionPersist'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/Links'
-          evaluation:
-            $ref: '#/components/schemas/Evaluation'
-    EvaluationGetResponse:
-      type: object
-      properties:
-        condition:
-          type: object
-          properties: {}
-        evaluation:
-          $ref: '#/components/schemas/Evaluation'
-        hideSelections:
-          type: boolean
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'

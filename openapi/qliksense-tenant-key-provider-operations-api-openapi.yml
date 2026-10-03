@@ -400,71 +400,6 @@ components:
           format: date-time
           readOnly: true
           description: When the key was demoted from being current to non active.
-    KeyProviderPatchSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/KeyProviderPatchBase'
-    KeyProviderPatchBase:
-      type: object
-      example:
-        op: replace
-        path: /name
-        value: New Encryption Key
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: The property path.
-        value:
-          type: string
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
-    KeyProvidersDeleteResponseBody:
-      type: object
-      example:
-        message: Key provider metadata deleted successfully
-      required:
-      - message
-      properties:
-        response:
-          type: string
-          format: text
-          description: Successful response message.
-    StandardError:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/StandardErrorItem'
-    StandardErrorItem:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional error object metadata.
-        title:
-          type: string
-          description: Description of the error.
-        detail:
-          type: string
-          description: Extra information about the error.
     MigrationInformation:
       type: object
       properties:
@@ -504,3 +439,68 @@ components:
         migratingToFingerprint:
           type: string
           description: The new key ARN fingerprint.
+    StandardErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional error object metadata.
+        title:
+          type: string
+          description: Description of the error.
+        detail:
+          type: string
+          description: Extra information about the error.
+    KeyProvidersDeleteResponseBody:
+      type: object
+      example:
+        message: Key provider metadata deleted successfully
+      required:
+      - message
+      properties:
+        response:
+          type: string
+          format: text
+          description: Successful response message.
+    KeyProviderPatchBase:
+      type: object
+      example:
+        op: replace
+        path: /name
+        value: New Encryption Key
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: The property path.
+        value:
+          type: string
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in https://datatracker.ietf.org/doc/html/rfc6902.
+    KeyProviderPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/KeyProviderPatchBase'
+    StandardError:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/StandardErrorItem'

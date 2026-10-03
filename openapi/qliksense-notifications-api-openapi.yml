@@ -69,6 +69,17 @@ paths:
         limit: 1000
 components:
   schemas:
+    NotificationsObject:
+      type: object
+      required:
+      - notifications
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationItem'
+          description: list of notifications
+      description: Object containing array representing list of supported notifications
     NotificationItem:
       type: object
       required:
@@ -128,17 +139,6 @@ components:
           type: string
           description: Notification name pattern that will trigger this notification e.g resource.action
       description: Notification result item
-    NotificationsObject:
-      type: object
-      required:
-      - notifications
-      properties:
-        notifications:
-          type: array
-          items:
-            $ref: '#/components/schemas/NotificationItem'
-          description: list of notifications
-      description: Object containing array representing list of supported notifications
     Error:
       type: object
       required:

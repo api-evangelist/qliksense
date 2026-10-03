@@ -174,6 +174,18 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    promptOutput:
+      type: object
+      properties:
+        output:
+          type: string
+          example: LLM stands for Large Language Model
+          description: Assistant's response to the prompt
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/source'
+          description: List of sources used to generate AI messages
     source:
       type: object
       properties:
@@ -204,18 +216,6 @@ components:
           format: uuid
           example: 10d347c4-f28a-4faf-93f0-48e781aaf303
           description: reference to KnowledgeBase used for "AI" generated messages
-    promptOutput:
-      type: object
-      properties:
-        output:
-          type: string
-          example: LLM stands for Large Language Model
-          description: Assistant's response to the prompt
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/source'
-          description: List of sources used to generate AI messages
     errorResponse:
       type: object
       properties:
@@ -252,22 +252,6 @@ components:
           type: string
         detail:
           type: string
-    promptOutputInvoke:
-      type: object
-      properties:
-        output:
-          type: string
-          example: LLM stands for Large Language Model
-          description: Assistant's response to the prompt
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/source'
-          description: List of sources used to generate AI messages
-        question:
-          type: string
-          example: What was the primary goal of the Apollo program?
-          description: Question asked by the user for assistant to answer
     promptInput:
       type: object
       properties:
@@ -288,3 +272,19 @@ components:
               type: boolean
               example: true
               description: Returns text from chunks in sources output. Default value is false.
+    promptOutputInvoke:
+      type: object
+      properties:
+        output:
+          type: string
+          example: LLM stands for Large Language Model
+          description: Assistant's response to the prompt
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/source'
+          description: List of sources used to generate AI messages
+        question:
+          type: string
+          example: What was the primary goal of the Apollo program?
+          description: Question asked by the user for assistant to answer

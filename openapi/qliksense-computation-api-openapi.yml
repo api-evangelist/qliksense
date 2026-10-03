@@ -432,6 +432,11 @@ paths:
           description: Name of the tenant that will be called
 components:
   schemas:
+    ConnectionIdType:
+      type: string
+      example: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
     SamplingConfiguration:
       type: object
       properties:
@@ -456,11 +461,69 @@ components:
           type: string
           example: PULLUP
           description: Specifies where the data quality computation takes place. In `PUSHDOWN` mode, it runs within the Cloud Data Warehouse (e.g., Snowflake, Databricks), whereas in `PULLUP` mode, it runs in Qlik Cloud.
-    ConnectionIdType:
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors that occurred.
+        traceId:
+          type: string
+          description: Trace identifier for debugging purposes.
+      description: Standard error response wrapper.
+    BatchComputationDatasetStatusResponse:
+      type: object
+      required:
+      - datasetId
+      - status
+      - computationId
+      properties:
+        status:
+          $ref: '#/components/schemas/ExecutionStatus'
+        datasetId:
+          $ref: '#/components/schemas/DatasetIdType'
+        errorCode:
+          $ref: '#/components/schemas/ComputationErrorCode'
+        computationId:
+          type: string
+          description: The unique identifier of the individual computation for this dataset.
+      description: Status of a single dataset within a batch computation.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code identifying the type of error.
+        title:
+          type: string
+          description: A short summary of the error.
+        detail:
+          type: string
+          description: A human-readable explanation of the error.
+      description: An individual error detail.
+    DatasetIdType:
       type: string
-      example: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
+      example: 669144f5aa2d642638ef1dd0
       pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the connection
+      description: The ID of the dataset
+    ExecutionStatus:
+      enum:
+      - PROFILE_REQUESTED
+      - PROFILE_FAILED
+      - REQUESTED
+      - SUBMITTED
+      - SUCCEEDED
+      - FAILED
+      type: string
+      example: SUCCEEDED
+      description: Status of a data quality computation.
     ComputationErrorCode:
       enum:
       - DQ-100
@@ -482,13 +545,6 @@ components:
       - DQ-171
       type: string
       description: Error code indicating the reason for failure.
-    BatchComputationAggregatedStatus:
-      enum:
-      - IN_PROGRESS
-      - FINISHED
-      type: string
-      example: IN_PROGRESS
-      description: Overall status aggregated across all datasets in the batch.
     BatchComputationStatusResponse:
       type: object
       required:
@@ -536,33 +592,6 @@ components:
         - `sampleSize: 1000`
 
         '
-    ExecutionStatus:
-      enum:
-      - PROFILE_REQUESTED
-      - PROFILE_FAILED
-      - REQUESTED
-      - SUBMITTED
-      - SUCCEEDED
-      - FAILED
-      type: string
-      example: SUCCEEDED
-      description: Status of a data quality computation.
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code identifying the type of error.
-        title:
-          type: string
-          description: A short summary of the error.
-        detail:
-          type: string
-          description: A human-readable explanation of the error.
-      description: An individual error detail.
     ComputationStatusResponse:
       type: object
       required:
@@ -570,42 +599,6 @@ components:
       properties:
         status:
           $ref: '#/components/schemas/ExecutionStatus'
-    DatasetIdType:
-      type: string
-      example: 669144f5aa2d642638ef1dd0
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the dataset
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors that occurred.
-        traceId:
-          type: string
-          description: Trace identifier for debugging purposes.
-      description: Standard error response wrapper.
-    BatchComputationDatasetStatusResponse:
-      type: object
-      required:
-      - datasetId
-      - status
-      - computationId
-      properties:
-        status:
-          $ref: '#/components/schemas/ExecutionStatus'
-        datasetId:
-          $ref: '#/components/schemas/DatasetIdType'
-        errorCode:
-          $ref: '#/components/schemas/ComputationErrorCode'
-        computationId:
-          type: string
-          description: The unique identifier of the individual computation for this dataset.
-      description: Status of a single dataset within a batch computation.
     ComputationResponse:
       type: object
       required:
@@ -615,6 +608,13 @@ components:
           type: string
           description: The unique identifier of the triggered computation. Use this value to poll for status.
       description: Response returned when a data quality computation is successfully triggered.
+    BatchComputationAggregatedStatus:
+      enum:
+      - IN_PROGRESS
+      - FINISHED
+      type: string
+      example: IN_PROGRESS
+      description: Overall status aggregated across all datasets in the batch.
     SamplingConfiguration_2:
       type: object
       properties:
@@ -636,19 +636,15 @@ components:
           - PULLUP
           type: string
           description: Specifies where the data quality computation takes place. In `PUSHDOWN` mode, it runs within the Cloud Data Warehouse (e.g., Snowflake, Databricks), whereas in `PULLUP` mode, it runs in Qlik Cloud.
-    ConnectionIdType_2:
-      type: string
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the connection
-    ExecutionStatus_2:
-      enum:
-      - PROFILE_REQUESTED
-      - PROFILE_FAILED
-      - REQUESTED
-      - SUBMITTED
-      - SUCCEEDED
-      - FAILED
-      type: string
+    ErrorResponse_2:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error_2'
+        traceId:
+          type: string
     Error_2:
       type: object
       properties:
@@ -662,15 +658,19 @@ components:
       type: string
       pattern: ^[0-9a-zA-Z-]{1,36}$
       description: The ID of the dataset
-    ErrorResponse_2:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error_2'
-        traceId:
-          type: string
+    ExecutionStatus_2:
+      enum:
+      - PROFILE_REQUESTED
+      - PROFILE_FAILED
+      - REQUESTED
+      - SUBMITTED
+      - SUCCEEDED
+      - FAILED
+      type: string
+    ConnectionIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
 x-refined-from:
 - qliksense-data-governance-data-qualities.json
 - qliksense-data-qualities.json

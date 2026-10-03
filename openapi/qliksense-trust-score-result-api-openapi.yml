@@ -73,13 +73,75 @@ paths:
         limit: 100
 components:
   schemas:
-    GenericWeight:
-      type: integer
-      format: int32
-      example: 50
-      maximum: 100
-      minimum: 0
-      description: Defines the weight of the axis or metric in the Trust Score.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    DatasetFilterRequest:
+      type: object
+      required:
+      - datasetIds
+      properties:
+        datasetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetId'
+          maxItems: 100
+          minItems: 1
+          description: List of dataset IDs to retrieve Trust Scores for. Maximum 100 IDs per request.
+        recomputeUsage:
+          type: boolean
+          default: false
+          description: When true, refreshes the USAGE and TIMELINESS axes from source before returning the Trust Scores.
+      description: Request body for batch-filtering Trust Score results by dataset IDs.
+    DatasetId:
+      type: string
+      example: Jjk5NNHiUObQe8xTyeLgP5nQjKTpEr8R
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: Unique identifier of the dataset.
+    MetricResponse:
+      type: object
+      required:
+      - id
+      - weight
+      properties:
+        id:
+          $ref: '#/components/schemas/MetricId'
+        score:
+          allOf:
+          - $ref: '#/components/schemas/GenericScore'
+          description: Computed score for this metric [0, 100]. Omitted when metric is not applicable.
+        weight:
+          $ref: '#/components/schemas/GenericWeight'
+      description: Score and configuration for a single Trust Score metric within an axis.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    AxisId:
+      enum:
+      - VALIDITY
+      - COMPLETENESS
+      - USAGE
+      - DISCOVERABILITY
+      - ACCURACY
+      - DIVERSITY
+      - TIMELINESS
+      type: string
+      example: TIMELINESS
+      description: Defines the axis of the Trust Score.
     TrustScoreResponse:
       type: object
       required:
@@ -111,61 +173,6 @@ components:
           - $ref: '#/components/schemas/GenericScore'
           description: Overall Trust Score from the previous computation, for change tracking.
       description: Current Trust Score for a single dataset, including the overall weighted score, a per-axis breakdown, and per-metric details within each axis.
-    AxisId:
-      enum:
-      - VALIDITY
-      - COMPLETENESS
-      - USAGE
-      - DISCOVERABILITY
-      - ACCURACY
-      - DIVERSITY
-      - TIMELINESS
-      type: string
-      example: TIMELINESS
-      description: Defines the axis of the Trust Score.
-    GenericScore:
-      type: number
-      format: float
-      maximum: 100
-      minimum: 0
-      description: A numeric score value in the range [0, 100].
-    MetricResponse:
-      type: object
-      required:
-      - id
-      - weight
-      properties:
-        id:
-          $ref: '#/components/schemas/MetricId'
-        score:
-          allOf:
-          - $ref: '#/components/schemas/GenericScore'
-          description: Computed score for this metric [0, 100]. Omitted when metric is not applicable.
-        weight:
-          $ref: '#/components/schemas/GenericWeight'
-      description: Score and configuration for a single Trust Score metric within an axis.
-    DatasetId:
-      type: string
-      example: Jjk5NNHiUObQe8xTyeLgP5nQjKTpEr8R
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: Unique identifier of the dataset.
-    DatasetFilterRequest:
-      type: object
-      required:
-      - datasetIds
-      properties:
-        datasetIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetId'
-          maxItems: 100
-          minItems: 1
-          description: List of dataset IDs to retrieve Trust Scores for. Maximum 100 IDs per request.
-        recomputeUsage:
-          type: boolean
-          default: false
-          description: When true, refreshes the USAGE and TIMELINESS axes from source before returning the Trust Scores.
-      description: Request body for batch-filtering Trust Score results by dataset IDs.
     MetricId:
       enum:
       - VALIDITY_QUALITY
@@ -185,17 +192,12 @@ components:
       type: string
       example: TIMELINESS_FRESHNESS
       description: Defines the metric of the axis in the Trust Score.
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
+    GenericScore:
+      type: number
+      format: float
+      maximum: 100
+      minimum: 0
+      description: A numeric score value in the range [0, 100].
     AxisResponse:
       type: object
       required:
@@ -227,6 +229,13 @@ components:
           - $ref: '#/components/schemas/GenericScore'
           description: Axis score from the previous computation, for change tracking.
       description: Score and configuration for a single Trust Score axis.
+    GenericWeight:
+      type: integer
+      format: int32
+      example: 50
+      maximum: 100
+      minimum: 0
+      description: Defines the weight of the axis or metric in the Trust Score.
     TrustScoreResultListResponse:
       type: object
       required:
@@ -238,12 +247,3 @@ components:
             $ref: '#/components/schemas/TrustScoreResponse'
           description: List of Trust Score results, one entry per dataset found.
       description: Trust Score results for the requested datasets. Datasets with no computed Trust Score are omitted.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string

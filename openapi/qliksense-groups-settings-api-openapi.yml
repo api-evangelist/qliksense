@@ -136,82 +136,6 @@ components:
       example:
       - name: TenantAdmin
       description: An array of role reference names.
-    SettingsPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: The operation to be performed.
-        path:
-          enum:
-          - /autoCreateGroups
-          - /syncIdpGroups
-          - /systemGroups/{id}/assignedRoles
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: boolean
-          - $ref: '#/components/schemas/AssignedRolesRefIDs'
-          - $ref: '#/components/schemas/AssignedRolesRefNames'
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    AssignedRolesRefIDs:
-      type: array
-      items:
-        type: object
-        required:
-        - id
-        properties:
-          id:
-            type: string
-            format: uid
-            example: 507f191e810c19729de860ea
-            description: The unique role identitier
-        description: represents a role entity stored in the database
-      example:
-      - id: 507f191e810c19729de860ea
-      description: An array of role reference identifiers.
-    SettingsPatchSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/SettingsPatch'
-      example:
-      - op: replace
-        path: /syncIdpGroups
-        value: true
-      - op: replace
-        path: /autoCreateGroups
-        value: true
-      - op: replace
-        path: /systemGroups/000000000000000000000001/assignedRoles
-        value:
-        - name: Steward
-      description: An array of JSON Patches for the groups settings.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: GROUPS-7
-          title: Not found
-          status: 404
-        traceId: 00000000000000000137b213cf12a77b
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: An array of errors related to the operation.
-        traceId:
-          type: string
-          description: A unique identifier for tracing the error.
-      description: The error response object describing the error from the handling of an HTTP request.
     Error:
       type: object
       required:
@@ -313,6 +237,82 @@ components:
           example: false
           description: Determines if groups should be created on login.
       description: represents a GroupSetting document
+    SettingsPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/SettingsPatch'
+      example:
+      - op: replace
+        path: /syncIdpGroups
+        value: true
+      - op: replace
+        path: /autoCreateGroups
+        value: true
+      - op: replace
+        path: /systemGroups/000000000000000000000001/assignedRoles
+        value:
+        - name: Steward
+      description: An array of JSON Patches for the groups settings.
+    AssignedRolesRefIDs:
+      type: array
+      items:
+        type: object
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            format: uid
+            example: 507f191e810c19729de860ea
+            description: The unique role identitier
+        description: represents a role entity stored in the database
+      example:
+      - id: 507f191e810c19729de860ea
+      description: An array of role reference identifiers.
+    SettingsPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          enum:
+          - /autoCreateGroups
+          - /syncIdpGroups
+          - /systemGroups/{id}/assignedRoles
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: boolean
+          - $ref: '#/components/schemas/AssignedRolesRefIDs'
+          - $ref: '#/components/schemas/AssignedRolesRefNames'
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: GROUPS-7
+          title: Not found
+          status: 404
+        traceId: 00000000000000000137b213cf12a77b
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: An array of errors related to the operation.
+        traceId:
+          type: string
+          description: A unique identifier for tracing the error.
+      description: The error response object describing the error from the handling of an HTTP request.
     AssignedRoles:
       type: array
       items:

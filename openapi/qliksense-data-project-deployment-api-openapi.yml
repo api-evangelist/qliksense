@@ -371,77 +371,6 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    ImportDiProjectRsp:
-      type: object
-    ValidateProjectDefinitionsReport:
-      type: object
-      properties:
-        path:
-          type: string
-          description: Path to the field or file in the project definition where the issue was found.
-        level:
-          $ref: '#/components/schemas/ValidateProjectDefinitionsReportLevel'
-        reason:
-          type: string
-          description: Human-readable description of the validation finding.
-      description: A single validation finding, including its severity, a human-readable description of the issue, and the location in the project definition where it was found.
-    ExportDiProjectReq:
-      type: object
-      properties:
-        mode:
-          $ref: '#/components/schemas/DiExportMode'
-        includeBindings:
-          type: boolean
-          default: false
-          description: Include bindings in the exported zip file. If not specified, defaults to `false`.
-    GetDiExportProjectVariablesRsp:
-      type: object
-      properties:
-        variables:
-          type: object
-          additionalProperties:
-            type: string
-            example: value
-            description: The value of the variable
-        nameToIdMap:
-          type: object
-          additionalProperties:
-            type: string
-            example: value
-            description: The calculated ID of the variable value, when relevant.
-    UpdateDiExportProjectVariablesReq:
-      type: object
-      properties:
-        variables:
-          type: object
-          additionalProperties:
-            type: string
-            example: value
-            description: The value of the variable
-    ValidateProjectDefinitionsRsp:
-      type: object
-      properties:
-        reports:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidateProjectDefinitionsReport'
-          description: List of validation findings. An empty array indicates no issues were found.
-    ValidateProjectDefinitionsReportLevel:
-      enum:
-      - WARNING
-      - ERROR
-      type: string
-      description: Severity of the validation finding. `WARNING` indicates a potential issue that does not block import; `ERROR` indicates a critical issue that must be resolved before importing.
     DiExportMode:
       enum:
       - MINIMAL
@@ -457,20 +386,23 @@ components:
         - ''ALL'': Exports a ZIP of the new YAML files, including all attributes.
 
         '
-    UpdateDiExportProjectVariablesRsp:
-      type: object
-    Errors:
+    ExportDiProjectReq:
       type: object
       properties:
-        errors:
+        mode:
+          $ref: '#/components/schemas/DiExportMode'
+        includeBindings:
+          type: boolean
+          default: false
+          description: Include bindings in the exported zip file. If not specified, defaults to `false`.
+    ValidateProjectDefinitionsRsp:
+      type: object
+      properties:
+        reports:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
-          type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+            $ref: '#/components/schemas/ValidateProjectDefinitionsReport'
+          description: List of validation findings. An empty array indicates no issues were found.
     Error:
       type: object
       properties:
@@ -490,6 +422,43 @@ components:
           format: int32
           description: HTTP status code associated with the error.
       description: Represents a single error condition with details about what went wrong.
+    ValidateProjectDefinitionsReportLevel:
+      enum:
+      - WARNING
+      - ERROR
+      type: string
+      description: Severity of the validation finding. `WARNING` indicates a potential issue that does not block import; `ERROR` indicates a critical issue that must be resolved before importing.
+    ValidateProjectDefinitionsReport:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the field or file in the project definition where the issue was found.
+        level:
+          $ref: '#/components/schemas/ValidateProjectDefinitionsReportLevel'
+        reason:
+          type: string
+          description: Human-readable description of the validation finding.
+      description: A single validation finding, including its severity, a human-readable description of the issue, and the location in the project definition where it was found.
+    UpdateDiExportProjectVariablesReq:
+      type: object
+      properties:
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+            example: value
+            description: The value of the variable
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     AsyncActionRsp:
       type: object
       required:
@@ -499,6 +468,37 @@ components:
           type: string
           example: action-123456
           description: Identifier for tracking the action
+    GetDiExportProjectVariablesRsp:
+      type: object
+      properties:
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+            example: value
+            description: The value of the variable
+        nameToIdMap:
+          type: object
+          additionalProperties:
+            type: string
+            example: value
+            description: The calculated ID of the variable value, when relevant.
+    UpdateDiExportProjectVariablesRsp:
+      type: object
+    ImportDiProjectRsp:
+      type: object
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
   headers:
     AsyncActionLocation:
       schema:

@@ -348,6 +348,137 @@ paths:
         limit: 100
 components:
   schemas:
+    PatchRole:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          - add
+          - remove-value
+          type: string
+          example: replace
+        path:
+          enum:
+          - /name
+          - /description
+          - /assignedScopes
+          - /assignedScopes/-
+          type: string
+        value:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON Pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+      description: An error object describing the error.
+    Links:
+      type: object
+      required:
+      - self
+      properties:
+        next:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              format: uri
+              example: http://mytenant.us.qlikcloud.com/api/v1/roles?next=QaFdFYW6pImZvRgFaDyB1UffNgfs4mRd
+          description: Link to the next page of items
+        prev:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              format: uri
+              example: http://mytenant.us.qlikcloud.com/api/v1/roles?prev=QaFdFYW6pImZvRgFaDyB1UffNgfs4mRd
+          description: Link to the previous page of items
+        self:
+          type: object
+          required:
+          - href
+          properties:
+            href:
+              type: string
+              format: uri
+              example: http://mytenant.us.qlikcloud.com/api/v1/roles
+          description: Link to the current page of items
+      description: Contains pagination links
+    ListRolesResult:
+      type: object
+      required:
+      - links
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          description: An array of roles.
+        links:
+          $ref: '#/components/schemas/Links'
+        totalResults:
+          type: integer
+          description: Indicates the total number of matching documents. Will only be returned if the query parameter "totalResults" is true.
+    PatchRoles:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchRole'
+      example:
+      - op: replace
+        path: /name
+        value: Role1
+      - op: replace
+        path: /assignedScopes
+        value:
+        - knowledgebase
+      - op: add
+        path: /assignedScopes/-
+        value: knowledgebase
+      - op: remove-value
+        path: /assignedScopes
+        value: knowledgebase
+      - op: replace
+        path: /description
+        value: My custom role description
+      description: An array of JSON Patch documents
     Role:
       type: object
       required:
@@ -468,108 +599,6 @@ components:
           example: fullUser
           readOnly: true
           description: Indicate whether this role will trigger promotion of a user from a basic to a full user on tenants with a capacity-based subscription. Does not apply to tenants with a user-based subscription. Returns fullUser if it will trigger promotion.
-    PatchRole:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          - add
-          - remove-value
-          type: string
-          example: replace
-        path:
-          enum:
-          - /name
-          - /description
-          - /assignedScopes
-          - /assignedScopes/-
-          type: string
-        value:
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: string
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    Links:
-      type: object
-      required:
-      - self
-      properties:
-        next:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              format: uri
-              example: http://mytenant.us.qlikcloud.com/api/v1/roles?next=QaFdFYW6pImZvRgFaDyB1UffNgfs4mRd
-          description: Link to the next page of items
-        prev:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              format: uri
-              example: http://mytenant.us.qlikcloud.com/api/v1/roles?prev=QaFdFYW6pImZvRgFaDyB1UffNgfs4mRd
-          description: Link to the previous page of items
-        self:
-          type: object
-          required:
-          - href
-          properties:
-            href:
-              type: string
-              format: uri
-              example: http://mytenant.us.qlikcloud.com/api/v1/roles
-          description: Link to the current page of items
-      description: Contains pagination links
-    CreateRole:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Role name, needs to be unique
-        description:
-          type: string
-          description: Role description
-        assignedScopes:
-          type: array
-          items:
-            type: string
-          description: Selection of scopes to assign to role
-    PatchRoles:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchRole'
-      example:
-      - op: replace
-        path: /name
-        value: Role1
-      - op: replace
-        path: /assignedScopes
-        value:
-        - knowledgebase
-      - op: add
-        path: /assignedScopes/-
-        value: knowledgebase
-      - op: remove-value
-        path: /assignedScopes
-        value: knowledgebase
-      - op: replace
-        path: /description
-        value: My custom role description
-      description: An array of JSON Patch documents
     Errors:
       type: object
       example:
@@ -587,48 +616,19 @@ components:
           type: string
           description: A unique identifier for tracing the error.
       description: The error response object describing the error from the handling of an HTTP request.
-    Error:
+    CreateRole:
       type: object
       required:
-      - code
-      - title
+      - name
       properties:
-        code:
+        name:
           type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-        title:
+          description: Role name, needs to be unique
+        description:
           type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem.
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON Pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-      description: An error object describing the error.
-    ListRolesResult:
-      type: object
-      required:
-      - links
-      - data
-      properties:
-        data:
+          description: Role description
+        assignedScopes:
           type: array
           items:
-            $ref: '#/components/schemas/Role'
-          description: An array of roles.
-        links:
-          $ref: '#/components/schemas/Links'
-        totalResults:
-          type: integer
-          description: Indicates the total number of matching documents. Will only be returned if the query parameter "totalResults" is true.
+            type: string
+          description: Selection of scopes to assign to role

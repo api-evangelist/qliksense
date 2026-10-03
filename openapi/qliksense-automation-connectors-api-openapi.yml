@@ -283,36 +283,16 @@ paths:
           description: Name of the tenant that will be called
 components:
   schemas:
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The unique code for the error
-        title:
-          type: string
-          description: A summary of what went wrong
-        detail:
-          type: string
-          description: May be used to provide additional details
-    AutomationConnectorsList:
+    ErrorResponse:
       type: object
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/AutomationConnectorsListObject'
-        links:
-          $ref: '#/components/schemas/Links'
-    Links:
-      properties:
-        next:
-          $ref: '#/components/schemas/PaginationLink'
-        prev:
-          $ref: '#/components/schemas/PaginationLink'
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
     AutomationConnectorsListObject:
       type: object
       properties:
@@ -358,16 +338,21 @@ components:
           type: boolean
           example: 'true'
           description: Indicates if the connector supports webhooks.
-    ErrorResponse:
+    Error:
       type: object
+      required:
+      - code
+      - title
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+        code:
           type: string
-          description: A way to trace the source of the error.
+          description: The unique code for the error
+        title:
+          type: string
+          description: A summary of what went wrong
+        detail:
+          type: string
+          description: May be used to provide additional details
     PaginationLink:
       properties:
         href:
@@ -375,31 +360,111 @@ components:
           - string
           - 'null'
           description: The URL to a resource request
-    AutomationConnectorWebhookEventParam:
+    Links:
+      properties:
+        next:
+          $ref: '#/components/schemas/PaginationLink'
+        prev:
+          $ref: '#/components/schemas/PaginationLink'
+    AutomationConnectorsList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorsListObject'
+        links:
+          $ref: '#/components/schemas/Links'
+    AutomationConnectorDetail:
       type: object
       properties:
         id:
           type: string
           format: uuid
           example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the webhook event parameter.
+          readOnly: true
         name:
           type: string
-          example: table_id
-          description: The name of the parameter.
-        type:
-          type: string
-          example: text
-          description: The type of the parameter.
-        options:
+          example: Airtable
+          description: The name of the automation connector.
+        blocks:
           type: array
           items:
-            type: string
-          description: The available options for this parameter.
-        required:
+            $ref: '#/components/schemas/AutomationConnectorBlock'
+          description: The available blocks (endpoints) for this connector.
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorParam'
+          description: The connection parameters required to authenticate with this connector.
+        billable:
           type: boolean
           example: true
-          description: Indicates whether the parameter is required.
+          description: Indicates if the connector is billable.
+        snippets:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorSnippet'
+          description: The available snippet templates for this connector.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the automation connector.
+        hasWebhooks:
+          type: boolean
+          example: true
+          description: Indicates if the connector supports webhooks.
+        connectDocumentation:
+          type:
+          - string
+          - 'null'
+          description: Documentation for setting up a connection with this connector.
+    AutomationConnectorSnippet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: The unique identifier of the snippet.
+        name:
+          type: string
+          example: Sync Records
+          description: The name of the snippet.
+        role:
+          type:
+          - string
+          - 'null'
+          description: The role of the snippet.
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectorSnippetInput'
+          description: The input fields for this snippet.
+        objectType:
+          type:
+          - string
+          - 'null'
+          example: Record
+          description: The object type this snippet operates on.
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the snippet.
+        exampleOutput:
+          oneOf:
+          - type: object
+          - type: array
+            items:
+              oneOf:
+              - type: object
+              - type: string
+              - type: number
+              - type: boolean
+          - type: string
+          description: An example of the output this snippet produces.
     AutomationConnectorBlock:
       type: object
       properties:
@@ -444,61 +509,6 @@ components:
               - type: boolean
           - type: string
           description: An example of the output this block produces.
-    AutomationConnectorWebhookConfiguration:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the webhook configuration.
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorWebhookEvent'
-          description: The available webhook events for this connector.
-        automatic:
-          type: boolean
-          example: true
-          description: Indicates whether the webhook is set up automatically.
-    AutomationConnectorWebhookEvent:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          description: The unique identifier of the webhook event.
-        name:
-          type: string
-          example: Record Created
-          description: The name of the webhook event.
-        role:
-          type: string
-          example: create
-          description: The role of the webhook event.
-        params:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorWebhookEventParam'
-          description: The parameters available for this webhook event.
-        description:
-          type:
-          - string
-          - 'null'
-          description: The description of the webhook event.
-        exampleOutput:
-          oneOf:
-          - type: object
-          - type: array
-            items:
-              oneOf:
-              - type: object
-              - type: string
-              - type: number
-              - type: boolean
-          - type: string
-          description: An example of the payload this event produces.
     AutomationConnectorSnippetInput:
       type: object
       properties:
@@ -569,39 +579,32 @@ components:
           - string
           - 'null'
           description: An example value for the parameter.
-    AutomationConnectorSnippet:
+    AutomationConnectorWebhookEvent:
       type: object
       properties:
         id:
           type: string
           format: uuid
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-          description: The unique identifier of the snippet.
+          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
+          description: The unique identifier of the webhook event.
         name:
           type: string
-          example: Sync Records
-          description: The name of the snippet.
+          example: Record Created
+          description: The name of the webhook event.
         role:
-          type:
-          - string
-          - 'null'
-          description: The role of the snippet.
-        inputs:
+          type: string
+          example: create
+          description: The role of the webhook event.
+        params:
           type: array
           items:
-            $ref: '#/components/schemas/AutomationConnectorSnippetInput'
-          description: The input fields for this snippet.
-        objectType:
-          type:
-          - string
-          - 'null'
-          example: Record
-          description: The object type this snippet operates on.
+            $ref: '#/components/schemas/AutomationConnectorWebhookEventParam'
+          description: The parameters available for this webhook event.
         description:
           type:
           - string
           - 'null'
-          description: The description of the snippet.
+          description: The description of the webhook event.
         exampleOutput:
           oneOf:
           - type: object
@@ -613,59 +616,50 @@ components:
               - type: number
               - type: boolean
           - type: string
-          description: An example of the output this snippet produces.
-    AutomationConnectorDetail:
+          description: An example of the payload this event produces.
+    AutomationConnectorWebhookEventParam:
       type: object
       properties:
         id:
           type: string
           format: uuid
           example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
-          readOnly: true
+          description: The unique identifier of the webhook event parameter.
         name:
           type: string
-          example: Airtable
-          description: The name of the automation connector.
-        blocks:
+          example: table_id
+          description: The name of the parameter.
+        type:
+          type: string
+          example: text
+          description: The type of the parameter.
+        options:
           type: array
           items:
-            $ref: '#/components/schemas/AutomationConnectorBlock'
-          description: The available blocks (endpoints) for this connector.
-        params:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectorParam'
-          description: The connection parameters required to authenticate with this connector.
-        billable:
+            type: string
+          description: The available options for this parameter.
+        required:
           type: boolean
           example: true
-          description: Indicates if the connector is billable.
-        snippets:
+          description: Indicates whether the parameter is required.
+    AutomationConnectorWebhookConfiguration:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 0d87347d-27c0-11ea-921c-022e6b5ea1e2
+          description: The unique identifier of the webhook configuration.
+        events:
           type: array
           items:
-            $ref: '#/components/schemas/AutomationConnectorSnippet'
-          description: The available snippet templates for this connector.
-        description:
-          type:
-          - string
-          - 'null'
-          description: The description of the automation connector.
-        hasWebhooks:
+            $ref: '#/components/schemas/AutomationConnectorWebhookEvent'
+          description: The available webhook events for this connector.
+        automatic:
           type: boolean
           example: true
-          description: Indicates if the connector supports webhooks.
-        connectDocumentation:
-          type:
-          - string
-          - 'null'
-          description: Documentation for setting up a connection with this connector.
+          description: Indicates whether the webhook is set up automatically.
   responses:
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Unauthorized
     BadRequest:
       content:
         application/json:
@@ -690,6 +684,12 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Service Unavailable
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
     NotFound:
       content:
         application/json:

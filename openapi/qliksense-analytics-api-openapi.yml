@@ -71,32 +71,14 @@ paths:
       - Analytics
 components:
   schemas:
-    StateEnum:
-      oneOf:
-      - type: string
-        title: EMPTY
-        x-qlik-const: 0
-      - type: string
-        title: PROMOTED
-        x-qlik-const: 1
-      - type: string
-        title: DISTRIBUTED
-        x-qlik-const: 2
-    ErrorItem:
+    ErrorResponse:
       type: object
-      required:
-      - code
-      - title
       properties:
-        code:
-          type: string
-          description: A unique code for the error.
-        title:
-          type: string
-          description: A human-readable description of the error.
-        detail:
-          type: string
-          description: Additional information about the error.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+          description: Array of all errors that occurred during the request.
     NxAttributes_V2:
       type: object
       properties:
@@ -225,15 +207,32 @@ components:
 
             * change_space'
       description: Application attributes and user privileges.
-    NxAppCreatePrivileges:
+    ErrorItem:
       type: object
+      required:
+      - code
+      - title
       properties:
-        resource:
+        code:
           type: string
-          description: Type of resource. For example, sheet, story, bookmark, etc.
-        canCreate:
-          type: boolean
-          description: Is set to true if the user has privileges to create the resource.
+          description: A unique code for the error.
+        title:
+          type: string
+          description: A human-readable description of the error.
+        detail:
+          type: string
+          description: Additional information about the error.
+    StateEnum:
+      oneOf:
+      - type: string
+        title: EMPTY
+        x-qlik-const: 0
+      - type: string
+        title: PROMOTED
+        x-qlik-const: 1
+      - type: string
+        title: DISTRIBUTED
+        x-qlik-const: 2
     UsageEnum:
       oneOf:
       - type: string
@@ -251,11 +250,12 @@ components:
       - type: string
         title: DIRECT_QUERY_MODE
         x-qlik-const: 4
-    ErrorResponse:
+    NxAppCreatePrivileges:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-          description: Array of all errors that occurred during the request.
+        resource:
+          type: string
+          description: Type of resource. For example, sheet, story, bookmark, etc.
+        canCreate:
+          type: boolean
+          description: Is set to true if the user has privileges to create the resource.

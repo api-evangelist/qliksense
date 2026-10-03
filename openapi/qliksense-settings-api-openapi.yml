@@ -130,6 +130,25 @@ components:
           type: boolean
           description: Whether the dynamic view feature is enabled.
       description: The state of the ODAG settings available for users assigned the `TenantAdmin` role to view and configure.
+    SettingsPutPayload:
+      type: object
+      properties:
+        odagEnabled:
+          type: boolean
+        dynamicViewEnabled:
+          type: boolean
+      description: An object that defines the properties of ODAG settings to be modified.
+    ErrorV2:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetailsV2'
+        traceId:
+          type: string
+          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
+      description: A standard error response containing a list of one or more errors.
     CanUpdateSettings:
       type: object
       properties:
@@ -150,22 +169,3 @@ components:
           type: string
           description: The message describing the error.
       description: A single error entry within an error response.
-    ErrorV2:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorDetailsV2'
-        traceId:
-          type: string
-          description: A unique ID of the trace which the error occurred in. Makes it possible to locate involved services and find log messages from the time of the error.
-      description: A standard error response containing a list of one or more errors.
-    SettingsPutPayload:
-      type: object
-      properties:
-        odagEnabled:
-          type: boolean
-        dynamicViewEnabled:
-          type: boolean
-      description: An object that defines the properties of ODAG settings to be modified.

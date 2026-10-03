@@ -104,28 +104,13 @@ paths:
         limit: 1000
 components:
   schemas:
-    GetQuotaByIdResult:
+    ErrorResponse:
       type: object
-      title: Result containing an array with a single quota item.
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/Quota'
-          description: Quota item.
-    GetQuotasResult:
-      type: object
-      title: Result containing an array of quota items.
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Quota'
-          description: Array of quota items.
+            $ref: '#/components/schemas/Error'
     Error:
       type: object
       required:
@@ -139,13 +124,6 @@ components:
           type: string
           description: Summary of the problem.
       description: A specific error.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     Quota:
       type: object
       title: One single quota with attributes.
@@ -186,3 +164,25 @@ components:
               - 0.9
               description: The warning thresholds at which "close to quota" warnings can be issued when exceeded. If omitted, no warning threshold shall be used. Currently, the array will contain only one threshold value. In the future, this may be extended. The threshold is a number between 0 and 1, relating to the quota limit. For example, a value of 0.9 means that a warning should be issued when exceeding 90% of the quota limit.
           description: The attributes of the quota.
+    GetQuotaByIdResult:
+      type: object
+      title: Result containing an array with a single quota item.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quota'
+          description: Quota item.
+    GetQuotasResult:
+      type: object
+      title: Result containing an array of quota items.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quota'
+          description: Array of quota items.

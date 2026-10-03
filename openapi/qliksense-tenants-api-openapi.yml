@@ -368,187 +368,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    TenantMultipleMetaErrorsDetail:
-      type: array
-      items:
-        $ref: '#/components/schemas/TenantSingleMetaErrorDetail'
-    TenantPatchErrors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - code
-            - title
-            properties:
-              code:
-                type: string
-                example: TENANTS-10
-                description: The error code.
-              meta:
-                oneOf:
-                - $ref: '#/components/schemas/TenantSingleMetaErrorDetail'
-                - $ref: '#/components/schemas/TenantMultipleMetaErrorsDetail'
-              title:
-                type: string
-                example: Invalid PATCH request
-                description: Summary of the problem.
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-                    example: /hostnames/1
-                    description: A JSON Pointer to the property that caused the error.
-                  parameter:
-                    type: string
-                    description: The URI query parameter that caused the error.
-                description: References to the source of the error.
-            description: An error object.
-    TenantSingleMetaErrorDetail:
-      type: object
-      properties:
-        code:
-          type: string
-          example: TENANTS-10
-          description: The error code.
-        title:
-          type: string
-          example: Subdomain should be between 3 and 63 characters
-          description: The error summary.
-    TenantPatchSchema:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-            description: The operation to be performed.
-          path:
-            enum:
-            - /name
-            - /hostnames/1
-            - /autoAssignCreateSharedSpacesRoleToProfessionals
-            - /autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals
-            - /autoAssignDataServicesContributorRoleToProfessionals
-            - /enableAnalyticCreation
-            - /enableAppOpeningFeedback
-            type: string
-            description: A JSON Pointer value that references a location within the target document where the operation is performed.
-          value:
-            oneOf:
-            - type: string
-            - type: boolean
-            description: The value to be used for this operation.
-        description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-      example:
-      - op: replace
-        path: /name
-        value: Corp
-      - op: replace
-        path: /hostnames/1
-        value: example-tenant.us.qlikcloud.com
-      - op: replace
-        path: /autoAssignCreateSharedSpacesRoleToProfessionals
-        value: true
-      - op: replace
-        path: /autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals
-        value: false
-      - op: replace
-        path: /autoAssignDataServicesContributorRoleToProfessionals
-        value: true
-      - op: replace
-        path: /enableAnalyticCreation
-        value: false
-    TenantDeactivateRequest:
-      type: object
-      properties:
-        purgeAfterDays:
-          type: integer
-          default: 30
-          maximum: 90
-          minimum: 10
-          description: Sets the number of days to purge the tenant after deactivation. Only available to OEMs.
-      description: A request to deactivate a tenant.
-    TenantDeactivateResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uid
-          example: TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69
-          readOnly: true
-          description: The unique tenant identifier.
-        status:
-          enum:
-          - disabled
-          type: string
-          description: The status of the tenant.
-        estimatedPurgeDate:
-          type: string
-          format: date-time
-          example: '2023-08-18T00:00:00.000Z'
-          description: The estimated date time of when tenant will be purged.
-      description: The result of tenant deactivation.
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: TENANTS-8
-          title: Not found
-          status: 404
-        traceId: 000000000000000079cf1ebeae103de1
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: An array of errors related to the operation.
-        traceId:
-          type: string
-          description: A unique identifier for tracing the error.
-      description: The error response object describing the error from the handling of an HTTP request.
-    Error:
-      type: object
-      required:
-      - code
-      - status
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the error.
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON Pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-        status:
-          type: string
-          description: The HTTP status code.
-      description: An error object describing the error.
     Tenant:
       type: object
       required:
@@ -644,6 +463,119 @@ components:
         autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals:
           type: boolean
           default: true
+    Error:
+      type: object
+      required:
+      - code
+      - status
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON Pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+        status:
+          type: string
+          description: The HTTP status code.
+      description: An error object describing the error.
+    TenantDeactivateRequest:
+      type: object
+      properties:
+        purgeAfterDays:
+          type: integer
+          default: 30
+          maximum: 90
+          minimum: 10
+          description: Sets the number of days to purge the tenant after deactivation. Only available to OEMs.
+      description: A request to deactivate a tenant.
+    TenantPatchSchema:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed.
+          path:
+            enum:
+            - /name
+            - /hostnames/1
+            - /autoAssignCreateSharedSpacesRoleToProfessionals
+            - /autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals
+            - /autoAssignDataServicesContributorRoleToProfessionals
+            - /enableAnalyticCreation
+            - /enableAppOpeningFeedback
+            type: string
+            description: A JSON Pointer value that references a location within the target document where the operation is performed.
+          value:
+            oneOf:
+            - type: string
+            - type: boolean
+            description: The value to be used for this operation.
+        description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+      example:
+      - op: replace
+        path: /name
+        value: Corp
+      - op: replace
+        path: /hostnames/1
+        value: example-tenant.us.qlikcloud.com
+      - op: replace
+        path: /autoAssignCreateSharedSpacesRoleToProfessionals
+        value: true
+      - op: replace
+        path: /autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals
+        value: false
+      - op: replace
+        path: /autoAssignDataServicesContributorRoleToProfessionals
+        value: true
+      - op: replace
+        path: /enableAnalyticCreation
+        value: false
+    TenantDeactivateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uid
+          example: TiQ8GPVr8qI714Lp5ChAAFFaU24MJy69
+          readOnly: true
+          description: The unique tenant identifier.
+        status:
+          enum:
+          - disabled
+          type: string
+          description: The status of the tenant.
+        estimatedPurgeDate:
+          type: string
+          format: date-time
+          example: '2023-08-18T00:00:00.000Z'
+          description: The estimated date time of when tenant will be purged.
+      description: The result of tenant deactivation.
     TenantCreationRequest:
       type: object
       properties:
@@ -674,3 +606,71 @@ components:
           type: string
           example: 1234567890
           description: The signed license key of the license that will be associated with the created tenant.
+    TenantMultipleMetaErrorsDetail:
+      type: array
+      items:
+        $ref: '#/components/schemas/TenantSingleMetaErrorDetail'
+    TenantSingleMetaErrorDetail:
+      type: object
+      properties:
+        code:
+          type: string
+          example: TENANTS-10
+          description: The error code.
+        title:
+          type: string
+          example: Subdomain should be between 3 and 63 characters
+          description: The error summary.
+    TenantPatchErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - code
+            - title
+            properties:
+              code:
+                type: string
+                example: TENANTS-10
+                description: The error code.
+              meta:
+                oneOf:
+                - $ref: '#/components/schemas/TenantSingleMetaErrorDetail'
+                - $ref: '#/components/schemas/TenantMultipleMetaErrorsDetail'
+              title:
+                type: string
+                example: Invalid PATCH request
+                description: Summary of the problem.
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+                    example: /hostnames/1
+                    description: A JSON Pointer to the property that caused the error.
+                  parameter:
+                    type: string
+                    description: The URI query parameter that caused the error.
+                description: References to the source of the error.
+            description: An error object.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: TENANTS-8
+          title: Not found
+          status: 404
+        traceId: 000000000000000079cf1ebeae103de1
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: An array of errors related to the operation.
+        traceId:
+          type: string
+          description: A unique identifier for tracing the error.
+      description: The error response object describing the error from the handling of an HTTP request.
