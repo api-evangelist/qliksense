@@ -307,6 +307,97 @@ paths:
         limit: 1000
 components:
   schemas:
+    BreakdownFilter:
+      type: object
+      example:
+        type: values
+        values:
+        - Europe
+        - Asia
+        - North America
+      required:
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/BreakdownFilterType'
+        search:
+          $ref: '#/components/schemas/BreakdownSearchFilter'
+        values:
+          type: array
+          items:
+            type: string
+            example: Europe
+            description: A dimension value to filter by.
+          example:
+          - Europe
+          - Asia
+          description: List of values to filter by (used when type is Values)
+        exclude:
+          type: boolean
+          default: false
+          description: 'When set to true, the filter values are excluded from analysis instead of included.
+
+            - If exclude is false or omitted, only the matched values are analyzed (max 50).
+
+            - If exclude is true, all dimension values EXCEPT the matched values are analyzed (max 50).
+
+            '
+        condition:
+          $ref: '#/components/schemas/BreakdownConditionFilter'
+        topBottom:
+          $ref: '#/components/schemas/BreakdownTopBottomFilter'
+      description: Filter configuration for a breakdown dimension
+    ComparisonType:
+      enum:
+      - '>'
+      - '>='
+      - <
+      - <=
+      - '> <'
+      - '>= <='
+      type: string
+      example: '>'
+      description: Comparison operation type
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          example: OWL-001
+          description: The error code is in the form of 'OWL-xxx', ranges from 'OWL-001' to 'OWL-016'.
+        title:
+          type: string
+        detail:
+          type: string
+    Href:
+      type: object
+      example:
+        href: http://example.com
+      properties:
+        href:
+          type: string
+          format: uri
+          example: http://example.com
+    ValueType:
+      enum:
+      - calculated
+      - fixed
+      type: string
+      example: fixed
+      description: Whether the value is calculated or fixed
+    SearchType:
+      enum:
+      - contains
+      - exactMatch
+      - startsWith
+      - endsWith
+      - beginningOfWord
+      type: string
+      example: contains
+      description: Search operation type
     BreakDownDimension:
       type: object
       example:
@@ -345,6 +436,77 @@ components:
         - `values` and `filter` are optional. If both are omitted (or `values` is empty and `filter` is null), the API interprets this as "analyze all values" for the given dimension.
 
         '
+    BreakdownFilterType:
+      enum:
+      - values
+      - search
+      - condition
+      - topBottom
+      type: string
+      example: values
+      description: Type of breakdown filter
+    AdaptiveCardsLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Href'
+        prev:
+          $ref: '#/components/schemas/Href'
+        self:
+          $ref: '#/components/schemas/Href'
+    FormattedInAppMetricRecord:
+      type: object
+      required:
+      - id
+      - tenantId
+      - appId
+      - userId
+      - creationTime
+      - updateTime
+      - definition
+      - status
+      - links
+      properties:
+        id:
+          type: string
+          example: 67cab2cf3d74cae279940b99
+          description: The ID of the in-app metric in the database.
+        appId:
+          type: string
+          example: 9b89de1e-9a1b-11ef-9974-563d08542bef
+          description: The ID of the app.
+        links:
+          type: object
+          properties:
+            self:
+              $ref: '#/components/schemas/Href'
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        userId:
+          type: string
+          example: FyPG6xWp6prDU6BXQ3g7LY9gWR_YRkkx
+          description: The ID of the user who created the in-app-metric.
+        tenantId:
+          type: string
+          example: efSCcpNYuayTysONkUcE3F80zYQ_LV9w
+          description: The ID of the tenant who owns the in-app metric.
+        definition:
+          $ref: '#/components/schemas/FormattedInAppMetricDefinition'
+        updateTime:
+          type: string
+          example: '2023-10-01T12:00:00Z'
+          description: The time when the in-app metric was last updated.
+        creationTime:
+          type: string
+          example: '2023-10-01T12:00:00Z'
+          description: The time when the in-app metric was created.
+    StatusEnum:
+      enum:
+      - 0
+      - 1
+      type: integer
+      example: 1
+      description: Status of the in app metrics (0 - inactive, 1 - active).
     BreakdownConditionFilter:
       type: object
       required:
@@ -410,6 +572,135 @@ components:
         - General type: Uses `aggregation`+`field` plus either `fromValue`+`toValue` (Fixed) or `fromAggregation`+`fromField`+`toAggregation`+`toField` (Calculated)
 
         '
+    AdaptiveCard:
+      type: object
+      description: Adaptive Card
+    BreakdownSearchFilter:
+      type: object
+      required:
+      - searchType
+      properties:
+        searchType:
+          $ref: '#/components/schemas/SearchType'
+        searchString:
+          type: string
+          example: Marketing
+          description: String to search for. If empty, all dimension values are analyzed.
+      description: Search-based filtering configuration. If searchString is empty or not provided, all dimension values will be analyzed (no filtering applied).
+    ConditionType:
+      enum:
+      - general
+      - compare
+      type: string
+      example: general
+      description: Condition evaluation type
+    Categories:
+      type: object
+      properties:
+        glossaryId:
+          type: string
+          example: 5a7482f5-892a-4194-9f48-366ccb48a1e7
+          description: The ID of the glossary that the category belongs to.
+        categoryIds:
+          type: array
+          items:
+            type: string
+            example: 6db0fd8e-2115-4ac6-8d51-1729adbc4cfd
+            description: Category ID
+          example:
+          - 6db0fd8e-2115-4ac6-8d51-1729adbc4cfd
+          description: The IDs of the categories.
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: OWL-001
+          title: Invalid request.
+          details: ''
+        - code: OWL-002
+          title: Unauthorized access.
+          detail: You may need to login to access this resource.
+        - code: OWL-003
+          title: Resource not found.
+          detail: The resource either never existed, or may have been deleted.
+        - code: OWL-013
+          title: The analysis can not be started because the analysis frequency quota has been met.
+          detail: ''
+        - code: OWL-015
+          title: Too many breakdown dimensions.
+          detail: ''
+        - code: OWL-016
+          title: Too many breakdown values.
+          detail: ''
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    UpwardIsEnum:
+      enum:
+      - 0
+      - 1
+      - -1
+      type: integer
+      example: 1
+      description: Indicates whether an increase in the metric is considered neutral (0), positive (1) or negative (-1).
+    AnalysisTypeEnum:
+      enum:
+      - recordHigh
+      - recordLow
+      - aboveModel
+      - belowModel
+      - spikesUp
+      - spikesDown
+      - newBaseLine
+      - trendChanges
+      type: string
+      example: spikesUp
+      description: Type of analysis performed on the in-app metric.
+    AggregationFrequencyEnum:
+      enum:
+      - D
+      - W
+      - M
+      - Q
+      - Y
+      type: string
+      example: D
+      description: Comparison period for the analysis.
+    TopBottomUnit:
+      enum:
+      - numerical
+      - percentage
+      type: string
+      example: numerical
+      description: Unit for top/bottom selection
+    AdaptiveCards:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdaptiveCard'
+        links:
+          $ref: '#/components/schemas/AdaptiveCardsLinks'
+        inAppMetrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormattedInAppMetricRecord'
+    AggregationType:
+      enum:
+      - sum
+      - avg
+      - count
+      - max
+      - min
+      type: string
+      example: sum
+      description: Aggregation operation type
     FormattedInAppMetricDefinition:
       type: object
       required:
@@ -473,66 +764,6 @@ components:
           type: integer
           example: 7
           description: Number of days to offset the execution of analyses for this aggregation period.
-    ComparisonType:
-      enum:
-      - '>'
-      - '>='
-      - <
-      - <=
-      - '> <'
-      - '>= <='
-      type: string
-      example: '>'
-      description: Comparison operation type
-    AdaptiveCard:
-      type: object
-      description: Adaptive Card
-    FormattedInAppMetricRecord:
-      type: object
-      required:
-      - id
-      - tenantId
-      - appId
-      - userId
-      - creationTime
-      - updateTime
-      - definition
-      - status
-      - links
-      properties:
-        id:
-          type: string
-          example: 67cab2cf3d74cae279940b99
-          description: The ID of the in-app metric in the database.
-        appId:
-          type: string
-          example: 9b89de1e-9a1b-11ef-9974-563d08542bef
-          description: The ID of the app.
-        links:
-          type: object
-          properties:
-            self:
-              $ref: '#/components/schemas/Href'
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        userId:
-          type: string
-          example: FyPG6xWp6prDU6BXQ3g7LY9gWR_YRkkx
-          description: The ID of the user who created the in-app-metric.
-        tenantId:
-          type: string
-          example: efSCcpNYuayTysONkUcE3F80zYQ_LV9w
-          description: The ID of the tenant who owns the in-app metric.
-        definition:
-          $ref: '#/components/schemas/FormattedInAppMetricDefinition'
-        updateTime:
-          type: string
-          example: '2023-10-01T12:00:00Z'
-          description: The time when the in-app metric was last updated.
-        creationTime:
-          type: string
-          example: '2023-10-01T12:00:00Z'
-          description: The time when the in-app metric was created.
     BreakdownTopBottomFilter:
       type: object
       required:
@@ -549,200 +780,6 @@ components:
           example: 10
           description: Number of top/bottom values to select
       description: Top/bottom filtering configuration
-    TopBottomUnit:
-      enum:
-      - numerical
-      - percentage
-      type: string
-      example: numerical
-      description: Unit for top/bottom selection
-    AdaptiveCards:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AdaptiveCard'
-        links:
-          $ref: '#/components/schemas/AdaptiveCardsLinks'
-        inAppMetrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/FormattedInAppMetricRecord'
-    ValueType:
-      enum:
-      - calculated
-      - fixed
-      type: string
-      example: fixed
-      description: Whether the value is calculated or fixed
-    UpwardIsEnum:
-      enum:
-      - 0
-      - 1
-      - -1
-      type: integer
-      example: 1
-      description: Indicates whether an increase in the metric is considered neutral (0), positive (1) or negative (-1).
-    SearchType:
-      enum:
-      - contains
-      - exactMatch
-      - startsWith
-      - endsWith
-      - beginningOfWord
-      type: string
-      example: contains
-      description: Search operation type
-    Href:
-      type: object
-      example:
-        href: http://example.com
-      properties:
-        href:
-          type: string
-          format: uri
-          example: http://example.com
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: OWL-001
-          title: Invalid request.
-          details: ''
-        - code: OWL-002
-          title: Unauthorized access.
-          detail: You may need to login to access this resource.
-        - code: OWL-003
-          title: Resource not found.
-          detail: The resource either never existed, or may have been deleted.
-        - code: OWL-013
-          title: The analysis can not be started because the analysis frequency quota has been met.
-          detail: ''
-        - code: OWL-015
-          title: Too many breakdown dimensions.
-          detail: ''
-        - code: OWL-016
-          title: Too many breakdown values.
-          detail: ''
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-    Categories:
-      type: object
-      properties:
-        glossaryId:
-          type: string
-          example: 5a7482f5-892a-4194-9f48-366ccb48a1e7
-          description: The ID of the glossary that the category belongs to.
-        categoryIds:
-          type: array
-          items:
-            type: string
-            example: 6db0fd8e-2115-4ac6-8d51-1729adbc4cfd
-            description: Category ID
-          example:
-          - 6db0fd8e-2115-4ac6-8d51-1729adbc4cfd
-          description: The IDs of the categories.
-    BreakdownFilter:
-      type: object
-      example:
-        type: values
-        values:
-        - Europe
-        - Asia
-        - North America
-      required:
-      - type
-      properties:
-        type:
-          $ref: '#/components/schemas/BreakdownFilterType'
-        search:
-          $ref: '#/components/schemas/BreakdownSearchFilter'
-        values:
-          type: array
-          items:
-            type: string
-            example: Europe
-            description: A dimension value to filter by.
-          example:
-          - Europe
-          - Asia
-          description: List of values to filter by (used when type is Values)
-        exclude:
-          type: boolean
-          default: false
-          description: 'When set to true, the filter values are excluded from analysis instead of included.
-
-            - If exclude is false or omitted, only the matched values are analyzed (max 50).
-
-            - If exclude is true, all dimension values EXCEPT the matched values are analyzed (max 50).
-
-            '
-        condition:
-          $ref: '#/components/schemas/BreakdownConditionFilter'
-        topBottom:
-          $ref: '#/components/schemas/BreakdownTopBottomFilter'
-      description: Filter configuration for a breakdown dimension
-    BreakdownSearchFilter:
-      type: object
-      required:
-      - searchType
-      properties:
-        searchType:
-          $ref: '#/components/schemas/SearchType'
-        searchString:
-          type: string
-          example: Marketing
-          description: String to search for. If empty, all dimension values are analyzed.
-      description: Search-based filtering configuration. If searchString is empty or not provided, all dimension values will be analyzed (no filtering applied).
-    AdaptiveCardsLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Href'
-        prev:
-          $ref: '#/components/schemas/Href'
-        self:
-          $ref: '#/components/schemas/Href'
-    AggregationType:
-      enum:
-      - sum
-      - avg
-      - count
-      - max
-      - min
-      type: string
-      example: sum
-      description: Aggregation operation type
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          example: OWL-001
-          description: The error code is in the form of 'OWL-xxx', ranges from 'OWL-001' to 'OWL-016'.
-        title:
-          type: string
-        detail:
-          type: string
-    BreakdownFilterType:
-      enum:
-      - values
-      - search
-      - condition
-      - topBottom
-      type: string
-      example: values
-      description: Type of breakdown filter
     TopBottomType:
       enum:
       - top
@@ -750,40 +787,3 @@ components:
       type: string
       example: top
       description: Whether to select top or bottom values
-    ConditionType:
-      enum:
-      - general
-      - compare
-      type: string
-      example: general
-      description: Condition evaluation type
-    StatusEnum:
-      enum:
-      - 0
-      - 1
-      type: integer
-      example: 1
-      description: Status of the in app metrics (0 - inactive, 1 - active).
-    AnalysisTypeEnum:
-      enum:
-      - recordHigh
-      - recordLow
-      - aboveModel
-      - belowModel
-      - spikesUp
-      - spikesDown
-      - newBaseLine
-      - trendChanges
-      type: string
-      example: spikesUp
-      description: Type of analysis performed on the in-app metric.
-    AggregationFrequencyEnum:
-      enum:
-      - D
-      - W
-      - M
-      - Q
-      - Y
-      type: string
-      example: D
-      description: Comparison period for the analysis.

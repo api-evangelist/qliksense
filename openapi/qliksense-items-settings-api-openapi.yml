@@ -130,6 +130,38 @@ paths:
         limit: 100
 components:
   schemas:
+    ItemsSettingsPatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed. Only "replace" is supported.
+          path:
+            enum:
+            - /usageMetricsEnabled
+            type: string
+            description: Field of Settings to be patched (updated).
+          value:
+            type: boolean
+            description: 'The value to be used within the operations.
+
+              '
+        description: A JSONPatch document as defined by RFC 6902.
+    ErrorResponseBody:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceError'
     meta:
       type: object
       properties:
@@ -168,38 +200,6 @@ components:
           type: boolean
           default: true
           description: Decides if the usage metrics will be shown in the hub UI.
-    ItemsSettingsPatch:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-            description: The operation to be performed. Only "replace" is supported.
-          path:
-            enum:
-            - /usageMetricsEnabled
-            type: string
-            description: Field of Settings to be patched (updated).
-          value:
-            type: boolean
-            description: 'The value to be used within the operations.
-
-              '
-        description: A JSONPatch document as defined by RFC 6902.
-    ErrorResponseBody:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceError'
   headers:
     X-B3-Traceid:
       schema:

@@ -595,6 +595,101 @@ components:
         selectExcluded:
           type: boolean
           example: false
+    FiltersCount:
+      type: object
+      properties:
+        total:
+          type: number
+          format: int32
+          example: 20
+          readOnly: true
+          description: The total number of filters.
+    PatchFilter:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchFilterItem'
+    FilterRequest:
+      example:
+        name: Filter sample
+        filterType: REP
+        filterV1_0:
+          fieldsByState:
+            $:
+            - name: Country
+              values:
+              - valueType: string
+                valueAsText: 1-Argentina
+              - valueType: string
+                valueAsText: 4-Brazil
+              overrideValues: false
+              selectExcluded: false
+            - name: Order number
+              values:
+              - valueType: number
+                valueAsText: '61300'
+                valueAsNumber: 61300
+              overrideValues: false
+              selectExcluded: false
+        description: this is a filter sample
+        filterVersion: filter-1.0
+      required:
+      - name
+      - filterType
+      - filterVersion
+      properties:
+        name:
+          type: string
+          example: Filter 1
+          description: The filter name.
+        appId:
+          type: string
+          example: 1a60c348-4bc6-428a-b4e6-03bde68a5c19
+          description: The App ID.
+        ownerId:
+          type: string
+          example: 649173fbc8ffcfde27412b99
+          description: The user that owns the filter, if missing the same as the request user.
+        filterType:
+          $ref: '#/components/schemas/FilterType'
+        filterV1_0:
+          $ref: '#/components/schemas/FilterV1_0'
+        description:
+          type: string
+          example: This is the filter description
+          x-nullable: true
+          description: The filter description.
+        filterVersion:
+          enum:
+          - filter-1.0
+          - filter-2.0
+          type: string
+    FilterVariable:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: variable 1
+        value:
+          type: string
+          example: v1
+        evaluate:
+          type: boolean
+          example: true
+    FilterType:
+      enum:
+      - REP
+      - SUB
+      type: string
+    Float64:
+      type: number
+      format: float64
+      x-go-type:
+        type: Float64
+        import:
+          alias: cModels
+          package: github.com/qlik-trial/reporting-service/v10/pkg/models
     PatchFilterItem:
       type: object
       required:
@@ -619,33 +714,20 @@ components:
               $ref: '#/components/schemas/FilterItemPatch'
           description: The value to be used for this operation. The properties that cannot be patched include id, filterType, appId
       additionalProperties: false
-    FilterItemPatch:
+    FilterList:
       type: object
+      readOnly: true
+      required:
+      - data
+      - links
       properties:
-        name:
-          type: string
-          example: Filter 1
-          description: The filter name.
-        ownerId:
-          type: string
-          example: 649173fbc8ffcfde27412b99
-          description: The user that owns the filter, if missing the same as the request user.
-        filterV1_0:
-          $ref: '#/components/schemas/FilterV1_0'
-        description:
-          type: string
-          example: This is the filter description
-          description: The filter description.
-        filterVersion:
-          enum:
-          - filter-1.0
-          - filter-2.0
-          type: string
-    FilterType:
-      enum:
-      - REP
-      - SUB
-      type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterListItem'
+          description: a list of filters containing all the filters properties (like name,description...) except the filter definition (like FilterV1_0)
+        links:
+          $ref: '#/components/schemas/LinksResponse'
     FilterError:
       type: object
       required:
@@ -714,6 +796,126 @@ components:
           example: Bad request. The server could not understand the request due to invalid syntax.
           description: A summary in english explaining what went wrong.
       description: Error occured during the Filter creation.
+    LinkResponse:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+      additionalProperties: false
+    Filter:
+      type: object
+      properties:
+        id:
+          type: string
+          example: c61841ac-7b35-4434-aa74-4421f10fc68e
+          readOnly: true
+          description: The filter ID (bookmarkId).
+        name:
+          type: string
+          example: Filter 1
+          description: The filter name.
+          x-qlik-filterable: true
+        ownerId:
+          type: string
+          example: 649173fbc8ffcfde27412b99
+          description: The user that owns the filter, if missing the same as the request user.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-08-09T08:19:37.577Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-08-09T08:19:37.577Z'
+          readOnly: true
+        filterType:
+          $ref: '#/components/schemas/FilterType'
+        filterV1_0:
+          $ref: '#/components/schemas/FilterV1_0'
+        description:
+          type: string
+          example: This is the filter description
+          description: The filter description.
+          x-qlik-filterable: true
+        filterVersion:
+          enum:
+          - filter-1.0
+          - filter-2.0
+          type: string
+    FilterErrors:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterError'
+      description: Errors occured during the Filter creation.
+    LinksResponse:
+      type: object
+      example:
+        next:
+          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+        prev:
+          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+        self:
+          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+      required:
+      - next
+      - prev
+      - self
+      properties:
+        next:
+          $ref: '#/components/schemas/LinkResponse'
+        prev:
+          $ref: '#/components/schemas/LinkResponse'
+        self:
+          $ref: '#/components/schemas/LinkResponse'
+      additionalProperties: false
+    FilterItemPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Filter 1
+          description: The filter name.
+        ownerId:
+          type: string
+          example: 649173fbc8ffcfde27412b99
+          description: The user that owns the filter, if missing the same as the request user.
+        filterV1_0:
+          $ref: '#/components/schemas/FilterV1_0'
+        description:
+          type: string
+          example: This is the filter description
+          description: The filter description.
+        filterVersion:
+          enum:
+          - filter-1.0
+          - filter-2.0
+          type: string
+    FilterFieldValue:
+      type: object
+      properties:
+        valueType:
+          enum:
+          - string
+          - number
+          - evaluate
+          - search
+          type: string
+          example: string
+        valueAsText:
+          type: string
+          example: '2001'
+        valueAsNumber:
+          $ref: '#/components/schemas/Float64'
     FilterListItem:
       type: object
       properties:
@@ -757,205 +959,3 @@ components:
           - filter-2.0
           type: string
           readOnly: true
-    FilterFieldValue:
-      type: object
-      properties:
-        valueType:
-          enum:
-          - string
-          - number
-          - evaluate
-          - search
-          type: string
-          example: string
-        valueAsText:
-          type: string
-          example: '2001'
-        valueAsNumber:
-          $ref: '#/components/schemas/Float64'
-    Filter:
-      type: object
-      properties:
-        id:
-          type: string
-          example: c61841ac-7b35-4434-aa74-4421f10fc68e
-          readOnly: true
-          description: The filter ID (bookmarkId).
-        name:
-          type: string
-          example: Filter 1
-          description: The filter name.
-          x-qlik-filterable: true
-        ownerId:
-          type: string
-          example: 649173fbc8ffcfde27412b99
-          description: The user that owns the filter, if missing the same as the request user.
-        createdAt:
-          type: string
-          format: date-time
-          example: '2023-08-09T08:19:37.577Z'
-          readOnly: true
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2023-08-09T08:19:37.577Z'
-          readOnly: true
-        filterType:
-          $ref: '#/components/schemas/FilterType'
-        filterV1_0:
-          $ref: '#/components/schemas/FilterV1_0'
-        description:
-          type: string
-          example: This is the filter description
-          description: The filter description.
-          x-qlik-filterable: true
-        filterVersion:
-          enum:
-          - filter-1.0
-          - filter-2.0
-          type: string
-    PatchFilter:
-      type: array
-      items:
-        $ref: '#/components/schemas/PatchFilterItem'
-    FilterErrors:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilterError'
-      description: Errors occured during the Filter creation.
-    FiltersCount:
-      type: object
-      properties:
-        total:
-          type: number
-          format: int32
-          example: 20
-          readOnly: true
-          description: The total number of filters.
-    FilterRequest:
-      example:
-        name: Filter sample
-        filterType: REP
-        filterV1_0:
-          fieldsByState:
-            $:
-            - name: Country
-              values:
-              - valueType: string
-                valueAsText: 1-Argentina
-              - valueType: string
-                valueAsText: 4-Brazil
-              overrideValues: false
-              selectExcluded: false
-            - name: Order number
-              values:
-              - valueType: number
-                valueAsText: '61300'
-                valueAsNumber: 61300
-              overrideValues: false
-              selectExcluded: false
-        description: this is a filter sample
-        filterVersion: filter-1.0
-      required:
-      - name
-      - filterType
-      - filterVersion
-      properties:
-        name:
-          type: string
-          example: Filter 1
-          description: The filter name.
-        appId:
-          type: string
-          example: 1a60c348-4bc6-428a-b4e6-03bde68a5c19
-          description: The App ID.
-        ownerId:
-          type: string
-          example: 649173fbc8ffcfde27412b99
-          description: The user that owns the filter, if missing the same as the request user.
-        filterType:
-          $ref: '#/components/schemas/FilterType'
-        filterV1_0:
-          $ref: '#/components/schemas/FilterV1_0'
-        description:
-          type: string
-          example: This is the filter description
-          x-nullable: true
-          description: The filter description.
-        filterVersion:
-          enum:
-          - filter-1.0
-          - filter-2.0
-          type: string
-    LinksResponse:
-      type: object
-      example:
-        next:
-          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-        prev:
-          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-        self:
-          href: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-      required:
-      - next
-      - prev
-      - self
-      properties:
-        next:
-          $ref: '#/components/schemas/LinkResponse'
-        prev:
-          $ref: '#/components/schemas/LinkResponse'
-        self:
-          $ref: '#/components/schemas/LinkResponse'
-      additionalProperties: false
-    FilterVariable:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          example: variable 1
-        value:
-          type: string
-          example: v1
-        evaluate:
-          type: boolean
-          example: true
-    Float64:
-      type: number
-      format: float64
-      x-go-type:
-        type: Float64
-        import:
-          alias: cModels
-          package: github.com/qlik-trial/reporting-service/v10/pkg/models
-    LinkResponse:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-      additionalProperties: false
-    FilterList:
-      type: object
-      readOnly: true
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilterListItem'
-          description: a list of filters containing all the filters properties (like name,description...) except the filter definition (like FilterV1_0)
-        links:
-          $ref: '#/components/schemas/LinksResponse'

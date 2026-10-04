@@ -489,6 +489,15 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    errorResponseCodeCopy:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
     recommendedAnswer:
       type: object
       required:
@@ -502,11 +511,17 @@ components:
           type: string
           example: text | markdown | html
           description: Answer type of content.
-    resultMeta:
+    errorResponseCopy:
       type: object
       properties:
-        countTotal:
-          type: integer
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
     Starter:
       type: object
       required:
@@ -548,55 +563,6 @@ components:
           description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
         recommendedAnswer:
           $ref: '#/components/schemas/recommendedAnswer'
-    errorResponseCopy:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCodeCopy'
-            x-qlik-merge-conflict: true
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-    createStarter:
-      type: object
-      required:
-      - question
-      properties:
-        question:
-          type: string
-          example: Where was Genghis Khan buried?
-          description: Starter sample question.
-        followups:
-          type: array
-          items:
-            $ref: '#/components/schemas/followup'
-          maxItems: 5
-          description: List of followups.
-        additionalContext:
-          type: string
-          description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
-        recommendedAnswer:
-          $ref: '#/components/schemas/recommendedAnswer'
-    errorResponseCodeCopy:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
     pageLink:
       type: object
       properties:
@@ -625,6 +591,26 @@ components:
           description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
         recommendedAnswer:
           $ref: '#/components/schemas/recommendedAnswer'
+    createStarter:
+      type: object
+      required:
+      - question
+      properties:
+        question:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Starter sample question.
+        followups:
+          type: array
+          items:
+            $ref: '#/components/schemas/followup'
+          maxItems: 5
+          description: List of followups.
+        additionalContext:
+          type: string
+          description: Optional context collected from curated meant to be leveraged by LLM-based question recommendation system.
+        recommendedAnswer:
+          $ref: '#/components/schemas/recommendedAnswer'
     startersResult:
       type: object
       required:
@@ -638,3 +624,17 @@ components:
           $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'

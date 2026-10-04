@@ -217,155 +217,16 @@ paths:
         limit: 120
 components:
   schemas:
-    FileStatistics:
+    ErrorSource:
       type: object
       properties:
-        volume:
+        pointer:
           type: string
-          description: Volume of data processed (e.g. '10.91 MiB').
-        processedCount:
-          type: number
-          description: Number of files processed.
-      description: Statistics for file-based tasks.
-    DataTaskInstanceState:
-      type: object
-      properties:
-        state:
-          enum:
-          - STARTING
-          - RUNNING
-          - COMPLETED
-          - FAILED
-          - CANCELED
-          - STOPPING
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
           type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors encountered during the last run
-        endTime:
-          type: string
-          format: date-time
-          description: Timestamp indicating when the task instance ended
-        general:
-          type: object
-          properties:
-            gatewayId:
-              type: string
-              description: For tasks that run on a gateway, this is the id of the gateway
-            gatewayName:
-              type: string
-              description: For tasks that run on a gateway, this is the name of the gateway
-            datasetCount:
-              type: number
-              description: Total number of datasets produced by the task, including ones in error
-            gatewayTaskName:
-              type: string
-              description: For tasks that run on a gateway, this is the internal name of the task on the gateway
-            dataTaskUpdatedTo:
-              type: string
-              format: date-time
-              description: The latest point in time the data reflects, based on updates from the source system.
-            lakehouseClusterId:
-              type: string
-              description: For lakehouse storage tasks, this is the id of the cluster where the task runs
-            liveViewsUpdatedTo:
-              type: string
-              format: date-time
-              description: The latest point in time the live views reflect, based on updates from the source system.
-            datasetsInErrorCount:
-              type: number
-              description: Count of datasets that encountered errors
-            lakehouseClusterName:
-              type: string
-              description: For lakehouse storage tasks, this is the name of the cluster where the task runs
-          description: Overall task execution statistics including dataset counts, data freshness timestamps, and infrastructure details.
-        message:
-          type: string
-        traceId:
-          type: string
-          description: Trace identifier for the last run, useful for diagnostics and support
-        duration:
-          type: string
-          description: Duration in HH:MM:SS format (hours:minutes:seconds)
-        fullLoad:
-          type: object
-          properties:
-            errorCount:
-              type: number
-              description: Number of datasets that have failed full load in this task run
-            queuedCount:
-              type: number
-              description: Number of datasets that are queued for full load in this task run
-            loadingCount:
-              type: number
-              description: Number of datasets that are currently being loaded in this task run
-            completedCount:
-              type: number
-              description: Number of datasets that have completed full load in this task run
-          description: Statistics for the full load phase of the task run, tracking dataset processing progress.
-        cdcStatus:
-          type: object
-          properties:
-            latency:
-              type: string
-              example: 01:30:45
-              description: Duration in HH:MM:SS format (hours:minutes:seconds)
-            totalProcessedCount:
-              type: number
-            applyingChangesCount:
-              type: number
-            incomingChangesCount:
-              type: number
-              description: Number of incoming changes. Only relevant for 'Iceberg Storage' and 'Streaming Transform' tasks.
-            accumulatingChangesCount:
-              type: number
-            throughputInKilobytesPerSecond:
-              type: number
-              description: Throughput in kilobytes per second
-          description: Change Data Capture status information for tasks performing incremental updates, including latency and processing counts.
-        startTime:
-          type: string
-          format: date-time
-          description: Timestamp indicating when the task instance started
-        streaming:
-          type: object
-          properties:
-            latency:
-              type: string
-              description: Duration in HH:MM:SS format (hours:minutes:seconds)
-            errorCount:
-              type: number
-              description: Number of streaming datasets that have encountered errors
-            queuedCount:
-              type: number
-              description: Number of streaming datasets that are queued
-            runningCount:
-              type: number
-              description: Number of streaming datasets that are currently running
-            totalProcessedCount:
-              type: number
-              description: Total number of records processed
-          description: Real-time streaming statistics for tasks that continuously process data streams.
-        lastBatchOfChanges:
-          type: object
-          properties:
-            relatesToRecordsTo:
-              type: string
-              format: date-time
-              description: This batch ends with operational source changes from this time.
-            totalProcessedCount:
-              type: number
-            relatesToRecordsFrom:
-              type: string
-              format: date-time
-              description: This batch starts with operational source changes from this time.
-            throughputInRecordsPerSecond:
-              type: number
-              description: Throughput in records per second
-          description: Statistics for the most recent batch of changes processed during the task run, including timing and throughput metrics.
-      description: Represents the execution state of a task instance, including progress metrics, errors, and operation-specific statistics.
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     Error:
       type: object
       properties:
@@ -385,63 +246,6 @@ components:
           format: int32
           description: HTTP status code associated with the error.
       description: Represents a single error condition with details about what went wrong.
-    DataTaskType:
-      enum:
-      - LANDING
-      - STORAGE
-      - QVD_STORAGE
-      - TRANSFORM
-      - DATAMART
-      - REGISTERED_DATA
-      - REPLICATION
-      - DISTRIBUTION
-      - LAKE_LANDING
-      - KNOWLEDGE_MART
-      - FILE_BASED_KNOWLEDGE_MART
-      - LAKEHOUSE_STORAGE
-      - LAKEHOUSE_MIRROR
-      - STREAMING_LAKE_LANDING
-      - STREAMING_TRANSFORM
-      - REPLICATE_LANDING
-      type: string
-      x-enum-varnames:
-      - LANDING
-      - STORAGE
-      - QVD_STORAGE
-      - TRANSFORM
-      - DATAMART
-      - REGISTERED_DATA
-      - REPLICATION
-      - LAKE_LANDING
-      - KNOWLEDGE_MART
-      - FILE_BASED_KNOWLEDGE_MART
-      - LAKEHOUSE_STORAGE
-      - LAKEHOUSE_MIRROR
-      - STREAMING_LAKE_LANDING
-      - STREAMING_TRANSFORM
-      - REPLICATE_LANDING
-    DataTaskRuntimeState:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the data task
-        type:
-          $ref: '#/components/schemas/DataTaskType'
-        lastRun:
-          $ref: '#/components/schemas/DataTaskInstanceState'
-        runReadiness:
-          type: object
-          properties:
-            state:
-              enum:
-              - READY_TO_RUN
-              - ALREADY_RUNNING
-              - NOT_RUNNABLE
-              type: string
-            message:
-              type: string
-      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
     DataTaskDatasetState:
       type: object
       properties:
@@ -593,6 +397,31 @@ components:
               type: number
               description: Throughput in records per second
       description: Represents the execution state of a single dataset within a task run, including full load, CDC, and streaming progress.
+    StartTaskReq:
+      type: object
+      properties:
+        option:
+          enum:
+          - PROCESS_CHANGES_FROM_TIMESTAMP
+          - PROCESS_CHANGES_FROM_POSITION
+          - RECOVER_USING_LOCALLY_STORED_CHECKPOINT
+          type: string
+          description: Task run option for the task (optional, applies to Replication tasks only).
+        processChangesFrom:
+          type: string
+          description: The value indicating where to resume the process, either a timestamp or an offset depending on the run option (optional, applies to Replication tasks only).
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
     OperationStatistics:
       type: object
       properties:
@@ -609,38 +438,209 @@ components:
           type: number
           description: Number of update operations.
       description: Breakdown of operations for record-oriented tasks.
-    StartTaskReq:
+    DataTaskRuntimeState:
       type: object
       properties:
-        option:
+        name:
+          type: string
+          description: Name of the data task
+        type:
+          $ref: '#/components/schemas/DataTaskType'
+        lastRun:
+          $ref: '#/components/schemas/DataTaskInstanceState'
+        runReadiness:
+          type: object
+          properties:
+            state:
+              enum:
+              - READY_TO_RUN
+              - ALREADY_RUNNING
+              - NOT_RUNNABLE
+              type: string
+            message:
+              type: string
+      description: Represents the current or historical execution state of a data task, including progress information, error details, and dataset-level statistics.
+    DataTaskType:
+      enum:
+      - LANDING
+      - STORAGE
+      - QVD_STORAGE
+      - TRANSFORM
+      - DATAMART
+      - REGISTERED_DATA
+      - REPLICATION
+      - DISTRIBUTION
+      - LAKE_LANDING
+      - KNOWLEDGE_MART
+      - FILE_BASED_KNOWLEDGE_MART
+      - LAKEHOUSE_STORAGE
+      - LAKEHOUSE_MIRROR
+      - STREAMING_LAKE_LANDING
+      - STREAMING_TRANSFORM
+      - REPLICATE_LANDING
+      type: string
+      x-enum-varnames:
+      - LANDING
+      - STORAGE
+      - QVD_STORAGE
+      - TRANSFORM
+      - DATAMART
+      - REGISTERED_DATA
+      - REPLICATION
+      - LAKE_LANDING
+      - KNOWLEDGE_MART
+      - FILE_BASED_KNOWLEDGE_MART
+      - LAKEHOUSE_STORAGE
+      - LAKEHOUSE_MIRROR
+      - STREAMING_LAKE_LANDING
+      - STREAMING_TRANSFORM
+      - REPLICATE_LANDING
+    FileStatistics:
+      type: object
+      properties:
+        volume:
+          type: string
+          description: Volume of data processed (e.g. '10.91 MiB').
+        processedCount:
+          type: number
+          description: Number of files processed.
+      description: Statistics for file-based tasks.
+    DataTaskInstanceState:
+      type: object
+      properties:
+        state:
           enum:
-          - PROCESS_CHANGES_FROM_TIMESTAMP
-          - PROCESS_CHANGES_FROM_POSITION
-          - RECOVER_USING_LOCALLY_STORED_CHECKPOINT
+          - STARTING
+          - RUNNING
+          - COMPLETED
+          - FAILED
+          - CANCELED
+          - STOPPING
           type: string
-          description: Task run option for the task (optional, applies to Replication tasks only).
-        processChangesFrom:
-          type: string
-          description: The value indicating where to resume the process, either a timestamp or an offset depending on the run option (optional, applies to Replication tasks only).
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    Errors:
-      type: object
-      properties:
         errors:
           type: array
           items:
             $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
+          description: List of errors encountered during the last run
+        endTime:
+          type: string
+          format: date-time
+          description: Timestamp indicating when the task instance ended
+        general:
+          type: object
+          properties:
+            gatewayId:
+              type: string
+              description: For tasks that run on a gateway, this is the id of the gateway
+            gatewayName:
+              type: string
+              description: For tasks that run on a gateway, this is the name of the gateway
+            datasetCount:
+              type: number
+              description: Total number of datasets produced by the task, including ones in error
+            gatewayTaskName:
+              type: string
+              description: For tasks that run on a gateway, this is the internal name of the task on the gateway
+            dataTaskUpdatedTo:
+              type: string
+              format: date-time
+              description: The latest point in time the data reflects, based on updates from the source system.
+            lakehouseClusterId:
+              type: string
+              description: For lakehouse storage tasks, this is the id of the cluster where the task runs
+            liveViewsUpdatedTo:
+              type: string
+              format: date-time
+              description: The latest point in time the live views reflect, based on updates from the source system.
+            datasetsInErrorCount:
+              type: number
+              description: Count of datasets that encountered errors
+            lakehouseClusterName:
+              type: string
+              description: For lakehouse storage tasks, this is the name of the cluster where the task runs
+          description: Overall task execution statistics including dataset counts, data freshness timestamps, and infrastructure details.
+        message:
+          type: string
         traceId:
           type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+          description: Trace identifier for the last run, useful for diagnostics and support
+        duration:
+          type: string
+          description: Duration in HH:MM:SS format (hours:minutes:seconds)
+        fullLoad:
+          type: object
+          properties:
+            errorCount:
+              type: number
+              description: Number of datasets that have failed full load in this task run
+            queuedCount:
+              type: number
+              description: Number of datasets that are queued for full load in this task run
+            loadingCount:
+              type: number
+              description: Number of datasets that are currently being loaded in this task run
+            completedCount:
+              type: number
+              description: Number of datasets that have completed full load in this task run
+          description: Statistics for the full load phase of the task run, tracking dataset processing progress.
+        cdcStatus:
+          type: object
+          properties:
+            latency:
+              type: string
+              example: 01:30:45
+              description: Duration in HH:MM:SS format (hours:minutes:seconds)
+            totalProcessedCount:
+              type: number
+            applyingChangesCount:
+              type: number
+            incomingChangesCount:
+              type: number
+              description: Number of incoming changes. Only relevant for 'Iceberg Storage' and 'Streaming Transform' tasks.
+            accumulatingChangesCount:
+              type: number
+            throughputInKilobytesPerSecond:
+              type: number
+              description: Throughput in kilobytes per second
+          description: Change Data Capture status information for tasks performing incremental updates, including latency and processing counts.
+        startTime:
+          type: string
+          format: date-time
+          description: Timestamp indicating when the task instance started
+        streaming:
+          type: object
+          properties:
+            latency:
+              type: string
+              description: Duration in HH:MM:SS format (hours:minutes:seconds)
+            errorCount:
+              type: number
+              description: Number of streaming datasets that have encountered errors
+            queuedCount:
+              type: number
+              description: Number of streaming datasets that are queued
+            runningCount:
+              type: number
+              description: Number of streaming datasets that are currently running
+            totalProcessedCount:
+              type: number
+              description: Total number of records processed
+          description: Real-time streaming statistics for tasks that continuously process data streams.
+        lastBatchOfChanges:
+          type: object
+          properties:
+            relatesToRecordsTo:
+              type: string
+              format: date-time
+              description: This batch ends with operational source changes from this time.
+            totalProcessedCount:
+              type: number
+            relatesToRecordsFrom:
+              type: string
+              format: date-time
+              description: This batch starts with operational source changes from this time.
+            throughputInRecordsPerSecond:
+              type: number
+              description: Throughput in records per second
+          description: Statistics for the most recent batch of changes processed during the task run, including timing and throughput metrics.
+      description: Represents the execution state of a task instance, including progress metrics, errors, and operation-specific statistics.

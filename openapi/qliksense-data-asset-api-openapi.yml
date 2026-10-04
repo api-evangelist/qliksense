@@ -374,15 +374,6 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     DataStoreInfo:
       type: object
       required:
@@ -415,31 +406,6 @@ components:
           items:
             type: string
           uniqueItems: true
-    JsonPatch:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - add
-          - remove
-          - replace
-          - move
-          - copy
-          - test
-          type: string
-          description: The operation to be performed.
-        from:
-          type: string
-          description: A JSON Pointer path pointing to the location to move/copy from.
-        path:
-          type: string
-          description: A JSON pointer to the property being affected.
-        value:
-          type: object
-          description: The value to add, replace or test.
     DataAsset:
       type: object
       title: Data Asset
@@ -518,3 +484,37 @@ components:
           type: string
           maxLength: 1024
           minLength: 0
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+    JsonPatch:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - add
+          - remove
+          - replace
+          - move
+          - copy
+          - test
+          type: string
+          description: The operation to be performed.
+        from:
+          type: string
+          description: A JSON Pointer path pointing to the location to move/copy from.
+        path:
+          type: string
+          description: A JSON pointer to the property being affected.
+        value:
+          type: object
+          description: The value to add, replace or test.

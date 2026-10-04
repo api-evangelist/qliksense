@@ -40487,8 +40487,6 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
-  - Datasets
-  tags_raw:
   - Dataset
   properties:
   - type: OpenAPI

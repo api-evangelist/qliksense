@@ -346,14 +346,12 @@ paths:
         limit: 100
 components:
   schemas:
-    ApiKeysPatchSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/ApiKeyPatch'
-      example:
-      - op: replace
-        path: /description
-        value: my new description
+    RetryAfterHeader:
+      type: object
+      properties:
+        retry-after:
+          type: integer
+          description: The amount of seconds to wait before retrying the request.
     Error:
       type: object
       required:
@@ -432,12 +430,6 @@ components:
         description:
           type: string
           description: Text that describes the API key.
-    RetryAfterHeader:
-      type: object
-      properties:
-        retry-after:
-          type: integer
-          description: The amount of seconds to wait before retrying the request.
     Link:
       required:
       - href
@@ -446,64 +438,14 @@ components:
           type: string
           format: uri
           description: The URL for the link.
-    ApiKey:
+    Errors:
       type: object
-      required:
-      - id
-      - tenantId
-      - description
-      - status
-      - sub
-      - subType
-      - expiry
-      - createdByUser
       properties:
-        id:
-          type: string
-          format: uid
-          description: The unique ID for the resource.
-        sub:
-          type: string
-          example: SCIM\\215g5595380d646163cadbb9
-          description: The ID of the subject for the API key. For SCIM the format is `SCIM\\{{IDP-ID}}`, where `{{IDP-ID}}` is the ID of the IDP in Qlik. For users, use their user ID, e.g. `64ef645a3b7009d55dee5a2b`.
-        expiry:
-          type: string
-          format: date-time
-          description: When the API key will expire and no longer be a valid authentication token.
-        status:
-          enum:
-          - active
-          - expired
-          - revoked
-          type: string
-          description: The status of the API key.
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-          description: When the API key was created.
-        subType:
-          enum:
-          - user
-          - externalClient
-          type: string
-          description: Type of the subject. For SCIM, it should be `externalClient`.
-        tenantId:
-          type: string
-          format: uid
-          description: The tenant ID.
-        description:
-          type: string
-          description: A description for the API key.
-        lastUpdated:
-          type: string
-          format: date-time
-          readOnly: true
-          description: When the API key was last updated.
-        createdByUser:
-          type: string
-          format: uid
-          description: The ID of the user who created the key.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors and their properties.
     ApiKeyPatch:
       type: object
       required:
@@ -586,11 +528,69 @@ components:
           type: string
           format: uid
           description: The id of the user who created the key.
-    Errors:
+    ApiKeysPatchSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiKeyPatch'
+      example:
+      - op: replace
+        path: /description
+        value: my new description
+    ApiKey:
       type: object
+      required:
+      - id
+      - tenantId
+      - description
+      - status
+      - sub
+      - subType
+      - expiry
+      - createdByUser
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors and their properties.
+        id:
+          type: string
+          format: uid
+          description: The unique ID for the resource.
+        sub:
+          type: string
+          example: SCIM\\215g5595380d646163cadbb9
+          description: The ID of the subject for the API key. For SCIM the format is `SCIM\\{{IDP-ID}}`, where `{{IDP-ID}}` is the ID of the IDP in Qlik. For users, use their user ID, e.g. `64ef645a3b7009d55dee5a2b`.
+        expiry:
+          type: string
+          format: date-time
+          description: When the API key will expire and no longer be a valid authentication token.
+        status:
+          enum:
+          - active
+          - expired
+          - revoked
+          type: string
+          description: The status of the API key.
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When the API key was created.
+        subType:
+          enum:
+          - user
+          - externalClient
+          type: string
+          description: Type of the subject. For SCIM, it should be `externalClient`.
+        tenantId:
+          type: string
+          format: uid
+          description: The tenant ID.
+        description:
+          type: string
+          description: A description for the API key.
+        lastUpdated:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When the API key was last updated.
+        createdByUser:
+          type: string
+          format: uid
+          description: The ID of the user who created the key.

@@ -129,15 +129,88 @@ paths:
         limit: 1000
 components:
   schemas:
-    ErrorResponse:
+    TableProfile:
       type: object
+      title: Table Profile
       properties:
-        errors:
+        name:
+          type: string
+          readOnly: true
+        sizeInBytes:
+          type: integer
+          format: int64
+          readOnly: true
+        numberOfRows:
+          type: integer
+          format: int64
+          readOnly: true
+        fieldProfiles:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+            $ref: '#/components/schemas/FieldProfile'
+          readOnly: true
+    Error:
+      type: object
+      properties:
+        code:
           type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    TableSample:
+      type: object
+      title: Table Sample
+      properties:
+        name:
+          type: string
+          readOnly: true
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableRecord'
+          readOnly: true
+        fieldNames:
+          type: array
+          items:
+            type: string
+          readOnly: true
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+    Frequency:
+      type: object
+      properties:
+        value:
+          type: string
+        frequency:
+          type: integer
+          format: int64
+    PageDataSetProfile:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSetProfile'
+        page:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        links:
+          $ref: '#/components/schemas/Links'
+        pages:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
     FieldProfile:
       type: object
       title: Field Profile
@@ -256,6 +329,63 @@ components:
         sumSquaredNumericValues:
           type: number
           format: double
+    Classification:
+      type: object
+      properties:
+        pii:
+          type: boolean
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        sensitive:
+          type: boolean
+        obfuscation:
+          type: string
+    DataSetProfile:
+      type: object
+      title: Data Set Profile
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProfileMetadata'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableSample'
+          readOnly: true
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableProfile'
+          readOnly: true
+    Tag:
+      type: object
+      properties:
+        tag:
+          type: string
+        score:
+          type: number
+          format: double
+    TableRecord:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+    Links:
+      type: object
+      properties:
+        last:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        first:
+          $ref: '#/components/schemas/Link'
     ProfileMetadata:
       type: object
       title: Profile Metadata
@@ -294,99 +424,6 @@ components:
         computationStartTime:
           type: string
           format: date-time
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
-    PageDataSetProfile:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataSetProfile'
-        page:
-          type: integer
-          format: int32
-        limit:
-          type: integer
-          format: int32
-        links:
-          $ref: '#/components/schemas/Links'
-        pages:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-    Frequency:
-      type: object
-      properties:
-        value:
-          type: string
-        frequency:
-          type: integer
-          format: int64
-    Classification:
-      type: object
-      properties:
-        pii:
-          type: boolean
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-        sensitive:
-          type: boolean
-        obfuscation:
-          type: string
-    TableRecord:
-      type: object
-      properties:
-        values:
-          type: array
-          items:
-            type: string
-    Links:
-      type: object
-      properties:
-        last:
-          $ref: '#/components/schemas/Link'
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        first:
-          $ref: '#/components/schemas/Link'
-    TableProfile:
-      type: object
-      title: Table Profile
-      properties:
-        name:
-          type: string
-          readOnly: true
-        sizeInBytes:
-          type: integer
-          format: int64
-          readOnly: true
-        numberOfRows:
-          type: integer
-          format: int64
-          readOnly: true
-        fieldProfiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldProfile'
-          readOnly: true
     BinnedFrequency:
       type: object
       properties:
@@ -396,49 +433,12 @@ components:
         frequency:
           type: integer
           format: int64
-    DataSetProfile:
-      type: object
-      title: Data Set Profile
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProfileMetadata'
-        samples:
-          type: array
-          items:
-            $ref: '#/components/schemas/TableSample'
-          readOnly: true
-        profiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/TableProfile'
-          readOnly: true
-    Tag:
+    ErrorResponse:
       type: object
       properties:
-        tag:
-          type: string
-        score:
-          type: number
-          format: double
-    TableSample:
-      type: object
-      title: Table Sample
-      properties:
-        name:
-          type: string
-          readOnly: true
-        records:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/TableRecord'
-          readOnly: true
-        fieldNames:
-          type: array
-          items:
-            type: string
-          readOnly: true
-    Link:
-      type: object
-      properties:
-        href:
+            $ref: '#/components/schemas/Error'
+        traceId:
           type: string

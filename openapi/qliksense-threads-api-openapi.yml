@@ -907,11 +907,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
     Message:
       type: object
       required:
@@ -944,279 +939,6 @@ components:
           example: '2021-10-02T14:20:50.52Z'
           readOnly: true
           description: Datetime when the interaction was created.
-    createThread:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          example: Initial conversation
-          description: The name of the thread.
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the thread was created.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the thread was updated.
-        useUserPreferredLanguage:
-          type: boolean
-          example: false
-          description: Whether the thread should use the user's preferred language.
-    Feedback:
-      type: object
-      required:
-      - id
-      - vote
-      - createdAt
-      - sources
-      - reviewStatus
-      - reason
-      - reviewerId
-      - comment
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 507f191e810c19729de860ea
-          description: Unique feedback identifier.
-        vote:
-          type: integer
-          example: 1
-          description: Integer representation of feedback given (-1 = negative, 1 = positive).
-        reason:
-          type: string
-          example: inaccurate | irrelevant | repetitive | unhelpful | other
-          description: Reason for feedback.
-        comment:
-          type: string
-          description: Optional comment for feedback.
-        reviewedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          description: Datetime when the feedback was reviewed.
-        reviewerId:
-          type: string
-          format: uuid
-          example: 507f191e810c19729de860ea
-          description: Unique feedback reviewer identifier.
-        reviewStatus:
-          type: string
-          example: reviewed | unreviewed
-          description: Feedback review status.
-    Interaction:
-      type: object
-      required:
-      - id
-      - request
-      - response
-      - createdAt
-      - updatedAt
-      - sources
-      - ownerId
-      - threadId
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-        ownerId:
-          type: string
-          example: 65e310c43fb1cf46654e0878
-          description: Unique identifier of user which created the interaction.
-        request:
-          type: string
-          example: Where was Genghis Khan buried?
-          description: Interaction request content.
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageSource'
-          description: List of sources used to generate AI messages (interactions).
-        feedback:
-          $ref: '#/components/schemas/Feedback'
-        rejected:
-          type: boolean
-          example: true
-          description: Indicator the system marked request as suspicious.
-        response:
-          type: string
-          example: Somewhere in an unmarked grave
-          description: Interaction response content.
-        threadId:
-          type: string
-          format: uuid
-          example: 125c24c4-668c-4c97-bef8-30d910169913
-          description: ID of the thread to which the interaction belongs.
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the interaction was created.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:55.52Z'
-          readOnly: true
-          description: Datetime when the interaction was updated.
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          - add
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    MessageSource:
-      type: object
-      required:
-      - knowledgebaseId
-      - datasourceId
-      - documentId
-      - source
-      - chunks
-      properties:
-        chunks:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageSourceChunk'
-          description: List of Chunks used for "AI" generated messages.
-        source:
-          type: string
-          example: Reference.md
-          description: Path to the document used.
-        documentId:
-          type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-          description: Reference to Document used for "AI" generated messages.
-        datasourceId:
-          type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-          description: Reference to DataSource used for "AI" generated messages.
-        lastIndexedAt:
-          type: string
-          example: '2021-10-02T14:20:50.52Z'
-          description: Datetime when the knowledgebase was last indexed.
-        knowledgebaseId:
-          type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-          description: Reference to KnowledgeBase used for "AI" generated messages.
-    createInteraction:
-      type: object
-      required:
-      - request
-      - response
-      - sources
-      properties:
-        request:
-          type: string
-          example: Where was Genghis Khan buried?
-          description: Interaction request content.
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageSource'
-          description: List of sources used to generate AI messages (interactions).
-        rejected:
-          type: boolean
-          example: true
-          description: Indicator the system marked request as suspicious.
-        response:
-          type: string
-          example: Somewhere in an unmarked grave
-          description: Interaction response content.
-        rejectionReason:
-          $ref: '#/components/schemas/rejectionReason'
-    feedbackSummary:
-      type: object
-      required:
-      - likes
-      - dislikes
-      - interactions
-      - reviews
-      properties:
-        likes:
-          type: integer
-          description: Amount of likes for a thread or an assistant.
-        other:
-          type: integer
-          description: Count of answers which users disliked and gave "other" as reason.
-        reviews:
-          type: integer
-          description: Amount of reviews for a thread or an assistant.
-        dislikes:
-          type: integer
-          description: Amount of dislikes for a thread or an assistant.
-        unhelpful:
-          type: integer
-          description: Count of answers which users marked as "unhelpful".
-        inaccurate:
-          type: integer
-          description: Count of answers which users marked as "inaccurate".
-        irrelevant:
-          type: integer
-          description: Count of answers which users marked as "irrelevant".
-        repetitive:
-          type: integer
-          description: Count of answers which users marked as "repetitive".
-        unanswered:
-          type: integer
-          description: Count of questions for which the assistant provided no answer.
-        interactions:
-          type: integer
-          description: Amount of interactions for a thread or an assistant.
-    createReview:
-      type: object
-      required:
-      - reviewStatus
-      properties:
-        reviewStatus:
-          type: string
-          example: reviewed | unreviewed
-          description: Review status.
-    createFeedback:
-      type: object
-      required:
-      - vote
-      - reason
-      properties:
-        vote:
-          type: integer
-          example: 1
-          description: Integer representation of feedback given (-1 = negative, 1 = positive).
-        reason:
-          type: string
-          example: inaccurate | irrelevant | repetitive | unhelpful | other
-          description: Reason for feedback.
-        comment:
-          type: string
-          description: Optional comment for feedback.
     Thread:
       type: object
       required:
@@ -1278,19 +1000,31 @@ components:
           default: false
           example: false
           description: If the thread should respond in the user's preferred language.
-    MessageSourceChunk:
+    rejectionReason:
+      enum:
+      - 1
+      - 2
+      - 3
+      type: integer
+      example: 1
+      description: "Rejection reason for a question:\n  * 1 - PROMPT_INJECTION\n  * 2 - OUT_OF_CONTEXT\n  * 3 - TOO_COMPLEX\n"
+    createFeedback:
       type: object
       required:
-      - chunkId
+      - vote
+      - reason
       properties:
-        text:
+        vote:
+          type: integer
+          example: 1
+          description: Integer representation of feedback given (-1 = negative, 1 = positive).
+        reason:
           type: string
-          description: Chunk text for "AI" generated message source.
-        chunkId:
+          example: inaccurate | irrelevant | repetitive | unhelpful | other
+          description: Reason for feedback.
+        comment:
           type: string
-          format: uuid
-          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
-          description: Chunk unique identifier for "AI" generated message source.
+          description: Optional comment for feedback.
     errorResponseCodeCopy:
       type: object
       properties:
@@ -1300,24 +1034,43 @@ components:
           type: string
         detail:
           type: string
-    threadPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /name
-        value: new name
-      description: An array of JSON Patch documents.
-    feedbackPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /reason
-        value: irrelevant
-      description: An array of JSON Patch documents.
+    MessageSource:
+      type: object
+      required:
+      - knowledgebaseId
+      - datasourceId
+      - documentId
+      - source
+      - chunks
+      properties:
+        chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageSourceChunk'
+          description: List of Chunks used for "AI" generated messages.
+        source:
+          type: string
+          example: Reference.md
+          description: Path to the document used.
+        documentId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: Reference to Document used for "AI" generated messages.
+        datasourceId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: Reference to DataSource used for "AI" generated messages.
+        lastIndexedAt:
+          type: string
+          example: '2021-10-02T14:20:50.52Z'
+          description: Datetime when the knowledgebase was last indexed.
+        knowledgebaseId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: Reference to KnowledgeBase used for "AI" generated messages.
     interactionsResult:
       type: object
       required:
@@ -1331,44 +1084,84 @@ components:
           $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
-    errorResponseCopy:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCodeCopy'
-            x-qlik-merge-conflict: true
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
     pageLink:
       type: object
       properties:
         href:
           type: string
-    threadsResult:
+    MessageSourceChunk:
       type: object
       required:
-      - data
+      - chunkId
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Thread'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
-        links:
-          $ref: '#/components/schemas/pageLinks'
+        text:
+          type: string
+          description: Chunk text for "AI" generated message source.
+        chunkId:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+          description: Chunk unique identifier for "AI" generated message source.
+    feedbackPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /reason
+        value: irrelevant
+      description: An array of JSON Patch documents.
+    Feedback:
+      type: object
+      required:
+      - id
+      - vote
+      - createdAt
+      - sources
+      - reviewStatus
+      - reason
+      - reviewerId
+      - comment
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique feedback identifier.
+        vote:
+          type: integer
+          example: 1
+          description: Integer representation of feedback given (-1 = negative, 1 = positive).
+        reason:
+          type: string
+          example: inaccurate | irrelevant | repetitive | unhelpful | other
+          description: Reason for feedback.
+        comment:
+          type: string
+          description: Optional comment for feedback.
+        reviewedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          description: Datetime when the feedback was reviewed.
+        reviewerId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: Unique feedback reviewer identifier.
+        reviewStatus:
+          type: string
+          example: reviewed | unreviewed
+          description: Feedback review status.
+    threadPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      description: An array of JSON Patch documents.
     ThreadWithMessages:
       type: object
       required:
@@ -1436,11 +1229,218 @@ components:
           default: false
           example: false
           description: If the thread should respond in the user's preferred language.
-    rejectionReason:
-      enum:
-      - 1
-      - 2
-      - 3
-      type: integer
-      example: 1
-      description: "Rejection reason for a question:\n  * 1 - PROMPT_INJECTION\n  * 2 - OUT_OF_CONTEXT\n  * 3 - TOO_COMPLEX\n"
+    errorResponseCopy:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    createInteraction:
+      type: object
+      required:
+      - request
+      - response
+      - sources
+      properties:
+        request:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Interaction request content.
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageSource'
+          description: List of sources used to generate AI messages (interactions).
+        rejected:
+          type: boolean
+          example: true
+          description: Indicator the system marked request as suspicious.
+        response:
+          type: string
+          example: Somewhere in an unmarked grave
+          description: Interaction response content.
+        rejectionReason:
+          $ref: '#/components/schemas/rejectionReason'
+    feedbackSummary:
+      type: object
+      required:
+      - likes
+      - dislikes
+      - interactions
+      - reviews
+      properties:
+        likes:
+          type: integer
+          description: Amount of likes for a thread or an assistant.
+        other:
+          type: integer
+          description: Count of answers which users disliked and gave "other" as reason.
+        reviews:
+          type: integer
+          description: Amount of reviews for a thread or an assistant.
+        dislikes:
+          type: integer
+          description: Amount of dislikes for a thread or an assistant.
+        unhelpful:
+          type: integer
+          description: Count of answers which users marked as "unhelpful".
+        inaccurate:
+          type: integer
+          description: Count of answers which users marked as "inaccurate".
+        irrelevant:
+          type: integer
+          description: Count of answers which users marked as "irrelevant".
+        repetitive:
+          type: integer
+          description: Count of answers which users marked as "repetitive".
+        unanswered:
+          type: integer
+          description: Count of questions for which the assistant provided no answer.
+        interactions:
+          type: integer
+          description: Amount of interactions for a thread or an assistant.
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          - add
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    createThread:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: Initial conversation
+          description: The name of the thread.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the thread was created.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the thread was updated.
+        useUserPreferredLanguage:
+          type: boolean
+          example: false
+          description: Whether the thread should use the user's preferred language.
+    threadsResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thread'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
+        links:
+          $ref: '#/components/schemas/pageLinks'
+    createReview:
+      type: object
+      required:
+      - reviewStatus
+      properties:
+        reviewStatus:
+          type: string
+          example: reviewed | unreviewed
+          description: Review status.
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    Interaction:
+      type: object
+      required:
+      - id
+      - request
+      - response
+      - createdAt
+      - updatedAt
+      - sources
+      - ownerId
+      - threadId
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 10d347c4-f28a-4faf-93f0-48e781aaf303
+        ownerId:
+          type: string
+          example: 65e310c43fb1cf46654e0878
+          description: Unique identifier of user which created the interaction.
+        request:
+          type: string
+          example: Where was Genghis Khan buried?
+          description: Interaction request content.
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageSource'
+          description: List of sources used to generate AI messages (interactions).
+        feedback:
+          $ref: '#/components/schemas/Feedback'
+        rejected:
+          type: boolean
+          example: true
+          description: Indicator the system marked request as suspicious.
+        response:
+          type: string
+          example: Somewhere in an unmarked grave
+          description: Interaction response content.
+        threadId:
+          type: string
+          format: uuid
+          example: 125c24c4-668c-4c97-bef8-30d910169913
+          description: ID of the thread to which the interaction belongs.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the interaction was created.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:55.52Z'
+          readOnly: true
+          description: Datetime when the interaction was updated.
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'

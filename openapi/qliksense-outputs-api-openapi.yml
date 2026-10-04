@@ -169,6 +169,25 @@ paths:
         limit: 1000
 components:
   schemas:
+    SelectionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/SelectionError'
+      description: Errors occurring in selections.
+    QFieldValue:
+      properties:
+        text:
+          type: string
+          example: '2021'
+          description: String value of the field value.
+        number:
+          $ref: '#/components/schemas/Float64'
+        isNumeric:
+          type: boolean
+          example: true
+          x-nullable: true
+          description: IsNumeric tells whether the field value is text or number. Default value is equal to defaultIsNumeric property in QSelection.
+      description: In order to apply a selection just one of text/number needs to be set, this must be associated with the correct isNumeric bool. In some scenarios both text and number may be set.
     ExportErrors:
       type: array
       items:
@@ -192,22 +211,6 @@ components:
           type: string
           description: Optional. MAY be used to provide more concrete details.
       description: Error occured during report generation.
-    AppError:
-      properties:
-        appId:
-          type: string
-          example: 11ecf638-0be4-4b94-a9e6-91218f34e175
-          description: app id
-        method:
-          type: string
-          example: GetObject
-          description: The method that is failing.
-        parameters:
-          type: object
-          description: Parameters of method that fails.
-          additionalProperties:
-            type: string
-      description: Error in resource handling
     Error:
       type: object
       properties:
@@ -220,44 +223,37 @@ components:
         selectionErrors:
           $ref: '#/components/schemas/SelectionErrors'
       description: Define the export error metadata. Each property is filled if it is related to the export error type.
-    AppErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/AppError'
-      description: Errors occurring when dealing with the app.
-    QFieldValue:
+    SelectionError:
       properties:
-        text:
+        detail:
           type: string
-          example: '2021'
-          description: String value of the field value.
-        number:
-          $ref: '#/components/schemas/Float64'
-        isNumeric:
-          type: boolean
-          example: true
-          x-nullable: true
-          description: IsNumeric tells whether the field value is text or number. Default value is equal to defaultIsNumeric property in QSelection.
-      description: In order to apply a selection just one of text/number needs to be set, this must be associated with the correct isNumeric bool. In some scenarios both text and number may be set.
-    SelectionErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/SelectionError'
-      description: Errors occurring in selections.
-    OutputList:
-      type: object
-      readOnly: true
-      required:
-      - data
-      - links
-      properties:
-        data:
+          description: Details about the field selection error.
+        errorType:
+          enum:
+          - fieldMissing
+          - fieldValuesMissing
+          - stateMissing
+          - groupStateGroupMissing
+          - groupStateGroupNotApplicable
+          - groupStateFieldDefMissing
+          type: string
+        fieldName:
+          type: string
+          example: Year
+          description: The field name that is missing.
+        stateName:
+          type: string
+          description: The state name that is missing.
+        missingValues:
           type: array
           items:
-            $ref: '#/components/schemas/OutputListItem'
-          description: a list of outputs containing all the report outputs
-        links:
-          $ref: '#/components/schemas/LinksResponse'
+            $ref: '#/components/schemas/QFieldValue'
+        isFieldNameMissing:
+          type: boolean
+          example: false
+          description: Deprecated, use errorType instead. True if the fieldName is missing. The missingValues array is empty in this case
+          x-qlik-deprecated: true
+      description: Selection error related to a fieldName. The field name is missing or some of his selection values are missing or a state is missing
     OutputListItem:
       type: object
       properties:
@@ -294,57 +290,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QSelection'
-    SelectionError:
+    AppError:
       properties:
-        detail:
+        appId:
           type: string
-          description: Details about the field selection error.
-        errorType:
-          enum:
-          - fieldMissing
-          - fieldValuesMissing
-          - stateMissing
-          - groupStateGroupMissing
-          - groupStateGroupNotApplicable
-          - groupStateFieldDefMissing
+          example: 11ecf638-0be4-4b94-a9e6-91218f34e175
+          description: app id
+        method:
           type: string
-        fieldName:
-          type: string
-          example: Year
-          description: The field name that is missing.
-        stateName:
-          type: string
-          description: The state name that is missing.
-        missingValues:
-          type: array
-          items:
-            $ref: '#/components/schemas/QFieldValue'
-        isFieldNameMissing:
-          type: boolean
-          example: false
-          description: Deprecated, use errorType instead. True if the fieldName is missing. The missingValues array is empty in this case
-          x-qlik-deprecated: true
-      description: Selection error related to a fieldName. The field name is missing or some of his selection values are missing or a state is missing
-    QSelection:
-      required:
-      - fieldName
-      - values
-      - defaultIsNumeric
+          example: GetObject
+          description: The method that is failing.
+        parameters:
+          type: object
+          description: Parameters of method that fails.
+          additionalProperties:
+            type: string
+      description: Error in resource handling
+    LinkResponse:
+      type: object
       properties:
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/QFieldValue'
-          maxItems: 150000
-          description: The values of the field to be selected.
-        fieldName:
-          type: string
-          example: Year
-          description: The name of the field to be selected.
-        defaultIsNumeric:
-          type: boolean
-          example: true
-          description: Default value that QFieldValue isNumeric property takes if missing.
+        href:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
+      additionalProperties: false
     LinksResponse:
       type: object
       example:
@@ -366,6 +337,31 @@ components:
         self:
           $ref: '#/components/schemas/LinkResponse'
       additionalProperties: false
+    QSelection:
+      required:
+      - fieldName
+      - values
+      - defaultIsNumeric
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/QFieldValue'
+          maxItems: 150000
+          description: The values of the field to be selected.
+        fieldName:
+          type: string
+          example: Year
+          description: The name of the field to be selected.
+        defaultIsNumeric:
+          type: boolean
+          example: true
+          description: Default value that QFieldValue isNumeric property takes if missing.
+    AppErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/AppError'
+      description: Errors occurring when dealing with the app.
     Float64:
       type: number
       format: float64
@@ -374,13 +370,17 @@ components:
         import:
           alias: cModels
           package: github.com/qlik-trial/reporting-service/v10/pkg/models
-    LinkResponse:
+    OutputList:
       type: object
+      readOnly: true
+      required:
+      - data
+      - links
       properties:
-        href:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://tenant.qlik-cloud.com:443/api/v1/apps/816e23e1-03d2-446b-8721-cdee6b5e59cf/report-filters?filter=&filterTypes=REP&filterTypes=REP&limit=20&page=0&sort=%2Bname
-      additionalProperties: false
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutputListItem'
+          description: a list of outputs containing all the report outputs
+        links:
+          $ref: '#/components/schemas/LinksResponse'

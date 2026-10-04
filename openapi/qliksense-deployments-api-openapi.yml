@@ -340,42 +340,216 @@ paths:
         tier: '2'
         limit: 100
 components:
-  schemas:
-    DeployedModelIds:
-      type: array
-      items:
+  parameters:
+    deploymentsSort:
+      in: query
+      name: sort
+      style: form
+      schema:
+        $ref: '#/components/schemas/EnumSortDeployments'
+      example: sort=field1,+field2,-field3,...
+      required: false
+      description: 'Field(s) by which to sort response
+
+        '
+    deploymentsFilter:
+      in: query
+      name: filter
+      style: deepObject
+      schema:
         type: string
-        format: uuid
-        description: ID of a modelID within the tenant
-      description: IDs of all models deployed to the deployment
-    ErrorMessage:
+      example: '`filter=spaceId eq "UUID" and predictionEnabled eq "true" and nameContains co "abc"`'
+      required: false
+      description: 'Deployment fields by which you can filter responses.<br><br>
+
+        - `spaceId` ID string (or empty string for personal space) - ID of space in which deployment(s) exist
+
+        - `modelId` UUID string - By model ID
+
+        - `createdBy` ID string
+
+        - `ownerId` ID string
+
+        - `experimentId` UUID string - ID of experiment in which model(s) exist
+
+        - `experimentVersionId` UUID string - ID of experiment version in which model(s) exist
+
+        - `predictionId` UUID string - ID of prediction which exists on deployment
+
+        - `predictionEnabled` boolean - Are predictions enabled
+
+        - `exactName` string - Deployments with exact name. Names may not be unique.
+
+        - `nameContains` string - Deployments where name includes this. Names may not be unique
+
+        - `experimentType` string - Deployments that have models of the experiment type
+
+        '
+    offset:
+      in: query
+      name: offset
+      schema:
+        type: integer
+      example: 32
+      required: false
+      description: Number of rows to skip before getting page[size]
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 32
+        maximum: 100
+      example: 10
+      required: false
+      description: Number of results per page. Default is 32.
+    deploymentId:
+      in: path
+      name: deploymentId
+      schema:
+        type: string
+      required: true
+      description: ID of the deployment
+  schemas:
+    SpaceId:
       type: string
-      description: JSON string of error object
-    CreatedBy:
-      type: string
-      description: ID of the owner/user that created this entity.
+      description: Space ID for this entity (empty string for personal space)
       x-qlik-filterable: true
-    FindResponseMeta:
+    EntityDescription:
+      type: string
+      description: Description of this entity
+    AnyType:
+      description: Use for fields that can be `any` type (string, number, etc.)
+    CreatedAt:
+      type: string
+      description: Timestamp when this was created
+    EntityName:
+      type: string
+      description: Name of this entity
+      x-qlik-filterable: true
+    DeployedModelsInput:
       type: object
       required:
-      - count
+      - data
       properties:
-        count:
-          type: integer
-      description: Meta for FIND operations
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              enum:
+              - deployed-models
+              type: string
+              default: deployed-models
+            attributes:
+              type: object
+              required:
+              - deployedModelIds
+              properties:
+                deployedModelIds:
+                  $ref: '#/components/schemas/DeployedModelIds'
+              additionalProperties: false
+          additionalProperties: false
+      description: Input values for adding deployed models to a deployment
       additionalProperties: false
-    Failure:
+    Deployment:
       type: object
       required:
-      - errors
+      - id
+      - createdAt
+      - updatedAt
+      - name
+      - spaceId
+      - description
+      - modelId
+      - enablePredictions
+      - deprecated
+      - createdBy
+      - ownerId
       properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        name:
+          $ref: '#/components/schemas/EntityName'
         errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/APIError'
-          uniqueItems: true
-        traceId:
+          $ref: '#/components/schemas/Errors'
+        modelId:
+          $ref: '#/components/schemas/ModelId'
+        ownerId:
+          $ref: '#/components/schemas/OwnerId'
+        spaceId:
+          $ref: '#/components/schemas/SpaceId'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        createdBy:
+          $ref: '#/components/schemas/CreatedBy'
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+        deprecated:
+          type: boolean
+          description: Whether this deployment is deprecated
+        description:
+          $ref: '#/components/schemas/EntityDescription'
+        errorMessage:
+          $ref: '#/components/schemas/ErrorMessage'
+        deployedModelIds:
+          $ref: '#/components/schemas/DeployedModelIds'
+        enablePredictions:
+          type: boolean
+          description: Whether to allow predictions
+          x-qlik-filterable: true
+      description: 'A deployed model against which you can run predictions
+
+        '
+      additionalProperties: false
+    ModelId:
+      type: string
+      format: uuid
+      description: ID of the model
+      x-qlik-filterable: true
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
           type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
       additionalProperties: false
     DeploymentInput:
       type: object
@@ -413,6 +587,22 @@ components:
           additionalProperties: false
       description: Input for creating a new deployment
       additionalProperties: false
+    EnumSortDeployments:
+      enum:
+      - createdAt
+      - +createdAt
+      - -createdAt
+      - name
+      - +name
+      - -name
+      - updatedAt
+      - +updatedAt
+      - -updatedAt
+      type: string
+    OwnerId:
+      type: string
+      description: ID of owner/user for this entity
+      x-qlik-filterable: true
     DeploymentPatch:
       type: array
       items:
@@ -442,9 +632,56 @@ components:
             $ref: '#/components/schemas/AnyType'
         description: Values that can be patched.
         additionalProperties: false
-    EntityDescription:
-      type: string
-      description: Description of this entity
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/APIError'
+      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
+
+        '
+      description: JSON string with list of error objects
+    DeploymentFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - deployment
+                type: string
+              attributes:
+                $ref: '#/components/schemas/Deployment'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
     ResponseLinks:
       type: object
       required:
@@ -503,61 +740,6 @@ components:
                 '
       description: Resource links included in paginated responses
       additionalProperties: false
-    ModelId:
-      type: string
-      format: uuid
-      description: ID of the model
-      x-qlik-filterable: true
-    APIError:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: Qlik error code (not HTTP response status code)
-        meta:
-          type: object
-          properties:
-            issue:
-              type: string
-              description: The issue code
-            details:
-              type: string
-              description: Extra details for what may have caused the error
-            errorId:
-              type: string
-              description: The unique id of the error instance
-            argument:
-              type: string
-              description: The argument
-            resource:
-              type: string
-              description: The resource type that the error occurred on
-            resourceId:
-              type: string
-              description: The resource id that the error occurred on
-          description: 'Additional details about the error. These may vary by error.
-
-            '
-          additionalProperties: false
-        title:
-          type: string
-          description: Short summary of error
-        detail:
-          type: string
-          description: Description of the error
-      description: An error object
-      additionalProperties: false
-    Errors:
-      type: array
-      items:
-        $ref: '#/components/schemas/APIError'
-      example: '[{"code":"AML-145","title":"datasync dependent service error, service profile","errorId":"c1546687-ad5d-4002-87f6-8c9711298db1","meta":{"errorId":"c1546687-ad5d-4002-87f6-8c9711298db1"}}]
-
-        '
-      description: JSON string with list of error objects
     DeploymentPostResponse:
       type: object
       required:
@@ -585,35 +767,9 @@ components:
       format: uuid
       description: ID of this entity
       x-qlik-filterable: true
-    DeployedModelsInput:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          properties:
-            type:
-              enum:
-              - deployed-models
-              type: string
-              default: deployed-models
-            attributes:
-              type: object
-              required:
-              - deployedModelIds
-              properties:
-                deployedModelIds:
-                  $ref: '#/components/schemas/DeployedModelIds'
-              additionalProperties: false
-          additionalProperties: false
-      description: Input values for adding deployed models to a deployment
-      additionalProperties: false
-    AnyType:
-      description: Use for fields that can be `any` type (string, number, etc.)
+    ErrorMessage:
+      type: string
+      description: JSON string of error object
     DeploymentGetResponse:
       type: object
       required:
@@ -636,186 +792,68 @@ components:
               $ref: '#/components/schemas/Deployment'
           additionalProperties: false
       additionalProperties: false
-    EnumSortDeployments:
-      enum:
-      - createdAt
-      - +createdAt
-      - -createdAt
-      - name
-      - +name
-      - -name
-      - updatedAt
-      - +updatedAt
-      - -updatedAt
-      type: string
-    Deployment:
-      type: object
-      required:
-      - id
-      - createdAt
-      - updatedAt
-      - name
-      - spaceId
-      - description
-      - modelId
-      - enablePredictions
-      - deprecated
-      - createdBy
-      - ownerId
-      properties:
-        id:
-          $ref: '#/components/schemas/EntityId'
-        name:
-          $ref: '#/components/schemas/EntityName'
-        errors:
-          $ref: '#/components/schemas/Errors'
-        modelId:
-          $ref: '#/components/schemas/ModelId'
-        ownerId:
-          $ref: '#/components/schemas/OwnerId'
-        spaceId:
-          $ref: '#/components/schemas/SpaceId'
-        createdAt:
-          $ref: '#/components/schemas/CreatedAt'
-        createdBy:
-          $ref: '#/components/schemas/CreatedBy'
-        updatedAt:
-          $ref: '#/components/schemas/UpdatedAt'
-        deprecated:
-          type: boolean
-          description: Whether this deployment is deprecated
-        description:
-          $ref: '#/components/schemas/EntityDescription'
-        errorMessage:
-          $ref: '#/components/schemas/ErrorMessage'
-        deployedModelIds:
-          $ref: '#/components/schemas/DeployedModelIds'
-        enablePredictions:
-          type: boolean
-          description: Whether to allow predictions
-          x-qlik-filterable: true
-      description: 'A deployed model against which you can run predictions
-
-        '
-      additionalProperties: false
-    OwnerId:
-      type: string
-      description: ID of owner/user for this entity
-      x-qlik-filterable: true
-    DeploymentFindResponse:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - type
-            - id
-            - attributes
-            properties:
-              id:
-                $ref: '#/components/schemas/EntityId'
-              type:
-                enum:
-                - deployment
-                type: string
-              attributes:
-                $ref: '#/components/schemas/Deployment'
-            additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/FindResponseMeta'
-        links:
-          $ref: '#/components/schemas/ResponseLinks'
-      additionalProperties: false
-    EntityName:
-      type: string
-      description: Name of this entity
-      x-qlik-filterable: true
-    CreatedAt:
-      type: string
-      description: Timestamp when this was created
-    SpaceId:
-      type: string
-      description: Space ID for this entity (empty string for personal space)
-      x-qlik-filterable: true
     UpdatedAt:
       type: string
       description: Timestamp when this was updated
-  parameters:
-    deploymentsSort:
-      in: query
-      name: sort
-      style: form
-      schema:
-        $ref: '#/components/schemas/EnumSortDeployments'
-      example: sort=field1,+field2,-field3,...
-      required: false
-      description: 'Field(s) by which to sort response
-
-        '
-    limit:
-      in: query
-      name: limit
-      schema:
-        type: integer
-        default: 32
-        maximum: 100
-      example: 10
-      required: false
-      description: Number of results per page. Default is 32.
-    deploymentId:
-      in: path
-      name: deploymentId
-      schema:
+    DeployedModelIds:
+      type: array
+      items:
         type: string
-      required: true
-      description: ID of the deployment
-    deploymentsFilter:
-      in: query
-      name: filter
-      style: deepObject
-      schema:
-        type: string
-      example: '`filter=spaceId eq "UUID" and predictionEnabled eq "true" and nameContains co "abc"`'
-      required: false
-      description: 'Deployment fields by which you can filter responses.<br><br>
-
-        - `spaceId` ID string (or empty string for personal space) - ID of space in which deployment(s) exist
-
-        - `modelId` UUID string - By model ID
-
-        - `createdBy` ID string
-
-        - `ownerId` ID string
-
-        - `experimentId` UUID string - ID of experiment in which model(s) exist
-
-        - `experimentVersionId` UUID string - ID of experiment version in which model(s) exist
-
-        - `predictionId` UUID string - ID of prediction which exists on deployment
-
-        - `predictionEnabled` boolean - Are predictions enabled
-
-        - `exactName` string - Deployments with exact name. Names may not be unique.
-
-        - `nameContains` string - Deployments where name includes this. Names may not be unique
-
-        - `experimentType` string - Deployments that have models of the experiment type
-
-        '
-    offset:
-      in: query
-      name: offset
-      schema:
-        type: integer
-      example: 32
-      required: false
-      description: Number of rows to skip before getting page[size]
+        format: uuid
+        description: ID of a modelID within the tenant
+      description: IDs of all models deployed to the deployment
+    FindResponseMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+      description: Meta for FIND operations
+      additionalProperties: false
+    CreatedBy:
+      type: string
+      description: ID of the owner/user that created this entity.
+      x-qlik-filterable: true
   responses:
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    204NoContent:
+      description: '`No Content`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
     404NotFound:
       content:
         application/json:
@@ -828,41 +866,3 @@ components:
           schema:
             $ref: '#/components/schemas/Failure'
       description: '`Unauthorized`'
-    FailureDefault:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unexpected Error`'
-    502BadGateway:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Gateway`'
-    500InternalError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Internal Error`'
-    403Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Forbidden`'
-    400BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Request`'
-    503ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Service Unavailable`'
-    204NoContent:
-      description: '`No Content`'

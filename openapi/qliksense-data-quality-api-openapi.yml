@@ -310,157 +310,6 @@ paths:
           description: Name of the tenant that will be called
 components:
   schemas:
-    FieldQualitiesFilterResponse:
-      type: object
-      required:
-      - fieldQualities
-      properties:
-        fieldQualities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetFieldQualityResult'
-          description: List of field quality results per dataset.
-      description: Response containing field quality results for the requested datasets.
-    DatasetQualityGlobalResultsResponse:
-      type: object
-      required:
-      - datasetId
-      - qualities
-      properties:
-        datasetId:
-          type: string
-          description: The unique identifier of the dataset.
-        qualities:
-          type: array
-          items:
-            $ref: '#/components/schemas/QualitiesGlobalResultsResponse'
-    DatasetListRequest:
-      type: object
-      required:
-      - datasetIds
-      properties:
-        datasetIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetIdType'
-          description: List of dataset IDs to retrieve results for.
-      description: Request containing a list of dataset IDs to filter on.
-    FieldTypeEnum:
-      enum:
-      - STANDARD
-      - SEMANTIC
-      type: string
-      example: STANDARD
-      description: The kind of the field type.
-    ComputedInformation:
-      type: object
-      required:
-      - at
-      - by
-      properties:
-        at:
-          type: string
-          format: date-time
-          example: '2023-10-01T12:00:00Z'
-          description: When the computation occurred.
-        by:
-          $ref: '#/components/schemas/ComputedUserInformation'
-      description: Metadata about the computation.
-    ConnectionIdType:
-      type: string
-      example: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the connection
-    QualityGlobalResultsResponse:
-      type: object
-      required:
-      - valid
-      - invalid
-      - empty
-      - total
-      - updatedAt
-      properties:
-        empty:
-          type: integer
-          format: int64
-          description: Number of empty sample cells.
-        total:
-          type: integer
-          format: int64
-          description: Total number of cells in the sample.
-        valid:
-          type: integer
-          format: int64
-          description: Number of valid sample cells.
-        invalid:
-          type: integer
-          format: int64
-          description: Number of invalid sample cells.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2023-10-01T12:00:00Z'
-          description: Timestamp of the most recent data quality computation for this dataset and connection.
-    FieldQualitiesFilterRequest:
-      type: object
-      required:
-      - datasets
-      properties:
-        datasets:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetFieldQualityRequestItem'
-          maxItems: 100
-          minItems: 1
-          description: List of datasets to retrieve field qualities for.
-    ExecutionError:
-      type: object
-      required:
-      - errorCode
-      properties:
-        reason:
-          type: string
-          description: A human-readable explanation of the failure.
-        errorCode:
-          type: string
-          description: The error code identifying the failure reason.
-        executedAt:
-          type: string
-          format: date-time
-          example: '2023-10-01T12:00:00Z'
-          description: Timestamp when the execution failed.
-      description: Details of an execution failure.
-    QualitiesAndErrorsResponse:
-      type: object
-      required:
-      - datasetId
-      - connectionId
-      - status
-      properties:
-        error:
-          $ref: '#/components/schemas/ExecutionError'
-        status:
-          $ref: '#/components/schemas/ExecutionStatus'
-        quality:
-          $ref: '#/components/schemas/QualityGlobalResultsResponse'
-        datasetId:
-          type: string
-          description: The ID of the dataset
-        connectionId:
-          type: string
-          description: The ID of the connection
-      description: Data quality global results or error for a specific dataset and connection.
-    ExecutionStatus:
-      enum:
-      - PROFILE_REQUESTED
-      - PROFILE_FAILED
-      - REQUESTED
-      - SUBMITTED
-      - SUCCEEDED
-      - FAILED
-      type: string
-      example: SUCCEEDED
-      description: Status of a data quality computation.
     ComputedUserInformation:
       type: object
       required:
@@ -470,101 +319,6 @@ components:
           type: string
           description: Identifier of the user.
       description: Details about the user who computed the quality.
-    DataQualityByDatasetIdResponse:
-      type: object
-      required:
-      - dataQualities
-      properties:
-        dataQualities:
-          type: array
-          items:
-            $ref: '#/components/schemas/QualitiesAndErrorsResponse'
-          description: List of data quality results, one per dataset and connection pair.
-      description: Response containing data quality global results grouped by dataset.
-    DatasetFieldQualityRequestItem:
-      type: object
-      required:
-      - datasetId
-      properties:
-        datasetId:
-          $ref: '#/components/schemas/DatasetIdType'
-      description: A single dataset identifier in a field quality filter request.
-    FieldInformation:
-      type: object
-      required:
-      - kind
-      properties:
-        kind:
-          $ref: '#/components/schemas/FieldTypeEnum'
-        name:
-          type: string
-          example: customer_id
-          description: The name of the standard type (if applicable).
-        precision:
-          $ref: '#/components/schemas/PrecisionEnum'
-        semanticTypeId:
-          type: string
-          example: 9996fbb942b02a6987534999
-          description: The ID of the semantic type (if applicable).
-      description: Information about the type of the field.
-    PrecisionEnum:
-      enum:
-      - timestamp-millis
-      - timestamp-micros
-      - time-millis
-      - time-micros
-      - date
-      type: string
-      example: timestamp-millis
-      description: The precision of the type (e.g., for date/time fields).
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: List of errors that occurred.
-        traceId:
-          type: string
-          description: Trace identifier for debugging purposes.
-      description: Standard error response wrapper.
-    SchemaRulesQuality:
-      type: object
-      properties:
-        ruleId:
-          type: string
-          description: The unique identifier of the rule.
-        quality:
-          $ref: '#/components/schemas/SchemaRuleQuality'
-        ruleMappingId:
-          type: string
-          description: The unique identifier of the rule mapping.
-      description: Quality assessment for a specific rule applied to a field.
-    DatasetIdType:
-      type: string
-      example: 669144f5aa2d642638ef1dd0
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the dataset
-    DatasetFieldQualityResult:
-      type: object
-      required:
-      - datasetId
-      - computed
-      - fields
-      properties:
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldQuality'
-          description: List of fields and their quality metrics.
-        computed:
-          $ref: '#/components/schemas/ComputedInformation'
-        datasetId:
-          $ref: '#/components/schemas/DatasetIdType'
-      description: Field quality results for a single dataset.
     FieldQuality:
       type: object
       required:
@@ -596,31 +350,96 @@ components:
           type: string
           description: A human-readable explanation of the error.
       description: An individual error detail.
-    AggregatedQualityMetrics:
+    FieldInformation:
+      type: object
+      required:
+      - kind
+      properties:
+        kind:
+          $ref: '#/components/schemas/FieldTypeEnum'
+        name:
+          type: string
+          example: customer_id
+          description: The name of the standard type (if applicable).
+        precision:
+          $ref: '#/components/schemas/PrecisionEnum'
+        semanticTypeId:
+          type: string
+          example: 9996fbb942b02a6987534999
+          description: The ID of the semantic type (if applicable).
+      description: Information about the type of the field.
+    ConnectionIdType:
+      type: string
+      example: 2b855c3d-426c-4aac-90cf-0edf9fc294d3
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
+    QualitiesGlobalResultsResponse:
+      type: object
+      required:
+      - connectionId
+      properties:
+        quality:
+          $ref: '#/components/schemas/QualityGlobalResultsResponse'
+        connectionId:
+          type: string
+          description: The unique identifier of the connection.
+    ComputedInformation:
+      type: object
+      required:
+      - at
+      - by
+      properties:
+        at:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+          description: When the computation occurred.
+        by:
+          $ref: '#/components/schemas/ComputedUserInformation'
+      description: Metadata about the computation.
+    QualityGlobalResultsResponse:
       type: object
       required:
       - valid
       - invalid
       - empty
       - total
+      - updatedAt
       properties:
         empty:
           type: integer
           format: int64
-          description: Number of empty entries.
+          description: Number of empty sample cells.
         total:
           type: integer
           format: int64
-          description: Total number of entries.
+          description: Total number of cells in the sample.
         valid:
           type: integer
           format: int64
-          description: Number of valid entries.
+          description: Number of valid sample cells.
         invalid:
           type: integer
           format: int64
-          description: Number of invalid entries.
-      description: Aggregated metrics for the field.
+          description: Number of invalid sample cells.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+          description: Timestamp of the most recent data quality computation for this dataset and connection.
+    DatasetQualityGlobalResultsResponse:
+      type: object
+      required:
+      - datasetId
+      - qualities
+      properties:
+        datasetId:
+          type: string
+          description: The unique identifier of the dataset.
+        qualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/QualitiesGlobalResultsResponse'
     SchemaTypeQuality:
       type: object
       required:
@@ -646,6 +465,94 @@ components:
           format: int64
           description: Number of invalid sample cells.
       description: Quality metrics based on type validation.
+    DataQualityByDatasetIdResponse:
+      type: object
+      required:
+      - dataQualities
+      properties:
+        dataQualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/QualitiesAndErrorsResponse'
+          description: List of data quality results, one per dataset and connection pair.
+      description: Response containing data quality global results grouped by dataset.
+    FieldTypeEnum:
+      enum:
+      - STANDARD
+      - SEMANTIC
+      type: string
+      example: STANDARD
+      description: The kind of the field type.
+    FieldQualitiesFilterResponse:
+      type: object
+      required:
+      - fieldQualities
+      properties:
+        fieldQualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetFieldQualityResult'
+          description: List of field quality results per dataset.
+      description: Response containing field quality results for the requested datasets.
+    DatasetListRequest:
+      type: object
+      required:
+      - datasetIds
+      properties:
+        datasetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetIdType'
+          description: List of dataset IDs to retrieve results for.
+      description: Request containing a list of dataset IDs to filter on.
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: List of errors that occurred.
+        traceId:
+          type: string
+          description: Trace identifier for debugging purposes.
+      description: Standard error response wrapper.
+    Quality:
+      type: object
+      required:
+      - type
+      - aggregated
+      - rules
+      properties:
+        type:
+          $ref: '#/components/schemas/SchemaTypeQuality'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaRulesQuality'
+          description: Quality results per rule applied to this field.
+        aggregated:
+          $ref: '#/components/schemas/AggregatedQualityMetrics'
+      description: Quality metrics for the field.
+    DatasetIdType:
+      type: string
+      example: 669144f5aa2d642638ef1dd0
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
+    FieldQualitiesFilterRequest:
+      type: object
+      required:
+      - datasets
+      properties:
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetFieldQualityRequestItem'
+          maxItems: 100
+          minItems: 1
+          description: List of datasets to retrieve field qualities for.
     SchemaRuleQuality:
       type: object
       required:
@@ -683,30 +590,147 @@ components:
           format: int64
           description: Number of cells where the rule could not be executed.
       description: Detailed quality counts for a single rule.
-    Quality:
+    SchemaRulesQuality:
+      type: object
+      properties:
+        ruleId:
+          type: string
+          description: The unique identifier of the rule.
+        quality:
+          $ref: '#/components/schemas/SchemaRuleQuality'
+        ruleMappingId:
+          type: string
+          description: The unique identifier of the rule mapping.
+      description: Quality assessment for a specific rule applied to a field.
+    QualitiesAndErrorsResponse:
       type: object
       required:
-      - type
-      - aggregated
-      - rules
+      - datasetId
+      - connectionId
+      - status
       properties:
-        type:
-          $ref: '#/components/schemas/SchemaTypeQuality'
-        rules:
+        error:
+          $ref: '#/components/schemas/ExecutionError'
+        status:
+          $ref: '#/components/schemas/ExecutionStatus'
+        quality:
+          $ref: '#/components/schemas/QualityGlobalResultsResponse'
+        datasetId:
+          type: string
+          description: The ID of the dataset
+        connectionId:
+          type: string
+          description: The ID of the connection
+      description: Data quality global results or error for a specific dataset and connection.
+    PrecisionEnum:
+      enum:
+      - timestamp-millis
+      - timestamp-micros
+      - time-millis
+      - time-micros
+      - date
+      type: string
+      example: timestamp-millis
+      description: The precision of the type (e.g., for date/time fields).
+    DatasetFieldQualityRequestItem:
+      type: object
+      required:
+      - datasetId
+      properties:
+        datasetId:
+          $ref: '#/components/schemas/DatasetIdType'
+      description: A single dataset identifier in a field quality filter request.
+    AggregatedQualityMetrics:
+      type: object
+      required:
+      - valid
+      - invalid
+      - empty
+      - total
+      properties:
+        empty:
+          type: integer
+          format: int64
+          description: Number of empty entries.
+        total:
+          type: integer
+          format: int64
+          description: Total number of entries.
+        valid:
+          type: integer
+          format: int64
+          description: Number of valid entries.
+        invalid:
+          type: integer
+          format: int64
+          description: Number of invalid entries.
+      description: Aggregated metrics for the field.
+    DatasetFieldQualityResult:
+      type: object
+      required:
+      - datasetId
+      - computed
+      - fields
+      properties:
+        fields:
           type: array
           items:
-            $ref: '#/components/schemas/SchemaRulesQuality'
-          description: Quality results per rule applied to this field.
-        aggregated:
-          $ref: '#/components/schemas/AggregatedQualityMetrics'
-      description: Quality metrics for the field.
-    QualitiesGlobalResultsResponse:
+            $ref: '#/components/schemas/FieldQuality'
+          description: List of fields and their quality metrics.
+        computed:
+          $ref: '#/components/schemas/ComputedInformation'
+        datasetId:
+          $ref: '#/components/schemas/DatasetIdType'
+      description: Field quality results for a single dataset.
+    ExecutionError:
+      type: object
+      required:
+      - errorCode
+      properties:
+        reason:
+          type: string
+          description: A human-readable explanation of the failure.
+        errorCode:
+          type: string
+          description: The error code identifying the failure reason.
+        executedAt:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+          description: Timestamp when the execution failed.
+      description: Details of an execution failure.
+    ExecutionStatus:
+      enum:
+      - PROFILE_REQUESTED
+      - PROFILE_FAILED
+      - REQUESTED
+      - SUBMITTED
+      - SUCCEEDED
+      - FAILED
+      type: string
+      example: SUCCEEDED
+      description: Status of a data quality computation.
+    Error_2:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+    ConnectionIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the connection
+    QualitiesGlobalResultsResponse_2:
       type: object
       required:
       - connectionId
+      - quality
       properties:
         quality:
-          $ref: '#/components/schemas/QualityGlobalResultsResponse'
+          $ref: '#/components/schemas/QualityGlobalResultsResponse_2'
         connectionId:
           type: string
           description: The unique identifier of the connection.
@@ -739,6 +763,10 @@ components:
           type: string
           format: date-time
           description: Timestamp of the most recent data quality computation for this dataset and connection.
+    DatasetIdType_2:
+      type: string
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
     ErrorResponse_2:
       type: object
       properties:
@@ -748,42 +776,7 @@ components:
             $ref: '#/components/schemas/Error_2'
         traceId:
           type: string
-    Error_2:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    DatasetIdType_2:
-      type: string
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the dataset
-    ConnectionIdType_2:
-      type: string
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the connection
-    QualitiesGlobalResultsResponse_2:
-      type: object
-      required:
-      - connectionId
-      - quality
-      properties:
-        quality:
-          $ref: '#/components/schemas/QualityGlobalResultsResponse_2'
-        connectionId:
-          type: string
-          description: The unique identifier of the connection.
   parameters:
-    DatasetIdInQuery:
-      in: query
-      name: datasetId
-      schema:
-        $ref: '#/components/schemas/DatasetIdType'
-      required: true
-      description: The unique identifier of the dataset.
     OptionalConnectionIdInQuery:
       in: query
       name: connectionId
@@ -791,6 +784,13 @@ components:
         $ref: '#/components/schemas/ConnectionIdType'
       required: false
       description: The unique identifier of the connection.
+    DatasetIdInQuery:
+      in: query
+      name: datasetId
+      schema:
+        $ref: '#/components/schemas/DatasetIdType'
+      required: true
+      description: The unique identifier of the dataset.
 x-refined-from:
 - qliksense-data-governance-data-qualities.json
 - qliksense-data-qualities.json

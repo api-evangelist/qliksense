@@ -405,22 +405,15 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorResult:
+    PaginationLinks:
       type: object
       properties:
-        errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErrorResponseItem'
-          description: List of errors and their properties.
-        statusCode:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          readOnly: true
+        next:
+          $ref: '#/components/schemas/PaginationLink'
+        prev:
+          $ref: '#/components/schemas/PaginationLink'
+        self:
+          $ref: '#/components/schemas/PaginationLink'
       additionalProperties: false
     ErrorResponseItem:
       type: object
@@ -449,15 +442,38 @@ components:
           example: Invalid encoding of cursor.
           description: A human-readable explanation specific to this occurrence of the problem.
       additionalProperties: false
-    PaginationLink:
+    UpdateTemplateRequest:
       type: object
+      required:
+      - name
+      - temporaryContentId
       properties:
-        href:
+        name:
+          type: string
+          example: Sales by category
+          maxLength: 255
+          minLength: 1
+          description: Template name
+        description:
           type:
           - string
           - 'null'
-          format: uri
-          description: The URL for the pagination link.
+          example: Sales grouped by product category
+          maxLength: 255
+          description: Template description
+        sourceAppAction:
+          enum:
+          - validate
+          - replace
+          type: string
+          format: Enumeration
+          default: validate
+          description: Specifies the action to perform with the new source app. Use "validate" to verify that the source app of the uploaded template matches the target app. Use "replace" to migrate the uploaded template to the target app by replacing the source app id.
+        temporaryContentId:
+          type: string
+          example: 69b14f2bb93332c3ff8c64b8
+          minLength: 1
+          description: The ID of a previously uploaded temporary content file
       additionalProperties: false
     Operation:
       type: object
@@ -479,18 +495,15 @@ components:
           - object
           - 'null'
       additionalProperties: false
-    GetTemplatesResponse:
+    PaginationLink:
       type: object
       properties:
-        data:
+        href:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/ReportTemplateResponse'
-          description: The current page data.
-        links:
-          $ref: '#/components/schemas/PaginationLinks'
+          format: uri
+          description: The URL for the pagination link.
       additionalProperties: false
     CreateTemplateRequest:
       type: object
@@ -530,6 +543,19 @@ components:
           example: 69b14f2bb93332c3ff8c64b8
           minLength: 1
           description: The ID of a previously uploaded temporary content file
+      additionalProperties: false
+    GetTemplatesResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReportTemplateResponse'
+          description: The current page data.
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
       additionalProperties: false
     ReportTemplateResponse:
       type: object
@@ -613,46 +639,20 @@ components:
           example: 1
           description: The template metadata version
       additionalProperties: false
-    UpdateTemplateRequest:
+    ErrorResult:
       type: object
-      required:
-      - name
-      - temporaryContentId
       properties:
-        name:
-          type: string
-          example: Sales by category
-          maxLength: 255
-          minLength: 1
-          description: Template name
-        description:
+        errors:
           type:
-          - string
+          - array
           - 'null'
-          example: Sales grouped by product category
-          maxLength: 255
-          description: Template description
-        sourceAppAction:
-          enum:
-          - validate
-          - replace
-          type: string
-          format: Enumeration
-          default: validate
-          description: Specifies the action to perform with the new source app. Use "validate" to verify that the source app of the uploaded template matches the target app. Use "replace" to migrate the uploaded template to the target app by replacing the source app id.
-        temporaryContentId:
-          type: string
-          example: 69b14f2bb93332c3ff8c64b8
-          minLength: 1
-          description: The ID of a previously uploaded temporary content file
-      additionalProperties: false
-    PaginationLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/PaginationLink'
-        prev:
-          $ref: '#/components/schemas/PaginationLink'
-        self:
-          $ref: '#/components/schemas/PaginationLink'
+          items:
+            $ref: '#/components/schemas/ErrorResponseItem'
+          description: List of errors and their properties.
+        statusCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
       additionalProperties: false

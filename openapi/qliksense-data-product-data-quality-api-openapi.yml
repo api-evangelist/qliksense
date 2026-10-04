@@ -86,15 +86,6 @@ paths:
         limit: 10
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     Error:
       type: object
       properties:
@@ -106,18 +97,6 @@ components:
           type: string
         status:
           type: string
-    DatasetIdType:
-      type: string
-      example: 669144f5aa2d642638ef1dd0
-      pattern: ^[0-9a-zA-Z-]{1,36}$
-      description: The ID of the dataset
-    ExecutionStatus:
-      enum:
-      - REQUESTED
-      - FAILED
-      type: string
-      example: REQUESTED
-      description: Current execution status of the computation (REQUESTED or FAILED).
     DatasetsComputationResponse:
       type: object
       required:
@@ -133,6 +112,20 @@ components:
           type: string
           description: Unique identifier for the data quality batch computation job.
       description: Response containing the batch computation identifier and per-dataset quality computation results.
+    DatasetIdType:
+      type: string
+      example: 669144f5aa2d642638ef1dd0
+      pattern: ^[0-9a-zA-Z-]{1,36}$
+      description: The ID of the dataset
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     ComputationResponse:
       type: object
       required:
@@ -151,6 +144,13 @@ components:
           type: string
           description: Unique identifier for this individual data quality computation job.
       description: Result of a data quality computation for a single dataset.
+    ExecutionStatus:
+      enum:
+      - REQUESTED
+      - FAILED
+      type: string
+      example: REQUESTED
+      description: Current execution status of the computation (REQUESTED or FAILED).
   parameters:
     DataProductIdPath:
       in: path

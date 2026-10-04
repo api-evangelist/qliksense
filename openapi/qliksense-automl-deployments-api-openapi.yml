@@ -104,13 +104,16 @@ paths:
         tier: special
         limit: 300
 components:
+  parameters:
+    deploymentId:
+      in: path
+      name: deploymentId
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: The ID of the ML deployed model that will be employed to produce predictions.
   schemas:
-    realTimePredictionInputSchema:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of a feature in the dataset.
     error:
       type: object
       required:
@@ -155,13 +158,12 @@ components:
         resourceId:
           type: string
           description: The resource id that the error occurred on
-    appErrorResponse:
+    realTimePredictionInputSchema:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error'
+        name:
+          type: string
+          description: The name of a feature in the dataset.
     realtimePredictionInput:
       type: object
       properties:
@@ -177,12 +179,10 @@ components:
           items:
             $ref: '#/components/schemas/realTimePredictionInputSchema'
           description: The schema of the input dataset.
-  parameters:
-    deploymentId:
-      in: path
-      name: deploymentId
-      schema:
-        type: string
-        format: uuid
-      required: true
-      description: The ID of the ML deployed model that will be employed to produce predictions.
+    appErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'

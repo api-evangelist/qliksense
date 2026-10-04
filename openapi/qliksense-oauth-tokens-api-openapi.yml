@@ -118,31 +118,14 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    oauth-token:
+    link:
       required:
-      - tenantId
-      - userId
-      - id
+      - href
       properties:
-        id:
+        href:
           type: string
-          description: The token ID.
-        userId:
-          type: string
-          description: The ID of the owning user.
-        lastUsed:
-          type: string
-          format: date-time
-          description: The last time the token was used.
-        tenantId:
-          type: string
-          description: The ID of the owning tenant.
-        deviceType:
-          type: string
-          description: The type of the user device the authorization token is generated for (Tablet, Phone etc.).
-        description:
-          type: string
-          description: The description of the token.
+          format: uri
+          description: The URL for the link.
     Error:
       type: object
       required:
@@ -186,14 +169,6 @@ components:
               $ref: '#/components/schemas/link'
             self:
               $ref: '#/components/schemas/link'
-    link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          format: uri
-          description: The URL for the link.
     Errors:
       type: object
       properties:
@@ -203,3 +178,28 @@ components:
             $ref: '#/components/schemas/Error'
           description: List of errors and their properties.
       description: A representation of the errors encountered from the HTTP request.
+    oauth-token:
+      required:
+      - tenantId
+      - userId
+      - id
+      properties:
+        id:
+          type: string
+          description: The token ID.
+        userId:
+          type: string
+          description: The ID of the owning user.
+        lastUsed:
+          type: string
+          format: date-time
+          description: The last time the token was used.
+        tenantId:
+          type: string
+          description: The ID of the owning tenant.
+        deviceType:
+          type: string
+          description: The type of the user device the authorization token is generated for (Tablet, Phone etc.).
+        description:
+          type: string
+          description: The description of the token.

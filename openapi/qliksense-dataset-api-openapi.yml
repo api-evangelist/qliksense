@@ -396,15 +396,6 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
     DataStoreInfo:
       type: object
       required:
@@ -418,6 +409,17 @@ components:
         type:
           type: string
           readOnly: true
+    UserTag:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the tag in Collections
+        name:
+          type: string
+          maxLength: 128
+          minLength: 1
+      description: An array of user-supplied tags
     Error:
       type: object
       properties:
@@ -429,6 +431,62 @@ components:
           type: string
         status:
           type: string
+    DataAssetInfo:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          readOnly: true
+        dataStoreInfo:
+          $ref: '#/components/schemas/DataStoreInfo'
+    TableConnectionInfo:
+      type: object
+      properties:
+        tableName:
+          type: string
+        selectionScript:
+          type: string
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: string
+    JsonPatch:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - add
+          - remove
+          - replace
+          - move
+          - copy
+          - test
+          type: string
+          description: The operation to be performed.
+        from:
+          type: string
+          description: A JSON Pointer path pointing to the location to move/copy from.
+        path:
+          type: string
+          description: A JSON pointer to the property being affected.
+        value:
+          type: object
+          description: The value to add, replace or test.
+    BatchIdDto:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
     DataField:
       type: object
       required:
@@ -479,26 +537,75 @@ components:
         ordinalPositionInKey:
           type: integer
           format: int32
-    DataAssetInfo:
+    FieldDataType:
       type: object
       required:
-      - id
+      - type
       properties:
-        id:
+        type:
+          enum:
+          - DATE
+          - TIME
+          - DATETIME
+          - TIMESTAMP
+          - STRING
+          - DOUBLE
+          - DECIMAL
+          - INTEGER
+          - BOOLEAN
+          - BINARY
+          - CUSTOM
           type: string
-        name:
+          description: 'Each datatype may vary in terms of required properties. Example: Datatype DECIMAL requires two mandatory properties to be defined - precision and scale, each one accepts integer value. All other datatypes does not have any required properties.'
+        properties:
+          type: object
+          description: 'The properties map key is string and the value is of type object. Please note, Datatype DECIMAL requires two mandatory properties to be defined; these properties must be named: precision and scale, each of these property accepts integer value.  All other datatypes does not require any manadatory properties to be defined.'
+          additionalProperties:
+            type: object
+            description: 'The properties map key is string and the value is of type object. Please note, Datatype DECIMAL requires two mandatory properties to be defined; these properties must be named: precision and scale, each of these property accepts integer value.  All other datatypes does not require any manadatory properties to be defined.'
+        originalType:
           type: string
-          readOnly: true
-        dataStoreInfo:
-          $ref: '#/components/schemas/DataStoreInfo'
-    BatchIdDto:
+    Schema:
       type: object
+      title: Schema
+      required:
+      - dataFields
       properties:
-        ids:
+        anomalies:
           type: array
           items:
             type: string
+            description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
+          description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
           uniqueItems: true
+        dataFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataField'
+        schemaName:
+          type: string
+        loadOptions:
+          type: object
+          description: 'Options for loading files. Example: "qLabel": "embedded labels"'
+          additionalProperties:
+            type: object
+            description: 'Options for loading files. Example: "qLabel": "embedded labels"'
+        effectiveDate:
+          type: string
+          format: date-time
+          readOnly: true
+        overrideSchemaAnomalies:
+          type: boolean
+      description: Optional field to specify additional schemas for files where multiple tables or sheets are available. User must define primary schema in 'schema' attribute and rest of the sheets/ tables can be defined using this field. This field is not populated for the dataSets with single schema
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     Operational:
       type: object
       title: Operational
@@ -533,17 +640,6 @@ components:
           format: date-time
         tableConnectionInfo:
           $ref: '#/components/schemas/TableConnectionInfo'
-    TableConnectionInfo:
-      type: object
-      properties:
-        tableName:
-          type: string
-        selectionScript:
-          type: string
-        additionalProperties:
-          type: object
-          additionalProperties:
-            type: string
     DataSet:
       type: object
       title: Data Set
@@ -641,99 +737,3 @@ components:
         createdByConnectionId:
           type: string
           description: The connectionId that created the Dataset. Optional.
-    FieldDataType:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          enum:
-          - DATE
-          - TIME
-          - DATETIME
-          - TIMESTAMP
-          - STRING
-          - DOUBLE
-          - DECIMAL
-          - INTEGER
-          - BOOLEAN
-          - BINARY
-          - CUSTOM
-          type: string
-          description: 'Each datatype may vary in terms of required properties. Example: Datatype DECIMAL requires two mandatory properties to be defined - precision and scale, each one accepts integer value. All other datatypes does not have any required properties.'
-        properties:
-          type: object
-          description: 'The properties map key is string and the value is of type object. Please note, Datatype DECIMAL requires two mandatory properties to be defined; these properties must be named: precision and scale, each of these property accepts integer value.  All other datatypes does not require any manadatory properties to be defined.'
-          additionalProperties:
-            type: object
-            description: 'The properties map key is string and the value is of type object. Please note, Datatype DECIMAL requires two mandatory properties to be defined; these properties must be named: precision and scale, each of these property accepts integer value.  All other datatypes does not require any manadatory properties to be defined.'
-        originalType:
-          type: string
-    JsonPatch:
-      type: object
-      required:
-      - op
-      - path
-      properties:
-        op:
-          enum:
-          - add
-          - remove
-          - replace
-          - move
-          - copy
-          - test
-          type: string
-          description: The operation to be performed.
-        from:
-          type: string
-          description: A JSON Pointer path pointing to the location to move/copy from.
-        path:
-          type: string
-          description: A JSON pointer to the property being affected.
-        value:
-          type: object
-          description: The value to add, replace or test.
-    Schema:
-      type: object
-      title: Schema
-      required:
-      - dataFields
-      properties:
-        anomalies:
-          type: array
-          items:
-            type: string
-            description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
-          description: 'Anomalies associated with this schema. Example: $warning-unknown-headers'
-          uniqueItems: true
-        dataFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataField'
-        schemaName:
-          type: string
-        loadOptions:
-          type: object
-          description: 'Options for loading files. Example: "qLabel": "embedded labels"'
-          additionalProperties:
-            type: object
-            description: 'Options for loading files. Example: "qLabel": "embedded labels"'
-        effectiveDate:
-          type: string
-          format: date-time
-          readOnly: true
-        overrideSchemaAnomalies:
-          type: boolean
-      description: Optional field to specify additional schemas for files where multiple tables or sheets are available. User must define primary schema in 'schema' attribute and rest of the sheets/ tables can be defined using this field. This field is not populated for the dataSets with single schema
-    UserTag:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of the tag in Collections
-        name:
-          type: string
-          maxLength: 128
-          minLength: 1
-      description: An array of user-supplied tags

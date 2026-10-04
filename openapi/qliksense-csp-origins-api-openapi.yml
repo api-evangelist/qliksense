@@ -475,13 +475,45 @@ paths:
         limit: 1000
 components:
   schemas:
-    ErrorResponse:
+    CSPEntry:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CSPEntryContent'
+      properties:
+        id:
+          type: string
+          description: The CSP entry's unique identifier.
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The unique code for the error.
+        title:
+          type: string
+          description: A summary of what went wrong.
+        detail:
+          type: string
+          description: May be used to provide additional details.
+    CSPEntryList:
       type: object
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/CSPEntry'
+        links:
+          type: object
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
     CSPEntryContent:
       type: object
       required:
@@ -548,27 +580,6 @@ components:
         frameAncestors:
           type: boolean
           description: Specifies valid sources for embedding the resource using frame, iFrame, object, embed and applet.
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The unique code for the error.
-        title:
-          type: string
-          description: A summary of what went wrong.
-        detail:
-          type: string
-          description: May be used to provide additional details.
-    CSPHeader:
-      type: object
-      properties:
-        Content-Security-Policy:
-          type: string
-          description: The compiled CSP header.
     Link:
       type: object
       required:
@@ -577,27 +588,16 @@ components:
         href:
           type: string
           description: URL to a resource request.
-    CSPEntry:
+    CSPHeader:
       type: object
-      allOf:
-      - $ref: '#/components/schemas/CSPEntryContent'
       properties:
-        id:
+        Content-Security-Policy:
           type: string
-          description: The CSP entry's unique identifier.
-    CSPEntryList:
+          description: The compiled CSP header.
+    ErrorResponse:
       type: object
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/CSPEntry'
-        links:
-          type: object
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/Error'

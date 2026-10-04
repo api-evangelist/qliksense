@@ -135,38 +135,16 @@ paths:
         limit: 1000
 components:
   schemas:
-    CreateDiProjectReq:
+    ErrorSource:
       type: object
       properties:
-        name:
+        pointer:
           type: string
-          example: New Project
-          description: The name of the project
-        type:
-          enum:
-          - DATA_PIPELINE
-          - DATA_MOVEMENT
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
           type: string
-          example: DATA_PIPELINE
-          description: The type of the project
-        space:
-          type: string
-          example: space-456
-          description: The ID of the space where the project will be created
-        description:
-          type: string
-          example: This is a new data integration project.
-          description: A description of the project
-        platformType:
-          $ref: '#/components/schemas/PlatformType'
-        platformConnection:
-          type: string
-          example: connection-string
-          description: The platform connection string
-        cloudStagingConnection:
-          type: string
-          example: storage-connection-string
-          description: The cloud staging connection string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     Error:
       type: object
       properties:
@@ -208,16 +186,6 @@ components:
           type: string
         platformType:
           $ref: '#/components/schemas/PlatformType'
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
     ListDiProjectsRsp:
       type: object
       properties:
@@ -225,6 +193,50 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DiProjectItemRsp'
+    CreateDiProjectReq:
+      type: object
+      properties:
+        name:
+          type: string
+          example: New Project
+          description: The name of the project
+        type:
+          enum:
+          - DATA_PIPELINE
+          - DATA_MOVEMENT
+          type: string
+          example: DATA_PIPELINE
+          description: The type of the project
+        space:
+          type: string
+          example: space-456
+          description: The ID of the space where the project will be created
+        description:
+          type: string
+          example: This is a new data integration project.
+          description: A description of the project
+        platformType:
+          $ref: '#/components/schemas/PlatformType'
+        platformConnection:
+          type: string
+          example: connection-string
+          description: The platform connection string
+        cloudStagingConnection:
+          type: string
+          example: storage-connection-string
+          description: The cloud staging connection string
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
     PlatformType:
       enum:
       - SNOWFLAKE
@@ -243,15 +255,3 @@ components:
       description: 'The platform type of the project. Supported values: - SNOWFLAKE: Snowflake - BIGQUERY: Google BigQuery - SYNAPSE: Azure Synapse - DATABRICKS: Databricks - REDSHIFT: Amazon Redshift - MSSQL: Microsoft SQL Server - FABRIC: Microsoft Fabric (OneLake) - QLIK_QVD: Qlik-managed QVD - QLIK_QVD_CUSTOMER_MANAGED: Customer-managed QVD - QLIK_OPEN_LAKEHOUSE: Qlik Open Lakehouse - NONE: No platform (e.g. replication-only projects)
 
         '
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
-          type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.

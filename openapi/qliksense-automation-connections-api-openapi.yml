@@ -920,18 +920,24 @@ paths:
           description: Name of the tenant that will be called
 components:
   responses:
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
     BadRequest:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Bad Request
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
     Unauthorized:
       content:
         application/json:
@@ -944,12 +950,6 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Forbidden
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Internal Server Error
     ServiceUnavailable:
       content:
         application/json:
@@ -963,58 +963,30 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
       description: Conflict with the current state of the resource
   schemas:
-    AutomationConnectionsListObject:
+    AutomationConnectionsList:
       type: object
       properties:
-        id:
-          type: string
-          example: e0e720d0-4947-11ec-a1d2-9559fa35801d
-          description: The unique identifier of an automation connection.
-        name:
-          type: string
-          example: auto conn
-          description: The name of an automation connection.
-          x-qlik-filterable: true
-        ownerId:
-          type: string
-          example: sWYAHxZxhtcmBT7Ptc5xJ5I6N7HxwnEy
-          description: The unique identifier of the owner of the automation connection.
-          x-qlik-filterable: true
-        spaceId:
-          type: string
-          example: 5f0f78b239ff4f0001234567
-          description: The space ID of the automation connection.
-          x-qlik-filterable: true
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          description: The timestamp when the automation connection is created.
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          description: The timestamp when the automation connection is updated.
-        connectorId:
-          type: string
-          example: e0e720d0-4947-11ec-a1d2-9559fa35801d
-          description: The unique identifier of the connector the automation connection is created from.
-          x-qlik-filterable: true
-        isConnected:
-          type: boolean
-          example: true
-          description: Returns true if the automtion connection is connected.
-    AutomationConnectionPutRequestObject:
-      type: object
-      properties:
-        name:
-          type: string
-          example: connection
-          description: The new name of the automation connection to be renamed to.
-        params:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/AutomationConnectionParamPutObject'
+            $ref: '#/components/schemas/AutomationConnectionsListObject'
+        links:
+          $ref: '#/components/schemas/Links'
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The unique code for the error
+        title:
+          type: string
+          description: A summary of what went wrong
+        detail:
+          type: string
+          description: May be used to provide additional details
     AutomationConnectionCreationObject:
       type: object
       required:
@@ -1036,6 +1008,13 @@ components:
           type: string
           example: 3004e850-1985-11ee-b6df-8d800b305320
           description: The unique identifier of the connector from which the automation connection is created.
+    AutomationConnectionChangeOwnerObject:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: sWYAHxZxhtcmBT7Ptc5xJ5I6N7HxwnEy
+          description: The unique identifier of the new owner.
     AutomationConnectionParamObject:
       type: object
       properties:
@@ -1076,106 +1055,6 @@ components:
         documentation:
           type: string
           description: The documentation of the automation connection parameter.
-    PaginationLink:
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          description: The URL to a resource request
-    AutomationConnectionChangeOwnerObject:
-      type: object
-      properties:
-        userId:
-          type: string
-          example: sWYAHxZxhtcmBT7Ptc5xJ5I6N7HxwnEy
-          description: The unique identifier of the new owner.
-    AutomationConnectionsList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationConnectionsListObject'
-        links:
-          $ref: '#/components/schemas/Links'
-    AutomationConnectionChangeSpaceObject:
-      type: object
-      properties:
-        spaceId:
-          type: string
-          example: 5f0f78b239ff4f0001234567
-          description: The unique identifier of the new space.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The unique code for the error
-        title:
-          type: string
-          description: A summary of what went wrong
-        detail:
-          type: string
-          description: May be used to provide additional details
-    AutomationConnectionParamOptionObject:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 39a90780-8874-11ee-b16c-89512345678
-          description: The unique identifier of the automation connection parameter option.
-        value:
-          type: string
-          description: The value of the automation connection parameter option.
-    AutomationConnectionCheckObject:
-      type: object
-      properties:
-        connected:
-          type: boolean
-          description: The connection status of the automation connection. When true, the automation connection is connected.
-        is_connected:
-          type: boolean
-          description: The connection status of the automation connection. When true, the automation connection is connected.
-    Links:
-      properties:
-        next:
-          $ref: '#/components/schemas/PaginationLink'
-        prev:
-          $ref: '#/components/schemas/PaginationLink'
-    AutomationConnectionParamPutObject:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 39a90780-8874-11ee-b16c-89512345678
-          description: The unique identifier of the automation connection parameter option.
-        value:
-          type: string
-          description: The value of the automation connection parameter option.
-    AutomationConnectionParamCreateObject:
-      type: object
-      properties:
-        name:
-          type: string
-          example: username
-          description: The name of the automation connection parameter.
-        value:
-          type: string
-          description: The value of the automation connection parameter option.
     AutomationConnectionDetailObject:
       type: object
       properties:
@@ -1227,13 +1106,127 @@ components:
           type: string
           example: oauth
           description: The name of the OAuth account associated with the automation connection.
-    AutomationConnectionChangeSpaceObject_2:
+    PaginationLink:
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          description: The URL to a resource request
+    AutomationConnectionParamPutObject:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 39a90780-8874-11ee-b16c-89512345678
+          description: The unique identifier of the automation connection parameter option.
+        value:
+          type: string
+          description: The value of the automation connection parameter option.
+    Links:
+      properties:
+        next:
+          $ref: '#/components/schemas/PaginationLink'
+        prev:
+          $ref: '#/components/schemas/PaginationLink'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
+    AutomationConnectionCheckObject:
+      type: object
+      properties:
+        connected:
+          type: boolean
+          description: The connection status of the automation connection. When true, the automation connection is connected.
+        is_connected:
+          type: boolean
+          description: The connection status of the automation connection. When true, the automation connection is connected.
+    AutomationConnectionChangeSpaceObject:
       type: object
       properties:
         spaceId:
           type: string
           example: 5f0f78b239ff4f0001234567
-          description: The unique identifier of the new space. Leave empty to move to the owner's personal space.
+          description: The unique identifier of the new space.
+    AutomationConnectionsListObject:
+      type: object
+      properties:
+        id:
+          type: string
+          example: e0e720d0-4947-11ec-a1d2-9559fa35801d
+          description: The unique identifier of an automation connection.
+        name:
+          type: string
+          example: auto conn
+          description: The name of an automation connection.
+          x-qlik-filterable: true
+        ownerId:
+          type: string
+          example: sWYAHxZxhtcmBT7Ptc5xJ5I6N7HxwnEy
+          description: The unique identifier of the owner of the automation connection.
+          x-qlik-filterable: true
+        spaceId:
+          type: string
+          example: 5f0f78b239ff4f0001234567
+          description: The space ID of the automation connection.
+          x-qlik-filterable: true
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          description: The timestamp when the automation connection is created.
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          description: The timestamp when the automation connection is updated.
+        connectorId:
+          type: string
+          example: e0e720d0-4947-11ec-a1d2-9559fa35801d
+          description: The unique identifier of the connector the automation connection is created from.
+          x-qlik-filterable: true
+        isConnected:
+          type: boolean
+          example: true
+          description: Returns true if the automtion connection is connected.
+    AutomationConnectionParamOptionObject:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 39a90780-8874-11ee-b16c-89512345678
+          description: The unique identifier of the automation connection parameter option.
+        value:
+          type: string
+          description: The value of the automation connection parameter option.
+    AutomationConnectionPutRequestObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: connection
+          description: The new name of the automation connection to be renamed to.
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationConnectionParamPutObject'
+    AutomationConnectionParamCreateObject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: username
+          description: The name of the automation connection parameter.
+        value:
+          type: string
+          description: The value of the automation connection parameter option.
     AutomationConnectionParamPutObject_2:
       type: object
       properties:
@@ -1245,6 +1238,13 @@ components:
           type: string
           example: '100'
           description: The value of the automation connection parameter option.
+    AutomationConnectionChangeSpaceObject_2:
+      type: object
+      properties:
+        spaceId:
+          type: string
+          example: 5f0f78b239ff4f0001234567
+          description: The unique identifier of the new space. Leave empty to move to the owner's personal space.
     AutomationConnectionParamCreateObject_2:
       type: object
       properties:

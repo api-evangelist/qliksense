@@ -420,41 +420,6 @@ components:
           description: List of requested resources.
         links:
           $ref: '#/components/schemas/ListLinks'
-    ErrorResponse:
-      type: object
-      title: ErrorResponse indicates the error response.
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                example: HTTP-400
-              title:
-                type: string
-                example: error title
-              detail:
-                type: string
-                example: error details
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    GetSettingsResult:
-      type: object
-      title: GetSettingsResult is the result type of a getSettings request.
-      properties:
-        data:
-          type: object
-          properties:
-            EventTTL:
-              type: integer
-              description: The events TTL in seconds.
-            ArchiveEnabled:
-              type: boolean
-              description: Is Long Term Storage archiving enabled?.
-          description: Server configuration options.
     GetArchiveResult:
       type: object
       title: GetArchiveResult is the result type of the audit service GetArchive method.
@@ -498,6 +463,18 @@ components:
         eventTypeVersion:
           type: string
           description: The version of the event type.
+    href:
+      type: object
+      title: href is a URL.
+      properties:
+        href:
+          type: string
+    GetLinks:
+      type: object
+      title: GetLinks are the HAL links for a single result.
+      properties:
+        self:
+          $ref: '#/components/schemas/href'
     ListLinks:
       type: object
       title: ListLinks are the HAL links for a list result.
@@ -508,12 +485,32 @@ components:
           $ref: '#/components/schemas/href'
         self:
           $ref: '#/components/schemas/href'
-    href:
+    EventExtensions:
       type: object
-      title: href is a URL.
+      title: Additional metadata and custom fields.
       properties:
-        href:
+        actor:
+          type: object
+          properties:
+            sub:
+              type: string
+              description: Opaque value identifying impersonating entity.
+            subType:
+              type: string
+              description: The type of the impersonating entity.
+          description: Specifies the entity performing the action on behalf of another party listed as triggering the action.
+        ownerId:
           type: string
+          description: Id of the owner of the resource affected by the eventContext.
+        spaceId:
+          type: string
+          description: Id of the space related to the action performed on the eventContext.
+        updates:
+          description: Might be present if the action is of type "updated" and should contain information about the changes made to the resource.
+        topLevelResourceId:
+          type: string
+          description: If the event originated from a sub resource the topLevelResourceId contains the id of the top level resource associated with the sub resource.
+      description: The availability of the properties depends on the event and the context it was triggered in.
     GetByIDResult:
       type: object
       title: GetByIDResult is the result type of the audit service GetByID method.
@@ -553,32 +550,6 @@ components:
         eventTypeVersion:
           type: string
           description: The version of the event type.
-    EventExtensions:
-      type: object
-      title: Additional metadata and custom fields.
-      properties:
-        actor:
-          type: object
-          properties:
-            sub:
-              type: string
-              description: Opaque value identifying impersonating entity.
-            subType:
-              type: string
-              description: The type of the impersonating entity.
-          description: Specifies the entity performing the action on behalf of another party listed as triggering the action.
-        ownerId:
-          type: string
-          description: Id of the owner of the resource affected by the eventContext.
-        spaceId:
-          type: string
-          description: Id of the space related to the action performed on the eventContext.
-        updates:
-          description: Might be present if the action is of type "updated" and should contain information about the changes made to the resource.
-        topLevelResourceId:
-          type: string
-          description: If the event originated from a sub resource the topLevelResourceId contains the id of the top level resource associated with the sub resource.
-      description: The availability of the properties depends on the event and the context it was triggered in.
     GetResult:
       type: object
       title: GetResult is the result type of the audit service Get method.
@@ -590,9 +561,38 @@ components:
           description: List of audit items.
         links:
           $ref: '#/components/schemas/ListLinks'
-    GetLinks:
+    ErrorResponse:
       type: object
-      title: GetLinks are the HAL links for a single result.
+      title: ErrorResponse indicates the error response.
       properties:
-        self:
-          $ref: '#/components/schemas/href'
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: HTTP-400
+              title:
+                type: string
+                example: error title
+              detail:
+                type: string
+                example: error details
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    GetSettingsResult:
+      type: object
+      title: GetSettingsResult is the result type of a getSettings request.
+      properties:
+        data:
+          type: object
+          properties:
+            EventTTL:
+              type: integer
+              description: The events TTL in seconds.
+            ArchiveEnabled:
+              type: boolean
+              description: Is Long Term Storage archiving enabled?.
+          description: Server configuration options.

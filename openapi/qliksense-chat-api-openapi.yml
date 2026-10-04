@@ -174,18 +174,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    promptOutput:
-      type: object
-      properties:
-        output:
-          type: string
-          example: LLM stands for Large Language Model
-          description: Assistant's response to the prompt
-        sources:
-          type: array
-          items:
-            $ref: '#/components/schemas/source'
-          description: List of sources used to generate AI messages
     source:
       type: object
       properties:
@@ -216,16 +204,26 @@ components:
           format: uuid
           example: 10d347c4-f28a-4faf-93f0-48e781aaf303
           description: reference to KnowledgeBase used for "AI" generated messages
-    errorResponse:
+    promptInput:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCode'
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
+        input:
+          type: object
+          properties:
+            prompt:
+              type: string
+              example: What is a LLM?
+              description: Input prompt string for the Assistant to respond to.
+            promptType:
+              enum:
+              - thread
+              type: string
+              example: thread
+              description: Sets the prompt type to thread.
+            includeText:
+              type: boolean
+              example: true
+              description: Returns text from chunks in sources output. Default value is false.
     errorResponseCode:
       type: object
       properties:
@@ -252,26 +250,28 @@ components:
           type: string
         detail:
           type: string
-    promptInput:
+    promptOutput:
       type: object
       properties:
-        input:
-          type: object
-          properties:
-            prompt:
-              type: string
-              example: What is a LLM?
-              description: Input prompt string for the Assistant to respond to.
-            promptType:
-              enum:
-              - thread
-              type: string
-              example: thread
-              description: Sets the prompt type to thread.
-            includeText:
-              type: boolean
-              example: true
-              description: Returns text from chunks in sources output. Default value is false.
+        output:
+          type: string
+          example: LLM stands for Large Language Model
+          description: Assistant's response to the prompt
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/source'
+          description: List of sources used to generate AI messages
+    errorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCode'
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
     promptOutputInvoke:
       type: object
       properties:

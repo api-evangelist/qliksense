@@ -483,105 +483,6 @@ components:
           type: string
           description: A human-readable explanation specific to the occurrence of this problem.
       description: An error object.
-    SpacePatch:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-            description: The operation to be performed.
-          path:
-            enum:
-            - /name
-            - /ownerId
-            - /description
-            type: string
-            description: Field of space to be patched (updated).
-          value:
-            type: string
-            description: 'The value to be used within the operations.
-
-              - name: The name (string) of space of maxLength 256 of pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
-
-              - description: The description (string) of the space. Personal spaces do not have a description.
-
-              - ownerId: The user ID in uid format (string) of the space owner.
-
-              '
-        description: A JSONPatch document as defined by RFC 6902.
-    Spaces:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Space'
-        meta:
-          type: object
-          readOnly: true
-          required:
-          - count
-          properties:
-            count:
-              type: integer
-              description: The total number of spaces matching the current filter.
-            personalSpace:
-              type: object
-              readOnly: true
-              required:
-              - resourceType
-              - actions
-              properties:
-                actions:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/ActionName'
-                  description: The list of actions allowed by the current user in this space.
-                resourceType:
-                  type: string
-                  description: resource type
-              description: The meta related to personal space when applicable.
-        links:
-          type: object
-          readOnly: true
-          required:
-          - self
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-    RoleType:
-      enum:
-      - consumer
-      - contributor
-      - dataconsumer
-      - datapreview
-      - facilitator
-      - operator
-      - producer
-      - publisher
-      - basicconsumer
-      - codeveloper
-      type: string
-      description: 'Supported roles by space type:
-
-        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
-
-        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
-
-        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
-
-        '
     SpaceCreate:
       required:
       - name
@@ -619,6 +520,13 @@ components:
         description:
           type: string
           description: The description of the space. Personal spaces do not have a description.
+    Link:
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          description: URL that defines the resource.
     SpaceType:
       enum:
       - shared
@@ -627,49 +535,6 @@ components:
       type: string
       readOnly: true
       description: The name of the type.
-    Link:
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          description: URL that defines the resource.
-    Errors:
-      type: object
-      properties:
-        code:
-          type: string
-          description: The error code.
-          x-qlik-deprecated: true
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-          x-qlik-deprecated: true
-        title:
-          type: string
-          description: Summary of the problem.
-          x-qlik-deprecated: true
-        detail:
-          type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-          x-qlik-deprecated: true
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-          x-qlik-deprecated: true
-        traceId:
-          type: string
     Space:
       required:
       - id
@@ -757,3 +622,138 @@ components:
           type: string
           description: The description of the space. Personal spaces do not have a description.
       description: A space is a security context simplifying the management of access control by allowing users to control it on the containers instead of on the resources themselves.
+    Errors:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code.
+          x-qlik-deprecated: true
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+          x-qlik-deprecated: true
+        title:
+          type: string
+          description: Summary of the problem.
+          x-qlik-deprecated: true
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+          x-qlik-deprecated: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+          x-qlik-deprecated: true
+        traceId:
+          type: string
+    SpacePatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed.
+          path:
+            enum:
+            - /name
+            - /ownerId
+            - /description
+            type: string
+            description: Field of space to be patched (updated).
+          value:
+            type: string
+            description: 'The value to be used within the operations.
+
+              - name: The name (string) of space of maxLength 256 of pattern: ^[^\"\*\?\<\>\/\|\\\:]+$
+
+              - description: The description (string) of the space. Personal spaces do not have a description.
+
+              - ownerId: The user ID in uid format (string) of the space owner.
+
+              '
+        description: A JSONPatch document as defined by RFC 6902.
+    RoleType:
+      enum:
+      - consumer
+      - contributor
+      - dataconsumer
+      - datapreview
+      - facilitator
+      - operator
+      - producer
+      - publisher
+      - basicconsumer
+      - codeveloper
+      type: string
+      description: 'Supported roles by space type:
+
+        - Shared: codeveloper, consumer, dataconsumer, facilitator, producer
+
+        - Managed: consumer, contributor, dataconsumer, facilitator, publisher, basicconsumer
+
+        - Data: consumer, dataconsumer, datapreview, facilitator, operator, producer, publisher
+
+        '
+    Spaces:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - count
+          properties:
+            count:
+              type: integer
+              description: The total number of spaces matching the current filter.
+            personalSpace:
+              type: object
+              readOnly: true
+              required:
+              - resourceType
+              - actions
+              properties:
+                actions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ActionName'
+                  description: The list of actions allowed by the current user in this space.
+                resourceType:
+                  type: string
+                  description: resource type
+              description: The meta related to personal space when applicable.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'

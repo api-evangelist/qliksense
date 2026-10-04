@@ -109,6 +109,35 @@ paths:
         limit: 1000
 components:
   schemas:
+    ErrorSource:
+      type: object
+      properties:
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code for programmatic handling.
+        title:
+          type: string
+          description: Brief human-readable summary of the error.
+        detail:
+          type: string
+          description: Detailed explanation of the error and suggested remediation steps.
+        source:
+          $ref: '#/components/schemas/ErrorSource'
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code associated with the error.
+      description: Represents a single error condition with details about what went wrong.
     DataTaskItemRsp:
       type: object
       properties:
@@ -124,6 +153,25 @@ components:
           type: string
         description:
           type: string
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: Array of error objects describing what went wrong.
+        traceId:
+          type: string
+          description: Unique identifier for this error response, useful for tracking and support inquiries.
+      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    ListDataTasksRsp:
+      type: object
+      properties:
+        dataTasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataTaskItemRsp'
     DataTaskType:
       enum:
       - LANDING
@@ -159,51 +207,3 @@ components:
       - STREAMING_LAKE_LANDING
       - STREAMING_TRANSFORM
       - REPLICATE_LANDING
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code for programmatic handling.
-        title:
-          type: string
-          description: Brief human-readable summary of the error.
-        detail:
-          type: string
-          description: Detailed explanation of the error and suggested remediation steps.
-        source:
-          $ref: '#/components/schemas/ErrorSource'
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code associated with the error.
-      description: Represents a single error condition with details about what went wrong.
-    ListDataTasksRsp:
-      type: object
-      properties:
-        dataTasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataTaskItemRsp'
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: Array of error objects describing what went wrong.
-        traceId:
-          type: string
-          description: Unique identifier for this error response, useful for tracking and support inquiries.
-      description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.

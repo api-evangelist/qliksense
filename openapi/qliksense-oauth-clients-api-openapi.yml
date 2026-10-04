@@ -500,71 +500,65 @@ paths:
         tier: '2'
         limit: 100
 components:
+  responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Bad Request
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not Found
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
+    ClientSecretCreateExceedLimit:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The max number of client secrets is 5
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Service Unavailable
   schemas:
-    OAuthConnectionConfigUpdate:
+    Error:
       type: object
       required:
-      - op
-      - path
-      - value
+      - code
+      - title
       properties:
-        op:
-          enum:
-          - replace
+        code:
           type: string
-          description: The operation to be performed
-        path:
-          enum:
-          - /consentMethod
+          description: The unique code for the error
+        title:
           type: string
-          description: The path for the given resource field to patch
-        value:
-          enum:
-          - required
-          - trusted
+          description: A summary of the error
+        detail:
           type: string
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
-    OAuthClientListResponse:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuthClientReadResponse'
-        links:
-          $ref: '#/components/schemas/Links'
-      description: Response schema for listing OAuth clients
-    OAuthClientSecretResponse:
-      type: object
-      required:
-      - clientId
-      - clientSecret
-      - hint
-      properties:
-        hint:
-          type: string
-          readOnly: true
-          description: Client application hint
-        clientId:
-          type: string
-          readOnly: true
-          description: Client application id
-        createdAt:
-          type: string
-          format: date-time
-          description: The timestamp for when the client-secret record was created.
-        createdBy:
-          type: string
-          description: The identifier for the user that created the client-secret record.
-        clientSecret:
-          type: string
-          readOnly: true
-          description: Client application secret
-      description: Response schema for creating an OAuth client application secret
+          description: Additional details about the error
     OAuthClientCreateResponse:
       type: object
       allOf:
@@ -613,6 +607,65 @@ components:
             type: string
           description: List of allowed authentication methods for the client
       description: Response schema for OAuth client creation
+    Link:
+      type: object
+      required:
+      - href
+      properties:
+        href:
+          type: string
+          format: uri
+          description: URL that defines the resource
+    OAuthClientAdminReadResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/OAuthClientBase'
+      required:
+      - clientId
+      properties:
+        jwksUri:
+          type: string
+          example: https://example.com/.well-known/jwks.json
+          maxLength: 2048
+          description: URI of the JSON Web Key Set (JWKS) for the client
+          x-qlik-private: true
+        clientId:
+          type: string
+          readOnly: true
+          maxLength: 512
+          description: Client application id
+        publicKeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/JWK'
+          description: List of public keys for JWT authentication
+        redirectUris:
+          type: array
+          items:
+            type: string
+            maxItems: 5
+            maxLength: 256
+            uniqueItems: true
+          description: List of allowed redirect URIs for login
+        clientSecrets:
+          $ref: '#/components/schemas/ClientSecrets'
+        allowedOrigins:
+          type: array
+          items:
+            type: string
+            maxItems: 5
+            maxLength: 256
+            uniqueItems: true
+          description: List of allowed origins for client
+        allowedAuthMethods:
+          type: array
+          items:
+            enum:
+            - client_secret
+            - private_key_jwt
+            type: string
+          description: List of allowed authentication methods for the client
+      description: Response schema for reading an OAuth client as an admin user
     OAuthClientAdminListResponse:
       type: object
       required:
@@ -631,6 +684,133 @@ components:
           - 'null'
           description: Total number of oauth clients, included only if `totalResults` query parameter is set to true.
       description: Response schema for listing OAuth clients as an admin user
+    ClientSecrets:
+      type: array
+      items:
+        type: object
+        required:
+        - hint
+        properties:
+          hint:
+            type: string
+            maxLength: 5
+            description: Hint of a client application secret
+          createdAt:
+            type: string
+            format: date-time
+            description: The timestamp for when the client-secret record was created.
+          createdBy:
+            type: string
+            description: The identifier for the user that created the client-secret record.
+      readOnly: true
+      description: Hints of any client application secrets
+    OAuthClientSecretResponse:
+      type: object
+      required:
+      - clientId
+      - clientSecret
+      - hint
+      properties:
+        hint:
+          type: string
+          readOnly: true
+          description: Client application hint
+        clientId:
+          type: string
+          readOnly: true
+          description: Client application id
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp for when the client-secret record was created.
+        createdBy:
+          type: string
+          description: The identifier for the user that created the client-secret record.
+        clientSecret:
+          type: string
+          readOnly: true
+          description: Client application secret
+      description: Response schema for creating an OAuth client application secret
+    OAuthClientPatchResponse:
+      type: object
+      required:
+      - clientSecret
+      properties:
+        clientSecret:
+          type: string
+          readOnly: true
+          description: The generated client application secret
+      description: Response schema for PATCH /oauth-clients when a client secret is generated
+    JWK:
+      type: object
+      required:
+      - kty
+      - use
+      - alg
+      - kid
+      properties:
+        e:
+          type: string
+          example: AQAB
+          description: Exponent for RSA keys
+        n:
+          type: string
+          example: 0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx
+          description: Modulus for RSA keys
+        x:
+          type: string
+          example: WKn-ZIGevcwGIyyrzFoZNBdaq9_TsqzGl96oc0CWuis
+          description: X coordinate for EC keys
+        y:
+          type: string
+          example: y77t-RvAHRKTsSGdIYUfweuOvwrvDD-Q3Hv5J0fSKbE
+          description: Y coordinate for EC keys
+        alg:
+          enum:
+          - RS256
+          - RS512
+          - ES384
+          type: string
+          example: RS256
+          description: Algorithm intended for use with the key
+        crv:
+          type: string
+          example: P-384
+          description: Curve for EC keys
+        kid:
+          type: string
+          example: key-1
+          description: Key ID
+        kty:
+          enum:
+          - RSA
+          - EC
+          type: string
+          example: RSA
+          description: Key type (e.g., RSA, EC)
+        use:
+          enum:
+          - sig
+          type: string
+          example: sig
+          description: Intended use of the key (typically "sig" for signature)
+      description: JSON Web Key (JWK) for the public key used to verify the signature of a client assertion JWT
+    Links:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     OAuthClientCreateRequest:
       type: object
       required:
@@ -723,117 +903,16 @@ components:
             description: An authentication method for the client
           description: List of allowed authentication methods for the client
       description: Request schema for OAuth client creation
-    ConnectionConfigReadResponse:
+    OAuthClientPublishResponse:
       type: object
       required:
-      - consentMethod
+      - publishedAt
       properties:
-        status:
+        publishedAt:
           type: string
-          readOnly: true
-          description: Status
-        consentMethod:
-          type: string
-          readOnly: true
-          description: Consent method
-        deletedByOwner:
-          type: boolean
-          readOnly: true
-          description: OAuth client has been deleted by owning tenant, only applies for published clients.
-      description: Response schema for reading a connection config
-    OAuthClientPatchResponse:
-      type: object
-      required:
-      - clientSecret
-      properties:
-        clientSecret:
-          type: string
-          readOnly: true
-          description: The generated client application secret
-      description: Response schema for PATCH /oauth-clients when a client secret is generated
-    OAuthClientReadResponse:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/OAuthClientBase'
-      required:
-      - clientId
-      properties:
-        clientId:
-          type: string
-          readOnly: true
-          maxLength: 512
-          description: Client application id
-      description: Response schema for reading an OAuth client
-    OAuthClientAdminReadResponse:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/OAuthClientBase'
-      required:
-      - clientId
-      properties:
-        jwksUri:
-          type: string
-          example: https://example.com/.well-known/jwks.json
-          maxLength: 2048
-          description: URI of the JSON Web Key Set (JWKS) for the client
-          x-qlik-private: true
-        clientId:
-          type: string
-          readOnly: true
-          maxLength: 512
-          description: Client application id
-        publicKeys:
-          type: array
-          items:
-            $ref: '#/components/schemas/JWK'
-          description: List of public keys for JWT authentication
-        redirectUris:
-          type: array
-          items:
-            type: string
-            maxItems: 5
-            maxLength: 256
-            uniqueItems: true
-          description: List of allowed redirect URIs for login
-        clientSecrets:
-          $ref: '#/components/schemas/ClientSecrets'
-        allowedOrigins:
-          type: array
-          items:
-            type: string
-            maxItems: 5
-            maxLength: 256
-            uniqueItems: true
-          description: List of allowed origins for client
-        allowedAuthMethods:
-          type: array
-          items:
-            enum:
-            - client_secret
-            - private_key_jwt
-            type: string
-          description: List of allowed authentication methods for the client
-      description: Response schema for reading an OAuth client as an admin user
-    ClientSecrets:
-      type: array
-      items:
-        type: object
-        required:
-        - hint
-        properties:
-          hint:
-            type: string
-            maxLength: 5
-            description: Hint of a client application secret
-          createdAt:
-            type: string
-            format: date-time
-            description: The timestamp for when the client-secret record was created.
-          createdBy:
-            type: string
-            description: The identifier for the user that created the client-secret record.
-      readOnly: true
-      description: Hints of any client application secrets
+          format: date-time
+          description: The timestamp which is set, if the client is published.
+      description: Response schema for successfully publishing an OAuth client
     OAuthClientBase:
       type: object
       required:
@@ -958,6 +1037,42 @@ components:
             type: string
           description: List of allowed authentication methods for the client
       description: Base schema for OAuth client requests and responses
+    OAuthClientUpdate:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          enum:
+          - add
+          - remove
+          - replace
+          type: string
+          description: The operation to be performed
+        path:
+          enum:
+          - /allowedOrigins
+          - /clientName
+          - /clientUri
+          - /description
+          - /logoUri
+          - /redirectUris
+          - /allowedScopes
+          - /allowedGrantTypes
+          - /publicKeys
+          - /allowedAuthMethods
+          - /jwksUri
+          type: string
+          description: The path for the given resource field to patch
+        value:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
     OAuthClientAdminListItem:
       type: object
       allOf:
@@ -1010,186 +1125,71 @@ components:
             type: string
           description: List of allowed authentication methods for the client
       description: Schema for a OAuth client when listing as an admin user
-    OAuthClientPublishResponse:
+    OAuthClientReadResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/OAuthClientBase'
+      required:
+      - clientId
+      properties:
+        clientId:
+          type: string
+          readOnly: true
+          maxLength: 512
+          description: Client application id
+      description: Response schema for reading an OAuth client
+    OAuthClientListResponse:
       type: object
       required:
-      - publishedAt
+      - data
+      - links
       properties:
-        publishedAt:
-          type: string
-          format: date-time
-          description: The timestamp which is set, if the client is published.
-      description: Response schema for successfully publishing an OAuth client
-    Link:
-      type: object
-      required:
-      - href
-      properties:
-        href:
-          type: string
-          format: uri
-          description: URL that defines the resource
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The unique code for the error
-        title:
-          type: string
-          description: A summary of the error
-        detail:
-          type: string
-          description: Additional details about the error
-    Links:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-    OAuthClientUpdate:
+            $ref: '#/components/schemas/OAuthClientReadResponse'
+        links:
+          $ref: '#/components/schemas/Links'
+      description: Response schema for listing OAuth clients
+    OAuthConnectionConfigUpdate:
       type: object
       required:
       - op
       - path
+      - value
       properties:
         op:
           enum:
-          - add
-          - remove
           - replace
           type: string
           description: The operation to be performed
         path:
           enum:
-          - /allowedOrigins
-          - /clientName
-          - /clientUri
-          - /description
-          - /logoUri
-          - /redirectUris
-          - /allowedScopes
-          - /allowedGrantTypes
-          - /publicKeys
-          - /allowedAuthMethods
-          - /jwksUri
+          - /consentMethod
           type: string
           description: The path for the given resource field to patch
         value:
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: string
+          enum:
+          - required
+          - trusted
+          type: string
           description: The value to be used for this operation.
       description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902
-    JWK:
+    ConnectionConfigReadResponse:
       type: object
       required:
-      - kty
-      - use
-      - alg
-      - kid
+      - consentMethod
       properties:
-        e:
+        status:
           type: string
-          example: AQAB
-          description: Exponent for RSA keys
-        n:
+          readOnly: true
+          description: Status
+        consentMethod:
           type: string
-          example: 0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx
-          description: Modulus for RSA keys
-        x:
-          type: string
-          example: WKn-ZIGevcwGIyyrzFoZNBdaq9_TsqzGl96oc0CWuis
-          description: X coordinate for EC keys
-        y:
-          type: string
-          example: y77t-RvAHRKTsSGdIYUfweuOvwrvDD-Q3Hv5J0fSKbE
-          description: Y coordinate for EC keys
-        alg:
-          enum:
-          - RS256
-          - RS512
-          - ES384
-          type: string
-          example: RS256
-          description: Algorithm intended for use with the key
-        crv:
-          type: string
-          example: P-384
-          description: Curve for EC keys
-        kid:
-          type: string
-          example: key-1
-          description: Key ID
-        kty:
-          enum:
-          - RSA
-          - EC
-          type: string
-          example: RSA
-          description: Key type (e.g., RSA, EC)
-        use:
-          enum:
-          - sig
-          type: string
-          example: sig
-          description: Intended use of the key (typically "sig" for signature)
-      description: JSON Web Key (JWK) for the public key used to verify the signature of a client assertion JWT
-  responses:
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not Found
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Bad Request
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Unauthorized
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Forbidden
-    ClientSecretCreateExceedLimit:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: The max number of client secrets is 5
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Internal Server Error
-    ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Service Unavailable
+          readOnly: true
+          description: Consent method
+        deletedByOwner:
+          type: boolean
+          readOnly: true
+          description: OAuth client has been deleted by owning tenant, only applies for published clients.
+      description: Response schema for reading a connection config

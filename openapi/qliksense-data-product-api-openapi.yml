@@ -437,15 +437,109 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorResponse:
+    PatchDataProductRequest:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+          path:
+            enum:
+            - /name
+            - /description
+            - /datasetIds
+            - /glossaryIds
+            - /readMe
+            - /keyContacts
+            - /tags
+            - /apiConsumableDatasetIds
+            type: string
+          value:
+            oneOf:
+            - type:
+              - string
+              - 'null'
+              description: Value is expected to be null or a string if the path is either /name, /description, or /readMe
+            - $ref: '#/components/schemas/ArrayOfUniqueStrings'
+            - type:
+              - array
+              - 'null'
+              items:
+                type: object
+              description: Value is expected to be null or an array of object if the path is /keyContacts
+      maxItems: 8
+    KeyContact:
+      type: object
+      required:
+      - userId
+      properties:
+        role:
+          type: string
+          example: Data Steward
+          maxLength: 200
+          description: Role of the key contact in the Data Product.
+        userId:
+          type: string
+          example: exampleUserId
+          description: Unique identifier of the user.
+      description: 'Represents a designated contact person for a data product, optionally with their role.
+
+        '
+    TrustScoreDimension:
+      type: object
+      required:
+      - id
+      - applicableDatasets
+      properties:
+        id:
+          type: string
+        score:
+          type: number
+          format: float
+        previousScore:
+          type: number
+          format: float
+        applicableDatasets:
+          type: number
+          format: int32
+    Quality:
+      type: object
+      required:
+      - validity
+      - completeness
+      properties:
+        validity:
+          type: number
+          format: float
+        completeness:
+          type: number
+          format: float
+    Error:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+        code:
           type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    MoveDataProductRequest:
+      type: object
+      required:
+      - spaceId
+      properties:
+        spaceId:
+          type: string
+          example: exampleSpaceId
+          description: Unique identifier of the space.
     TrustScore:
       type: object
       required:
@@ -565,17 +659,6 @@ components:
             type: string
             description: List of dataset IDs for which API consumption is enabled
           uniqueItems: true
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
     CreateDataProductRequest:
       type: object
       required:
@@ -654,60 +737,6 @@ components:
       description: 'Request payload for creating a data product.
 
         '
-    KeyContact:
-      type: object
-      required:
-      - userId
-      properties:
-        role:
-          type: string
-          example: Data Steward
-          maxLength: 200
-          description: Role of the key contact in the Data Product.
-        userId:
-          type: string
-          example: exampleUserId
-          description: Unique identifier of the user.
-      description: 'Represents a designated contact person for a data product, optionally with their role.
-
-        '
-    PatchDataProductRequest:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-          path:
-            enum:
-            - /name
-            - /description
-            - /datasetIds
-            - /glossaryIds
-            - /readMe
-            - /keyContacts
-            - /tags
-            - /apiConsumableDatasetIds
-            type: string
-          value:
-            oneOf:
-            - type:
-              - string
-              - 'null'
-              description: Value is expected to be null or a string if the path is either /name, /description, or /readMe
-            - $ref: '#/components/schemas/ArrayOfUniqueStrings'
-            - type:
-              - array
-              - 'null'
-              items:
-                type: object
-              description: Value is expected to be null or an array of object if the path is /keyContacts
-      maxItems: 8
     ArrayOfUniqueStrings:
       type:
       - array
@@ -715,44 +744,15 @@ components:
       items:
         type: string
         uniqueItems: true
-    TrustScoreDimension:
+    ErrorResponse:
       type: object
-      required:
-      - id
-      - applicableDatasets
       properties:
-        id:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
           type: string
-        score:
-          type: number
-          format: float
-        previousScore:
-          type: number
-          format: float
-        applicableDatasets:
-          type: number
-          format: int32
-    Quality:
-      type: object
-      required:
-      - validity
-      - completeness
-      properties:
-        validity:
-          type: number
-          format: float
-        completeness:
-          type: number
-          format: float
-    MoveDataProductRequest:
-      type: object
-      required:
-      - spaceId
-      properties:
-        spaceId:
-          type: string
-          example: exampleSpaceId
-          description: Unique identifier of the space.
   parameters:
     DataProductIdPath:
       in: path

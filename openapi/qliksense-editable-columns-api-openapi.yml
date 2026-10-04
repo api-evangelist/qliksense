@@ -48,85 +48,7 @@ paths:
         tier: '1'
         limit: 1000
 components:
-  parameters:
-    SortParamEditableColumns:
-      in: query
-      name: sort
-      schema:
-        type: string
-        pattern: ^[+-]?(createdAt|updatedAt|columnName)$
-      example: +createdAt
-      description: Sort results by a field, with optional + (asc) or - (desc) prefix
-    PageParam:
-      in: query
-      name: page
-      schema:
-        type: string
-      example: 1a2b3c
-      required: false
-      description: Used for cursor-based pagination.
-    FilterParamEditableColumns:
-      in: query
-      name: filter
-      schema:
-        type: string
-      examples:
-        type:
-          value: type eq "editable-text"
-          summary: Filter by editable-text type
-        createdBy:
-          value: createdBy eq "6900ba43dff989b49c63cbe8"
-          summary: Filter by createdBy
-        typeDatePicker:
-          value: type eq "editable-date"
-          summary: Filter by editable-date type
-        logicalExpression:
-          value: spaceId eq "6900babe81b5b8bb19e6f92a" and usedBy.appId pr and columnName co "column"
-          summary: Filter by logical expression
-        columnNameContains:
-          value: columnName co "column"
-          summary: Filter by columnName containing text
-      required: false
-      description: "A SCIM filter expression used to filter the result.\nThe filter parameter allows complex logical expressions using comparison operators and grouping.\n- **Supported attributes:** `referenceId`, `spaceId`, `createdBy`, `type`, `columnName`, `usedBy.appId`, `usedBy.chartId` \n- **Supported operators:** `eq`, `ne`, `co`, `sw`, `ew`, `pr`, `gt`, `ge`, `lt`, `le`  \n- **Logical operators:** `and`, `or`, `not`\n"
-    LimitParam:
-      in: query
-      name: limit
-      schema:
-        type: integer
-        maximum: 100
-      example: 100
-      required: false
-      description: Defines the size of each paged result (maximum 100).
-    StoreId:
-      in: path
-      name: storeId
-      schema:
-        type: string
-      example: 507f1f77bcf86cd799439011
-      required: true
-      description: The id of the change store.
-    JWTAuthHeader:
-      in: header
-      name: Authorization
-      schema:
-        type: string
-      required: true
-      description: The JWT used for authentication. Send the JWT in the AuthRequest header using the Bearer schema.
   schemas:
-    UsedBy:
-      type: object
-      required:
-      - appId
-      - chartId
-      properties:
-        appId:
-          type: string
-          example: af604296-14f6-48c2-8bac-12ce49ba83cc
-          description: The id of the app.
-        chartId:
-          type: string
-          example: chartId
-          description: The id of the chart.
     Pagination:
       type: object
       properties:
@@ -151,30 +73,6 @@ components:
                 href:
                   type: string
                   example: https://example.org/api/analytics/change-stores?page=<self-cursor>
-    ListDefaultData:
-      type: object
-      properties:
-        totalCount:
-          type: integer
-          example: 10
-        currentPageCount:
-          type: integer
-          example: 2
-    UsedByArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/UsedBy'
-      description: List of chart/app references.
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          description: list of errors
-        traceId:
-          type: string
     Error:
       type: object
       required:
@@ -194,6 +92,44 @@ components:
           example: This resource requires app read privileges.
           description: Extra information about the error.
       description: An error object.
+    UsedBy:
+      type: object
+      required:
+      - appId
+      - chartId
+      properties:
+        appId:
+          type: string
+          example: af604296-14f6-48c2-8bac-12ce49ba83cc
+          description: The id of the app.
+        chartId:
+          type: string
+          example: chartId
+          description: The id of the chart.
+    UsedByArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/UsedBy'
+      description: List of chart/app references.
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          description: list of errors
+        traceId:
+          type: string
+    ListDefaultData:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 10
+        currentPageCount:
+          type: integer
+          example: 2
     EditableColumn:
       type: object
       properties:
@@ -309,25 +245,101 @@ components:
                 description: The Value of the selector.
           maxItems: 100
           description: List of value/label key/value pairs.
+  parameters:
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: string
+      example: 1a2b3c
+      required: false
+      description: Used for cursor-based pagination.
+    StoreId:
+      in: path
+      name: storeId
+      schema:
+        type: string
+      example: 507f1f77bcf86cd799439011
+      required: true
+      description: The id of the change store.
+    SortParamEditableColumns:
+      in: query
+      name: sort
+      schema:
+        type: string
+        pattern: ^[+-]?(createdAt|updatedAt|columnName)$
+      example: +createdAt
+      description: Sort results by a field, with optional + (asc) or - (desc) prefix
+    JWTAuthHeader:
+      in: header
+      name: Authorization
+      schema:
+        type: string
+      required: true
+      description: The JWT used for authentication. Send the JWT in the AuthRequest header using the Bearer schema.
+    FilterParamEditableColumns:
+      in: query
+      name: filter
+      schema:
+        type: string
+      examples:
+        type:
+          value: type eq "editable-text"
+          summary: Filter by editable-text type
+        createdBy:
+          value: createdBy eq "6900ba43dff989b49c63cbe8"
+          summary: Filter by createdBy
+        typeDatePicker:
+          value: type eq "editable-date"
+          summary: Filter by editable-date type
+        logicalExpression:
+          value: spaceId eq "6900babe81b5b8bb19e6f92a" and usedBy.appId pr and columnName co "column"
+          summary: Filter by logical expression
+        columnNameContains:
+          value: columnName co "column"
+          summary: Filter by columnName containing text
+      required: false
+      description: "A SCIM filter expression used to filter the result.\nThe filter parameter allows complex logical expressions using comparison operators and grouping.\n- **Supported attributes:** `referenceId`, `spaceId`, `createdBy`, `type`, `columnName`, `usedBy.appId`, `usedBy.chartId` \n- **Supported operators:** `eq`, `ne`, `co`, `sw`, `ew`, `pr`, `gt`, `ge`, `lt`, `le`  \n- **Logical operators:** `and`, `or`, `not`\n"
+    LimitParam:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        maximum: 100
+      example: 100
+      required: false
+      description: Defines the size of each paged result (maximum 100).
   responses:
-    ForbiddenResponse:
+    NotFoundResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-      description: Forbidden
-    InternalServerErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Internal Server Error
+      description: Not found
     BadRequestResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
       description: Bad Request
+    ForbiddenResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    UnauthorizedResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
+    InternalServerErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
     GetEditableColumnsResponse:
       content:
         application/json:
@@ -342,15 +354,3 @@ components:
                   items:
                     $ref: '#/components/schemas/EditableColumn'
       description: Returns a list of editable-columns.
-    NotFoundResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
-    UnauthorizedResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Unauthorized

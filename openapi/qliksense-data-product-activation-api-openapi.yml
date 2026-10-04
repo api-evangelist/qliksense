@@ -150,15 +150,90 @@ paths:
         limit: 100
 components:
   schemas:
-    ErrorResponse:
+    KeyContact:
       type: object
+      required:
+      - userId
       properties:
-        errors:
+        role:
+          type: string
+          example: Data Steward
+          maxLength: 200
+          description: Role of the key contact in the Data Product.
+        userId:
+          type: string
+          example: exampleUserId
+          description: Unique identifier of the user.
+      description: 'Represents a designated contact person for a data product, optionally with their role.
+
+        '
+    ActivateDataProductRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          example: ExampleDataProductName
+          maxLength: 200
+          description: Name of the data product to activate.
+        tags:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
-        traceId:
+            type: string
+            example: example
+            description: List of tags for the data product.
+          maxItems: 50
+        spaceId:
           type: string
+          example: ExampleSpaceId
+          description: Unique identifier of the space.
+        description:
+          type: string
+          example: This is an example data product.
+          maxLength: 1024
+          description: A description of the data product.
+          x-size-message: The description should be set with a maximal length of 1024 characters
+    Quality:
+      type: object
+      required:
+      - validity
+      - completeness
+      properties:
+        validity:
+          type: number
+          format: float
+        completeness:
+          type: number
+          format: float
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+    TrustScoreDimension:
+      type: object
+      required:
+      - id
+      - applicableDatasets
+      properties:
+        id:
+          type: string
+        score:
+          type: number
+          format: float
+        previousScore:
+          type: number
+          format: float
+        applicableDatasets:
+          type: number
+          format: int32
     TrustScore:
       type: object
       required:
@@ -278,90 +353,15 @@ components:
             type: string
             description: List of dataset IDs for which API consumption is enabled
           uniqueItems: true
-    ActivateDataProductRequest:
+    ErrorResponse:
       type: object
-      required:
-      - name
       properties:
-        name:
-          type: string
-          example: ExampleDataProductName
-          maxLength: 200
-          description: Name of the data product to activate.
-        tags:
+        errors:
           type: array
           items:
-            type: string
-            example: example
-            description: List of tags for the data product.
-          maxItems: 50
-        spaceId:
+            $ref: '#/components/schemas/Error'
+        traceId:
           type: string
-          example: ExampleSpaceId
-          description: Unique identifier of the space.
-        description:
-          type: string
-          example: This is an example data product.
-          maxLength: 1024
-          description: A description of the data product.
-          x-size-message: The description should be set with a maximal length of 1024 characters
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-        status:
-          type: string
-    KeyContact:
-      type: object
-      required:
-      - userId
-      properties:
-        role:
-          type: string
-          example: Data Steward
-          maxLength: 200
-          description: Role of the key contact in the Data Product.
-        userId:
-          type: string
-          example: exampleUserId
-          description: Unique identifier of the user.
-      description: 'Represents a designated contact person for a data product, optionally with their role.
-
-        '
-    TrustScoreDimension:
-      type: object
-      required:
-      - id
-      - applicableDatasets
-      properties:
-        id:
-          type: string
-        score:
-          type: number
-          format: float
-        previousScore:
-          type: number
-          format: float
-        applicableDatasets:
-          type: number
-          format: int32
-    Quality:
-      type: object
-      required:
-      - validity
-      - completeness
-      properties:
-        validity:
-          type: number
-          format: float
-        completeness:
-          type: number
-          format: float
   parameters:
     DataProductIdPath:
       in: path

@@ -447,12 +447,44 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    errorResponseCodeCopy:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
     resultMeta:
       type: object
       properties:
         countTotal:
           type: integer
-    createAssistantWithAvatar:
+    JSONPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          - add
+          type: string
+          description: The operation to be performed.
+        path:
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    createAssistant:
       type: object
       required:
       - name
@@ -480,10 +512,6 @@ components:
           type: string
           example: Assistant for Sales activities
           description: The title of the assistant.
-        avatar:
-          type: string
-          format: file
-          description: user uploaded avatar, filetype must be png
         spaceId:
           type: string
           format: uuid
@@ -525,6 +553,107 @@ components:
           type: string
           example: thread
           description: Default prompt type for the assistant.
+        orderedStarterIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+          - 507f191e810c19729de860ea
+          - 787f191e810c19729de860er
+          description: List of starter IDs in the order they will be sorted.
+    ChunksRefs:
+      type: object
+      example:
+        chunkIds:
+        - c2ef42d9-7164-4fb0-bdbb-6534ae37263e
+        - 486ada2c-f895-4961-8ba5-7995f1026d26
+      required:
+      - chunkIds
+      properties:
+        chunkIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+            description: Unique identifier of the Chunk.
+    errorResponseCopy:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
+          type: string
+          example: 507f191e810c19729de860ea
+    feedbackSummary:
+      type: object
+      required:
+      - likes
+      - dislikes
+      - interactions
+      - reviews
+      properties:
+        likes:
+          type: integer
+          description: Amount of likes for a thread or an assistant.
+        other:
+          type: integer
+          description: Count of answers which users disliked and gave "other" as reason.
+        reviews:
+          type: integer
+          description: Amount of reviews for a thread or an assistant.
+        dislikes:
+          type: integer
+          description: Amount of dislikes for a thread or an assistant.
+        unhelpful:
+          type: integer
+          description: Count of answers which users marked as "unhelpful".
+        inaccurate:
+          type: integer
+          description: Count of answers which users marked as "inaccurate".
+        irrelevant:
+          type: integer
+          description: Count of answers which users marked as "irrelevant".
+        repetitive:
+          type: integer
+          description: Count of answers which users marked as "repetitive".
+        unanswered:
+          type: integer
+          description: Count of questions for which the assistant provided no answer.
+        interactions:
+          type: integer
+          description: Amount of interactions for a thread or an assistant.
+    pageLink:
+      type: object
+      properties:
+        href:
+          type: string
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      - op: add
+        path: /defaultPromptType
+        value: thread
+      - op: remove
+        path: /avatar
+      - op: add
+        path: /avatar
+        value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
+      - op: replace
+        path: /avatar
+        value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
+      description: An array of JSON Patch documents.
     Assistant:
       type: object
       required:
@@ -653,35 +782,6 @@ components:
           - 507f191e810c19729de860ea
           - 787f191e810c19729de860er
           description: List of starter IDs in the order they will be sorted.
-    errorResponseCopy:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCodeCopy'
-            x-qlik-merge-conflict: true
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
-    errorResponseCodeCopy:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
     assistantsResult:
       type: object
       required:
@@ -695,77 +795,7 @@ components:
           $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
-    ChunksRefs:
-      type: object
-      example:
-        chunkIds:
-        - c2ef42d9-7164-4fb0-bdbb-6534ae37263e
-        - 486ada2c-f895-4961-8ba5-7995f1026d26
-      required:
-      - chunkIds
-      properties:
-        chunkIds:
-          type: array
-          items:
-            type: string
-            format: uuid
-            description: Unique identifier of the Chunk.
-    JSONPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /name
-        value: new name
-      - op: replace
-        path: /description
-        value: new description
-      - op: add
-        path: /defaultPromptType
-        value: thread
-      - op: remove
-        path: /avatar
-      - op: add
-        path: /avatar
-        value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
-      - op: replace
-        path: /avatar
-        value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAlAQAAAAAsYlcCAAAACklEQVR4AWMYBQABAwABRUEDtQAAAABJRU5ErkJggg==
-      description: An array of JSON Patch documents.
-    sourcesPlaintext:
-      type: object
-      properties:
-        textByChunkId:
-          type: object
-          example:
-            chunk1_id: chunk1_text
-            chunk2_id: chunk2_text
-          additionalProperties: true
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          - add
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    createAssistant:
+    createAssistantWithAvatar:
       type: object
       required:
       - name
@@ -793,6 +823,10 @@ components:
           type: string
           example: Assistant for Sales activities
           description: The title of the assistant.
+        avatar:
+          type: string
+          format: file
+          description: user uploaded avatar, filetype must be png
         spaceId:
           type: string
           format: uuid
@@ -834,55 +868,21 @@ components:
           type: string
           example: thread
           description: Default prompt type for the assistant.
-        orderedStarterIds:
-          type: array
-          items:
-            type: string
-            format: uuid
+    sourcesPlaintext:
+      type: object
+      properties:
+        textByChunkId:
+          type: object
           example:
-          - 507f191e810c19729de860ea
-          - 787f191e810c19729de860er
-          description: List of starter IDs in the order they will be sorted.
-    pageLink:
+            chunk1_id: chunk1_text
+            chunk2_id: chunk2_text
+          additionalProperties: true
+    pageLinks:
       type: object
       properties:
-        href:
-          type: string
-    feedbackSummary:
-      type: object
-      required:
-      - likes
-      - dislikes
-      - interactions
-      - reviews
-      properties:
-        likes:
-          type: integer
-          description: Amount of likes for a thread or an assistant.
-        other:
-          type: integer
-          description: Count of answers which users disliked and gave "other" as reason.
-        reviews:
-          type: integer
-          description: Amount of reviews for a thread or an assistant.
-        dislikes:
-          type: integer
-          description: Amount of dislikes for a thread or an assistant.
-        unhelpful:
-          type: integer
-          description: Count of answers which users marked as "unhelpful".
-        inaccurate:
-          type: integer
-          description: Count of answers which users marked as "inaccurate".
-        irrelevant:
-          type: integer
-          description: Count of answers which users marked as "irrelevant".
-        repetitive:
-          type: integer
-          description: Count of answers which users marked as "repetitive".
-        unanswered:
-          type: integer
-          description: Count of questions for which the assistant provided no answer.
-        interactions:
-          type: integer
-          description: Amount of interactions for a thread or an assistant.
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'

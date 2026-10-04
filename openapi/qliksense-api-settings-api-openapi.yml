@@ -127,6 +127,20 @@ components:
           type: string
           example: d6dba97c917e3f3d77c82f40f37c9d85
           description: trace id
+    APISettings:
+      type: object
+      required:
+      - enable-conditions
+      properties:
+        tenantId:
+          type: string
+          example: cgdsAumGmQ6l0Bi7CUKt9V8P_Y9GL0sC
+          readOnly: true
+          description: These persisted api settings are only available for this tenant. Extracted from request JWT.
+        enable-conditions:
+          type: boolean
+          example: true
+          description: Whether API endpoints for condition manager are enabled
     SingleErrorResponse:
       type: object
       properties:
@@ -146,17 +160,3 @@ components:
           type: string
           readOnly: true
           description: Error cause.
-    APISettings:
-      type: object
-      required:
-      - enable-conditions
-      properties:
-        tenantId:
-          type: string
-          example: cgdsAumGmQ6l0Bi7CUKt9V8P_Y9GL0sC
-          readOnly: true
-          description: These persisted api settings are only available for this tenant. Extracted from request JWT.
-        enable-conditions:
-          type: boolean
-          example: true
-          description: Whether API endpoints for condition manager are enabled

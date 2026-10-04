@@ -75,14 +75,16 @@ paths:
         tier: '2'
         limit: 100
 components:
+  parameters:
+    DataSetIdInQuery:
+      in: query
+      name: dataSetId
+      schema:
+        type: string
+        minLength: 1
+      required: true
+      description: Unique identifier of the dataset.
   schemas:
-    GenerateProviderUrlResponse:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
     ErrorResponse:
       type: object
       properties:
@@ -91,6 +93,13 @@ components:
           items:
             $ref: '#/components/schemas/Error'
         traceId:
+          type: string
+    GenerateProviderUrlResponse:
+      type: object
+      required:
+      - url
+      properties:
+        url:
           type: string
     Error:
       type: object
@@ -103,12 +112,3 @@ components:
           type: string
         status:
           type: string
-  parameters:
-    DataSetIdInQuery:
-      in: query
-      name: dataSetId
-      schema:
-        type: string
-        minLength: 1
-      required: true
-      description: Unique identifier of the dataset.

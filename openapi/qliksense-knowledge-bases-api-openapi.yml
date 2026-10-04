@@ -1104,69 +1104,22 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    resultMeta:
-      type: object
-      properties:
-        countTotal:
-          type: integer
-    dataSourceCrawlPattern:
+    scheduleRange:
       type: object
       required:
-      - type
-      - pattern
+      - start
       properties:
-        type:
-          enum:
-          - include
-          - exclude
-          type: string
-          example: include
-          description: include or exclude
-        pattern:
-          type: string
-          example: (.*)example(.*)
-          description: Regex patterna to filter links on
-      description: Include or exclude pattern
-    contentSummary:
-      type: object
-      required:
-      - fileCount
-      - effectivePages
-      - textSize
-      - fileSize
-      properties:
-        fileSize:
+        end:
           type: integer
-        textSize:
+          description: End of the range (inclusive). If end < start, then end is interpreted as equal to start. Optional, defaulted to Start
+        step:
           type: integer
-        fileCount:
+          default: 1
+          description: Step to be take between each value. Optional, defaulted to 1
+        start:
           type: integer
-        effectivePages:
-          type: integer
-    scheduleInterval:
-      type: object
-      required:
-      - every
-      properties:
-        every:
-          type: string
-          example: 5h30m
-          description: The period to repeat the interval
-        offset:
-          type: string
-          default: 0s
-          example: 19m
-          description: A fixed offset added to the intervals period. Optional, defaults to 0
-      description: For example, an `every` of 1 hour with `offset` of zero would match every hour, on the hour. The same `every` but an `offset` of 19 minutes would match every `xx:19:00`.
-    downloadFile:
-      type: object
-      required:
-      - path
-      properties:
-        path:
-          type: string
-          example: folder/file.pdf
-          description: file path to the file to downlaod.
+          description: Start of the range (inclusive)
+      description: ScheduleRange represents a set of integer values, used to match fields of a calendar time in scheduleCalendar. If end < start, then end is interpreted as equal to start
     knowledgeBaseLight:
       type: object
       required:
@@ -1258,40 +1211,21 @@ components:
           type: integer
           example: 10
           description: Number of selected errors to store in the case of any failed datasources.
-    dataSourceFileCrawlScope:
+    scheduleInterval:
       type: object
       required:
-      - depth
+      - every
       properties:
-        depth:
-          type: integer
-          example: 1
-          description: The number of levels of sub folders that should be considered
-        maxSize:
-          type: integer
-          example: 1000000
-          description: Optional parameter. Max size of downloaded files in bytes
-        extensions:
-          type: array
-          items:
-            type: string
-          example:
-          - pdf
-          description: list of file extensions to be considered
-        maxFilesTotal:
-          type: integer
-          example: 50
-          description: Total number of files that should be considered
-        modifiedAfter:
+        every:
           type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          description: only files modified after this time should be indexed. If set older files will be removed from index.
-        maxFilesPerFolder:
-          type: integer
-          example: 100
-          description: Maximum number of files per folder that should be considered
-      description: Scope for the file crawler.
+          example: 5h30m
+          description: The period to repeat the interval
+        offset:
+          type: string
+          default: 0s
+          example: 19m
+          description: A fixed offset added to the intervals period. Optional, defaults to 0
+      description: For example, an `every` of 1 hour with `offset` of zero would match every hour, on the hour. The same `every` but an `offset` of 19 minutes would match every `xx:19:00`.
     knowledgeBase:
       allOf:
       - $ref: '#/components/schemas/knowledgeBaseLight'
@@ -1313,227 +1247,85 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/dataSource'
-    scheduleWithManifest:
+    JSONPatchArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/JSONPatch'
+      example:
+      - op: replace
+        path: /name
+        value: new name
+      - op: replace
+        path: /description
+        value: new description
+      description: An array of JSON Patch documents
+    duration:
       type: object
       required:
-      - tenantId
-      - ownerId
-      - knowledgebaseId
-      - calendars
+      - download
+      - parse
+      - chunk
+      - embed
+      - store
       properties:
-        ownerId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ed
-        spaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ec
-        tenantId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860eb
-        calendars:
-          type: array
-          items:
-            $ref: '#/components/schemas/scheduleCalendar'
-        intervals:
-          type: array
-          items:
-            $ref: '#/components/schemas/scheduleInterval'
-        datasourceId:
-          type: string
-          format: uuid
-          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
-        knowledgebaseId:
-          type: string
-          format: uuid
-          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
-    dataSourceSyncStatus:
+        chunk:
+          type: integer
+          example: 0
+          readOnly: true
+        embed:
+          type: integer
+          example: 996
+          readOnly: true
+        parse:
+          type: integer
+          example: 0
+          readOnly: true
+        store:
+          type: integer
+          example: 3653363805
+          readOnly: true
+        download:
+          type: integer
+          example: 207
+          readOnly: true
+    chunking:
       type: object
       required:
-      - syncId
-      - startedAt
-      - completedAt
-      - status
+      - type
+      - size
+      - overlap
+      - separators
+      - keepSeparator
       properties:
-        status:
-          enum:
-          - neverIndexed
-          - progress
-          - completed
-          - completedWithError
-          - toAdd
-          - toDelete
+        size:
+          type: integer
+          default: 1024
+          example: 1024
+          description: Size of chunks
+        type:
           type: string
-          readOnly: true
-          description: Sync status
-        startedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the sync task was started
-        lastSyncId:
-          type: string
-          format: uuid
-          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
-          description: sync Id
-        completedAt:
-          type: string
-          format: date-time
-          example: '2021-10-02T14:20:50.52Z'
-          readOnly: true
-          description: Datetime when the sync task was completed
-    docStats:
-      type: object
-      required:
-      - added
-      - updated
-      - deleted
-      - errors
-      - deltaBytes
-      - largestFileSize
-      - totalBytesProcessed
-      - deltaEffectivePages
-      - deltaTextSize
-      properties:
-        added:
+          example: recursive
+          description: Chunking strategy
+        overlap:
           type: integer
-          example: 1
-          readOnly: true
-        errors:
-          type: integer
-          example: 0
-          readOnly: true
-        deleted:
-          type: integer
-          example: 0
-          readOnly: true
-        updated:
-          type: integer
-          example: 0
-          readOnly: true
-        deltaBytes:
-          type: integer
-          example: 0
-          readOnly: true
-        deltaTextSize:
-          type: integer
-          example: 0
-          readOnly: true
-        largestFileSize:
-          type: integer
-          example: 123044444
-          readOnly: true
-        deltaEffectivePages:
-          type: integer
-          example: 0
-          readOnly: true
-        totalBytesProcessed:
-          type: integer
-          example: 123044444
-          readOnly: true
-      description: Summary of documents processed
-    createKnowledgeBase:
-      type: object
-      required:
-      - name
-      - spaceId
-      properties:
-        name:
-          type: string
-          example: Organization wide knowledgebase
-          description: Name of the knowledgebase
-        tags:
+          example: 20
+          description: Chunk overlap, should be less than size
+        separators:
           type: array
           items:
             type: string
           example:
-          - Red
-          - Sales
-          description: List of tags for knowledgebase
-        spaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          description: Unique identifier of the space to contain the knowledgebase
-        description:
-          type: string
-          example: This knowledgebase is used for...
-          description: Description of the knowledgebase
-        advancedIndexing:
+          - '
+
+            '
+          - .
+          - ' '
+          description: List of separators to chunk by
+        keepSeparator:
           type: boolean
-          example: true
-          description: User opt in to advanced parsing and chunking pipeline. Default is false, which will run legacy parsing and chunking.
-        selectedErrorsCount:
-          type: integer
-          example: 10
-          description: Number of selected errors to store in the case of any failed datasources. Optional value with a default of 10.
-    JSONPatch:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - REPLACE
-          type: string
-          description: The operation to be performed.
-        path:
-          type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
-    scheduleRange:
-      type: object
-      required:
-      - start
-      properties:
-        end:
-          type: integer
-          description: End of the range (inclusive). If end < start, then end is interpreted as equal to start. Optional, defaulted to Start
-        step:
-          type: integer
-          default: 1
-          description: Step to be take between each value. Optional, defaulted to 1
-        start:
-          type: integer
-          description: Start of the range (inclusive)
-      description: ScheduleRange represents a set of integer values, used to match fields of a calendar time in scheduleCalendar. If end < start, then end is interpreted as equal to start
-    syncErrorSummary:
-      type: object
-      required:
-      - code
-      - count
-      properties:
-        code:
-          allOf:
-          - $ref: '#/components/schemas/indexingErrorCode'
-          description: Stable, machine-readable error category shared across services and the UI.
-        count:
-          type: integer
-          example: 1000
-          description: Number of files that failed with this error code.
-        sample:
-          type: string
-          example: failed to parse document
-          description: A representative (sanitized) error message for this category.
-        sources:
-          type: array
-          items:
-            type: string
-            example: myfile.pdf
-          description: Up to selectedErrorsCount example sources that failed with this code.
-      description: Aggregated view of all failures of a single category within one sync.
-    knowledgeBasesResult:
+          example: false
+          description: Allows to keep or remove separators used
+    syncHistoryResult:
       type: object
       required:
       - data
@@ -1541,9 +1333,20 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/knowledgeBaseLight'
+            $ref: '#/components/schemas/syncHistory'
+        meta:
+          $ref: '#/components/schemas/resultMeta'
         links:
           $ref: '#/components/schemas/pageLinks'
+    errorResponseCodeCopy:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
     scheduleCalendar:
       type: object
       required:
@@ -1595,76 +1398,33 @@ components:
             $ref: '#/components/schemas/scheduleRange'
           description: DayOfMonth range to match (1-31). Default matches all days
       description: An event specification relative to the calendar, similar to a traditional cron specification.
-    downloadFileResponse:
+    indexingErrorCode:
+      enum:
+      - unknown
+      - file_size_exceeded
+      - download_failed
+      - parse_failed
+      - parse_timeout
+      - chunk_failed
+      - chunk_timeout
+      - guardrail_blocked
+      - unsupported_file
+      - index_verification_failed
+      - file_not_found
+      - document_has_macros
+      - scan_failed
+      - pages_limit_exceeded
+      - pages_enforcement_failed
+      - governance_budget_exceeded
+      type: string
+      example: parse_failed
+      description: Stable, machine-readable error category for an indexing failure, shared across services (worker, indexer, assistants) and the UI so failures can be mapped to friendly messages without brittle string matching.
+    pageLink:
       type: object
-      required:
-      - url
-      - name
-      - mimeType
-      - spaceId
-      - lastUpdatedAt
-      - fileSize
       properties:
-        url:
+        href:
           type: string
-          example: /v1/temp-contents/65f4287d785c400fe6d1e861
-          description: URL to download the file.
-        name:
-          type: string
-          example: stories/content/billy.txt
-          description: The requested file name.
-        spaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          description: Space id the file belongs in.
-        fileSize:
-          type: integer
-          example: 542
-          description: Size of downloaded file.
-        mimeType:
-          type: string
-          example: text/plain
-          description: The mimetype of the file.
-        lastUpdatedAt:
-          type: string
-          format: date-time
-          example: '2020-04-16T23:17:28Z'
-          description: Date for last time the file was modified.
-      description: Download information for the file.
-    dataSourceFileConfig:
-      type: object
-      required:
-      - connectionId
-      - userId
-      properties:
-        files:
-          type: array
-          items:
-            type: string
-        scope:
-          $ref: '#/components/schemas/dataSourceFileCrawlScope'
-        folder:
-          type: string
-          example: folderA/folderB
-          description: Root folder for traversing.
-        userId:
-          type: string
-          format: uuid
-          example: 507f191e810c19729de860ea
-          description: userId of the owner of the datasource fileConfig
-        connectionId:
-          type: string
-          format: uuid
-          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
-          description: connection id to be used to retrieve the raw data
-        crawlPatterns:
-          type: array
-          items:
-            $ref: '#/components/schemas/dataSourceCrawlPattern'
-          description: Pattern matching links to crawl
-      description: Specification on where to fetch the files for. This is required when the type == 'file'. Only one of path and files can be set. Path takes precedence if both are provided.
-    syncHistoryResult:
+    knowledgeBasesResult:
       type: object
       required:
       - data
@@ -1672,131 +1432,9 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/syncHistory'
-        meta:
-          $ref: '#/components/schemas/resultMeta'
+            $ref: '#/components/schemas/knowledgeBaseLight'
         links:
           $ref: '#/components/schemas/pageLinks'
-    errorResponseCodeCopy:
-      type: object
-      properties:
-        code:
-          type: string
-        title:
-          type: string
-        detail:
-          type: string
-    JSONPatchArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatch'
-      example:
-      - op: replace
-        path: /name
-        value: new name
-      - op: replace
-        path: /description
-        value: new description
-      description: An array of JSON Patch documents
-    schedule:
-      type: object
-      properties:
-        calendars:
-          type: array
-          items:
-            $ref: '#/components/schemas/scheduleCalendar'
-        intervals:
-          type: array
-          items:
-            $ref: '#/components/schemas/scheduleInterval'
-    duration:
-      type: object
-      required:
-      - download
-      - parse
-      - chunk
-      - embed
-      - store
-      properties:
-        chunk:
-          type: integer
-          example: 0
-          readOnly: true
-        embed:
-          type: integer
-          example: 996
-          readOnly: true
-        parse:
-          type: integer
-          example: 0
-          readOnly: true
-        store:
-          type: integer
-          example: 3653363805
-          readOnly: true
-        download:
-          type: integer
-          example: 207
-          readOnly: true
-    dataSource:
-      type: object
-      required:
-      - id
-      - type
-      - contentSummary
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
-          description: Unique identifier of the datasource
-        name:
-          type: string
-          description: Name of the datasource
-        type:
-          enum:
-          - file
-          - web
-          - database
-          type: string
-        spaceId:
-          type: string
-          format: uid
-          example: 507f191e810c19729de860ea
-          description: The unique identifier of the space containing the datasource
-        chunking:
-          $ref: '#/components/schemas/chunking'
-        syncInfo:
-          $ref: '#/components/schemas/dataSourceSyncStatus'
-        fileConfig:
-          $ref: '#/components/schemas/dataSourceFileConfig'
-        sourceCount:
-          type: integer
-          example: 10
-          description: The number of times that a datasource was referenced as a source in an answer
-        contentSummary:
-          $ref: '#/components/schemas/contentSummary'
-      description: Specification on where to fetch the files for. This is required when the type == 'file'. Only one of path and files can be set. Path takes precedence if both are provided.
-    errorResponseCopy:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/errorResponseCodeCopy'
-            x-qlik-merge-conflict: true
-        traceId:
-          type: string
-          example: 507f191e810c19729de860ea
-    pageLinks:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/pageLink'
-        prev:
-          $ref: '#/components/schemas/pageLink'
-        self:
-          $ref: '#/components/schemas/pageLink'
     syncHistoryDetails:
       type: object
       required:
@@ -1883,11 +1521,305 @@ components:
           example: '2024-02-16T20:06:02Z'
           readOnly: true
           description: Datetime when the file was last modified
-    pageLink:
+    createKnowledgeBase:
+      type: object
+      required:
+      - name
+      - spaceId
+      properties:
+        name:
+          type: string
+          example: Organization wide knowledgebase
+          description: Name of the knowledgebase
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Red
+          - Sales
+          description: List of tags for knowledgebase
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: Unique identifier of the space to contain the knowledgebase
+        description:
+          type: string
+          example: This knowledgebase is used for...
+          description: Description of the knowledgebase
+        advancedIndexing:
+          type: boolean
+          example: true
+          description: User opt in to advanced parsing and chunking pipeline. Default is false, which will run legacy parsing and chunking.
+        selectedErrorsCount:
+          type: integer
+          example: 10
+          description: Number of selected errors to store in the case of any failed datasources. Optional value with a default of 10.
+    dataSourceCrawlPattern:
+      type: object
+      required:
+      - type
+      - pattern
+      properties:
+        type:
+          enum:
+          - include
+          - exclude
+          type: string
+          example: include
+          description: include or exclude
+        pattern:
+          type: string
+          example: (.*)example(.*)
+          description: Regex patterna to filter links on
+      description: Include or exclude pattern
+    scheduleWithManifest:
+      type: object
+      required:
+      - tenantId
+      - ownerId
+      - knowledgebaseId
+      - calendars
+      properties:
+        ownerId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ed
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ec
+        tenantId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860eb
+        calendars:
+          type: array
+          items:
+            $ref: '#/components/schemas/scheduleCalendar'
+        intervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/scheduleInterval'
+        datasourceId:
+          type: string
+          format: uuid
+          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
+        knowledgebaseId:
+          type: string
+          format: uuid
+          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
+    dataSourceFileCrawlScope:
+      type: object
+      required:
+      - depth
+      properties:
+        depth:
+          type: integer
+          example: 1
+          description: The number of levels of sub folders that should be considered
+        maxSize:
+          type: integer
+          example: 1000000
+          description: Optional parameter. Max size of downloaded files in bytes
+        extensions:
+          type: array
+          items:
+            type: string
+          example:
+          - pdf
+          description: list of file extensions to be considered
+        maxFilesTotal:
+          type: integer
+          example: 50
+          description: Total number of files that should be considered
+        modifiedAfter:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          description: only files modified after this time should be indexed. If set older files will be removed from index.
+        maxFilesPerFolder:
+          type: integer
+          example: 100
+          description: Maximum number of files per folder that should be considered
+      description: Scope for the file crawler.
+    dataSourceSyncStatus:
+      type: object
+      required:
+      - syncId
+      - startedAt
+      - completedAt
+      - status
+      properties:
+        status:
+          enum:
+          - neverIndexed
+          - progress
+          - completed
+          - completedWithError
+          - toAdd
+          - toDelete
+          type: string
+          readOnly: true
+          description: Sync status
+        startedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the sync task was started
+        lastSyncId:
+          type: string
+          format: uuid
+          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
+          description: sync Id
+        completedAt:
+          type: string
+          format: date-time
+          example: '2021-10-02T14:20:50.52Z'
+          readOnly: true
+          description: Datetime when the sync task was completed
+    errorResponseCopy:
       type: object
       properties:
-        href:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/errorResponseCodeCopy'
+            x-qlik-merge-conflict: true
+        traceId:
           type: string
+          example: 507f191e810c19729de860ea
+    contentSummary:
+      type: object
+      required:
+      - fileCount
+      - effectivePages
+      - textSize
+      - fileSize
+      properties:
+        fileSize:
+          type: integer
+        textSize:
+          type: integer
+        fileCount:
+          type: integer
+        effectivePages:
+          type: integer
+    syncErrorSummary:
+      type: object
+      required:
+      - code
+      - count
+      properties:
+        code:
+          allOf:
+          - $ref: '#/components/schemas/indexingErrorCode'
+          description: Stable, machine-readable error category shared across services and the UI.
+        count:
+          type: integer
+          example: 1000
+          description: Number of files that failed with this error code.
+        sample:
+          type: string
+          example: failed to parse document
+          description: A representative (sanitized) error message for this category.
+        sources:
+          type: array
+          items:
+            type: string
+            example: myfile.pdf
+          description: Up to selectedErrorsCount example sources that failed with this code.
+      description: Aggregated view of all failures of a single category within one sync.
+    docStats:
+      type: object
+      required:
+      - added
+      - updated
+      - deleted
+      - errors
+      - deltaBytes
+      - largestFileSize
+      - totalBytesProcessed
+      - deltaEffectivePages
+      - deltaTextSize
+      properties:
+        added:
+          type: integer
+          example: 1
+          readOnly: true
+        errors:
+          type: integer
+          example: 0
+          readOnly: true
+        deleted:
+          type: integer
+          example: 0
+          readOnly: true
+        updated:
+          type: integer
+          example: 0
+          readOnly: true
+        deltaBytes:
+          type: integer
+          example: 0
+          readOnly: true
+        deltaTextSize:
+          type: integer
+          example: 0
+          readOnly: true
+        largestFileSize:
+          type: integer
+          example: 123044444
+          readOnly: true
+        deltaEffectivePages:
+          type: integer
+          example: 0
+          readOnly: true
+        totalBytesProcessed:
+          type: integer
+          example: 123044444
+          readOnly: true
+      description: Summary of documents processed
+    downloadFile:
+      type: object
+      required:
+      - path
+      properties:
+        path:
+          type: string
+          example: folder/file.pdf
+          description: file path to the file to downlaod.
+    createDataSource:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: Name of the datasource
+        type:
+          enum:
+          - file
+          - web
+          - database
+          type: string
+        fileConfig:
+          $ref: '#/components/schemas/dataSourceFileConfig'
+      description: Specification on where to fetch the files for. This is required when the type == 'file'. Only one of path and files can be set. Path takes precedence if both are provided.
+    schedule:
+      type: object
+      properties:
+        calendars:
+          type: array
+          items:
+            $ref: '#/components/schemas/scheduleCalendar'
+        intervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/scheduleInterval'
     syncHistory:
       type: object
       required:
@@ -1955,61 +1887,28 @@ components:
           example:
           - unsupported file extension
           description: populated with up to the first selectedErrorsCount errors if there were any during sync
-    createDataSource:
+    JSONPatch:
       type: object
       required:
-      - name
-      - type
+      - op
+      - path
+      - value
       properties:
-        name:
-          type: string
-          description: Name of the datasource
-        type:
+        op:
           enum:
-          - file
-          - web
-          - database
+          - REPLACE
           type: string
-        fileConfig:
-          $ref: '#/components/schemas/dataSourceFileConfig'
-      description: Specification on where to fetch the files for. This is required when the type == 'file'. Only one of path and files can be set. Path takes precedence if both are provided.
-    chunking:
-      type: object
-      required:
-      - type
-      - size
-      - overlap
-      - separators
-      - keepSeparator
-      properties:
-        size:
-          type: integer
-          default: 1024
-          example: 1024
-          description: Size of chunks
-        type:
+          description: The operation to be performed.
+        path:
           type: string
-          example: recursive
-          description: Chunking strategy
-        overlap:
-          type: integer
-          example: 20
-          description: Chunk overlap, should be less than size
-        separators:
-          type: array
-          items:
-            type: string
-          example:
-          - '
-
-            '
-          - .
-          - ' '
-          description: List of separators to chunk by
-        keepSeparator:
-          type: boolean
-          example: false
-          description: Allows to keep or remove separators used
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
     dataSourceSync:
       type: object
       required:
@@ -2021,24 +1920,125 @@ components:
           example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
           description: Unique identifier of the sync
       description: Response when a datasource sync is started, contains the sync Id
-    indexingErrorCode:
-      enum:
-      - unknown
-      - file_size_exceeded
-      - download_failed
-      - parse_failed
-      - parse_timeout
-      - chunk_failed
-      - chunk_timeout
-      - guardrail_blocked
-      - unsupported_file
-      - index_verification_failed
-      - file_not_found
-      - document_has_macros
-      - scan_failed
-      - pages_limit_exceeded
-      - pages_enforcement_failed
-      - governance_budget_exceeded
-      type: string
-      example: parse_failed
-      description: Stable, machine-readable error category for an indexing failure, shared across services (worker, indexer, assistants) and the UI so failures can be mapped to friendly messages without brittle string matching.
+    dataSource:
+      type: object
+      required:
+      - id
+      - type
+      - contentSummary
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
+          description: Unique identifier of the datasource
+        name:
+          type: string
+          description: Name of the datasource
+        type:
+          enum:
+          - file
+          - web
+          - database
+          type: string
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: The unique identifier of the space containing the datasource
+        chunking:
+          $ref: '#/components/schemas/chunking'
+        syncInfo:
+          $ref: '#/components/schemas/dataSourceSyncStatus'
+        fileConfig:
+          $ref: '#/components/schemas/dataSourceFileConfig'
+        sourceCount:
+          type: integer
+          example: 10
+          description: The number of times that a datasource was referenced as a source in an answer
+        contentSummary:
+          $ref: '#/components/schemas/contentSummary'
+      description: Specification on where to fetch the files for. This is required when the type == 'file'. Only one of path and files can be set. Path takes precedence if both are provided.
+    dataSourceFileConfig:
+      type: object
+      required:
+      - connectionId
+      - userId
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+        scope:
+          $ref: '#/components/schemas/dataSourceFileCrawlScope'
+        folder:
+          type: string
+          example: folderA/folderB
+          description: Root folder for traversing.
+        userId:
+          type: string
+          format: uuid
+          example: 507f191e810c19729de860ea
+          description: userId of the owner of the datasource fileConfig
+        connectionId:
+          type: string
+          format: uuid
+          example: f256b3e4-03e0-4f74-ae46-a4d43882ee5d
+          description: connection id to be used to retrieve the raw data
+        crawlPatterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataSourceCrawlPattern'
+          description: Pattern matching links to crawl
+      description: Specification on where to fetch the files for. This is required when the type == 'file'. Only one of path and files can be set. Path takes precedence if both are provided.
+    resultMeta:
+      type: object
+      properties:
+        countTotal:
+          type: integer
+    downloadFileResponse:
+      type: object
+      required:
+      - url
+      - name
+      - mimeType
+      - spaceId
+      - lastUpdatedAt
+      - fileSize
+      properties:
+        url:
+          type: string
+          example: /v1/temp-contents/65f4287d785c400fe6d1e861
+          description: URL to download the file.
+        name:
+          type: string
+          example: stories/content/billy.txt
+          description: The requested file name.
+        spaceId:
+          type: string
+          format: uid
+          example: 507f191e810c19729de860ea
+          description: Space id the file belongs in.
+        fileSize:
+          type: integer
+          example: 542
+          description: Size of downloaded file.
+        mimeType:
+          type: string
+          example: text/plain
+          description: The mimetype of the file.
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          example: '2020-04-16T23:17:28Z'
+          description: Date for last time the file was modified.
+      description: Download information for the file.
+    pageLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/pageLink'
+        prev:
+          $ref: '#/components/schemas/pageLink'
+        self:
+          $ref: '#/components/schemas/pageLink'

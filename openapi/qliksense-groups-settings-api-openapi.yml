@@ -123,51 +123,6 @@ paths:
         limit: 100
 components:
   schemas:
-    AssignedRolesRefNames:
-      type: array
-      items:
-        required:
-        - name
-        properties:
-          name:
-            type: string
-            example: TenantAdmin
-            description: The name of the role
-      example:
-      - name: TenantAdmin
-      description: An array of role reference names.
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem.
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              description: A JSON Pointer to the property that caused the error.
-            parameter:
-              type: string
-              description: The URI query parameter that caused the error.
-          description: References to the source of the error.
-        status:
-          type: integer
-          description: The HTTP status code.
-      description: An error object describing the error.
     GroupSettings:
       type: object
       required:
@@ -253,48 +208,51 @@ components:
         value:
         - name: Steward
       description: An array of JSON Patches for the groups settings.
-    AssignedRolesRefIDs:
-      type: array
-      items:
-        type: object
-        required:
-        - id
-        properties:
-          id:
-            type: string
-            format: uid
-            example: 507f191e810c19729de860ea
-            description: The unique role identitier
-        description: represents a role entity stored in the database
-      example:
-      - id: 507f191e810c19729de860ea
-      description: An array of role reference identifiers.
-    SettingsPatch:
+    Error:
       type: object
       required:
-      - op
-      - path
-      - value
+      - code
+      - title
       properties:
-        op:
-          enum:
-          - replace
+        code:
           type: string
-          description: The operation to be performed.
-        path:
-          enum:
-          - /autoCreateGroups
-          - /syncIdpGroups
-          - /systemGroups/{id}/assignedRoles
+          description: The error code.
+        meta:
+          type: object
+          description: Additional properties relating to the error.
+        title:
           type: string
-          description: A JSON Pointer.
-        value:
-          oneOf:
-          - type: boolean
-          - $ref: '#/components/schemas/AssignedRolesRefIDs'
-          - $ref: '#/components/schemas/AssignedRolesRefNames'
-          description: The value to be used for this operation.
-      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: A JSON Pointer to the property that caused the error.
+            parameter:
+              type: string
+              description: The URI query parameter that caused the error.
+          description: References to the source of the error.
+        status:
+          type: integer
+          description: The HTTP status code.
+      description: An error object describing the error.
+    AssignedRolesRefNames:
+      type: array
+      items:
+        required:
+        - name
+        properties:
+          name:
+            type: string
+            example: TenantAdmin
+            description: The name of the role
+      example:
+      - name: TenantAdmin
+      description: An array of role reference names.
     Errors:
       type: object
       example:
@@ -351,3 +309,45 @@ components:
             description: The role level
         description: represents a role entity stored in the database
       description: An array of role references. Visibility dependant on access level. Must have access to roles to view other users' assigned roles.
+    SettingsPatch:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: The operation to be performed.
+        path:
+          enum:
+          - /autoCreateGroups
+          - /syncIdpGroups
+          - /systemGroups/{id}/assignedRoles
+          type: string
+          description: A JSON Pointer.
+        value:
+          oneOf:
+          - type: boolean
+          - $ref: '#/components/schemas/AssignedRolesRefIDs'
+          - $ref: '#/components/schemas/AssignedRolesRefNames'
+          description: The value to be used for this operation.
+      description: A JSON Patch document as defined in http://tools.ietf.org/html/rfc6902.
+    AssignedRolesRefIDs:
+      type: array
+      items:
+        type: object
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            format: uid
+            example: 507f191e810c19729de860ea
+            description: The unique role identitier
+        description: represents a role entity stored in the database
+      example:
+      - id: 507f191e810c19729de860ea
+      description: An array of role reference identifiers.

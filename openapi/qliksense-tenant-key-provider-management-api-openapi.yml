@@ -236,6 +236,154 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    MigrationInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uid
+          description: Migration operation ID.
+        state:
+          enum:
+          - New
+          - InProgress
+          - Completed
+          type: string
+          description: Migration operation state.
+        progress:
+          type: number
+          description: Progress in percentage.
+        tenantId:
+          type: string
+          format: uid
+          description: Tenant ID.
+        completedAt:
+          type: string
+          format: date-time
+        initiatedAt:
+          type: string
+          format: date-time
+        migratingTo:
+          type: string
+          description: The new key ARN that keys should be migrated to.
+        migratingFrom:
+          type: string
+          description: The key ARN being migrated from (in case of QlikVault, could be a short name only).
+        migratingToPrefix:
+          type: string
+          description: The new key prefix (to help services know which prefix should NOT be migrated).
+        migratingToFingerprint:
+          type: string
+          description: The new key ARN fingerprint.
+    KeyProviders:
+      type: object
+      example:
+      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
+        name: test name
+        current: true
+        description: test description
+        drCompliant: true
+        keyprovider: AWS-KMS
+        multiRegion: true
+        replicaKeys:
+        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
+          region: eu-west-3
+        complianceError:
+          code: ''
+          region: ''
+          message: ''
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyProvider'
+    ListKeyProviders:
+      type: object
+      example:
+      - arn: '#QLIK_MANAGED_KEY_PROVIDER#'
+        name: Qlik Internal Kms
+        tenantId: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
+        createdAt: Qlik managed
+        description: Default key management service
+        keyprovider: Qlik
+        arnFingerPrint: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
+        promotedToCurrentAt: '2023-06-21T18:45:57Z'
+        demotedFromCurrentAt: '0001-01-01T00:00:00Z'
+      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
+        name: CMK - 01
+        tenantId: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
+        createdAt: '2023-06-21T18:43:49Z'
+        drCompliant: true
+        keyprovider: AWS-KMS
+        multiRegion: true
+        replicaKeys:
+        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
+          region: eu-west-3
+        arnFingerPrint: 9f352c5a9c1618485051892cb57467e4
+        complianceError:
+          code: ''
+          region: ''
+          message: ''
+        promotedToCurrentAt: '2023-06-21T18:43:54Z'
+        demotedFromCurrentAt: '2023-06-21T18:45:57Z'
+      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-2678f8123w236c3123469387dc2ce561
+        name: CMK - 02
+        current: true
+        tenantId: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
+        createdAt: '2023-06-21T18:59:17Z'
+        description: CMK migration test
+        drCompliant: false
+        keyprovider: AWS-KMS
+        multiRegion: true
+        replicaKeys:
+        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-2678f8123w236c3123469387dc2ce561
+          region: eu-west-3
+        arnFingerPrint: 12342c83b25f9e36543bca28f69e4210
+        complianceError:
+          code: Encryption-88
+          region: eu-west-3
+          message: The policy of the provided key does not allow the required action [eu-west-3] [GenerateDataKey].
+        promotedToCurrentAt: '2023-06-21T18:59:18Z'
+        demotedFromCurrentAt: '0001-01-01T00:00:00Z'
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyProvider'
+    StandardError:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/StandardErrorItem'
+    ResetMigrationNotNeeded:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Tenant is already using Qlik KMS, no migration is required.
+          description: Tenant is already using Qlik KMS, no migration is required.
+    StandardErrorItem:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          description: Additional error object metadata.
+        title:
+          type: string
+          description: Description of the error.
+        detail:
+          type: string
+          description: Extra information about the error.
     KeyProvider:
       type: object
       example:
@@ -314,151 +462,3 @@ components:
           format: date-time
           readOnly: true
           description: When the key was demoted from being current to non active.
-    ListKeyProviders:
-      type: object
-      example:
-      - arn: '#QLIK_MANAGED_KEY_PROVIDER#'
-        name: Qlik Internal Kms
-        tenantId: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
-        createdAt: Qlik managed
-        description: Default key management service
-        keyprovider: Qlik
-        arnFingerPrint: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
-        promotedToCurrentAt: '2023-06-21T18:45:57Z'
-        demotedFromCurrentAt: '0001-01-01T00:00:00Z'
-      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
-        name: CMK - 01
-        tenantId: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
-        createdAt: '2023-06-21T18:43:49Z'
-        drCompliant: true
-        keyprovider: AWS-KMS
-        multiRegion: true
-        replicaKeys:
-        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
-          region: eu-west-3
-        arnFingerPrint: 9f352c5a9c1618485051892cb57467e4
-        complianceError:
-          code: ''
-          region: ''
-          message: ''
-        promotedToCurrentAt: '2023-06-21T18:43:54Z'
-        demotedFromCurrentAt: '2023-06-21T18:45:57Z'
-      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-2678f8123w236c3123469387dc2ce561
-        name: CMK - 02
-        current: true
-        tenantId: ImTRa-bkJTD-NZRYjNBa_rDhwSVA6Qo8
-        createdAt: '2023-06-21T18:59:17Z'
-        description: CMK migration test
-        drCompliant: false
-        keyprovider: AWS-KMS
-        multiRegion: true
-        replicaKeys:
-        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-2678f8123w236c3123469387dc2ce561
-          region: eu-west-3
-        arnFingerPrint: 12342c83b25f9e36543bca28f69e4210
-        complianceError:
-          code: Encryption-88
-          region: eu-west-3
-          message: The policy of the provided key does not allow the required action [eu-west-3] [GenerateDataKey].
-        promotedToCurrentAt: '2023-06-21T18:59:18Z'
-        demotedFromCurrentAt: '0001-01-01T00:00:00Z'
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyProvider'
-    MigrationInformation:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uid
-          description: Migration operation ID.
-        state:
-          enum:
-          - New
-          - InProgress
-          - Completed
-          type: string
-          description: Migration operation state.
-        progress:
-          type: number
-          description: Progress in percentage.
-        tenantId:
-          type: string
-          format: uid
-          description: Tenant ID.
-        completedAt:
-          type: string
-          format: date-time
-        initiatedAt:
-          type: string
-          format: date-time
-        migratingTo:
-          type: string
-          description: The new key ARN that keys should be migrated to.
-        migratingFrom:
-          type: string
-          description: The key ARN being migrated from (in case of QlikVault, could be a short name only).
-        migratingToPrefix:
-          type: string
-          description: The new key prefix (to help services know which prefix should NOT be migrated).
-        migratingToFingerprint:
-          type: string
-          description: The new key ARN fingerprint.
-    StandardErrorItem:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          description: Additional error object metadata.
-        title:
-          type: string
-          description: Description of the error.
-        detail:
-          type: string
-          description: Extra information about the error.
-    KeyProviders:
-      type: object
-      example:
-      - arn: arn:aws:kms:eu-west-1:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
-        name: test name
-        current: true
-        description: test description
-        drCompliant: true
-        keyprovider: AWS-KMS
-        multiRegion: true
-        replicaKeys:
-        - arn: arn:aws:kms:eu-west-3:111222334455:key/mrk-1237c011a37erft67ei987c7612q456
-          region: eu-west-3
-        complianceError:
-          code: ''
-          region: ''
-          message: ''
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyProvider'
-    StandardError:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/StandardErrorItem'
-    ResetMigrationNotNeeded:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Tenant is already using Qlik KMS, no migration is required.
-          description: Tenant is already using Qlik KMS, no migration is required.

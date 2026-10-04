@@ -118,14 +118,16 @@ paths:
         limit: 100
 components:
   schemas:
-    PrepareProjectReq:
+    ErrorSource:
       type: object
       properties:
-        allowRecreate:
-          type: boolean
-          default: false
-        selectedTasks:
-          $ref: '#/components/schemas/TaskSelectionList'
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     Error:
       type: object
       properties:
@@ -145,35 +147,19 @@ components:
           format: int32
           description: HTTP status code associated with the error.
       description: Represents a single error condition with details about what went wrong.
-    ValidateProjectReq:
+    DiProjectOperationSelectedTask:
       type: object
+      required:
+      - taskId
       properties:
-        selectedTasks:
-          $ref: '#/components/schemas/TaskSelectionList'
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
+        taskId:
           type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
+          description: Task identifier
     TaskSelectionList:
       type: array
       items:
         $ref: '#/components/schemas/DiProjectOperationSelectedTask'
       description: Array of tasks to prepare. Leave empty to trigger project-level orchestration using built-in logic (same as in the user interface).
-    AsyncActionRsp:
-      type: object
-      required:
-      - actionId
-      properties:
-        actionId:
-          type: string
-          example: action-123456
-          description: Identifier for tracking the action
     Errors:
       type: object
       properties:
@@ -186,14 +172,28 @@ components:
           type: string
           description: Unique identifier for this error response, useful for tracking and support inquiries.
       description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
-    DiProjectOperationSelectedTask:
+    AsyncActionRsp:
       type: object
       required:
-      - taskId
+      - actionId
       properties:
-        taskId:
+        actionId:
           type: string
-          description: Task identifier
+          example: action-123456
+          description: Identifier for tracking the action
+    ValidateProjectReq:
+      type: object
+      properties:
+        selectedTasks:
+          $ref: '#/components/schemas/TaskSelectionList'
+    PrepareProjectReq:
+      type: object
+      properties:
+        allowRecreate:
+          type: boolean
+          default: false
+        selectedTasks:
+          $ref: '#/components/schemas/TaskSelectionList'
   headers:
     AsyncActionLocation:
       schema:

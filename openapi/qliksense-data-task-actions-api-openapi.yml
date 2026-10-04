@@ -260,15 +260,16 @@ paths:
         limit: 100
 components:
   schemas:
-    PrepareTaskReq:
+    ErrorSource:
       type: object
-      required:
-      - allowRecreate
       properties:
-        allowRecreate:
-          type: boolean
-          default: false
-          description: Allow recreation of existing artifacts
+        pointer:
+          type: string
+          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
+        parameter:
+          type: string
+          description: Name of the query parameter or path parameter that caused the error.
+      description: Identifies the location of the error in the request.
     Error:
       type: object
       properties:
@@ -288,15 +289,12 @@ components:
           format: int32
           description: HTTP status code associated with the error.
       description: Represents a single error condition with details about what went wrong.
-    ReloadRequestResponse:
+    ValidateTaskReq:
       type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Always true when the server successfully registers the request.
-      description: Indicates whether the reload request was registered successfully.
+      description: Request body for task validation
+    RecreateTaskDatasetsReq:
+      type: object
+      description: Request body to recreate task datasets.
     ReloadDiTaskReq:
       type: object
       properties:
@@ -315,31 +313,6 @@ components:
               datasetId:
                 type: string
           description: Datasets to reload (optional, if omitted or empty, all datasets will be reloaded).
-    AsyncActionRsp:
-      type: object
-      required:
-      - actionId
-      properties:
-        actionId:
-          type: string
-          example: action-123456
-          description: Identifier for tracking the action
-    ErrorSource:
-      type: object
-      properties:
-        pointer:
-          type: string
-          description: JSON Pointer (RFC 6901) to the field in the request body that caused the error.
-        parameter:
-          type: string
-          description: Name of the query parameter or path parameter that caused the error.
-      description: Identifies the location of the error in the request.
-    RecreateTaskDatasetsReq:
-      type: object
-      description: Request body to recreate task datasets.
-    ValidateTaskReq:
-      type: object
-      description: Request body for task validation
     Errors:
       type: object
       properties:
@@ -352,6 +325,33 @@ components:
           type: string
           description: Unique identifier for this error response, useful for tracking and support inquiries.
       description: Standard error response wrapper containing one or more error details and a trace ID for diagnostics.
+    AsyncActionRsp:
+      type: object
+      required:
+      - actionId
+      properties:
+        actionId:
+          type: string
+          example: action-123456
+          description: Identifier for tracking the action
+    ReloadRequestResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Always true when the server successfully registers the request.
+      description: Indicates whether the reload request was registered successfully.
+    PrepareTaskReq:
+      type: object
+      required:
+      - allowRecreate
+      properties:
+        allowRecreate:
+          type: boolean
+          default: false
+          description: Allow recreation of existing artifacts
   headers:
     AsyncActionLocation:
       schema:

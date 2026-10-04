@@ -118,31 +118,12 @@ components:
       - license
       type: string
       description: The possible states for the status of notes configuration GET or POST operation
-    NotesUserSettings:
-      type: object
-      required:
-      - available
-      properties:
-        reason:
-          $ref: '#/components/schemas/ConfigReasonCode'
-        available:
-          type: boolean
-          description: '''true'' if the note feature is enabled for this tenant and user otherwise ''false''.'
-        lastFetch:
-          type: string
-          description: The timestamp for the last time this users notes settings were fetched from downstream services.
     NoteSettingsPutResponse:
       type: object
       properties:
         toggleOn:
           type: boolean
           description: '''true'' if the note feature is enabled for this tenant and user otherwise ''false''.'
-    NoteSettingsPutPayload:
-      type: object
-      properties:
-        toggledOn:
-          type: boolean
-          description: pass 'true' to enable the note toggle for the tenant, 'false' to disable the toggle (other values are ignore).
     Errors:
       type: object
       example:
@@ -159,3 +140,22 @@ components:
         traceId:
           type: string
           description: An optional traceId
+    NoteSettingsPutPayload:
+      type: object
+      properties:
+        toggledOn:
+          type: boolean
+          description: pass 'true' to enable the note toggle for the tenant, 'false' to disable the toggle (other values are ignore).
+    NotesUserSettings:
+      type: object
+      required:
+      - available
+      properties:
+        reason:
+          $ref: '#/components/schemas/ConfigReasonCode'
+        available:
+          type: boolean
+          description: '''true'' if the note feature is enabled for this tenant and user otherwise ''false''.'
+        lastFetch:
+          type: string
+          description: The timestamp for the last time this users notes settings were fetched from downstream services.

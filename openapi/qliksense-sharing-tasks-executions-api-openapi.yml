@@ -265,62 +265,6 @@ paths:
         limit: 1000
 components:
   schemas:
-    SharingExecutionListResponse:
-      allOf:
-      - $ref: '#/components/schemas/StandardListResponseProps'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/ListLinks'
-          executions:
-            type: array
-            items:
-              $ref: '#/components/schemas/SharingExecutionResponse'
-            description: Gets a list of sharing-executions.
-    SharingExecutionFile:
-      type: object
-      properties:
-        type:
-          enum:
-          - image
-          - pdf
-          - pptx
-          - xlsx
-          - html
-          - docx
-          type: string
-        fileID:
-          type: string
-          example: za1b2c3d4z
-        userId:
-          type: string
-          readOnly: true
-          description: userId associated with the file
-        fileAlias:
-          type: string
-          example: small-image
-        templateId:
-          type: string
-          format: uuid
-          readOnly: true
-          description: identify the source task template
-        tempContentsLocation:
-          type: string
-    SharingExecutionErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/SharingExecutionError'
-    SharingExecutionResponse:
-      allOf:
-      - $ref: '#/components/schemas/SharingExecutionPersist'
-      - type: object
-        properties:
-          links:
-            $ref: '#/components/schemas/Links'
-          fileLocations:
-            type: array
-            items:
-              type: string
     Error:
       type: object
       properties:
@@ -338,13 +282,53 @@ components:
           type: string
           readOnly: true
           description: Error cause.
-    Error_meta:
+    Self:
       type: object
       properties:
-        httpCode:
-          type: integer
-          readOnly: true
-          description: HTTP error code.
+        href:
+          type: string
+          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
+      description: Object with Href to a particular element or set of elements
+    SharingExecutionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/SharingExecutionError'
+    SharingExecutionListResponse:
+      allOf:
+      - $ref: '#/components/schemas/StandardListResponseProps'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/ListLinks'
+          executions:
+            type: array
+            items:
+              $ref: '#/components/schemas/SharingExecutionResponse'
+            description: Gets a list of sharing-executions.
+    ListLinks:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Page'
+        prev:
+          $ref: '#/components/schemas/Page'
+        self:
+          $ref: '#/components/schemas/Self'
+    Errors:
+      type: object
+      example:
+        errors:
+        - code: HTTP-123
+          title: short error message
+          details: detailed error message
+        traceId: 7975401f3954aa47
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
     SharingExecutionError:
       type: object
       properties:
@@ -383,6 +367,17 @@ components:
       properties:
         self:
           $ref: '#/components/schemas/Self'
+    SharingExecutionResponse:
+      allOf:
+      - $ref: '#/components/schemas/SharingExecutionPersist'
+      - type: object
+        properties:
+          links:
+            $ref: '#/components/schemas/Links'
+          fileLocations:
+            type: array
+            items:
+              type: string
     StandardListResponseProps:
       type: object
       required:
@@ -396,13 +391,35 @@ components:
           type: integer
           description: count of entries on the currently shown page
       description: properties that should be added to every list response
-    Self:
+    SharingExecutionFile:
       type: object
       properties:
-        href:
+        type:
+          enum:
+          - image
+          - pdf
+          - pptx
+          - xlsx
+          - html
+          - docx
           type: string
-          example: http://localhost:8787/v1/items/5da5825325dc9a0dd0260af9
-      description: Object with Href to a particular element or set of elements
+        fileID:
+          type: string
+          example: za1b2c3d4z
+        userId:
+          type: string
+          readOnly: true
+          description: userId associated with the file
+        fileAlias:
+          type: string
+          example: small-image
+        templateId:
+          type: string
+          format: uuid
+          readOnly: true
+          description: identify the source task template
+        tempContentsLocation:
+          type: string
     TargetUser:
       type: object
       properties:
@@ -545,27 +562,10 @@ components:
           type: integer
           readOnly: true
           description: Total count of successfully uploaded reports in this execution
-    Errors:
-      type: object
-      example:
-        errors:
-        - code: HTTP-123
-          title: short error message
-          details: detailed error message
-        traceId: 7975401f3954aa47
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-    ListLinks:
+    Error_meta:
       type: object
       properties:
-        next:
-          $ref: '#/components/schemas/Page'
-        prev:
-          $ref: '#/components/schemas/Page'
-        self:
-          $ref: '#/components/schemas/Self'
+        httpCode:
+          type: integer
+          readOnly: true
+          description: HTTP error code.

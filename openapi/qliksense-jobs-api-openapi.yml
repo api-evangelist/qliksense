@@ -44,21 +44,39 @@ paths:
         tier: '2'
         limit: 100
 components:
-  parameters:
-    corrId:
-      in: path
-      name: corrId
-      schema:
-        type: string
-      required: true
-      description: The ID of a correlated resource of corrType
-    corrType:
-      in: path
-      name: corrType
-      schema:
-        $ref: '#/components/schemas/CorrType'
-      required: true
-      description: The type of a resource paired with a corrId
+  responses:
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
+    405MethodNotAllowed:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Method Not Allowed`'
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    204NoContent:
+      description: '`No Content`'
   schemas:
     CorrType:
       enum:
@@ -70,6 +88,19 @@ components:
         experiment_version)
 
         '
+    Failure:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+          uniqueItems: true
+        traceId:
+          type: string
+      additionalProperties: false
     APIError:
       type: object
       required:
@@ -112,49 +143,18 @@ components:
           description: Description of the error
       description: An error object
       additionalProperties: false
-    Failure:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/APIError'
-          uniqueItems: true
-        traceId:
-          type: string
-      additionalProperties: false
-  responses:
-    403Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Forbidden`'
-    FailureDefault:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unexpected Error`'
-    405MethodNotAllowed:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Method Not Allowed`'
-    400BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Request`'
-    500InternalError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Internal Error`'
-    204NoContent:
-      description: '`No Content`'
+  parameters:
+    corrType:
+      in: path
+      name: corrType
+      schema:
+        $ref: '#/components/schemas/CorrType'
+      required: true
+      description: The type of a resource paired with a corrId
+    corrId:
+      in: path
+      name: corrId
+      schema:
+        type: string
+      required: true
+      description: The ID of a correlated resource of corrType

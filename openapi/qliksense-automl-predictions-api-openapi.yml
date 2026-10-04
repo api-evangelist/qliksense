@@ -371,29 +371,7 @@ paths:
         tier: '1'
         limit: 1000
 components:
-  parameters:
-    predictionId:
-      in: path
-      name: predictionId
-      schema:
-        type: string
-        format: uuid
-      required: true
-      description: The ID of the prediction configuration object that provides parameters to be applied when the prediction is produced.
-    refId:
-      in: query
-      name: refId
-      schema:
-        type: string
-      description: ''
   schemas:
-    appErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error'
     error:
       type: object
       required:
@@ -438,3 +416,25 @@ components:
         resourceId:
           type: string
           description: The resource id that the error occurred on
+    appErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error'
+  parameters:
+    predictionId:
+      in: path
+      name: predictionId
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: The ID of the prediction configuration object that provides parameters to be applied when the prediction is produced.
+    refId:
+      in: query
+      name: refId
+      schema:
+        type: string
+      description: ''

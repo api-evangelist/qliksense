@@ -2436,7 +2436,303 @@ paths:
           default: your-tenant
           description: Name of the tenant that will be called
 components:
+  responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Bad Request
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Not found
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Internal Server Error
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Unauthorized
+    Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Forbidden
+    ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Service Unavailable
+    Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Conflict with the current state of the resource
   schemas:
+    Error:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The unique code for the error
+        title:
+          type: string
+          description: A summary of what went wrong
+        detail:
+          type: string
+          description: May be used to provide additional details
+    AutomationList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationListObject'
+        links:
+          $ref: '#/components/schemas/Links'
+    RunList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunListObject'
+        links:
+          $ref: '#/components/schemas/Links'
+    RunDetailRequestObject:
+      type: object
+      required:
+      - context
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d452d100-9b0b-11ec-b199-8323e1031c3e
+          readOnly: true
+        context:
+          enum:
+          - api
+          type: string
+          example: api
+          description: The source that triggers the automation will set the context.
+    UsageObject:
+      type: object
+      required:
+      - name
+      - date
+      - value
+      properties:
+        date:
+          type: string
+          example: '2021-12-15'
+          description: The date for the metric
+          x-qlik-filterable: true
+        name:
+          enum:
+          - runs
+          - scheduledRun
+          - triggeredRun
+          - webhookRuns
+          - duration
+          - bandwidthIn
+          - bandwidthOut
+          type: string
+          example: bandwidthIn
+          maxLength: 50
+          description: The name for the metric
+          x-qlik-filterable: true
+        value:
+          type: integer
+          example: 310179713
+          description: The value count of the metric
+        automation:
+          $ref: '#/components/schemas/AutomationUsageObject'
+    PaginationLink:
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+          description: The URL to a resource request
+    Links:
+      properties:
+        next:
+          $ref: '#/components/schemas/PaginationLink'
+        prev:
+          $ref: '#/components/schemas/PaginationLink'
+    RunListObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d452d100-9b0b-11ec-b199-8323e1031c3e
+          readOnly: true
+        error:
+          type:
+          - array
+          - 'null'
+          items:
+            type: object
+            description: Details of the error.
+          description: List of errors that occurred during the automation run.
+        title:
+          type: string
+          description: The title of the automation run.
+        status:
+          enum:
+          - failed
+          - finished
+          - finished with warnings
+          - must stop
+          - not started
+          - running
+          - starting
+          - stopped
+          - exceeded limit
+          - queued
+          type: string
+          description: The current status of the automation run.
+          x-qlik-filterable: true
+        context:
+          enum:
+          - test_run
+          - editor
+          - detail
+          - api_sync
+          - api_async
+          - webhook
+          - lookup
+          type: string
+          description: The context set by the source that triggers the automation.
+          x-qlik-filterable: true
+        ownerId:
+          type: string
+          readOnly: true
+          description: The unique identifier of the owner of the automation run.
+          x-qlik-filterable: true
+        spaceId:
+          type: string
+          readOnly: true
+          description: The unique identifier of the space in which the automation run is created.
+          x-qlik-filterable: true
+        testRun:
+          type: boolean
+          readOnly: true
+          description: Indicates if this automation run is a test run.
+        archived:
+          type: boolean
+          readOnly: true
+          description: Indicates if this automation run is archived.
+        duration:
+          type: integer
+          example: '9001'
+          readOnly: true
+          description: Duration of the run, indicated in seconds. Calculated from start and stop times
+          x-qlik-filterable: true
+        stopTime:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+          description: The date and time at which the automation run stopped.
+        createdAt:
+          type: string
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+        isTestRun:
+          type: boolean
+          readOnly: true
+          description: Indicates if this automation run is a test run.
+        startTime:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+          description: The date and time at which the automation run started.
+        updatedAt:
+          type: string
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+        isArchived:
+          type: boolean
+          readOnly: true
+          description: Indicates if this automation run is archived.
+        executedById:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The unique identifier of the user who executed the automation run.
+          x-qlik-filterable: true
+        scheduledStartTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+          description: The date and time at which the automation run is scheduled to start.
+    AutomationUsageObject:
+      type: object
+      properties:
+        guid:
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+          description: The unique identifier for the automation.
+        name:
+          type: string
+          example: My Automation.
+          maxLength: 50
+          description: The name for the automation.
+        ownerId:
+          type: string
+          example: KP1zJiPDn0gsla236GmETadFcxBW-J8F
+          description: The unique identifier for the user who owns the automation
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        traceId:
+          type: string
+          description: A way to trace the source of the error.
+    AutomationDetailUpdateRequestObject:
+      type: object
+      properties:
+        name:
+          type: string
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleRequestObject'
+        workspace:
+          type: object
+          description: The workspace generated by the Qlik Automate editor.
+        description:
+          type: string
+        maxConcurrentRuns:
+          type: integer
+          default: 1
+          example: 10
+          minimum: 1
+          description: Maximum number of concurrent runs allowed for this automation. The maximum value is defined in automations settings.
     AutomationDetailRequestObject:
       type: object
       properties:
@@ -2484,26 +2780,142 @@ components:
           type: string
           format: date-time
           example: '2022-01-01T12:28:21.000000Z'
-    AutomationDetailUpdateRequestObject:
+    ScheduleRequestObject:
       type: object
       properties:
+        stopAt:
+          type: string
+          example: '2022-12-01 00:00:00'
+        startAt:
+          type: string
+          example: '2022-01-01 00:00:00'
+        interval:
+          type: integer
+          example: 60
+          description: Interval in seconds; must be a multiple of 60. Values are rounded to the nearest minute (≥30 seconds rounded up, otherwise down).
+        timezone:
+          type: string
+          example: Europe/Stockholm
+    AutomationDetailResponseObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: e0e720d0-4947-11ec-a1d2-9559fa35801d
+          readOnly: true
         name:
           type: string
+          description: The name of the automation.
+        state:
+          enum:
+          - available
+          - unavailable
+          - disabled
+          type: string
+          default: available
+          example: available
+          description: The state of the automation.
+        lastRun:
+          $ref: '#/components/schemas/RunDetailResponseObject'
+        ownerId:
+          type: string
+          example: sWYAHxZxhtcmBT7Ptc5xJ5I6N7HxwnEy
+          readOnly: true
+          description: The unique identifier of the owner of the automation.
+        runMode:
+          enum:
+          - manual
+          - scheduled
+          - triggered
+          - webhook
+          type: string
+          example: triggered
+          readOnly: true
+          description: Defines how the automation run is started.
+        spaceId:
+          type: string
+          example: 5f0f78b239ff4f0001234567
+          readOnly: true
+          description: The unique identifier of the space that contains the automation.
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+        lastRunAt:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
+          description: The date and time when the last automation run was finished.
         schedules:
           type: array
           items:
-            $ref: '#/components/schemas/ScheduleRequestObject'
+            $ref: '#/components/schemas/ScheduleResponseObject'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-12-23T12:28:21.000000Z'
+          readOnly: true
         workspace:
           type: object
           description: The workspace generated by the Qlik Automate editor.
+        snippetIds:
+          type: array
+          items:
+            type: string
+          example:
+          - e0e720d0-4947-11ec-a1d2-9559fa35801d
+          readOnly: true
+          description: A list of snippets that were detected in the workspace. This includes snippet blocks that are not connected to other blocks. Order of GUIDs is not guaranteed.
         description:
           type: string
+          description: The description of the automation.
+        endpointIds:
+          type: array
+          items:
+            type: string
+          example:
+          - 9d94bef0-b28c-11eb-8dba-01593c457362
+          - 53a6fb70-b28f-11eb-b601-b545a40867e0
+          readOnly: true
+          description: A list of endpoints that were detected in the workspace. This includes endpoints present in blocks that are not connected to other blocks. Order of GUIDs is not guaranteed.
+        connectorIds:
+          type: array
+          items:
+            type: string
+          example:
+          - 0d87808f-27c0-11ea-921c-022e6b5ea1e2
+          - 0d86ee8a-27c0-11ea-921c-022e6b5ea1e2
+          readOnly: true
+          description: A list of connectors that were detected in the workspace. This includes connectors present in blocks that are not connected to other blocks. Order of GUIDs is not guaranteed.
+        lastRunStatus:
+          enum:
+          - failed
+          - finished
+          - finished with warnings
+          - must stop
+          - not started
+          - paused
+          - running
+          - starting
+          - stopped
+          - exceeded limit
+          type: string
+          example: finished
+          readOnly: true
+          description: The status of the last run of the automation.
+        executionToken:
+          type: string
+          example: aZXuEogT9X3le0k0WXMBnzuYKq4xRlkDnurjs8NVhEAAW1BYx8C1PpIl3ielgRb1
+          readOnly: true
+          description: Execution token required to authorize the execution of the automation.
         maxConcurrentRuns:
           type: integer
-          default: 1
           example: 10
-          minimum: 1
-          description: Maximum number of concurrent runs allowed for this automation. The maximum value is defined in automations settings.
+          readOnly: true
+          description: Maximum number of concurrent runs allowed for this automation.
     AutomationListObject:
       type: object
       properties:
@@ -2633,126 +3045,6 @@ components:
           example: 10
           readOnly: true
           description: Maximum number of concurrent runs allowed for automation.
-    AutomationDetailResponseObject:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: e0e720d0-4947-11ec-a1d2-9559fa35801d
-          readOnly: true
-        name:
-          type: string
-          description: The name of the automation.
-        state:
-          enum:
-          - available
-          - unavailable
-          - disabled
-          type: string
-          default: available
-          example: available
-          description: The state of the automation.
-        lastRun:
-          $ref: '#/components/schemas/RunDetailResponseObject'
-        ownerId:
-          type: string
-          example: sWYAHxZxhtcmBT7Ptc5xJ5I6N7HxwnEy
-          readOnly: true
-          description: The unique identifier of the owner of the automation.
-        runMode:
-          enum:
-          - manual
-          - scheduled
-          - triggered
-          - webhook
-          type: string
-          example: triggered
-          readOnly: true
-          description: Defines how the automation run is started.
-        spaceId:
-          type: string
-          example: 5f0f78b239ff4f0001234567
-          readOnly: true
-          description: The unique identifier of the space that contains the automation.
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-        lastRunAt:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-          description: The date and time when the last automation run was finished.
-        schedules:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduleResponseObject'
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-        workspace:
-          type: object
-          description: The workspace generated by the Qlik Automate editor.
-        snippetIds:
-          type: array
-          items:
-            type: string
-          example:
-          - e0e720d0-4947-11ec-a1d2-9559fa35801d
-          readOnly: true
-          description: A list of snippets that were detected in the workspace. This includes snippet blocks that are not connected to other blocks. Order of GUIDs is not guaranteed.
-        description:
-          type: string
-          description: The description of the automation.
-        endpointIds:
-          type: array
-          items:
-            type: string
-          example:
-          - 9d94bef0-b28c-11eb-8dba-01593c457362
-          - 53a6fb70-b28f-11eb-b601-b545a40867e0
-          readOnly: true
-          description: A list of endpoints that were detected in the workspace. This includes endpoints present in blocks that are not connected to other blocks. Order of GUIDs is not guaranteed.
-        connectorIds:
-          type: array
-          items:
-            type: string
-          example:
-          - 0d87808f-27c0-11ea-921c-022e6b5ea1e2
-          - 0d86ee8a-27c0-11ea-921c-022e6b5ea1e2
-          readOnly: true
-          description: A list of connectors that were detected in the workspace. This includes connectors present in blocks that are not connected to other blocks. Order of GUIDs is not guaranteed.
-        lastRunStatus:
-          enum:
-          - failed
-          - finished
-          - finished with warnings
-          - must stop
-          - not started
-          - paused
-          - running
-          - starting
-          - stopped
-          - exceeded limit
-          type: string
-          example: finished
-          readOnly: true
-          description: The status of the last run of the automation.
-        executionToken:
-          type: string
-          example: aZXuEogT9X3le0k0WXMBnzuYKq4xRlkDnurjs8NVhEAAW1BYx8C1PpIl3ielgRb1
-          readOnly: true
-          description: Execution token required to authorize the execution of the automation.
-        maxConcurrentRuns:
-          type: integer
-          example: 10
-          readOnly: true
-          description: Maximum number of concurrent runs allowed for this automation.
     RunDetailResponseObject:
       type: object
       properties:
@@ -2923,23 +3215,21 @@ components:
           example: '2021-12-23T12:28:21.000000Z'
           readOnly: true
           description: The date and time at which the automation run is scheduled to start.
-    PaginationLink:
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-          description: The URL to a resource request
-    RunList:
+    UsageList:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/RunListObject'
-        links:
-          $ref: '#/components/schemas/Links'
-    RunDetailRequestObject:
+            $ref: '#/components/schemas/UsageObject'
+    SettingsObject:
+      type: object
+      properties:
+        maxConcurrentRunsPerAutomation:
+          type: integer
+          example: 10
+          description: Maximum number of concurrent runs allowed per automation.
+    RunDetailRequestObject_2:
       type: object
       required:
       - context
@@ -2949,236 +3239,38 @@ components:
           format: uuid
           example: d452d100-9b0b-11ec-b199-8323e1031c3e
           readOnly: true
+          description: The unique identifier of the run.
         context:
           enum:
           - api
           type: string
           example: api
           description: The source that triggers the automation will set the context.
-    AutomationList:
+    AutomationDetailUpdateRequestObject_2:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AutomationListObject'
-        links:
-          $ref: '#/components/schemas/Links'
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-        traceId:
-          type: string
-          description: A way to trace the source of the error.
-    ScheduleRequestObject:
-      type: object
-      properties:
-        stopAt:
-          type: string
-          example: '2022-12-01 00:00:00'
-        startAt:
-          type: string
-          example: '2022-01-01 00:00:00'
-        interval:
-          type: integer
-          example: 60
-          description: Interval in seconds; must be a multiple of 60. Values are rounded to the nearest minute (≥30 seconds rounded up, otherwise down).
-        timezone:
-          type: string
-          example: Europe/Stockholm
-    UsageObject:
-      type: object
-      required:
-      - name
-      - date
-      - value
-      properties:
-        date:
-          type: string
-          example: '2021-12-15'
-          description: The date for the metric
-          x-qlik-filterable: true
-        name:
-          enum:
-          - runs
-          - scheduledRun
-          - triggeredRun
-          - webhookRuns
-          - duration
-          - bandwidthIn
-          - bandwidthOut
-          type: string
-          example: bandwidthIn
-          maxLength: 50
-          description: The name for the metric
-          x-qlik-filterable: true
-        value:
-          type: integer
-          example: 310179713
-          description: The value count of the metric
-        automation:
-          $ref: '#/components/schemas/AutomationUsageObject'
-    Error:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The unique code for the error
-        title:
-          type: string
-          description: A summary of what went wrong
-        detail:
-          type: string
-          description: May be used to provide additional details
-    Links:
-      properties:
-        next:
-          $ref: '#/components/schemas/PaginationLink'
-        prev:
-          $ref: '#/components/schemas/PaginationLink'
-    UsageList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/UsageObject'
-    RunListObject:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: d452d100-9b0b-11ec-b199-8323e1031c3e
-          readOnly: true
-        error:
-          type:
-          - array
-          - 'null'
-          items:
-            type: object
-            description: Details of the error.
-          description: List of errors that occurred during the automation run.
-        title:
-          type: string
-          description: The title of the automation run.
-        status:
-          enum:
-          - failed
-          - finished
-          - finished with warnings
-          - must stop
-          - not started
-          - running
-          - starting
-          - stopped
-          - exceeded limit
-          - queued
-          type: string
-          description: The current status of the automation run.
-          x-qlik-filterable: true
-        context:
-          enum:
-          - test_run
-          - editor
-          - detail
-          - api_sync
-          - api_async
-          - webhook
-          - lookup
-          type: string
-          description: The context set by the source that triggers the automation.
-          x-qlik-filterable: true
-        ownerId:
-          type: string
-          readOnly: true
-          description: The unique identifier of the owner of the automation run.
-          x-qlik-filterable: true
-        spaceId:
-          type: string
-          readOnly: true
-          description: The unique identifier of the space in which the automation run is created.
-          x-qlik-filterable: true
-        testRun:
-          type: boolean
-          readOnly: true
-          description: Indicates if this automation run is a test run.
-        archived:
-          type: boolean
-          readOnly: true
-          description: Indicates if this automation run is archived.
-        duration:
-          type: integer
-          example: '9001'
-          readOnly: true
-          description: Duration of the run, indicated in seconds. Calculated from start and stop times
-          x-qlik-filterable: true
-        stopTime:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-          description: The date and time at which the automation run stopped.
-        createdAt:
-          type: string
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-        isTestRun:
-          type: boolean
-          readOnly: true
-          description: Indicates if this automation run is a test run.
-        startTime:
-          type: string
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-          description: The date and time at which the automation run started.
-        updatedAt:
-          type: string
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-        isArchived:
-          type: boolean
-          readOnly: true
-          description: Indicates if this automation run is archived.
-        executedById:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The unique identifier of the user who executed the automation run.
-          x-qlik-filterable: true
-        scheduledStartTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2021-12-23T12:28:21.000000Z'
-          readOnly: true
-          description: The date and time at which the automation run is scheduled to start.
-    AutomationUsageObject:
-      type: object
-      properties:
-        guid:
-          type: string
-          example: 00000000-0000-0000-0000-000000000000
-          description: The unique identifier for the automation.
         name:
           type: string
-          example: My Automation.
-          maxLength: 50
-          description: The name for the automation.
-        ownerId:
+          example: My automation
+          description: The name of the automation.
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleRequestObject_2'
+        workspace:
+          type: object
+          example: {}
+          description: The workspace generated by the Qlik Automate editor.
+        description:
           type: string
-          example: KP1zJiPDn0gsla236GmETadFcxBW-J8F
-          description: The unique identifier for the user who owns the automation
+          default: ''
+          description: The description of the automation
+        maxConcurrentRuns:
+          type: integer
+          default: 1
+          example: 10
+          minimum: 1
+          description: Maximum number of concurrent runs allowed for this automation. The maximum value is defined in automations settings.
     AutomationDetailRequestObject_2:
       type: object
       required:
@@ -3210,31 +3302,25 @@ components:
           example: 10
           minimum: 1
           description: Maximum number of concurrent runs allowed for this automation. The maximum value is defined in automations settings.
-    AutomationDetailUpdateRequestObject_2:
+    ScheduleRequestObject_2:
       type: object
       properties:
-        name:
+        stopAt:
           type: string
-          example: My automation
-          description: The name of the automation.
-        schedules:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduleRequestObject_2'
-        workspace:
-          type: object
-          example: {}
-          description: The workspace generated by the Qlik Automate editor.
-        description:
+          example: '2022-12-01 00:00:00'
+          description: The date and time until the schedule is active.
+        startAt:
           type: string
-          default: ''
-          description: The description of the automation
-        maxConcurrentRuns:
+          example: '2022-01-01 00:00:00'
+          description: The date and time when the schedule becomes active.
+        interval:
           type: integer
-          default: 1
-          example: 10
-          minimum: 1
-          description: Maximum number of concurrent runs allowed for this automation. The maximum value is defined in automations settings.
+          example: 60
+          description: Interval in seconds; must be a multiple of 60. Values are rounded to the nearest minute (≥30 seconds rounded up, otherwise down).
+        timezone:
+          type: string
+          example: Europe/Stockholm
+          description: The timezone applied to the start and end times.
     AutomationListObject_2:
       type: object
       properties:
@@ -3535,92 +3621,6 @@ components:
           example: '2021-12-23T12:28:21.000000Z'
           readOnly: true
           description: The date and time at which the automation run is scheduled to start.
-    RunDetailRequestObject_2:
-      type: object
-      required:
-      - context
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: d452d100-9b0b-11ec-b199-8323e1031c3e
-          readOnly: true
-          description: The unique identifier of the run.
-        context:
-          enum:
-          - api
-          type: string
-          example: api
-          description: The source that triggers the automation will set the context.
-    ScheduleRequestObject_2:
-      type: object
-      properties:
-        stopAt:
-          type: string
-          example: '2022-12-01 00:00:00'
-          description: The date and time until the schedule is active.
-        startAt:
-          type: string
-          example: '2022-01-01 00:00:00'
-          description: The date and time when the schedule becomes active.
-        interval:
-          type: integer
-          example: 60
-          description: Interval in seconds; must be a multiple of 60. Values are rounded to the nearest minute (≥30 seconds rounded up, otherwise down).
-        timezone:
-          type: string
-          example: Europe/Stockholm
-          description: The timezone applied to the start and end times.
-    SettingsObject:
-      type: object
-      properties:
-        maxConcurrentRunsPerAutomation:
-          type: integer
-          example: 10
-          description: Maximum number of concurrent runs allowed per automation.
-  responses:
-    NotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Not found
-    BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Bad Request
-    Unauthorized:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Unauthorized
-    Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Forbidden
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Internal Server Error
-    ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Service Unavailable
-    Conflict:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-      description: Conflict with the current state of the resource
 x-refined-from:
 - qliksense-automations.json
 - qliksense-workflows-automations.json

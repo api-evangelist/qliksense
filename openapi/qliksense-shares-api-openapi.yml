@@ -359,133 +359,6 @@ paths:
         limit: 100
 components:
   schemas:
-    ShareRoleType:
-      enum:
-      - consumer
-      - contributor
-      - basicconsumer
-      type: string
-      description: 'The roles for the space share. Supported roles by space type:
-
-        - Shared: consumer
-
-        - Managed: basicconsumer, consumer, contributor
-
-        '
-    SharePatch:
-      type: array
-      items:
-        type: object
-        required:
-        - op
-        - path
-        - value
-        properties:
-          op:
-            enum:
-            - replace
-            type: string
-            description: The operation to be performed.
-          path:
-            enum:
-            - /roles
-            - /disabled
-            type: string
-            description: Field of Share to be patched (updated).
-          value:
-            type: string
-            description: 'The value to be used within the operations.
-
-              - roles: The roles assigned to the assigneeId.
-
-              - disabled: To disable the share (effective ONLY for link shares).
-
-              '
-        description: A JSONPatch document as defined by RFC 6902
-    Error:
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: The error code.
-        meta:
-          type: object
-          properties:
-            source:
-              type: object
-              properties:
-                pointer:
-                  type: string
-                  description: A JSON pointer to the property that caused the error.
-                parameter:
-                  type: string
-                  description: The URI query parameter that caused the error.
-              description: References to the source of the error.
-          description: Additional properties relating to the error.
-        title:
-          type: string
-          description: Summary of the problem.
-        detail:
-          type: string
-          description: A human-readable explanation specific to the occurrence of this problem.
-      description: An error object.
-    ShareCreate:
-      required:
-      - type
-      - assigneeId
-      - roles
-      - resourceType
-      - resourceId
-      properties:
-        type:
-          $ref: '#/components/schemas/ShareType'
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShareRoleType'
-          description: The roles assigned to the assigneeId.
-        assigneeId:
-          type: string
-          format: uid
-          description: The userId or groupId based on the type.
-        resourceId:
-          type: string
-          format: uid
-          description: The resource id for the shared item.
-        resourceType:
-          type: string
-          format: uid
-          description: The resource type for the shared item.
-    Shares:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Share'
-        meta:
-          type: object
-          readOnly: true
-          required:
-          - count
-          properties:
-            count:
-              type: integer
-              description: The total number of Shares matching the current filter.
-        links:
-          type: object
-          readOnly: true
-          required:
-          - self
-          properties:
-            next:
-              $ref: '#/components/schemas/Link'
-            prev:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
     Share:
       required:
       - id
@@ -563,6 +436,35 @@ components:
           enum:
           - app
           description: The type of the shared resource.
+    Error:
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: The error code.
+        meta:
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+                  description: A JSON pointer to the property that caused the error.
+                parameter:
+                  type: string
+                  description: The URI query parameter that caused the error.
+              description: References to the source of the error.
+          description: Additional properties relating to the error.
+        title:
+          type: string
+          description: Summary of the problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to the occurrence of this problem.
+      description: An error object.
     ShareType:
       enum:
       - user
@@ -576,6 +478,33 @@ components:
         href:
           type: string
           description: URL that defines the resource.
+    ShareCreate:
+      required:
+      - type
+      - assigneeId
+      - roles
+      - resourceType
+      - resourceId
+      properties:
+        type:
+          $ref: '#/components/schemas/ShareType'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShareRoleType'
+          description: The roles assigned to the assigneeId.
+        assigneeId:
+          type: string
+          format: uid
+          description: The userId or groupId based on the type.
+        resourceId:
+          type: string
+          format: uid
+          description: The resource id for the shared item.
+        resourceType:
+          type: string
+          format: uid
+          description: The resource type for the shared item.
     Errors:
       type: object
       properties:
@@ -612,3 +541,74 @@ components:
           x-qlik-deprecated: true
         traceId:
           type: string
+    Shares:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Share'
+        meta:
+          type: object
+          readOnly: true
+          required:
+          - count
+          properties:
+            count:
+              type: integer
+              description: The total number of Shares matching the current filter.
+        links:
+          type: object
+          readOnly: true
+          required:
+          - self
+          properties:
+            next:
+              $ref: '#/components/schemas/Link'
+            prev:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+    SharePatch:
+      type: array
+      items:
+        type: object
+        required:
+        - op
+        - path
+        - value
+        properties:
+          op:
+            enum:
+            - replace
+            type: string
+            description: The operation to be performed.
+          path:
+            enum:
+            - /roles
+            - /disabled
+            type: string
+            description: Field of Share to be patched (updated).
+          value:
+            type: string
+            description: 'The value to be used within the operations.
+
+              - roles: The roles assigned to the assigneeId.
+
+              - disabled: To disable the share (effective ONLY for link shares).
+
+              '
+        description: A JSONPatch document as defined by RFC 6902
+    ShareRoleType:
+      enum:
+      - consumer
+      - contributor
+      - basicconsumer
+      type: string
+      description: 'The roles for the space share. Supported roles by space type:
+
+        - Shared: consumer
+
+        - Managed: basicconsumer, consumer, contributor
+
+        '

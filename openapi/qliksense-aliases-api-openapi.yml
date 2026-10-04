@@ -212,7 +212,154 @@ paths:
         limit: 100
 components:
   schemas:
+    AliasFindResponse:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            - attributes
+            properties:
+              id:
+                $ref: '#/components/schemas/EntityId'
+              type:
+                enum:
+                - alias
+                type: string
+              attributes:
+                $ref: '#/components/schemas/Alias'
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/FindResponseMeta'
+        links:
+          $ref: '#/components/schemas/ResponseLinks'
+      additionalProperties: false
+    EnumSortAliases:
+      enum:
+      - name
+      - +name
+      - -name
+      type: string
+    AnyType:
+      description: Use for fields that can be `any` type (string, number, etc.)
+    CreatedAt:
+      type: string
+      description: Timestamp when this was created
+    EntityName:
+      type: string
+      description: Name of this entity
+      x-qlik-filterable: true
     AliasPostResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            id:
+              $ref: '#/components/schemas/EntityId'
+            type:
+              enum:
+              - alias
+              type: string
+            attributes:
+              $ref: '#/components/schemas/Alias'
+          additionalProperties: false
+      additionalProperties: false
+    AliasPatchItem:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          enum:
+          - replace
+          type: string
+          description: All patch requests use the replace operation
+        path:
+          enum:
+          - /name
+          - /models
+          type: string
+          description: Path for the property you want to update
+        value:
+          $ref: '#/components/schemas/AnyType'
+      description: Alias values that can be patched.
+      additionalProperties: false
+    AliasMode:
+      enum:
+      - default
+      - undefined
+      type: string
+      description: The mode of an alias. Default mode means the model assigned to that alias will be used if alias is not specified
+    APIError:
+      type: object
+      required:
+      - code
+      - title
+      properties:
+        code:
+          type: string
+          description: Qlik error code (not HTTP response status code)
+        meta:
+          type: object
+          properties:
+            issue:
+              type: string
+              description: The issue code
+            details:
+              type: string
+              description: Extra details for what may have caused the error
+            errorId:
+              type: string
+              description: The unique id of the error instance
+            argument:
+              type: string
+              description: The argument
+            resource:
+              type: string
+              description: The resource type that the error occurred on
+            resourceId:
+              type: string
+              description: The resource id that the error occurred on
+          description: 'Additional details about the error. These may vary by error.
+
+            '
+          additionalProperties: false
+        title:
+          type: string
+          description: Short summary of error
+        detail:
+          type: string
+          description: Description of the error
+      description: An error object
+      additionalProperties: false
+    AliasPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/AliasPatchItem'
+      example:
+      - op: replace
+        path: /name
+        value: New Name
+      - op: replace
+        path: /models
+        value: modelId
+    AliasGetResponse:
       type: object
       required:
       - data
@@ -238,84 +385,12 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/ModelInfo'
-    AliasInput:
+    ModelInfo:
       type: object
-      required:
-      - data
       properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          properties:
-            type:
-              enum:
-              - alias
-              type: string
-              default: alias
-            attributes:
-              type: object
-              required:
-              - name
-              - models
-              properties:
-                name:
-                  $ref: '#/components/schemas/EntityName'
-                models:
-                  $ref: '#/components/schemas/ModelsInfo'
-              additionalProperties: false
-          additionalProperties: false
-      description: 'Input for creating a new alias
-
-        '
-      additionalProperties: false
-    DeploymentId:
-      type: string
-      format: uuid
-      description: ID of a model deployment
-      x-qlik-fiterable: true
-    AliasPatchItem:
-      type: object
-      required:
-      - op
-      - path
-      - value
-      properties:
-        op:
-          enum:
-          - replace
-          type: string
-          description: All patch requests use the replace operation
-        path:
-          enum:
-          - /name
-          - /models
-          type: string
-          description: Path for the property you want to update
-        value:
-          $ref: '#/components/schemas/AnyType'
-      description: Alias values that can be patched.
-      additionalProperties: false
-    AliasPatch:
-      type: array
-      items:
-        $ref: '#/components/schemas/AliasPatchItem'
-      example:
-      - op: replace
-        path: /name
-        value: New Name
-      - op: replace
-        path: /models
-        value: modelId
-    FindResponseMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-      description: Meta for FIND operations
+        id:
+          $ref: '#/components/schemas/EntityId'
+      description: Model information stored on an alias
       additionalProperties: false
     Failure:
       type: object
@@ -329,28 +404,6 @@ components:
           uniqueItems: true
         traceId:
           type: string
-      additionalProperties: false
-    AliasGetResponse:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - id
-          - attributes
-          properties:
-            id:
-              $ref: '#/components/schemas/EntityId'
-            type:
-              enum:
-              - alias
-              type: string
-            attributes:
-              $ref: '#/components/schemas/Alias'
-          additionalProperties: false
       additionalProperties: false
     ResponseLinks:
       type: object
@@ -410,77 +463,46 @@ components:
                 '
       description: Resource links included in paginated responses
       additionalProperties: false
-    APIError:
-      type: object
-      required:
-      - code
-      - title
-      properties:
-        code:
-          type: string
-          description: Qlik error code (not HTTP response status code)
-        meta:
-          type: object
-          properties:
-            issue:
-              type: string
-              description: The issue code
-            details:
-              type: string
-              description: Extra details for what may have caused the error
-            errorId:
-              type: string
-              description: The unique id of the error instance
-            argument:
-              type: string
-              description: The argument
-            resource:
-              type: string
-              description: The resource type that the error occurred on
-            resourceId:
-              type: string
-              description: The resource id that the error occurred on
-          description: 'Additional details about the error. These may vary by error.
-
-            '
-          additionalProperties: false
-        title:
-          type: string
-          description: Short summary of error
-        detail:
-          type: string
-          description: Description of the error
-      description: An error object
-      additionalProperties: false
-    AliasFindResponse:
+    EntityId:
+      type: string
+      format: uuid
+      description: ID of this entity
+      x-qlik-filterable: true
+    AliasInput:
       type: object
       required:
       - data
-      - links
       properties:
         data:
-          type: array
-          items:
-            type: object
-            required:
-            - type
-            - id
-            - attributes
-            properties:
-              id:
-                $ref: '#/components/schemas/EntityId'
-              type:
-                enum:
-                - alias
-                type: string
-              attributes:
-                $ref: '#/components/schemas/Alias'
-            additionalProperties: false
-        meta:
-          $ref: '#/components/schemas/FindResponseMeta'
-        links:
-          $ref: '#/components/schemas/ResponseLinks'
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              enum:
+              - alias
+              type: string
+              default: alias
+            attributes:
+              type: object
+              required:
+              - name
+              - models
+              properties:
+                name:
+                  $ref: '#/components/schemas/EntityName'
+                models:
+                  $ref: '#/components/schemas/ModelsInfo'
+              additionalProperties: false
+          additionalProperties: false
+      description: 'Input for creating a new alias
+
+        '
       additionalProperties: false
+    UpdatedAt:
+      type: string
+      description: Timestamp when this was updated
     Alias:
       type: object
       required:
@@ -511,43 +533,59 @@ components:
         deploymentId:
           $ref: '#/components/schemas/DeploymentId'
       description: An AutoML alias
-    EntityId:
+    FindResponseMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+      description: Meta for FIND operations
+      additionalProperties: false
+    DeploymentId:
       type: string
       format: uuid
-      description: ID of this entity
-      x-qlik-filterable: true
-    AliasMode:
-      enum:
-      - default
-      - undefined
-      type: string
-      description: The mode of an alias. Default mode means the model assigned to that alias will be used if alias is not specified
-    AnyType:
-      description: Use for fields that can be `any` type (string, number, etc.)
-    EnumSortAliases:
-      enum:
-      - name
-      - +name
-      - -name
-      type: string
-    EntityName:
-      type: string
-      description: Name of this entity
-      x-qlik-filterable: true
-    CreatedAt:
-      type: string
-      description: Timestamp when this was created
-    ModelInfo:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/EntityId'
-      description: Model information stored on an alias
-      additionalProperties: false
-    UpdatedAt:
-      type: string
-      description: Timestamp when this was updated
+      description: ID of a model deployment
+      x-qlik-fiterable: true
   responses:
+    500InternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Internal Error`'
+    FailureDefault:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Unexpected Error`'
+    204NoContent:
+      description: '`No Content`'
+    503ServiceUnavailable:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Service Unavailable`'
+    403Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Forbidden`'
+    502BadGateway:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Gateway`'
+    400BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failure'
+      description: '`Bad Request`'
     404NotFound:
       content:
         application/json:
@@ -560,55 +598,14 @@ components:
           schema:
             $ref: '#/components/schemas/Failure'
       description: '`Unauthorized`'
-    FailureDefault:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Unexpected Error`'
-    502BadGateway:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Gateway`'
-    500InternalError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Internal Error`'
-    403Forbidden:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Forbidden`'
-    400BadRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Bad Request`'
-    503ServiceUnavailable:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Failure'
-      description: '`Service Unavailable`'
-    204NoContent:
-      description: '`No Content`'
   parameters:
-    limit:
-      in: query
-      name: limit
+    aliasId:
+      in: path
+      name: aliasId
       schema:
-        type: integer
-        default: 32
-        maximum: 100
-      example: 10
-      required: false
-      description: Number of results per page. Default is 32.
+        type: string
+      required: true
+      description: ID of the alias
     aliasesSort:
       in: query
       name: sort
@@ -620,13 +617,6 @@ components:
       description: 'Field(s) by which to sort response
 
         '
-    deploymentId:
-      in: path
-      name: deploymentId
-      schema:
-        type: string
-      required: true
-      description: ID of the deployment
     offset:
       in: query
       name: offset
@@ -635,13 +625,23 @@ components:
       example: 32
       required: false
       description: Number of rows to skip before getting page[size]
-    aliasId:
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 32
+        maximum: 100
+      example: 10
+      required: false
+      description: Number of results per page. Default is 32.
+    deploymentId:
       in: path
-      name: aliasId
+      name: deploymentId
       schema:
         type: string
       required: true
-      description: ID of the alias
+      description: ID of the deployment
     aliasesFilter:
       in: query
       name: filter

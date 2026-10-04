@@ -650,6 +650,19 @@ paths:
         limit: 1000
 components:
   schemas:
+    ItemsListItemsResponseBody:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemResultResponseBody'
+        links:
+          $ref: '#/components/schemas/itemsLinksResponseBody'
+      description: ListItemsResponseBody result type
     itemResourceTypeEnum:
       enum:
       - app
@@ -673,92 +686,20 @@ components:
       - page
       type: string
       description: The case-sensitive string defining the item's type.
-    collectionLinksResponseBody:
+    Link:
       type: object
       properties:
-        self:
-          $ref: '#/components/schemas/Link'
-        items:
-          $ref: '#/components/schemas/Link'
-    itemViewsWeeksResponseBody:
-      type: object
-      properties:
-        start:
+        href:
           type: string
-          format: date-time
-          description: The RFC3339 datetime representing the start of the referenced week.
-        total:
-          type: integer
-          description: Total number of views the resource got during the referenced week.
-        unique:
-          type: integer
-          description: Number of unique users who viewed the resource during the referenced week.
-    itemViewsResponseBody:
-      type: object
-      properties:
-        week:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemViewsWeeksResponseBody'
-        total:
-          type: integer
-          description: Total number of views the resource got during the last 28 days.
-        trend:
-          type: number
-          example: -4.2
-          description: Trend in views over the last 4 weeks. The trend value is a float number representing a linear regression slope (the x-coefficient) calculated from the weekly unique users views in the preceding 4 weeks.
-        unique:
-          type: integer
-          description: Number of unique users who viewed the resource during the last 28 days.
-        usedBy:
-          type: integer
-          description: Number of apps this dataset is used in (datasets only).
-    CollectionTypes:
+          format: uri
+    spaceTypeEnum:
       enum:
-      - private
-      - public
-      - publicgoverned
+      - shared
+      - managed
+      - personal
+      - data
       type: string
-    ErrorResponseBody:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceError'
-    collectionsLinksResponseBody:
-      type: object
-      properties:
-        item:
-          $ref: '#/components/schemas/Link'
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-    itemLinksResponseBody:
-      type: object
-      properties:
-        open:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        qvPlugin:
-          $ref: '#/components/schemas/Link'
-        thumbnail:
-          $ref: '#/components/schemas/Link'
-        collections:
-          $ref: '#/components/schemas/Link'
-    itemsResourceSizeResponseBody:
-      type: object
-      properties:
-        appFile:
-          type: number
-          description: Size of the app on disk in bytes.
-        appMemory:
-          type: number
-          description: Size of the app in memory in bytes.
+      description: The case-sensitive string defining the space type.
     meta:
       type: object
       properties:
@@ -774,49 +715,6 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-    collectionMetaResponseBody:
-      type: object
-      properties:
-        items:
-          $ref: '#/components/schemas/itemsResultResponseBody'
-      description: Collection metadata and computed fields.
-    itemsResultResponseBody:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemResultResponseBody'
-        links:
-          $ref: '#/components/schemas/itemsLinksResponseBody'
-      description: Multiple items.
-    ItemsListItemsResponseBody:
-      type: object
-      required:
-      - data
-      - links
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemResultResponseBody'
-        links:
-          $ref: '#/components/schemas/itemsLinksResponseBody'
-      description: ListItemsResponseBody result type
-    itemsLinksResponseBody:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-        collection:
-          $ref: '#/components/schemas/Link'
     ItemsUpdateItemRequestBody:
       type: object
       required:
@@ -855,47 +753,32 @@ components:
         resourceCustomAttributes:
           type: object
           additionalProperties: true
-    ItemsListItemCollectionsResponseBody:
+    itemLinksResponseBody:
       type: object
-      required:
-      - data
-      - links
       properties:
-        data:
+        open:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        qvPlugin:
+          $ref: '#/components/schemas/Link'
+        thumbnail:
+          $ref: '#/components/schemas/Link'
+        collections:
+          $ref: '#/components/schemas/Link'
+    ErrorResponseBody:
+      type: object
+      properties:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/collectionResultResponseBody'
-        links:
-          $ref: '#/components/schemas/collectionsLinksResponseBody'
-      description: ListItemCollectionsResponseBody result type
-    ServiceError:
+            $ref: '#/components/schemas/ServiceError'
+    collectionMetaResponseBody:
       type: object
       properties:
-        code:
-          type: string
-          description: Code is a unique identifier for this error class.
-        meta:
-          $ref: '#/components/schemas/meta'
-        title:
-          type: string
-          description: Title is the name of this class of errors.
-        detail:
-          type: string
-          description: Detail is a human-readable explanation specific to this occurrence of the problem.
-    spaceTypeEnum:
-      enum:
-      - shared
-      - managed
-      - personal
-      - data
-      type: string
-      description: The case-sensitive string defining the space type.
-    Link:
-      type: object
-      properties:
-        href:
-          type: string
-          format: uri
+        items:
+          $ref: '#/components/schemas/itemsResultResponseBody'
+      description: Collection metadata and computed fields.
     itemMetaResponseBody:
       type: object
       required:
@@ -923,6 +806,80 @@ components:
           type: boolean
           description: The flag that indicates if item is in the user's favorites collection.
       description: Item metadata and computed fields.
+    itemsLinksResponseBody:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+        collection:
+          $ref: '#/components/schemas/Link'
+    CollectionTypes:
+      enum:
+      - private
+      - public
+      - publicgoverned
+      type: string
+    itemsResultResponseBody:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemResultResponseBody'
+        links:
+          $ref: '#/components/schemas/itemsLinksResponseBody'
+      description: Multiple items.
+    itemViewsResponseBody:
+      type: object
+      properties:
+        week:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemViewsWeeksResponseBody'
+        total:
+          type: integer
+          description: Total number of views the resource got during the last 28 days.
+        trend:
+          type: number
+          example: -4.2
+          description: Trend in views over the last 4 weeks. The trend value is a float number representing a linear regression slope (the x-coefficient) calculated from the weekly unique users views in the preceding 4 weeks.
+        unique:
+          type: integer
+          description: Number of unique users who viewed the resource during the last 28 days.
+        usedBy:
+          type: integer
+          description: Number of apps this dataset is used in (datasets only).
+    itemViewsWeeksResponseBody:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+          description: The RFC3339 datetime representing the start of the referenced week.
+        total:
+          type: integer
+          description: Total number of views the resource got during the referenced week.
+        unique:
+          type: integer
+          description: Number of unique users who viewed the resource during the referenced week.
+    collectionsLinksResponseBody:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
     itemResultResponseBody:
       type: object
       required:
@@ -1031,6 +988,19 @@ components:
           type: object
           additionalProperties: true
       description: An item.
+    ItemsListItemCollectionsResponseBody:
+      type: object
+      required:
+      - data
+      - links
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/collectionResultResponseBody'
+        links:
+          $ref: '#/components/schemas/collectionsLinksResponseBody'
+      description: ListItemCollectionsResponseBody result type
     collectionResultResponseBody:
       type: object
       required:
@@ -1087,6 +1057,29 @@ components:
         description:
           type: string
       description: A collection.
+    ServiceError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code is a unique identifier for this error class.
+        meta:
+          $ref: '#/components/schemas/meta'
+        title:
+          type: string
+          description: Title is the name of this class of errors.
+        detail:
+          type: string
+          description: Detail is a human-readable explanation specific to this occurrence of the problem.
+    itemsResourceSizeResponseBody:
+      type: object
+      properties:
+        appFile:
+          type: number
+          description: Size of the app on disk in bytes.
+        appMemory:
+          type: number
+          description: Size of the app in memory in bytes.
     itemTagResponseBody:
       type: object
       required:
@@ -1100,6 +1093,13 @@ components:
           type: string
           description: The name of the tag/collection.
       description: Holds basic information about a tag or collection.
+    collectionLinksResponseBody:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        items:
+          $ref: '#/components/schemas/Link'
   headers:
     X-B3-Traceid:
       schema:
