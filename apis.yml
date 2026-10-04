@@ -40487,6 +40487,8 @@ apis:
   humanURL: https://qlik.dev/apis/json-rpc/qix
   baseURL: wss://your-tenant.qlikcloud.com/app/
   tags:
+  - Datasets
+  tags_raw:
   - Dataset
   properties:
   - type: OpenAPI
@@ -41460,6 +41462,9 @@ apis:
   - type: Authentication
     url: https://qlik.dev/authenticate
 common:
+- type: CapabilityMap
+  url: capabilities/qliksense-capability-edges.yml
+  name: Qlik Sense Business Capability Map
 - type: Overlay
   url: overlays/qliksense-analytics-apps-overlay.yaml
 - type: Overlay
