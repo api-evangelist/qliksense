@@ -1,0 +1,321 @@
+slug: qliksense
+provider: Qlik Sense
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 30
+edges:
+- tag: Data Quality
+  spec_file: qliksense-data-quality-api-openapi.yml
+  capability_id: BC-610.30
+  capability_id_l1: BC-610
+  capability_name: Data Quality Management
+  confidence: 0.92
+  evidence: GET /api/data-governance/data-qualities/global-results  getDataQualityGlobalResults  Get global
+    data quality
+  reason: Operations retrieve field-level and dataset-level quality results (FieldQualitiesFilterResponse,
+    SchemaRulesQuality, DatasetQualityGlobalResultsResponse). This is data quality monitoring and profiling
+    in the plainest sense; no competing reading.
+- tag: Tenants
+  spec_file: qliksense-tenants-api-openapi.yml
+  capability_id: BC-4230.10
+  capability_id_l1: BC-4230
+  capability_name: Tenant Provisioning & Lifecycle
+  confidence: 0.92
+  evidence: POST /api/v1/tenants  createTenant  Create a tenant; POST /api/v1/tenants/{tenantId}/actions/deactivate  deactivateTenantById
+  reason: Creation, update, deactivation and reactivation of tenants in a multi-tenant SaaS fleet — exactly
+    tenant provisioning and lifecycle.
+- tag: Experiments
+  spec_file: qliksense-experiments-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.9
+  evidence: POST /api/v1/ml/experiments/{experimentId}/actions/recommend-models "Request model recommendations
+    for an experiment"; schemas ModelMetricsBinary, TrainingDuration, BinaryImbalanceSampling
+  reason: AutoML experiment and model-version lifecycle — training, metrics, model recommendation. This
+    is AI/ML model management, not product A/B experimentation despite the 'Experiments' tag.
+- tag: computation
+  spec_file: qliksense-computation-api-openapi.yml
+  capability_id: BC-610.30
+  capability_id_l1: BC-610
+  capability_name: Data Quality Management
+  confidence: 0.9
+  evidence: POST /api/data-governance/data-qualities/computations  requestDataQualityComputation  Trigger
+    data quality computation
+  reason: Operations explicitly trigger and monitor data quality computations over datasets — Data Quality
+    Management.
+- tag: Deployments
+  spec_file: qliksense-deployments-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.85
+  evidence: POST /api/v1/ml/deployments/{deploymentId}/actions/activate-models — "Activate the model for
+    this deployment"; schemas DeployedModelIds, ModelId
+  reason: Operations create and manage ML model deployments and activate/deactivate deployed models —
+    machine-learning model lifecycle/MLOps, i.e. Artificial Intelligence Management rather than software
+    release engineering of the vendor's own product.
+- tag: Predictions
+  spec_file: qliksense-predictions-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.85
+  evidence: POST /api/v1/ml/deployments/{deploymentId}/realtime-predictions/actions/run  Generate predictions
+    in a synchronous request/response; POST .../batch-predictions/{batchPredictionId}/actions/predict  Run
+    a batch prediction
+  reason: Operations configure, schedule and execute batch and real-time predictions against deployed
+    ML models — squarely the AI/ML model lifecycle and MLOps capability.
+- tag: Webhooks
+  spec_file: qliksense-webhooks-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.85
+  evidence: POST /api/v1/webhooks  createWebhook  Create a new webhook; GET /api/v1/webhooks/event-types  listEventTypes  List
+    event-types
+  reason: Lifecycle management of outbound webhook subscriptions and their subscribable event types, which
+    is precisely Webhook & Event Subscription Management in the developer platform capability.
+- tag: automl-deployments
+  spec_file: qliksense-automl-deployments-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.85
+  evidence: POST /api/v1/automl-deployments/{deploymentId}/realtime-predictions  postRealtimePredictions  Generate
+    predictions
+  reason: Serving real-time predictions from a deployed AutoML model deployment is ML model lifecycle
+    / MLOps operation.
+- tag: automl-predictions
+  spec_file: qliksense-automl-predictions-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.85
+  evidence: GET /api/v1/automl-predictions/{predictionId}/shap  getShapForPrediction  Return a file containing
+    shapley values
+  reason: Retrieval of AutoML prediction outputs, SHAP explainability values and prediction jobs — AI/ML
+    model lifecycle and explainability.
+- tag: insight-analyses
+  spec_file: qliksense-insight-analyses-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.85
+  evidence: '"Returns analysis recommendations in response to a natural language question" and "Returns
+    information about supported analyses for the app''s data model"'
+  reason: The surface generates analytic insights and chart recommendations over an app's data model —
+    delivery of analytics/BI content.
+- tag: Roles
+  spec_file: qliksense-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.82
+  evidence: POST /api/v1/roles — "Create role"; schemas Role, CreateRole, PatchRole
+  reason: CRUD over platform roles used to grant permissions — identity and access management.
+- tag: data-product-data-quality
+  spec_file: qliksense-data-product-data-quality-api-openapi.yml
+  capability_id: BC-610.30
+  capability_id_l1: BC-610
+  capability_name: Data Quality Management
+  confidence: 0.82
+  evidence: POST /api/data-governance/data-products/{dataProductId}/actions/compute-datasets-data-quality
+    — "Trigger data quality computation for the data-product's datasets"
+  reason: The single operation computes data quality over datasets within a data-governance surface, which
+    is exactly Data Quality Management (profiling/monitoring of data assets).
+- tag: Glossaries
+  spec_file: qliksense-glossaries-api-openapi.yml
+  capability_id: BC-610.10
+  capability_id_l1: BC-610
+  capability_name: Data Governance Management
+  confidence: 0.8
+  evidence: POST /api/v1/glossaries "Creates a new glossary"; "Deletes a glossary and all of its terms";
+    schemas stewardDetail, atlasGlossary, termTemplate
+  reason: Business glossary with terms, categories and data stewards, importable/exportable — classic
+    data governance (ownership, stewardship, standards) tooling. Some ambiguity vs. business information
+    modeling, but the steward/catalog framing favours data governance.
+- tag: Tenant Settings
+  spec_file: qliksense-tenant-settings-api-openapi.yml
+  capability_id: BC-4230.20
+  capability_id_l1: BC-4230
+  capability_name: Tenant Configuration Management
+  confidence: 0.8
+  evidence: PATCH /api/v1/tenant-settings  updateTenantSettings  Update tenant settings; POST /api/v1/tenant-settings/actions/toggle-cross-region-data-processing
+  reason: Per-tenant configuration above the shared product baseline (start pages, release cadence, cross-region
+    processing toggles), which is Tenant Configuration Management; the cross-region toggles also touch
+    data residency but configuration is the dominant reading.
+- tag: Apps
+  spec_file: qliksense-apps-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.78
+  evidence: POST /api/v1/apps postApiV1Apps "Create api apps"; GET /api/v1/apps/{appId}/data/lineage "Get
+    api apps by app id data lineage"; schemas AppAttributes, ReloadMeta
+  reason: Qlik 'apps' are the analytics/BI applications themselves — created, copied, exported, reloaded,
+    with data lineage and metadata. This is the delivery and lifecycle of business intelligence content,
+    i.e. Analytics & BI Management.
+- tag: Data Product
+  spec_file: qliksense-data-product-api-openapi.yml
+  capability_id: BC-610.10
+  capability_id_l1: BC-610
+  capability_name: Data Governance Management
+  confidence: 0.78
+  evidence: POST /api/data-governance/data-products  createDataProduct  Create a data product
+  reason: Endpoints sit under /api/data-governance and manage data products with TrustScore, TrustScoreDimension,
+    Quality and KeyContact, plus documentation export — ownership, stewardship and publication of governed
+    data assets, which is Data Governance Management. Slight ambiguity against a pure catalogue/architecture
+    reading keeps this below 0.8.
+- tag: IDP
+  spec_file: qliksense-idp-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.78
+  evidence: POST /api/v1/identity-providers "Create a new IdP"; schemas IDPSAMLOptions, IDPOIDCOptions,
+    claimsMappingNonInteractive, OpenIDConfiguration
+  reason: Configuration of SAML/OIDC/JWT identity providers and claims mapping for the tenant — identity
+    federation, squarely Identity & Access Management (could alternatively be read as tenant identity
+    federation on the vendor side).
+- tag: iam-resources
+  spec_file: qliksense-iam-resources-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.78
+  evidence: '"Get authentication settings", "Update authentication settings", "List IP policies", "Create
+    an IP policy"'
+  reason: Operations manage tenant authentication settings and IP access policies — authentication and
+    access control administration. Some overlap with security governance, hence not maximal confidence.
+- tag: Deliveries
+  spec_file: qliksense-deliveries-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.76
+  evidence: GET /api/v1/webhooks/{id}/deliveries  getWebhookDeliveryList  Return deliveries for a webhook
+  reason: Operations list webhook delivery attempts and resend a failed delivery (Delivery, DeliveryList),
+    which is exactly the delivery-reliability aspect of outbound webhook and event subscription management.
+    Normally webhooks would be abstained as plumbing, but the frame names this capability explicitly;
+    confidence is held below 0.8 because only delivery inspection, not subscription lifecycle, is in this
+    tag.
+- tag: Groups
+  spec_file: qliksense-groups-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: POST /api/v1/groups "Create group"; schemas AssignedRoles, AssignedRolesRefIDs
+  reason: Manages user groups and the roles assigned to them in the tenant — access administration, i.e.
+    Identity & Access Management. Not HR org structure.
+- tag: Reports
+  spec_file: qliksense-reports-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.75
+  evidence: POST /api/v1/reports — "Queue a new report request generation"; schemas ReportRequest, PdfOutput,
+    PptxOutput
+  reason: Generation and distribution of analytic reports (PDF/PPTX outputs) is reporting and BI delivery.
+- tag: Aliases
+  spec_file: qliksense-aliases-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.72
+  evidence: GET /api/v1/ml/deployments/{deploymentId}/aliases getAliases "List aliases"; schemas ModelsInfo,
+    ModelInfo, DeploymentId
+  reason: Aliases are named pointers to ML model versions within machine-learning deployments, i.e. part
+    of the model deployment/MLOps lifecycle. Maps to Artificial Intelligence Management; moderate confidence
+    because the tag itself covers only a narrow naming mechanism.
+- tag: Questions
+  spec_file: qliksense-questions-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.72
+  evidence: POST /api/v1/questions/actions/ask — "Returns the generated response for parsed chat queries";
+    schemas NLResponses, NLMetricRecommendation, NarrativeResponse, RenderVisualization
+  reason: Natural-language query/insight generation over analytics apps — delivery of analytics and BI
+    content to users, not a generic technical utility.
+- tag: Report Templates
+  spec_file: qliksense-report-templates-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.72
+  evidence: POST /api/v1/report-templates — "Create a new report template"; CreateTemplateRequest, ReportTemplateResponse
+  reason: Lifecycle of report templates used to produce analytics reports — reporting/BI delivery capability.
+- tag: Assignments
+  spec_file: qliksense-assignments-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /api/v1/spaces/{spaceId}/assignments createSpaceAssignment "Assign a user or group to
+    a space"; schemas RoleType, AssignmentType
+  reason: Operations grant and revoke user/group role assignments on spaces — authorisation administration.
+    Maps to Identity & Access Management; moderate confidence as it could alternatively be read as tenant-level
+    access configuration.
+- tag: Brands
+  spec_file: qliksense-brands-api-openapi.yml
+  capability_id: BC-4230.20
+  capability_id_l1: BC-4230
+  capability_name: Tenant Configuration Management
+  confidence: 0.7
+  evidence: POST /api/v1/brands postBrands "Create a new brand"; POST /api/v1/brands/{brand-id}/actions/activate
+    "Activate a brand"; GET /api/v1/brands/active "Retrieve active brand"
+  reason: Brands here are white-label theming assets (logos, brand files) activated for a tenant of the
+    analytics cloud — per-tenant branding configuration, not corporate Brand Management. Maps to Tenant
+    Configuration Management.
+- tag: Invite
+  spec_file: qliksense-invite-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /api/v1/users/actions/invite "Invite one or more users by email address"
+  reason: Onboards user accounts into the tenant by email invitation — user account provisioning, part
+    of Identity & Access Management. Single thin operation, hence moderate confidence.
+- tag: OAuth Clients
+  spec_file: qliksense-oauth-clients-api-openapi.yml
+  capability_id: BC-4270.40
+  capability_id_l1: BC-4270
+  capability_name: Developer Identity & Credential Management
+  confidence: 0.7
+  evidence: POST /api/v1/oauth-clients  Create an OAuth client; POST /api/v1/oauth-clients/{id}/client-secrets  Create
+    an OAuth client secret
+  reason: Full lifecycle of OAuth clients and client secrets issued for integrating with the Qlik platform,
+    which matches developer credential/OAuth client stewardship. Could alternatively be read as generic
+    IAM, so not maximal confidence.
+- tag: csp-origins
+  spec_file: qliksense-csp-origins-api-openapi.yml
+  capability_id: BC-620.50
+  capability_id_l1: BC-620
+  capability_name: Security Architecture Management
+  confidence: 0.7
+  evidence: GET /api/v1/csp-origins listCSPEntries List CSPs; getCSPHeader Retrieve CSP header
+  reason: Content-Security-Policy origin allow-listing is a secure-configuration / security architecture
+    control for the tenant's web content. Mapped to Cybersecurity Management, security architecture sub-capability,
+    with moderate confidence since it could also be read as generic tenant configuration.
+- tag: data-product-activation
+  spec_file: qliksense-data-product-activation-api-openapi.yml
+  capability_id: BC-610.10
+  capability_id_l1: BC-610
+  capability_name: Data Governance Management
+  confidence: 0.7
+  evidence: POST /api/data-governance/data-products/{dataProductId}/actions/activate activateDataProduct;
+    schemas TrustScore, KeyContact, Quality
+  reason: Operations sit under the data-governance path and manage publication state of governed data
+    products with trust scores and key contacts — Data Governance Management within Information & Data
+    Management.
