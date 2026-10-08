@@ -236,7 +236,7 @@ apis:
   name: Qlik Sense alerting actions API
   description: The alerting actions API from Qlik Sense — 2 operation(s) for alerting actions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - alerting actions
   properties:
@@ -562,7 +562,7 @@ apis:
   name: Qlik Sense alerting settings API
   description: The alerting settings API from Qlik Sense — 1 operation(s) for alerting settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - alerting settings
   properties:
@@ -888,7 +888,7 @@ apis:
   name: Qlik Sense alerting tasks API
   description: The alerting tasks API from Qlik Sense — 4 operation(s) for alerting tasks.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - alerting tasks
   properties:
@@ -1215,7 +1215,7 @@ apis:
   description: >-
     The alerting tasks executions API from Qlik Sense — 4 operation(s) for alerting tasks executions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - alerting tasks executions
   properties:
@@ -1541,7 +1541,7 @@ apis:
   name: Qlik Sense Aliases API
   description: The aliases API from Qlik Sense — 2 operation(s) for aliases.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Aliases
   tags_raw:
@@ -1869,7 +1869,7 @@ apis:
   name: Qlik Sense Analytics API
   description: The Analytics API from Qlik Sense — 1 operation(s) for analytics.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Analytics
   properties:
@@ -2195,7 +2195,7 @@ apis:
   name: Qlik Sense API Keys API
   description: The api-keys API from Qlik Sense — 2 operation(s) for api-keys.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - APIKeys
   tags_raw:
@@ -2524,7 +2524,7 @@ apis:
   description: >-
     The api-keys configurations API from Qlik Sense — 1 operation(s) for api-keys configurations.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - api-keys configurations
   properties:
@@ -2850,7 +2850,7 @@ apis:
   name: Qlik Sense api settings API
   description: The api settings API from Qlik Sense — 1 operation(s) for api settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - API Settings
   tags_raw:
@@ -3178,7 +3178,7 @@ apis:
   name: Qlik Sense Apps API
   description: The Apps API from Qlik Sense — 23 operation(s) for apps.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Application
   tags_raw:
@@ -3506,7 +3506,7 @@ apis:
   name: Qlik Sense Assignments API
   description: The assignments API from Qlik Sense — 2 operation(s) for assignments.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Assignments
   tags_raw:
@@ -3834,7 +3834,7 @@ apis:
   name: Qlik Sense Assistants API
   description: The assistants API from Qlik Sense — 4 operation(s) for assistants.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Assistant
   tags_raw:
@@ -4162,7 +4162,7 @@ apis:
   name: Qlik Sense async actions API
   description: The async actions API from Qlik Sense — 1 operation(s) for async actions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - async actions
   properties:
@@ -4488,7 +4488,7 @@ apis:
   name: Qlik Sense Audits API
   description: The audits API from Qlik Sense — 7 operation(s) for audits.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Audit
   tags_raw:
@@ -4817,7 +4817,7 @@ apis:
   description: >-
     The automation-connections API from Qlik Sense — 10 operation(s) for automation-connections.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - automation-connections
   properties:
@@ -5144,7 +5144,7 @@ apis:
   description: >-
     The automation-connectors API from Qlik Sense — 4 operation(s) for automation-connectors.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - automation-connectors
   properties:
@@ -5470,7 +5470,7 @@ apis:
   name: Qlik Sense Automations API
   description: The automations API from Qlik Sense — 30 operation(s) for automations.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Automation
   tags_raw:
@@ -5798,7 +5798,7 @@ apis:
   name: Qlik Sense Automl Deployments API
   description: The automl-deployments API from Qlik Sense — 1 operation(s) for automl-deployments.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - automl-deployments
   properties:
@@ -6124,7 +6124,7 @@ apis:
   name: Qlik Sense Automl Predictions API
   description: The automl-predictions API from Qlik Sense — 6 operation(s) for automl-predictions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - automl-predictions
   properties:
@@ -6450,7 +6450,7 @@ apis:
   name: Qlik Sense Banner API
   description: The banner API from Qlik Sense — 2 operation(s) for banner.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Banner
   tags_raw:
@@ -6778,7 +6778,7 @@ apis:
   name: Qlik Sense Brands API
   description: The brands API from Qlik Sense — 6 operation(s) for brands.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Brands
   tags_raw:
@@ -7106,7 +7106,7 @@ apis:
   name: Qlik Sense Categories API
   description: The categories API from Qlik Sense — 2 operation(s) for categories.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Categories
   tags_raw:
@@ -7434,7 +7434,7 @@ apis:
   name: Qlik Sense Change Stores API
   description: The change-stores API from Qlik Sense — 2 operation(s) for change-stores.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - change-stores
   properties:
@@ -7760,7 +7760,7 @@ apis:
   name: Qlik Sense Changes API
   description: The changes API from Qlik Sense — 2 operation(s) for changes.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Changes
   tags_raw:
@@ -8088,7 +8088,7 @@ apis:
   name: Qlik Sense Chat API
   description: The chat API from Qlik Sense — 2 operation(s) for chat.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Chat
   tags_raw:
@@ -8416,7 +8416,7 @@ apis:
   name: Qlik Sense Collections API
   description: The collections API from Qlik Sense — 5 operation(s) for collections.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Collection
   tags_raw:
@@ -8744,7 +8744,7 @@ apis:
   name: Qlik Sense Computation API
   description: The computation API from Qlik Sense — 5 operation(s) for computation.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Computation
   tags_raw:
@@ -9072,7 +9072,7 @@ apis:
   name: Qlik Sense condition preview API
   description: The condition preview API from Qlik Sense — 2 operation(s) for condition preview.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - condition preview
   properties:
@@ -9398,7 +9398,7 @@ apis:
   name: Qlik Sense Conditions API
   description: The conditions API from Qlik Sense — 2 operation(s) for conditions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Conditions
   tags_raw:
@@ -9726,7 +9726,7 @@ apis:
   name: Qlik Sense Consumption API
   description: The Consumption API from Qlik Sense — 1 operation(s) for consumption.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Consumption
   properties:
@@ -10052,7 +10052,7 @@ apis:
   name: Qlik Sense Csp Origins API
   description: The csp-origins API from Qlik Sense — 3 operation(s) for csp-origins.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - csp-origins
   properties:
@@ -10378,7 +10378,7 @@ apis:
   name: Qlik Sense Csrf API
   description: The csrf API from Qlik Sense — 1 operation(s) for csrf.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - CSRF
   tags_raw:
@@ -10706,7 +10706,7 @@ apis:
   name: Qlik Sense Data Asset API
   description: The data-asset API from Qlik Sense — 2 operation(s) for data-asset.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data-asset
   properties:
@@ -11032,7 +11032,7 @@ apis:
   name: Qlik Sense Data Connections API
   description: The data-connections API from Qlik Sense — 5 operation(s) for data-connections.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Data Connections
   tags_raw:
@@ -11360,7 +11360,7 @@ apis:
   name: Qlik Sense Data Credentials API
   description: The data-credentials API from Qlik Sense — 2 operation(s) for data-credentials.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data-credentials
   properties:
@@ -11687,7 +11687,7 @@ apis:
   description: >-
     The data-product-activation API from Qlik Sense — 2 operation(s) for data-product-activation.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data-product-activation
   properties:
@@ -12013,7 +12013,7 @@ apis:
   name: Qlik Sense Data Product API
   description: The data-product API from Qlik Sense — 4 operation(s) for data-product.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Data Product
   tags_raw:
@@ -12342,7 +12342,7 @@ apis:
   description: >-
     The data-product-changelog API from Qlik Sense — 1 operation(s) for data-product-changelog.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data-product-changelog
   properties:
@@ -12669,7 +12669,7 @@ apis:
   description: >-
     The data-product-data-quality API from Qlik Sense — 1 operation(s) for data-product-data-quality.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data-product-data-quality
   properties:
@@ -12996,7 +12996,7 @@ apis:
   description: >-
     The data-product-generate-provider-url API from Qlik Sense — 1 operation(s) for data-product-generate-provider-url.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data-product-generate-provider-url
   properties:
@@ -13322,7 +13322,7 @@ apis:
   name: Qlik Sense data project actions API
   description: The data project actions API from Qlik Sense — 2 operation(s) for data project actions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data project actions
   properties:
@@ -13648,7 +13648,7 @@ apis:
   name: Qlik Sense data project API
   description: The data project API from Qlik Sense — 2 operation(s) for data project.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data project
   properties:
@@ -13975,7 +13975,7 @@ apis:
   description: >-
     The data project deployment API from Qlik Sense — 5 operation(s) for data project deployment.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data project deployment
   properties:
@@ -14301,7 +14301,7 @@ apis:
   name: Qlik Sense Data Quality API
   description: The data-quality API from Qlik Sense — 4 operation(s) for data-quality.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Data Quality
   tags_raw:
@@ -14629,7 +14629,7 @@ apis:
   name: Qlik Sense Data Sources API
   description: The data-sources API from Qlik Sense — 4 operation(s) for data-sources.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Data Sources
   tags_raw:
@@ -14957,7 +14957,7 @@ apis:
   name: Qlik Sense data task actions API
   description: The data task actions API from Qlik Sense — 4 operation(s) for data task actions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data task actions
   properties:
@@ -15283,7 +15283,7 @@ apis:
   name: Qlik Sense data task API
   description: The data task API from Qlik Sense — 2 operation(s) for data task.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data task
   properties:
@@ -15609,7 +15609,7 @@ apis:
   name: Qlik Sense data task runtime API
   description: The data task runtime API from Qlik Sense — 4 operation(s) for data task runtime.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - data task runtime
   properties:
@@ -15935,7 +15935,7 @@ apis:
   name: Qlik Sense Datafiles API
   description: The datafiles API from Qlik Sense — 9 operation(s) for datafiles.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Data Files
   tags_raw:
@@ -16263,7 +16263,7 @@ apis:
   name: Qlik Sense Deliveries API
   description: The deliveries API from Qlik Sense — 3 operation(s) for deliveries.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Deliveries
   tags_raw:
@@ -16591,7 +16591,7 @@ apis:
   name: Qlik Sense Deployments API
   description: The deployments API from Qlik Sense — 6 operation(s) for deployments.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Deployment
   tags_raw:
@@ -16920,7 +16920,7 @@ apis:
   description: >-
     The direct-access-agent-benchmarking API from Qlik Sense — 3 operation(s) for direct-access-agent-benchmarking.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - direct-access-agent-benchmarking
   properties:
@@ -17247,7 +17247,7 @@ apis:
   description: >-
     The direct-access-agent-configuration API from Qlik Sense — 7 operation(s) for direct-access-agent-configuration.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - direct-access-agent-configuration
   properties:
@@ -17573,7 +17573,7 @@ apis:
   name: Qlik Sense Editable Columns API
   description: The editable-columns API from Qlik Sense — 1 operation(s) for editable-columns.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - editable-columns
   properties:
@@ -17899,7 +17899,7 @@ apis:
   name: Qlik Sense Email Config Actions API
   description: The email-config-actions API from Qlik Sense — 3 operation(s) for email-config-actions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - email-config-actions
   properties:
@@ -18225,7 +18225,7 @@ apis:
   name: Qlik Sense Email Config API
   description: The email-config API from Qlik Sense — 1 operation(s) for email-config.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - email-config
   properties:
@@ -18551,7 +18551,7 @@ apis:
   name: Qlik Sense Evaluation API
   description: The evaluation API from Qlik Sense — 10 operation(s) for evaluation.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Evaluation
   tags_raw:
@@ -18879,7 +18879,7 @@ apis:
   name: Qlik Sense Evaluations API
   description: The evaluations API from Qlik Sense — 2 operation(s) for evaluations.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Evaluation
   tags_raw:
@@ -19207,7 +19207,7 @@ apis:
   name: Qlik Sense Experiments API
   description: The experiments API from Qlik Sense — 7 operation(s) for experiments.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Experiments
   tags_raw:
@@ -19535,7 +19535,7 @@ apis:
   name: Qlik Sense Extensions API
   description: The extensions API from Qlik Sense — 4 operation(s) for extensions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Extensions
   tags_raw:
@@ -19863,7 +19863,7 @@ apis:
   name: Qlik Sense Filters API
   description: The filters API from Qlik Sense — 3 operation(s) for filters.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Filters
   tags_raw:
@@ -20191,7 +20191,7 @@ apis:
   name: Qlik Sense Glossaries API
   description: The glossaries API from Qlik Sense — 4 operation(s) for glossaries.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Glossary
   tags_raw:
@@ -20519,7 +20519,7 @@ apis:
   name: Qlik Sense Groups API
   description: The groups API from Qlik Sense — 3 operation(s) for groups.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Group
   tags_raw:
@@ -20847,7 +20847,7 @@ apis:
   name: Qlik Sense Groups Settings API
   description: The groups-settings API from Qlik Sense — 1 operation(s) for groups-settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - groups-settings
   properties:
@@ -21173,7 +21173,7 @@ apis:
   name: Qlik Sense Iam Resources API
   description: The iam-resources API from Qlik Sense — 3 operation(s) for iam-resources.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - iam-resources
   properties:
@@ -21499,7 +21499,7 @@ apis:
   name: Qlik Sense Idp API
   description: The idp API from Qlik Sense — 5 operation(s) for idp.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - IDP
   tags_raw:
@@ -21827,7 +21827,7 @@ apis:
   name: Qlik Sense Impact API
   description: The impact API from Qlik Sense — 4 operation(s) for impact.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Impact
   tags_raw:
@@ -22155,7 +22155,7 @@ apis:
   name: Qlik Sense Insight Analyses API
   description: The insight-analyses API from Qlik Sense — 3 operation(s) for insight-analyses.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - insight-analyses
   properties:
@@ -22481,7 +22481,7 @@ apis:
   name: Qlik Sense Invite API
   description: The invite API from Qlik Sense — 1 operation(s) for invite.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - invite
   properties:
@@ -22807,7 +22807,7 @@ apis:
   name: Qlik Sense Items API
   description: The items API from Qlik Sense — 4 operation(s) for items.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Item
   tags_raw:
@@ -23135,7 +23135,7 @@ apis:
   name: Qlik Sense Items Settings API
   description: The items-settings API from Qlik Sense — 1 operation(s) for items-settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - items-settings
   properties:
@@ -23461,7 +23461,7 @@ apis:
   name: Qlik Sense Jobs API
   description: The jobs API from Qlik Sense — 1 operation(s) for jobs.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Job
   tags_raw:
@@ -23789,7 +23789,7 @@ apis:
   name: Qlik Sense Licenses API
   description: The licenses API from Qlik Sense — 8 operation(s) for licenses.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Licenses
   tags_raw:
@@ -24117,7 +24117,7 @@ apis:
   name: Qlik Sense Lineage Graphs API
   description: The lineage-graphs API from Qlik Sense — 4 operation(s) for lineage-graphs.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - lineage-graphs
   properties:
@@ -24443,7 +24443,7 @@ apis:
   name: Qlik Sense Link API
   description: The Link API from Qlik Sense — 4 operation(s) for link.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Link
   properties:
@@ -24769,7 +24769,7 @@ apis:
   name: Qlik Sense Links API
   description: The links API from Qlik Sense — 1 operation(s) for links.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Links
   tags_raw:
@@ -25097,7 +25097,7 @@ apis:
   name: Qlik Sense Login API
   description: The login API from Qlik Sense — 1 operation(s) for login.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Login
   tags_raw:
@@ -25425,7 +25425,7 @@ apis:
   name: Qlik Sense Notifications API
   description: The notifications API from Qlik Sense — 1 operation(s) for notifications.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Notification
   tags_raw:
@@ -25753,7 +25753,7 @@ apis:
   name: Qlik Sense OAUTH Clients API
   description: The oauth-clients API from Qlik Sense — 6 operation(s) for oauth-clients.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - OAuth Clients
   tags_raw:
@@ -26081,7 +26081,7 @@ apis:
   name: Qlik Sense OAUTH Tokens API
   description: The oauth-tokens API from Qlik Sense — 2 operation(s) for oauth-tokens.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - OAuth Tokens
   tags_raw:
@@ -26409,7 +26409,7 @@ apis:
   name: Qlik Sense Outputs API
   description: The outputs API from Qlik Sense — 1 operation(s) for outputs.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Outputs
   tags_raw:
@@ -26737,7 +26737,7 @@ apis:
   name: Qlik Sense Owl API
   description: The owl API from Qlik Sense — 1 operation(s) for owl.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - OWL
   tags_raw:
@@ -27065,7 +27065,7 @@ apis:
   name: Qlik Sense pinned links API
   description: The pinned links API from Qlik Sense — 4 operation(s) for pinned links.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - pinned links
   properties:
@@ -27391,7 +27391,7 @@ apis:
   name: Qlik Sense Predictions API
   description: The predictions API from Qlik Sense — 6 operation(s) for predictions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Predictions
   tags_raw:
@@ -27719,7 +27719,7 @@ apis:
   name: Qlik Sense Profile API
   description: The profile API from Qlik Sense — 1 operation(s) for profile.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Profiles
   tags_raw:
@@ -28047,7 +28047,7 @@ apis:
   name: Qlik Sense Profile Insights API
   description: The profile-insights API from Qlik Sense — 2 operation(s) for profile-insights.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - profile-insights
   properties:
@@ -28373,7 +28373,7 @@ apis:
   name: Qlik Sense Questions API
   description: The questions API from Qlik Sense — 2 operation(s) for questions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Questions
   tags_raw:
@@ -28701,7 +28701,7 @@ apis:
   name: Qlik Sense Quotas API
   description: The quotas API from Qlik Sense — 2 operation(s) for quotas.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Quotas
   tags_raw:
@@ -29029,7 +29029,7 @@ apis:
   name: Qlik Sense Reload Tasks API
   description: The reload-tasks API from Qlik Sense — 2 operation(s) for reload-tasks.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - reload-tasks
   properties:
@@ -29355,7 +29355,7 @@ apis:
   name: Qlik Sense Reloads API
   description: The reloads API from Qlik Sense — 3 operation(s) for reloads.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Reloads
   tags_raw:
@@ -29683,7 +29683,7 @@ apis:
   name: Qlik Sense Report Templates API
   description: The report-templates API from Qlik Sense — 3 operation(s) for report-templates.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Report Templates
   tags_raw:
@@ -30011,7 +30011,7 @@ apis:
   name: Qlik Sense Reports API
   description: The reports API from Qlik Sense — 1 operation(s) for reports.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Reports
   tags_raw:
@@ -30339,7 +30339,7 @@ apis:
   name: Qlik Sense Request API
   description: The Request API from Qlik Sense — 6 operation(s) for request.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Request
   properties:
@@ -30665,7 +30665,7 @@ apis:
   name: Qlik Sense Roles API
   description: The roles API from Qlik Sense — 2 operation(s) for roles.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Roles
   tags_raw:
@@ -30993,7 +30993,7 @@ apis:
   name: Qlik Sense Search API
   description: The search API from Qlik Sense — 2 operation(s) for search.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Search
   tags_raw:
@@ -31321,7 +31321,7 @@ apis:
   name: Qlik Sense Setting API
   description: The setting API from Qlik Sense — 1 operation(s) for setting.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Setting
   tags_raw:
@@ -31649,7 +31649,7 @@ apis:
   name: Qlik Sense Settings API
   description: The Settings API from Qlik Sense — 2 operation(s) for settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Settings
   properties:
@@ -31975,7 +31975,7 @@ apis:
   name: Qlik Sense Shares API
   description: The shares API from Qlik Sense — 2 operation(s) for shares.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Share
   tags_raw:
@@ -32303,7 +32303,7 @@ apis:
   name: Qlik Sense sharing settings API
   description: The sharing settings API from Qlik Sense — 1 operation(s) for sharing settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - sharing settings
   properties:
@@ -32630,7 +32630,7 @@ apis:
   description: >-
     The sharing tasks actions API from Qlik Sense — 2 operation(s) for sharing tasks actions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - sharing tasks actions
   properties:
@@ -32956,7 +32956,7 @@ apis:
   name: Qlik Sense sharing tasks API
   description: The sharing tasks API from Qlik Sense — 2 operation(s) for sharing tasks.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - sharing tasks
   properties:
@@ -33283,7 +33283,7 @@ apis:
   description: >-
     The sharing tasks executions API from Qlik Sense — 3 operation(s) for sharing tasks executions.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - sharing tasks executions
   properties:
@@ -33609,7 +33609,7 @@ apis:
   name: Qlik Sense Spaces API
   description: The spaces API from Qlik Sense — 3 operation(s) for spaces.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Spaces
   - Space
@@ -33939,7 +33939,7 @@ apis:
   name: Qlik Sense Starters API
   description: The starters API from Qlik Sense — 3 operation(s) for starters.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - starters
   properties:
@@ -34265,7 +34265,7 @@ apis:
   name: Qlik Sense Status API
   description: The status API from Qlik Sense — 1 operation(s) for status.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Status
   tags_raw:
@@ -34593,7 +34593,7 @@ apis:
   name: Qlik Sense Task API
   description: The task API from Qlik Sense — 14 operation(s) for task.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Task
   tags_raw:
@@ -34921,7 +34921,7 @@ apis:
   name: Qlik Sense Task Graph API
   description: The task-graph API from Qlik Sense — 5 operation(s) for task-graph.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - task-graph
   properties:
@@ -35247,7 +35247,7 @@ apis:
   name: Qlik Sense task run history API
   description: The task run history API from Qlik Sense — 3 operation(s) for task run history.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - task run history
   properties:
@@ -35573,7 +35573,7 @@ apis:
   name: Qlik Sense Temporary contents API
   description: The Temporary contents API from Qlik Sense — 5 operation(s) for temporary contents.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Temporary contents
   properties:
@@ -35901,7 +35901,7 @@ apis:
     The tenant key migration information API from Qlik Sense — 1 operation(s) for tenant key migration
     information.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - tenant key migration information
   properties:
@@ -36228,7 +36228,7 @@ apis:
   description: >-
     The tenant key provider management API from Qlik Sense — 3 operation(s) for tenant key provider management.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - tenant key provider management
   properties:
@@ -36555,7 +36555,7 @@ apis:
   description: >-
     The tenant key provider operations API from Qlik Sense — 3 operation(s) for tenant key provider operations.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - tenant key provider operations
   properties:
@@ -36881,7 +36881,7 @@ apis:
   name: Qlik Sense Tenant Settings API
   description: The tenant-settings API from Qlik Sense — 4 operation(s) for tenant-settings.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Tenant Settings
   tags_raw:
@@ -37209,7 +37209,7 @@ apis:
   name: Qlik Sense Tenants API
   description: The tenants API from Qlik Sense — 5 operation(s) for tenants.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Tenants
   tags_raw:
@@ -37537,7 +37537,7 @@ apis:
   name: Qlik Sense Terms API
   description: The terms API from Qlik Sense — 4 operation(s) for terms.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Terms
   tags_raw:
@@ -37865,7 +37865,7 @@ apis:
   name: Qlik Sense Themes API
   description: The themes API from Qlik Sense — 4 operation(s) for themes.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Themes
   tags_raw:
@@ -38193,7 +38193,7 @@ apis:
   name: Qlik Sense Threads API
   description: The threads API from Qlik Sense — 7 operation(s) for threads.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Threads
   tags_raw:
@@ -38521,7 +38521,7 @@ apis:
   name: Qlik Sense Tokens API
   description: The tokens API from Qlik Sense — 1 operation(s) for tokens.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Tokens
   tags_raw:
@@ -38849,7 +38849,7 @@ apis:
   name: Qlik Sense Trust Score Result API
   description: The trust-score-result API from Qlik Sense — 1 operation(s) for trust-score-result.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - trust-score-result
   properties:
@@ -39175,7 +39175,7 @@ apis:
   name: Qlik Sense Users API
   description: The users API from Qlik Sense — 5 operation(s) for users.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - User
   tags_raw:
@@ -39503,7 +39503,7 @@ apis:
   name: Qlik Sense Web Integrations API
   description: The web-integrations API from Qlik Sense — 2 operation(s) for web-integrations.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Web Integrations
   tags_raw:
@@ -39831,7 +39831,7 @@ apis:
   name: Qlik Sense Web Notifications API
   description: The web-notifications API from Qlik Sense — 3 operation(s) for web-notifications.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - web-notifications
   properties:
@@ -40157,7 +40157,7 @@ apis:
   name: Qlik Sense Webhooks API
   description: The webhooks API from Qlik Sense — 3 operation(s) for webhooks.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Webhook
   tags_raw:
@@ -40485,7 +40485,7 @@ apis:
   name: Qlik Sense Dataset API
   description: The Dataset API from Qlik Sense — 2 operation(s) for dataset.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Dataset
   properties:
@@ -40811,7 +40811,7 @@ apis:
   name: Qlik Sense Datastore API
   description: The Datastore API from Qlik Sense — 4 operation(s) for datastore.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Datastore
   properties:
@@ -41137,7 +41137,7 @@ apis:
   name: Qlik Sense Knowledge Bases API
   description: The Knowledge Bases API from Qlik Sense — 11 operation(s) for knowledge bases.
   humanURL: https://qlik.dev/apis/json-rpc/qix
-  baseURL: wss://your-tenant.qlikcloud.com/app/
+  baseURL: https://{tenant}.{region}.qlikcloud.com
   tags:
   - Knowledge Bases
   properties:
