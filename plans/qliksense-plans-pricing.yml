@@ -1,0 +1,96 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://www.qlik.com/us/da/pricing
+sources:
+- https://www.qlik.com/us/da/pricing
+- https://www.qlik.com/us/pricing
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T120612
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: tiered-subscription
+delivery:
+  delivery: managed+licensed
+  method: page
+  read: '2026-10-28'
+  evidence: Need a custom plan or to host on your own IT infrastructure? Contact Sales
+  managed_tier: Starter
+published: true
+note: Capacity-based tiered pricing for Qlik Cloud Analytics; Enterprise is quote-only. Self-hosting referenced
+  via 'Contact Sales' without price.
+plan_count: 4
+currency: USD
+plans:
+- name: Starter
+  price_text: Starting at $300 /mo
+  price: 300
+  currency: USD
+  period: month
+  unit: 10 Users, billed annually
+  included_quota: Includes 10 Users and 10 GB data for analysis (additional users available for purchase
+    - no additional data capacity available for purchase).
+- name: Standard
+  price_text: Starting at $825 /mo
+  price: 825
+  currency: USD
+  period: month
+  unit: 25 GB data, billed annually
+  included_quota: Starts with 25 GB of data for analysis. Purchase additional capacity in 25 GB increments
+- name: Premium
+  price_text: Starting at $2,750 /mo
+  price: 2750
+  currency: USD
+  period: month
+  unit: 50 GB data, billed annually
+  included_quota: Starts with 50 GB of data for analysis. Purchase additional capacity in 25 GB packs
+    or 250 GB packs
+- name: Enterprise
+  price_text: Get a Quote
+  period: none
+  included_quota: Starts at 250 GB of data for analysis.
+rate_limit_statements:
+- 5 GB max app size
+- 10 GB max app size
+- Larger Apps support, up to 40 GB, more apps and up to 50 GB per app with additional purchase
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - subscription
+  units:
+  - data
+  plans:
+  - name: Starter
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Standard
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - data
+    periods:
+    - month
+  - name: Premium
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - data
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
