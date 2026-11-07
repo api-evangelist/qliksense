@@ -55,20 +55,21 @@ rate_limit_statements:
 - 10 GB max app size
 - Larger Apps support, up to 40 GB, more apps and up to 50 GB per app with additional purchase
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - hybrid
-  - subscription
+  - seat
   units:
   - data
+  - seat
   plans:
   - name: Starter
     access: other
-    model: subscription
+    model: seat
     model_how: derived
     units:
-    - other
+    - seat
     periods:
     - month
   - name: Standard
